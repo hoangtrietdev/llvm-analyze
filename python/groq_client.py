@@ -32,7 +32,7 @@ class GroqClient:
         """Create a single prompt for batch analysis of multiple parallelization candidates"""
         
         # Limit batch size to avoid overwhelming the API
-        batch_size = min(len(candidates), 10)  # Process max 10 at a time
+        batch_size = min(len(candidates), 50)  # Process max 50 at a time
         candidates = candidates[:batch_size]
         
         candidates_summary = []
@@ -75,7 +75,7 @@ Classification options:
 - "requires_runtime_check": Might be parallelizable but needs careful analysis
 - "not_parallel": Should not be parallelized
 
-Return ONLY the JSON object, no other text."""
+CRITICAL: Return ONLY the JSON object, no explanation, no thinking process, no other text."""
         return prompt
 
     def parse_batch_response(self, response_text: str, num_candidates: int) -> List[Dict[str, Any]]:
@@ -84,14 +84,29 @@ Return ONLY the JSON object, no other text."""
             # Clean up the response - sometimes the AI adds extra text
             response_text = response_text.strip()
             
+            # Remove thinking process if present (between <think> tags)
+            import re
+            response_text = re.sub(r'<think>.*?</think>', '', response_text, flags=re.DOTALL)
+            response_text = response_text.strip()
+            
             # Find JSON boundaries more aggressively
             start_idx = response_text.find('{')
             if start_idx == -1:
                 raise json.JSONDecodeError("No JSON found", response_text, 0)
             
-            # Find the last closing brace
-            end_idx = response_text.rfind('}')
-            if end_idx == -1 or end_idx <= start_idx:
+            # Find the last closing brace at the same nesting level
+            brace_count = 0
+            end_idx = -1
+            for i, char in enumerate(response_text[start_idx:], start_idx):
+                if char == '{':
+                    brace_count += 1
+                elif char == '}':
+                    brace_count -= 1
+                    if brace_count == 0:
+                        end_idx = i
+                        break
+            
+            if end_idx == -1:
                 raise json.JSONDecodeError("No valid JSON end found", response_text, 0)
             
             # Extract just the JSON part
@@ -159,7 +174,7 @@ Return ONLY the JSON object, no other text."""
             'messages': [
                 {
                     'role': 'system',
-                    'content': 'You are an expert in parallel computing optimization. Provide analysis in the exact JSON format requested.'
+                    'content': 'You are an expert in parallel computing optimization. You MUST provide analysis in the exact JSON format requested. Do not include any explanations, thinking process, or other text outside the JSON response.'
                 },
                 {
                     'role': 'user',
@@ -167,7 +182,7 @@ Return ONLY the JSON object, no other text."""
                 }
             ],
             'temperature': 0.1,  # Low temperature for consistent results
-            'max_tokens': 2000
+            'max_tokens': 4000  # Increased for larger batches
         }
 
         try:
@@ -206,7 +221,7 @@ Return ONLY the JSON object, no other text."""
         print(f"Processing {len(candidates)} candidates in batches...")
         
         enhanced_candidates = []
-        batch_size = 10  # Process 10 candidates per API call
+        batch_size = 50  # Process 50 candidates per API call
         
         # Process candidates in batches
         for batch_start in range(0, len(candidates), batch_size):
@@ -218,8 +233,8 @@ Return ONLY the JSON object, no other text."""
             
             # Add rate limiting delay between batches
             if batch_num > 1:
-                print("  Waiting to avoid rate limits...")
-                time.sleep(2)  # 2 second delay between batches
+                print("  Waiting 30 seconds to avoid rate limits...")
+                time.sleep(30)  # 30 second delay between batches
             
             # Create batch analysis prompt
             prompt = self.create_batch_analysis_prompt(batch)

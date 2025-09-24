@@ -64,7 +64,17 @@ if [[ ! -f "$HOMEBREW_OPT" ]]; then
 fi
 source venv/bin/activate
 
-print_success "Environment loaded"
+# Load environment variables from .env if it exists
+if [[ -f ".env" ]]; then
+    export $(grep -v '^#' .env | xargs)
+    if [[ -n "$GROQ_API_KEY" && "$GROQ_API_KEY" != "your-groq-api-key-here" ]]; then
+        print_success "Environment loaded (AI: Enabled)"
+    else
+        print_success "Environment loaded (AI: Disabled - API key not configured)"
+    fi
+else
+    print_success "Environment loaded (AI: Disabled - no .env file)"
+fi
 
 # Create output directory
 mkdir -p build/out build/ir
@@ -72,8 +82,11 @@ mkdir -p build/out build/ir
 # Sample files to analyze
 SAMPLE_FILES=(
     "sample/src/simple_example.cpp"
+    "sample/src/simple_parallel.cpp"
     "sample/src/matrix_operations.cpp" 
     "sample/src/reduction_examples.cpp"
+    "sample/src/stencil_patterns.cpp"
+    "sample/src/problematic_patterns.cpp"
 )
 
 # Compile all sample files to LLVM IR

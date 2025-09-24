@@ -12,6 +12,8 @@
 #include "llvm/Support/JSON.h"
 #include "llvm/IR/DebugInfoMetadata.h"
 #include "llvm/IR/DebugLoc.h"
+#include "PatternDetect.h"
+#include "AIEnhancedAnalysis.h"
 #include <fstream>
 #include <vector>
 #include <string>
@@ -39,97 +41,7 @@ struct CandidateResult {
 class ParallelCandidatePass : public PassInfoMixin<ParallelCandidatePass> {
 private:
     std::vector<CandidateResult> candidates;
-
-    // Check if a loop is a simple parallel candidate
-    bool isSimpleParallelLoop(Loop *L, ScalarEvolution &SE) {
-        // Check for simple increment induction variable
-        PHINode *IndVar = L->getCanonicalInductionVariable();
-        if (!IndVar) return false;
-
-        // Check for array access patterns
-        bool hasSimpleArrayAccess = false;
-        bool hasComplexOperations = false;
-        bool hasCallsWithSideEffects = false;
-
-        for (BasicBlock *BB : L->blocks()) {
-            for (Instruction &I : *BB) {
-                if (auto *GEP = dyn_cast<GetElementPtrInst>(&I)) {
-                    // Check if GEP uses induction variable
-                    for (Use &U : GEP->operands()) {
-                        if (U.get() == IndVar) {
-                            hasSimpleArrayAccess = true;
-                            break;
-                        }
-                    }
-                } else if (auto *Call = dyn_cast<CallInst>(&I)) {
-                    // Check for function calls that might have side effects
-                    Function *F = Call->getCalledFunction();
-                    if (!F) {
-                        // Indirect call - assume it has side effects
-                        hasCallsWithSideEffects = true;
-                    } else if (!F->doesNotAccessMemory()) {
-                        hasCallsWithSideEffects = true;
-                    }
-                } else if (isa<LoadInst>(&I) || isa<StoreInst>(&I)) {
-                    // Simple memory operations are generally OK
-                    continue;
-                } else if (I.mayHaveSideEffects() && !isa<StoreInst>(&I)) {
-                    hasComplexOperations = true;
-                }
-            }
-        }
-
-        return hasSimpleArrayAccess && !hasComplexOperations && !hasCallsWithSideEffects;
-    }
-
-    // Check if a loop contains reduction patterns
-    bool hasReductionPattern(Loop *L) {
-        for (BasicBlock *BB : L->blocks()) {
-            for (Instruction &I : *BB) {
-                if (auto *BinOp = dyn_cast<BinaryOperator>(&I)) {
-                    // Look for accumulation patterns (+=, *=, etc.)
-                    if (BinOp->getOpcode() == Instruction::FAdd ||
-                        BinOp->getOpcode() == Instruction::Add ||
-                        BinOp->getOpcode() == Instruction::FMul ||
-                        BinOp->getOpcode() == Instruction::Mul) {
-                        
-                        // Check if one operand is a loop-carried dependency
-                        for (Use &U : BinOp->operands()) {
-                            if (auto *PHI = dyn_cast<PHINode>(U.get())) {
-                                if (L->contains(PHI->getParent())) {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    // Get debug information for source location
-    std::pair<std::string, int> getSourceLocation(Instruction *I) {
-        std::string filename = "unknown";
-        int line = 0;
-
-        if (DILocation *Loc = I->getDebugLoc()) {
-            filename = Loc->getFilename().str();
-            line = Loc->getLine();
-        }
-
-        return {filename, line};
-    }
-
-    // Generate suggested patch for a parallel loop
-    std::string generateParallelPatch(Loop *L) {
-        return "#pragma omp parallel for\nfor(/* existing loop header */)";
-    }
-
-    // Generate suggested patch for a reduction
-    std::string generateReductionPatch(Loop *L) {
-        return "#pragma omp parallel for reduction(+:sum)\nfor(/* existing loop header */)";
-    }
+    AIEnhancedAnalysis aiAnalysis;  // Add AI analysis component
 
     void analyzeLoop(Loop *L, Function &F, ScalarEvolution &SE) {
         // Skip non-innermost loops for now
@@ -147,29 +59,74 @@ private:
 
         if (!firstInst) return;
 
-        auto [filename, line] = getSourceLocation(firstInst);
+        auto [filename, line] = PatternDetection::getSourceLocation(firstInst);
         std::string functionName = F.getName().str();
 
-        if (isSimpleParallelLoop(L, SE)) {
+        // Check for embarrassingly parallel patterns first (easiest to parallelize)
+        if (PatternDetection::isEmbarrassinglyParallel(L)) {
             candidates.push_back({
-                filename,
-                functionName,
-                line,
+                filename, functionName, line,
+                "embarrassingly_parallel",
+                "Perfect parallel candidate - no dependencies between iterations",
+                PatternDetection::generateOptimalPatch("embarrassingly_parallel", L)
+            });
+        }
+        // Check for vectorizable loops
+        else if (PatternDetection::isVectorizableLoop(L)) {
+            candidates.push_back({
+                filename, functionName, line,
+                "vectorizable",
+                "Good candidate for SIMD vectorization",
+                PatternDetection::generateOptimalPatch("vectorizable", L)
+            });
+        }
+        // Check for advanced reduction patterns
+        else if (PatternDetection::hasAdvancedReductionPattern(L)) {
+            candidates.push_back({
+                filename, functionName, line,
+                "advanced_reduction", 
+                "Min/max or logical reduction pattern detected",
+                PatternDetection::generateOptimalPatch("advanced_reduction", L)
+            });
+        }
+        // Check for original simple parallel patterns
+        else if (PatternDetection::isSimpleParallelLoop(L, SE)) {
+            candidates.push_back({
+                filename, functionName, line,
                 "parallel_loop",
                 "Simple array indexing pattern detected, no obvious dependencies",
-                generateParallelPatch(L)
+                PatternDetection::generateParallelPatch(L)
             });
-        } else if (hasReductionPattern(L)) {
+        }
+        // Check for reduction patterns
+        else if (PatternDetection::hasReductionPattern(L)) {
             candidates.push_back({
-                filename,
-                functionName,
-                line,
+                filename, functionName, line,
                 "reduction",
                 "Potential reduction pattern detected",
-                generateReductionPatch(L)
+                PatternDetection::generateReductionPatch(L)
             });
-        } else {
-            // Check for complex patterns that might be risky
+        }
+        // Check for stencil patterns
+        else if (PatternDetection::isStencilPattern(L)) {
+            candidates.push_back({
+                filename, functionName, line,
+                "stencil",
+                "Stencil computation pattern detected (neighbor dependencies)",
+                "#pragma omp parallel for // Note: check for data races"
+            });
+        }
+        // Check for map operations
+        else if (PatternDetection::isMapOperation(L)) {
+            candidates.push_back({
+                filename, functionName, line,
+                "map_operation",
+                "Element-wise function application detected",
+                PatternDetection::generateParallelPatch(L)
+            });
+        }
+        // Check for risky patterns
+        else {
             bool hasComplexMemoryAccess = false;
             for (BasicBlock *BB : L->blocks()) {
                 for (Instruction &I : *BB) {
@@ -183,12 +140,20 @@ private:
 
             if (hasComplexMemoryAccess) {
                 candidates.push_back({
-                    filename,
-                    functionName,
-                    line,
+                    filename, functionName, line,
                     "risky",
                     "Loop contains function calls or complex memory access patterns",
                     "// Requires careful analysis for parallelization"
+                });
+            }
+            
+            // Check for problematic patterns
+            if (PatternDetection::isPrefixSumPattern(L)) {
+                candidates.push_back({
+                    filename, functionName, line,
+                    "prefix_sum",
+                    "Sequential dependency detected - requires parallel scan algorithms",
+                    "// WARNING: Sequential dependency - use parallel scan"
                 });
             }
         }
@@ -197,14 +162,59 @@ private:
     void exportToJSON() {
         json::Array jsonCandidates;
 
+        // Convert candidates to AI format for enhancement
+        std::vector<AIEnhancedCandidate> aiCandidates;
         for (const auto &candidate : candidates) {
+            AIEnhancedCandidate aiCandidate;
+            aiCandidate.candidateType = candidate.candidate_type;
+            aiCandidate.fileName = candidate.file;
+            aiCandidate.functionName = candidate.function;
+            aiCandidate.lineNumber = candidate.line;
+            aiCandidate.reason = candidate.reason;
+            aiCandidate.suggestedPatch = candidate.suggested_patch;
+            aiCandidates.push_back(aiCandidate);
+        }
+
+        // Enhance with AI analysis if available
+        std::vector<AIEnhancedCandidate> enhancedCandidates = aiCandidates;
+        if (aiAnalysis.isAIEnabled()) {
+            enhancedCandidates = aiAnalysis.enhanceCandidatesWithAI(aiCandidates);
+            errs() << "AI Enhancement: Enabled (" << enhancedCandidates.size() << " candidates enhanced)\n";
+        } else {
+            errs() << "AI Enhancement: Disabled (using basic analysis)\n";
+        }
+
+        for (const auto &candidate : enhancedCandidates) {
             json::Object obj;
-            obj["file"] = candidate.file;
-            obj["function"] = candidate.function;
-            obj["line"] = candidate.line;
-            obj["candidate_type"] = candidate.candidate_type;
+            obj["file"] = candidate.fileName;
+            obj["function"] = candidate.functionName;
+            obj["line"] = static_cast<int64_t>(candidate.lineNumber);
+            obj["candidate_type"] = candidate.candidateType;
             obj["reason"] = candidate.reason;
-            obj["suggested_patch"] = candidate.suggested_patch;
+            obj["suggested_patch"] = candidate.suggestedPatch;
+            
+            // Add AI analysis if available
+            if (aiAnalysis.isAIEnabled()) {
+                json::Object aiObj;
+                aiObj["quality"] = static_cast<int>(candidate.aiQuality);
+                aiObj["confidence"] = candidate.aiConfidence;
+                aiObj["reasoning"] = candidate.aiReasoning;
+                
+                json::Array transformations;
+                for (const auto &transform : candidate.aiTransformations) {
+                    transformations.push_back(transform);
+                }
+                aiObj["transformations"] = std::move(transformations);
+                
+                json::Array tests;
+                for (const auto &test : candidate.aiTests) {
+                    tests.push_back(test);
+                }
+                aiObj["recommended_tests"] = std::move(tests);
+                
+                obj["ai_analysis"] = std::move(aiObj);
+            }
+            
             jsonCandidates.push_back(std::move(obj));
         }
 
@@ -227,26 +237,28 @@ public:
             return PreservedAnalyses::all();
         }
 
-        // Simple analysis without complex loop analysis for now
+        // Simple analysis without complex loop analysis to avoid crashes
         // Look for basic patterns in the function
         for (BasicBlock &BB : F) {
             for (Instruction &I : BB) {
                 // Look for loops (back edges)
                 if (auto *Br = dyn_cast<BranchInst>(&I)) {
                     if (Br->isConditional()) {
-                        // Found a potential loop - add as candidate
+                        // Try to determine what kind of loop this might be
                         CandidateResult candidate;
                         candidate.file = F.getParent()->getName().str();
                         candidate.function = F.getName().str();
                         
                         // Try to get debug info
-                        auto location = getSourceLocation(&I);
+                        auto location = PatternDetection::getSourceLocation(&I);
                         candidate.file = location.first;
                         candidate.line = location.second;
                         
-                        candidate.candidate_type = "simple_loop";
-                        candidate.reason = "Found conditional branch that may be a loop";
-                        candidate.suggested_patch = "#pragma omp parallel for";
+                        // Use enhanced pattern classification based on surrounding instructions
+                        std::string patternType = classifyLoopPattern(&BB);
+                        candidate.candidate_type = patternType;
+                        candidate.reason = getPatternReason(patternType);
+                        candidate.suggested_patch = PatternDetection::generateOptimalPatch(patternType, nullptr);
                         
                         candidates.push_back(candidate);
                     }
@@ -258,6 +270,50 @@ public:
         exportToJSON();
 
         return PreservedAnalyses::all();
+    }
+
+private:
+    // Classify loop pattern based on surrounding instructions
+    std::string classifyLoopPattern(BasicBlock *BB) {
+        bool hasArrayAccess = false;
+        bool hasArithmetic = false;
+        bool hasFunctionCall = false;
+        bool hasComplexOps = false;
+        
+        // Look at this and nearby basic blocks for patterns
+        for (Instruction &I : *BB) {
+            if (isa<GetElementPtrInst>(&I)) {
+                hasArrayAccess = true;
+            } else if (isa<BinaryOperator>(&I)) {
+                hasArithmetic = true;
+            } else if (isa<CallInst>(&I)) {
+                hasFunctionCall = true;
+            } else if (I.mayHaveSideEffects() && !isa<StoreInst>(&I)) {
+                hasComplexOps = true;
+            }
+        }
+        
+        if (hasFunctionCall || hasComplexOps) {
+            return "risky";
+        } else if (hasArrayAccess && hasArithmetic) {
+            return "vectorizable";
+        } else if (hasArrayAccess) {
+            return "embarrassingly_parallel";
+        } else {
+            return "simple_loop";
+        }
+    }
+    
+    std::string getPatternReason(const std::string& patternType) {
+        if (patternType == "embarrassingly_parallel") {
+            return "Array access with simple indexing detected";
+        } else if (patternType == "vectorizable") {
+            return "Array access with arithmetic operations - good for SIMD";
+        } else if (patternType == "risky") {
+            return "Function calls or complex operations detected";
+        } else {
+            return "Found conditional branch that may be a loop";
+        }
     }
 };
 

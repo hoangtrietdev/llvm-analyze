@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.16)
 
 # LLVM Pass library
-add_library(ParallelCandidatePass MODULE ParallelCandidatePass.cpp)
+add_library(ParallelCandidatePass MODULE 
+    ParallelCandidatePass.cpp
+    PatternDetect.cpp
+    AIEnhancedAnalysis.cpp
+)
 
 # Link against LLVM libraries
 llvm_map_components_to_libnames(llvm_libs support core irreader analysis passes)
