@@ -23,6 +23,7 @@ const XIcon = () => (
 interface FileUploadProps {
   onFileSelect: (file: File) => void;
   onFileRemove: () => void;
+  onExampleSelect?: (exampleName: string) => void;
   selectedFile?: File;
   accept?: string;
   disabled?: boolean;
@@ -59,7 +60,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
           <div className="flex items-center space-x-3">
             <FileIcon />
             <div>
-              <p className="text-sm font-medium text-gray-900">{selectedFile.name}</p>
+              <p className="text-sm font-medium text-gray-200">{selectedFile.name}</p>
               <p className="text-xs text-gray-500">
                 {(selectedFile.size / 1024).toFixed(1)} KB
               </p>
@@ -89,13 +90,13 @@ const FileUpload: React.FC<FileUploadProps> = ({
       <input {...getInputProps()} />
       <UploadIcon />
       <div className="space-y-2">
-        <p className="text-sm font-medium text-gray-900">
+        <p className="text-sm font-medium text-gray-200">
           {isDragActive ? 'Drop your file here' : 'Upload C++ or Python file'}
         </p>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-gray-300">
           Drag & drop or click to browse
         </p>
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-gray-300">
           Supports: {accept}
         </p>
       </div>

@@ -18,12 +18,19 @@ class HybridAnalyzer:
     """
     Hybrid analyzer that combines the precision of LLVM static analysis
     with the intelligence of AI-powered pattern recognition.
+    
+    Enhanced with aggressive filtering and optimization to reduce noise
+    and improve analysis quality.
     """
     
     def __init__(self, llvm_analyzer: Optional[LLVMAnalyzer] = None, 
                  ai_analyzer: Optional[AIAnalyzer] = None):
         self.llvm_analyzer = llvm_analyzer or LLVMAnalyzer()
         self.ai_analyzer = ai_analyzer or AIAnalyzer()
+        
+        # Optimization settings
+        self.max_candidates_for_ai = 15  # Limit AI analysis for cost control
+        self.min_confidence_threshold = 0.3  # Filter low confidence results
         
     async def analyze_file(self, filepath: str, filename: str, 
                           language: str = "cpp") -> List[Dict[str, Any]]:
@@ -87,7 +94,7 @@ class HybridAnalyzer:
                         ai_results: List[Dict[str, Any]], 
                         code_content: str) -> List[Dict[str, Any]]:
         """
-        Intelligently combine LLVM and AI analysis results
+        Intelligently combine LLVM and AI analysis results with optimization
         
         Args:
             llvm_results: Results from LLVM static analysis
@@ -95,56 +102,132 @@ class HybridAnalyzer:
             code_content: Original source code
             
         Returns:
-            Combined and enhanced results
+            Combined, filtered, and prioritized results
         """
-        # Filter out system library results and keep only user code
-        filtered_llvm_results = self._filter_user_code_results(llvm_results)
-        filtered_ai_results = self._filter_user_code_results(ai_results)
+        logger.info(f"Starting result combination: LLVM={len(llvm_results)}, AI={len(ai_results)}")
         
-        logger.info(f"Filtered LLVM results: {len(llvm_results)} -> {len(filtered_llvm_results)}")
-        logger.info(f"Filtered AI results: {len(ai_results)} -> {len(filtered_ai_results)}")
+        # Apply aggressive filtering to LLVM results first  
+        filtered_llvm_results = self._filter_and_prioritize_candidates(llvm_results)
+        filtered_ai_results = self._filter_and_prioritize_candidates(ai_results)
+        
+        logger.info(f"After optimization - LLVM: {len(filtered_llvm_results)}, AI: {len(filtered_ai_results)}")
         
         combined = []
         
         # Start with LLVM results and enhance with AI
         if filtered_llvm_results:
             logger.info("Enhancing LLVM results with AI insights...")
-            enhanced_llvm = self.ai_analyzer.enhance_llvm_results(filtered_llvm_results, code_content)
-            combined.extend(enhanced_llvm)
+            # Only enhance if we have a reasonable number of candidates
+            if len(filtered_llvm_results) <= self.max_candidates_for_ai:
+                enhanced_llvm = self.ai_analyzer.enhance_llvm_results(filtered_llvm_results, code_content)
+                combined.extend(enhanced_llvm)
+            else:
+                # Too many candidates, use LLVM results as-is with basic AI analysis
+                logger.warning(f"Too many LLVM candidates ({len(filtered_llvm_results)}), using basic AI analysis")
+                for result in filtered_llvm_results[:self.max_candidates_for_ai]:
+                    result["ai_analysis"] = {
+                        "classification": "requires_analysis",
+                        "reasoning": "Candidate count exceeded AI analysis limit",
+                        "confidence": 0.5,
+                        "transformations": [],
+                        "tests_recommended": ["Manual verification required"]
+                    }
+                combined.extend(filtered_llvm_results[:self.max_candidates_for_ai])
         
-        # Add unique AI-only findings
-        if filtered_ai_results:
+        # Add unique AI-only findings (if space allows)
+        if filtered_ai_results and len(combined) < self.max_candidates_for_ai:
             logger.info("Adding unique AI discoveries...")
-            for ai_result in filtered_ai_results:
+            remaining_slots = self.max_candidates_for_ai - len(combined)
+            
+            for ai_result in filtered_ai_results[:remaining_slots]:
                 # Check if this line is already covered by LLVM
                 ai_line = ai_result.get("line", 0)
                 already_covered = any(
                     abs(llvm_result.get("line", 0) - ai_line) <= 2  # Within 2 lines
-                    for llvm_result in filtered_llvm_results
+                    for llvm_result in combined
                 )
                 
                 if not already_covered:
                     combined.append(ai_result)
         
-        # Sort by line number for better presentation
-        combined.sort(key=lambda x: x.get("line", 0))
+        # Sort by hybrid priority score
+        combined.sort(key=lambda x: (
+            self._get_priority_score(x),  # Primary: priority score
+            -(x.get("line", 0))          # Secondary: line number (descending)
+        ), reverse=True)
         
         # Add hybrid confidence scoring
         for result in combined:
             result["hybrid_confidence"] = self._calculate_hybrid_confidence(result)
         
-        return combined
+        # Final validation - filter low confidence results
+        validated = [r for r in combined if r.get("hybrid_confidence", 0) >= self.min_confidence_threshold]
+        
+        logger.info(f"Final result: {len(validated)} validated candidates after confidence filtering")
+        return validated
+
+    def _get_priority_score(self, result: Dict[str, Any]) -> float:
+        """Calculate priority score for sorting"""
+        candidate_type = result.get("candidate_type", "")
+        ai_analysis = result.get("ai_analysis", {})
+        ai_classification = ai_analysis.get("classification", "unknown")
+        
+        score = 0.5  # Base score
+        
+        # LLVM type bonuses
+        type_scores = {
+            "vectorizable": 0.9,
+            "embarrassingly_parallel": 0.8, 
+            "reduction": 0.7,
+            "simple_loop": 0.6,
+            "risky": 0.3
+        }
+        score += type_scores.get(candidate_type, 0.0)
+        
+        # AI classification bonuses
+        if ai_classification == "safe_parallel":
+            score += 0.3
+        elif ai_classification == "not_parallel":
+            score -= 0.5
+            
+        return score
     
-    def _filter_user_code_results(self, results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _filter_and_prioritize_candidates(self, results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
-        Filter results to only include user code, excluding system libraries
+        Apply aggressive filtering, deduplication and prioritization to reduce noise
         
         Args:
             results: Raw analysis results
             
         Returns:
-            Filtered results containing only user code
+            Filtered and prioritized results
         """
+        if not results:
+            return []
+        
+        logger.info(f"Starting optimization: {len(results)} raw candidates")
+        
+        # Phase 1: Remove system library noise
+        filtered = self._filter_user_code_results(results)
+        logger.info(f"After system library filtering: {len(filtered)} candidates")
+        
+        # Phase 2: Deduplicate by line and function
+        deduplicated = self._deduplicate_candidates(filtered)
+        logger.info(f"After deduplication: {len(deduplicated)} candidates")
+        
+        # Phase 3: Priority filtering - keep only high-confidence patterns
+        prioritized = self._apply_priority_filtering(deduplicated)
+        logger.info(f"After prioritization: {len(prioritized)} candidates")
+        
+        # Phase 4: Limit total for AI analysis (cost control)
+        if len(prioritized) > self.max_candidates_for_ai:
+            logger.info(f"Limiting to {self.max_candidates_for_ai} highest priority candidates")
+            prioritized = self._rank_and_limit_candidates(prioritized)
+        
+        return prioritized
+
+    def _filter_user_code_results(self, results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Filter results to only include user code, excluding system libraries"""
         if not results:
             return []
         
@@ -154,6 +237,7 @@ class HybridAnalyzer:
             '/opt/homebrew/Cellar/llvm',
             '/usr/include',
             '/System/Library',
+            '/Library/Developer/CommandLineTools',
             'unknown'
         ]
         
@@ -169,10 +253,74 @@ class HybridAnalyzer:
             if line_number <= 0:
                 continue
                 
-            # Keep user code results
             filtered.append(result)
         
         return filtered
+
+    def _deduplicate_candidates(self, results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Remove duplicate candidates based on file, line, and function"""
+        if not results:
+            return []
+        
+        deduplicated = []
+        seen_signatures = set()
+        
+        for result in results:
+            # Create signature for deduplication
+            signature = f"{result.get('file', '')}:{result.get('line', 0)}:{result.get('function', 'unknown')}"
+            
+            if signature not in seen_signatures:
+                seen_signatures.add(signature)
+                deduplicated.append(result)
+        
+        return deduplicated
+
+    def _apply_priority_filtering(self, results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Apply priority filtering to keep only high-quality candidates"""
+        if not results:
+            return []
+        
+        prioritized = []
+        
+        for result in results:
+            candidate_type = result.get("candidate_type", "")
+            reason = result.get("reason", "").lower()
+            
+            # Skip low-confidence or problematic patterns
+            if any(skip_pattern in reason for skip_pattern in [
+                "potential", "maybe", "might be", "could be", "possibly"
+            ]):
+                continue
+            
+            # Prioritize clear patterns
+            if candidate_type in ["vectorizable", "embarrassingly_parallel", "reduction"]:
+                prioritized.append(result)
+            elif candidate_type == "simple_loop" and "independent" in reason:
+                prioritized.append(result)
+            elif candidate_type == "risky" and len(prioritized) < 5:  # Only keep few risky ones
+                prioritized.append(result)
+        
+        return prioritized
+
+    def _rank_and_limit_candidates(self, results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Rank candidates by priority and limit to max count"""
+        if not results:
+            return []
+        
+        # Priority ranking system
+        priority_order = {
+            "vectorizable": 1,
+            "embarrassingly_parallel": 2, 
+            "reduction": 3,
+            "simple_loop": 4,
+            "risky": 5
+        }
+        
+        # Sort by priority
+        results.sort(key=lambda x: priority_order.get(x.get("candidate_type", ""), 6))
+        
+        # Return top candidates
+        return results[:self.max_candidates_for_ai]
     
     def _calculate_hybrid_confidence(self, result: Dict[str, Any]) -> float:
         """

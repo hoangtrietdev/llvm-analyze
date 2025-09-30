@@ -190,12 +190,13 @@ fi
 # Run AI analysis if API key is available
 echo ""
 if [[ -n "$GROQ_API_KEY" ]]; then
-    print_status "Running AI analysis with Groq..."
+    print_status "Running optimized AI analysis with Groq..."
     echo "🤖 Model: ${GROQ_MODEL:-llama2-70b-4096}"
     echo "🔗 API: ${GROQ_API_URL:-https://api.groq.com/openai/v1/chat/completions}"
+    echo "🚀 Optimization: Aggressive filtering and deduplication enabled"
     
     if python3 python/groq_client.py "$COMBINED_RESULTS" -o build/out/results_with_ai.json; then
-        print_success "AI analysis completed!"
+        print_success "Optimized AI analysis completed!"
         
         # Show AI analysis summary
         if command -v jq &>/dev/null; then

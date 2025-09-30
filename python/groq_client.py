@@ -32,11 +32,13 @@ class GroqClient:
         """Create a single prompt for batch analysis of multiple parallelization candidates"""
         
         # Limit batch size to avoid overwhelming the API
-        batch_size = min(len(candidates), 50)  # Process max 50 at a time
+        batch_size = min(len(candidates), 20)  # Reduce batch size for better accuracy
         candidates = candidates[:batch_size]
         
         candidates_summary = []
         for i, candidate in enumerate(candidates, 1):
+            # Extract more context for better analysis
+            context = candidate.get('context', '')[:200]  # First 200 chars
             candidates_summary.append(f"""
 **Candidate {i}:**
 - File: {candidate.get('file', 'unknown')}
@@ -44,38 +46,47 @@ class GroqClient:
 - Line: {candidate.get('line', 0)}
 - Type: {candidate.get('candidate_type', 'unknown')}
 - Reason: {candidate.get('reason', 'No reason provided')}
+- Code Context: {context if context else 'No context available'}
 - Suggested: {candidate.get('suggested_patch', 'No suggestion')}""")
         
         candidates_text = "\n".join(candidates_summary)
         
-        prompt = f"""You are an expert in parallel computing and code optimization. Analyze these {len(candidates)} parallelization candidates and classify each one.
+        prompt = f"""You are an expert in parallel computing, data races, and OpenMP optimization. 
+
+TASK: Analyze {len(candidates)} parallelization candidates. Focus on:
+1. DATA RACE DETECTION: Look for shared variable access patterns
+2. DEPENDENCY ANALYSIS: Check for loop-carried dependencies  
+3. ALGORITHM PATTERNS: Identify embarrassingly parallel, reduction, or complex patterns
+4. LOGIC ISSUES: Flag non-parallel code incorrectly marked as parallel
 
 {candidates_text}
 
-For each candidate, provide analysis in this exact JSON format:
+CRITICAL ANALYSIS RULES:
+- If code shows obvious data races or dependencies → "not_parallel"
+- If code is clearly non-parallel logic (I/O, sequential algorithms) → "not_parallel" 
+- If code is simple independent operations → "safe_parallel"
+- If code needs runtime dependency checking → "requires_runtime_check"
+
+Return EXACTLY this JSON format:
 {{
   "candidate_1": {{
-    "classification": "safe_parallel",
-    "reasoning": "Brief explanation of why this classification was chosen",
+    "classification": "safe_parallel|requires_runtime_check|not_parallel|logic_issue",
+    "reasoning": "Specific technical reason (data race, dependency, algorithm type)",
     "confidence": 0.85,
-    "transformations": ["Specific code transformation suggestions"],
-    "tests_recommended": ["Specific tests to verify parallel safety"]
+    "transformations": ["Specific OpenMP/parallel suggestions"],
+    "tests_recommended": ["Specific validation tests"],
+    "logic_issue_type": "none|false_positive|non_parallel_algorithm|data_race"
   }},
-  "candidate_2": {{
-    "classification": "requires_runtime_check",
-    "reasoning": "Brief explanation",
-    "confidence": 0.65,
-    "transformations": ["Suggestions"],
-    "tests_recommended": ["Tests"]
-  }}
+  "candidate_2": {{ ... }}
 }}
 
-Classification options:
-- "safe_parallel": Can be safely parallelized with minimal risk
-- "requires_runtime_check": Might be parallelizable but needs careful analysis
-- "not_parallel": Should not be parallelized
+Classifications:
+- "safe_parallel": Independent operations, no shared state, trivially parallelizable
+- "requires_runtime_check": Potential parallelizable but needs dependency analysis
+- "not_parallel": Has data races, dependencies, or inherently sequential 
+- "logic_issue": False positive - not actually a parallel opportunity
 
-CRITICAL: Return ONLY the JSON object, no explanation, no thinking process, no other text."""
+Return ONLY the JSON object."""
         return prompt
 
     def parse_batch_response(self, response_text: str, num_candidates: int) -> List[Dict[str, Any]]:
@@ -128,6 +139,12 @@ CRITICAL: Return ONLY the JSON object, no explanation, no thinking process, no o
                         analysis['reasoning'] = 'Incomplete analysis from AI'
                     if 'confidence' not in analysis:
                         analysis['confidence'] = 0.0
+                    if 'transformations' not in analysis:
+                        analysis['transformations'] = []
+                    if 'tests_recommended' not in analysis:
+                        analysis['tests_recommended'] = []
+                    if 'logic_issue_type' not in analysis:
+                        analysis['logic_issue_type'] = 'none'
                     if 'transformations' not in analysis:
                         analysis['transformations'] = []
                     if 'tests_recommended' not in analysis:
@@ -203,6 +220,92 @@ CRITICAL: Return ONLY the JSON object, no explanation, no thinking process, no o
             print(f"API request failed: {e}")
             return '{"candidate_1": {"classification": "error", "reasoning": "API request failed", "confidence": 0.0, "transformations": [], "tests_recommended": []}}'
 
+    def filter_and_deduplicate_candidates(self, candidates: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Apply aggressive filtering and deduplication to reduce noise"""
+        if not candidates:
+            return []
+        
+        print(f"Original candidates: {len(candidates)}")
+        
+        # Phase 1: Remove system library noise
+        system_paths = [
+            '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform',
+            '/opt/homebrew/Cellar/llvm',
+            '/usr/include',
+            '/System/Library',
+            '/Library/Developer/CommandLineTools',
+            'unknown'
+        ]
+        
+        filtered = []
+        for candidate in candidates:
+            file_path = candidate.get("file", "")
+            line_number = candidate.get("line", 0)
+            
+            # Skip system libraries
+            if any(sys_path in file_path for sys_path in system_paths):
+                continue
+            
+            # Skip invalid line numbers
+            if line_number <= 0:
+                continue
+                
+            filtered.append(candidate)
+        
+        print(f"After system library filtering: {len(filtered)}")
+        
+        # Phase 2: Deduplicate by line and function
+        deduplicated = []
+        seen_signatures = set()
+        
+        for candidate in filtered:
+            # Create signature for deduplication
+            signature = f"{candidate.get('file', '')}:{candidate.get('line', 0)}:{candidate.get('function', 'unknown')}"
+            
+            if signature not in seen_signatures:
+                seen_signatures.add(signature)
+                deduplicated.append(candidate)
+        
+        print(f"After deduplication: {len(deduplicated)}")
+        
+        # Phase 3: Priority filtering - keep only high-confidence patterns
+        prioritized = []
+        for candidate in deduplicated:
+            candidate_type = candidate.get("candidate_type", "")
+            reason = candidate.get("reason", "").lower()
+            
+            # Skip low-confidence or problematic patterns
+            if any(skip_pattern in reason for skip_pattern in [
+                "potential", "maybe", "might be", "could be", "possibly"
+            ]):
+                continue
+            
+            # Prioritize clear patterns
+            if candidate_type in ["vectorizable", "embarrassingly_parallel", "reduction"]:
+                prioritized.append(candidate)
+            elif candidate_type == "simple_loop" and "independent" in reason:
+                prioritized.append(candidate)
+            elif candidate_type == "risky" and len(prioritized) < 10:  # Only keep few risky ones
+                prioritized.append(candidate)
+        
+        print(f"After prioritization: {len(prioritized)}")
+        
+        # Phase 4: Limit total for cost control (max 15 candidates)
+        if len(prioritized) > 15:
+            print(f"Limiting to 15 highest priority candidates (was {len(prioritized)})")
+            # Sort by priority and take top 15
+            priority_order = {
+                "vectorizable": 1,
+                "embarrassingly_parallel": 2, 
+                "reduction": 3,
+                "simple_loop": 4,
+                "risky": 5
+            }
+            prioritized.sort(key=lambda x: priority_order.get(x.get("candidate_type", ""), 6))
+            prioritized = prioritized[:15]
+        
+        return prioritized
+
     def analyze_candidates(self, input_file: str, output_file: str):
         """Process all candidates with batch AI analysis"""
         
@@ -218,10 +321,17 @@ CRITICAL: Return ONLY the JSON object, no explanation, no thinking process, no o
             print("No candidates found in input file.")
             return
         
-        print(f"Processing {len(candidates)} candidates in batches...")
+        # Apply filtering and deduplication  
+        candidates = self.filter_and_deduplicate_candidates(candidates)
+        
+        if not candidates:
+            print("No candidates remaining after filtering.")
+            return
+        
+        print(f"Processing {len(candidates)} filtered candidates in batches...")
         
         enhanced_candidates = []
-        batch_size = 50  # Process 50 candidates per API call
+        batch_size = 20  # Smaller batches for better accuracy
         
         # Process candidates in batches
         for batch_start in range(0, len(candidates), batch_size):
@@ -233,8 +343,8 @@ CRITICAL: Return ONLY the JSON object, no explanation, no thinking process, no o
             
             # Add rate limiting delay between batches
             if batch_num > 1:
-                print("  Waiting 30 seconds to avoid rate limits...")
-                time.sleep(30)  # 30 second delay between batches
+                print("  Waiting 20 seconds to avoid rate limits...")
+                time.sleep(20)  # Reduced delay since fewer batches
             
             # Create batch analysis prompt
             prompt = self.create_batch_analysis_prompt(batch)
@@ -251,15 +361,102 @@ CRITICAL: Return ONLY the JSON object, no explanation, no thinking process, no o
                 enhanced_candidate['ai_analysis'] = analysis
                 enhanced_candidates.append(enhanced_candidate)
         
+        # Post-process and validate results
+        validated_candidates = self.validate_and_rank_results(enhanced_candidates)
+        
         # Write enhanced results
         try:
             with open(output_file, 'w') as f:
-                json.dump(enhanced_candidates, f, indent=2)
+                json.dump(validated_candidates, f, indent=2)
             print(f"Enhanced results written to {output_file}")
             total_calls = (len(candidates) + batch_size - 1) // batch_size
-            print(f"✅ Efficiency: Made {total_calls} API calls instead of {len(candidates)} (saved {len(candidates) - total_calls} calls)")
+            original_count = len([c for c in enhanced_candidates])  # Original count before validation
+            print(f"✅ Efficiency: Made {total_calls} API calls, processed {original_count} candidates")
+            print(f"✅ Quality: {len(validated_candidates)} high-quality candidates after validation")
+            
+            # Print summary
+            self.print_analysis_summary(validated_candidates)
+            
         except IOError as e:
             print(f"Error writing output file {output_file}: {e}")
+
+    def validate_and_rank_results(self, candidates: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Validate AI results and rank by quality"""
+        if not candidates:
+            return []
+        
+        validated = []
+        for candidate in candidates:
+            ai_analysis = candidate.get('ai_analysis', {})
+            classification = ai_analysis.get('classification', 'unknown')
+            confidence = ai_analysis.get('confidence', 0.0)
+            logic_issue = ai_analysis.get('logic_issue_type', 'none')
+            
+            # Filter out logic issues and low confidence
+            if logic_issue != 'none' or classification == 'logic_issue':
+                continue
+                
+            if confidence < 0.3:  # Skip very low confidence results
+                continue
+                
+            # Calculate final score for ranking
+            score = confidence
+            if classification == 'safe_parallel':
+                score += 0.2
+            elif classification == 'not_parallel':
+                score -= 0.3
+                
+            candidate['final_score'] = score
+            validated.append(candidate)
+        
+        # Sort by final score (highest first)
+        validated.sort(key=lambda x: x.get('final_score', 0), reverse=True)
+        
+        return validated
+
+    def print_analysis_summary(self, candidates: List[Dict[str, Any]]):
+        """Print a helpful summary of analysis results"""
+        if not candidates:
+            print("\n❌ No valid parallelization candidates found after validation.")
+            return
+        
+        classifications = {}
+        total_confidence = 0
+        
+        for candidate in candidates:
+            ai_analysis = candidate.get('ai_analysis', {})
+            classification = ai_analysis.get('classification', 'unknown')
+            confidence = ai_analysis.get('confidence', 0.0)
+            
+            classifications[classification] = classifications.get(classification, 0) + 1
+            total_confidence += confidence
+        
+        avg_confidence = total_confidence / len(candidates) if candidates else 0
+        
+        print(f"\n📊 AI Analysis Summary:")
+        print(f"Total candidates: {len(candidates)}")
+        print(f"Average confidence: {avg_confidence:.2f}")
+        print("By classification:")
+        for classification, count in classifications.items():
+            print(f"  {classification}: {count}")
+        
+        # Show top recommendations
+        safe_parallel = [c for c in candidates 
+                        if c.get('ai_analysis', {}).get('classification') == 'safe_parallel']
+        if safe_parallel:
+            print(f"\n✅ Top {min(3, len(safe_parallel))} safe parallelization opportunities:")
+            for i, candidate in enumerate(safe_parallel[:3], 1):
+                func = candidate.get('function', 'unknown')
+                line = candidate.get('line', 0)
+                confidence = candidate.get('ai_analysis', {}).get('confidence', 0)
+                print(f"  {i}. {func} (line {line}) - confidence: {confidence:.2f}")
+
+        # Show logic issues found  
+        issues = [c for c in candidates 
+                 if c.get('ai_analysis', {}).get('classification') == 'not_parallel']
+        if issues:
+            print(f"\n❌ Logic issues detected ({len(issues)} candidates marked not_parallel)")
+            print("  These were likely false positives from LLVM analysis")
 
 def main():
     parser = argparse.ArgumentParser(description='Analyze parallelization candidates with Groq AI')

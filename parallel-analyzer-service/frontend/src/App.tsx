@@ -112,70 +112,71 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-screen bg-gray-900 flex flex-col overflow-hidden">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <h1 className="text-xl font-bold text-gray-900">
-                🚀 Parallel Code Analyzer
-              </h1>
-              <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                AI-Enhanced LLVM Analysis
-              </span>
+      <header className="bg-gray-800 border-b border-gray-700 flex-shrink-0 z-10">
+        <div className="flex items-center justify-between h-14 px-4">
+          <div className="flex items-center space-x-4">
+            <h1 className="text-lg font-bold text-white">
+              🚀 Parallel Code Analyzer
+            </h1>
+            <span className="text-xs text-gray-300 bg-gray-700 px-2 py-1 rounded">
+              AI-Enhanced LLVM Analysis
+            </span>
+          </div>
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <label className="text-xs text-gray-300">Language:</label>
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value as 'cpp' | 'python')}
+                className="bg-gray-700 border border-gray-600 rounded px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option value="cpp">C++</option>
+                <option value="python">Python</option>
+              </select>
             </div>
-            <div className="text-sm text-gray-500">
-              Powered by AI + LLVM Static Analysis
-            </div>
+            <button
+              onClick={handleAnalyze}
+              disabled={isAnalyzing || !code.trim()}
+              className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed space-x-1 transition-colors"
+            >
+              {isAnalyzing && (
+                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+              )}
+              <span>{isAnalyzing ? 'Analyzing...' : 'Analyze Code'}</span>
+            </button>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Panel - Code Input */}
-          <div className="space-y-6">
-            {/* Input Method Tabs */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Input Code</h2>
-                <div className="flex items-center space-x-2">
-                  <label className="text-sm text-gray-600">Language:</label>
-                  <select
-                    value={language}
-                    onChange={(e) => setLanguage(e.target.value as 'cpp' | 'python')}
-                    className="border border-gray-300 rounded px-2 py-1 text-sm"
-                  >
-                    <option value="cpp">C++</option>
-                    <option value="python">Python</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* File Upload */}
-              <div className="mb-4">
-                <FileUpload
-                  onFileSelect={handleFileSelect}
-                  onFileRemove={handleFileRemove}
-                  selectedFile={selectedFile}
-                  disabled={isAnalyzing}
-                />
-              </div>
-
+      {/* Main Content - Two Panel Layout */}
+      <div className="flex-1 flex min-h-0">
+        {/* Left Panel - Code Input & Editor */}
+        <div className="w-1/2 bg-gray-800 border-r border-gray-700 flex flex-col min-h-0">
+          {/* File Upload Section */}
+          <div className="flex-shrink-0 bg-gray-750 border-b border-gray-700 p-3">
+            <div className="space-y-3">
+              <FileUpload
+                onFileSelect={handleFileSelect}
+                onFileRemove={handleFileRemove}
+                selectedFile={selectedFile}
+                onExampleSelect={handleExampleSelect}
+              />
+              
               {/* Example Selection */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div>
+                <label className="block text-xs font-medium text-gray-300 mb-1">
                   Or try an example:
                 </label>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1">
                   {codeExamples
                     .filter(ex => ex.language === language)
                     .map((example) => (
                       <button
                         key={example.name}
                         onClick={() => handleExampleSelect(example.name)}
-                        className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"
+                        className="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                         disabled={isAnalyzing}
                       >
                         {example.name}
@@ -184,23 +185,19 @@ function App() {
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Code Editor */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Code Editor</h3>
-                <button
-                  onClick={handleAnalyze}
-                  disabled={isAnalyzing || !code.trim()}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
-                >
-                  {isAnalyzing && (
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  )}
-                  <span>{isAnalyzing ? 'Analyzing...' : 'Analyze Code'}</span>
-                </button>
-              </div>
-
+          {/* Code Editor Section */}
+          <div className="flex-1 flex flex-col min-h-0">
+            <div className="flex-shrink-0 bg-gray-750 border-b border-gray-700 px-4 py-2 flex items-center justify-between">
+              <h3 className="text-sm font-medium text-gray-200">Code Editor</h3>
+              {analysisTime && (
+                <div className="text-xs text-gray-400">
+                  Analysis: {analysisTime.toFixed(2)}s
+                </div>
+              )}
+            </div>
+            <div className="flex-1 overflow-hidden">
               <CodeEditor
                 ref={codeEditorRef}
                 code={code}
@@ -209,18 +206,32 @@ function App() {
                 highlightedLines={highlightedLines}
                 onLineClick={handleResultClick}
               />
+            </div>
+          </div>
+        </div>
 
-              {analysisTime && (
-                <div className="mt-2 text-xs text-gray-500">
-                  Analysis completed in {analysisTime.toFixed(2)}s
-                </div>
-              )}
+        {/* Right Panel - Analysis Results */}
+        <div className="w-1/2 bg-gray-800 flex flex-col min-h-0">
+          {/* Results Header */}
+          <div className="flex-shrink-0 bg-gray-750 border-b border-gray-600 p-3 shadow-sm">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-medium text-gray-200 flex items-center space-x-2">
+                <span>Analysis Results</span>
+                {results.length > 0 && (
+                  <span className="bg-blue-600 text-blue-100 text-xs px-2 py-0.5 rounded-full">
+                    {results.length}
+                  </span>
+                )}
+              </h3>
+              <span className="text-xs text-gray-400">
+                Click on results to jump to line
+              </span>
             </div>
           </div>
 
-          {/* Right Panel - Results */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg shadow p-6 max-h-[100vh] overflow-y-auto">
+          {/* Scrollable Results Content */}
+          <div className="flex-1 overflow-y-auto bg-gray-800 results-scroll">
+            <div className="p-4">
               <AnalysisResults
                 results={results}
                 onResultHover={handleResultHover}
@@ -228,13 +239,37 @@ function App() {
               />
 
               {error && (
-                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <div className="flex items-center">
-                    <div className="text-red-400 mr-2">⚠️</div>
+                <div className="mt-4 p-3 bg-red-900 border border-red-700 rounded">
+                  <div className="flex items-start">
+                    <div className="text-red-400 mr-2 mt-0.5">⚠️</div>
                     <div>
-                      <h4 className="text-sm font-medium text-red-800">Analysis Failed</h4>
-                      <p className="text-sm text-red-700 mt-1">{error}</p>
+                      <h4 className="text-sm font-medium text-red-200">Analysis Failed</h4>
+                      <p className="text-xs text-red-300 mt-1">{error}</p>
                     </div>
+                  </div>
+                </div>
+              )}
+
+              {!isAnalyzing && results.length === 0 && !error && code.trim() && (
+                <div className="text-center py-12">
+                  <div className="text-gray-400 text-sm mb-2">🔍</div>
+                  <div className="text-gray-300 text-sm">
+                    No parallelization opportunities found in this code.
+                  </div>
+                  <div className="text-gray-400 text-xs mt-1">
+                    Try uploading a different file or use one of the examples.
+                  </div>
+                </div>
+              )}
+
+              {!code.trim() && (
+                <div className="text-center py-12">
+                  <div className="text-gray-400 text-4xl mb-4">📝</div>
+                  <div className="text-gray-200 text-sm font-medium mb-2">
+                    Welcome to Parallel Code Analyzer
+                  </div>
+                  <div className="text-gray-400 text-xs">
+                    Upload a file or write code to start analysis
                   </div>
                 </div>
               )}

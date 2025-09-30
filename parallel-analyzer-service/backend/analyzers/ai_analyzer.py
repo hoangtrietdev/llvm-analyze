@@ -24,10 +24,17 @@ try:
     from python.source_context_extractor import SourceContextExtractor  
     from python.ai_source_analyzer import AISourceAnalyzer
 except ImportError as e:
-    logging.warning(f"Could not import existing AI modules: {e}")
+    logging.info(f"Using simplified AI client instead of full modules: {e}")
     GroqClient = None
     SourceContextExtractor = None
     AISourceAnalyzer = None
+    
+# Fallback to simplified client
+try:
+    from simple_groq_client import SimpleGroqClient
+    SimpleGroqAvailable = True
+except ImportError:
+    SimpleGroqAvailable = False
 
 logger = logging.getLogger(__name__)
 
@@ -42,32 +49,48 @@ class AIAnalyzer:
         self.groq_client = None
         self.source_extractor = None
         self.ai_source_analyzer = None
+        self.simple_client = None
         
-        # Initialize AI components if available
+        # Try full AI components first
         if GroqClient and SourceContextExtractor and AISourceAnalyzer:
             try:
                 self.groq_client = GroqClient()
                 self.source_extractor = SourceContextExtractor()
                 self.ai_source_analyzer = AISourceAnalyzer(self.groq_client)
-                logger.info("AI analyzer initialized successfully")
+                logger.info("Full AI analyzer initialized successfully")
             except Exception as e:
-                logger.warning(f"Failed to initialize AI components: {e}")
+                logger.warning(f"Failed to initialize full AI components: {e}")
+        
+        # Fallback to simplified client
+        if not self.groq_client and SimpleGroqAvailable:
+            try:
+                self.simple_client = SimpleGroqClient()
+                if self.simple_client.is_available():
+                    logger.info("Simplified AI client initialized successfully")
+                else:
+                    logger.warning("Groq API key not available for simplified client")
+            except Exception as e:
+                logger.warning(f"Failed to initialize simplified client: {e}")
     
     def is_available(self) -> bool:
         """Check if AI analyzer is available with proper API access"""
-        if not self.groq_client:
-            return False
+        # Check full client first
+        if self.groq_client:
+            try:
+                test_result = self.groq_client.analyze_batch([{
+                    "code": "int x = 1;",
+                    "function": "test", 
+                    "line": 1
+                }])
+                return len(test_result) > 0
+            except Exception:
+                pass
         
-        try:
-            # Test API connection with a simple request
-            test_result = self.groq_client.analyze_batch([{
-                "code": "int x = 1;",
-                "function": "test",
-                "line": 1
-            }])
-            return len(test_result) > 0
-        except Exception:
-            return False
+        # Check simplified client
+        if self.simple_client:
+            return self.simple_client.is_available()
+        
+        return False
     
     def analyze_code_content(self, code: str, filename: str, language: str = "cpp") -> List[Dict[str, Any]]:
         """
@@ -246,7 +269,7 @@ class AIAnalyzer:
     def enhance_llvm_results(self, llvm_results: List[Dict[str, Any]], 
                            code_content: str) -> List[Dict[str, Any]]:
         """
-        Enhance LLVM analysis results with AI insights
+        Enhance LLVM analysis results with AI insights using optimized batch processing
         
         Args:
             llvm_results: Results from LLVM static analysis
@@ -264,46 +287,264 @@ class AIAnalyzer:
                         "reasoning": "AI enhancement not available",
                         "confidence": 0.5,
                         "transformations": [],
-                        "tests_recommended": ["Manual verification required"]
+                        "tests_recommended": ["Manual verification required"],
+                        "logic_issue_type": "none"
                     }
             return llvm_results
         
         try:
-            # Extract source context for each LLVM result
-            enhanced_results = []
+            logger.info(f"Enhancing {len(llvm_results)} LLVM results with optimized AI analysis")
+            
+            # Prepare batch for AI analysis with context
+            ai_candidates = []
+            lines = code_content.split('\n')
             
             for result in llvm_results:
-                try:
-                    # Get additional context from source code
-                    line_num = result.get("line", 0)
-                    if line_num > 0:
-                        lines = code_content.split('\n')
-                        context = self._extract_statement_context(lines, line_num - 1, 8)
-                        
-                        # Analyze with AI
-                        ai_candidate = {
-                            "code": context,
-                            "function": result.get("function", "unknown"),
-                            "line": line_num,
-                            "filename": result.get("file", "unknown")
-                        }
-                        
-                        ai_result = self.ai_source_analyzer.analyze_source_code_batch([ai_candidate])
-                        
-                        if ai_result and len(ai_result) > 0:
-                            # Merge LLVM and AI results
-                            enhanced_result = result.copy()
-                            enhanced_result["ai_analysis"] = ai_result[0].get("ai_analysis", {})
-                            enhanced_results.append(enhanced_result)
-                        else:
-                            enhanced_results.append(result)
-                            
-                except Exception as e:
-                    logger.warning(f"Failed to enhance result at line {result.get('line', 0)}: {e}")
-                    enhanced_results.append(result)
+                line_num = result.get("line", 0)
+                if line_num > 0 and line_num <= len(lines):
+                    # Extract richer context for AI analysis
+                    context = self._extract_statement_context(lines, line_num - 1, 10)
+                    
+                    ai_candidates.append({
+                        "file": result.get("file", "unknown"),
+                        "function": result.get("function", "unknown"),
+                        "line": line_num,
+                        "candidate_type": result.get("candidate_type", "unknown"),
+                        "reason": result.get("reason", ""),
+                        "context": context[:500],  # Limit context for API efficiency
+                        "suggested_patch": result.get("suggested_patch", "")
+                    })
+            
+            if not ai_candidates:
+                return llvm_results
+            
+            # Use AI analysis (simplified or full client)
+            enhanced_candidates = []
+            if self.simple_client and self.simple_client.is_available():
+                logger.info("Using simplified AI client for analysis")
+                enhanced_candidates = self.simple_client.analyze_candidates_batch(ai_candidates)
+            else:
+                logger.info("Using optimized AI analysis fallback")
+                enhanced_candidates = self._enhance_with_optimized_ai(ai_candidates)
+            
+        # Merge results with comparison metadata
+            enhanced_results = []
+            for i, result in enumerate(llvm_results):
+                enhanced_result = result.copy()
+                
+                # Add LLVM analysis source
+                enhanced_result["llvm_analysis"] = {
+                    "candidate_type": result.get("candidate_type", "unknown"),
+                    "reason": result.get("reason", ""),
+                    "confidence": self._estimate_llvm_confidence(result.get("candidate_type", "")),
+                    "analysis_source": "llvm_static"
+                }
+                
+                if i < len(enhanced_candidates):
+                    ai_analysis = enhanced_candidates[i]
+                    ai_analysis["analysis_source"] = "ai_llm"  # Ensure source is marked
+                    enhanced_result["ai_analysis"] = ai_analysis
+                    
+                    # Add comparison metadata
+                    enhanced_result["analysis_comparison"] = {
+                        "llvm_classification": result.get("candidate_type", "unknown"),
+                        "ai_classification": ai_analysis.get("classification", "unknown"),
+                        "agreement": self._check_agreement(
+                            result.get("candidate_type", ""), 
+                            ai_analysis.get("classification", "")
+                        ),
+                        "logic_issue_detected": ai_analysis.get("logic_issue_type", "none") != "none",
+                        "confidence_boost": ai_analysis.get("confidence", 0.5) > 0.7
+                    }
+                else:
+                    # Fallback for unprocessed results
+                    enhanced_result["ai_analysis"] = {
+                        "classification": "requires_analysis",
+                        "reasoning": "Not processed by AI due to batch limits",
+                        "confidence": 0.5,
+                        "transformations": [],
+                        "tests_recommended": ["Manual verification required"],
+                        "logic_issue_type": "none",
+                        "analysis_source": "fallback"
+                    }
+                    enhanced_result["analysis_comparison"] = {
+                        "llvm_classification": result.get("candidate_type", "unknown"),
+                        "ai_classification": "not_analyzed",
+                        "agreement": "unknown",
+                        "logic_issue_detected": False,
+                        "confidence_boost": False
+                    }
+                enhanced_results.append(enhanced_result)
             
             return enhanced_results
             
         except Exception as e:
             logger.error(f"AI enhancement failed: {e}")
             return llvm_results
+
+    def _estimate_llvm_confidence(self, candidate_type: str) -> float:
+        """Estimate confidence for LLVM analysis based on type"""
+        confidence_map = {
+            "vectorizable": 0.8,
+            "embarrassingly_parallel": 0.9,
+            "reduction": 0.7,
+            "simple_loop": 0.6,
+            "risky": 0.3
+        }
+        return confidence_map.get(candidate_type, 0.5)
+
+    def _check_agreement(self, llvm_type: str, ai_classification: str) -> str:
+        """Check agreement between LLVM and AI analysis"""
+        # Map LLVM types to expected AI classifications
+        expected_ai = {
+            "vectorizable": "safe_parallel",
+            "embarrassingly_parallel": "safe_parallel", 
+            "reduction": "safe_parallel",
+            "simple_loop": "requires_runtime_check",
+            "risky": "not_parallel"
+        }
+        
+        expected = expected_ai.get(llvm_type, "unknown")
+        if expected == ai_classification:
+            return "agree"
+        elif ai_classification == "logic_issue" or ai_classification == "not_parallel":
+            return "ai_flags_issue"
+        else:
+            return "disagree"
+
+    def _enhance_with_optimized_ai(self, candidates: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Use the same optimized AI analysis as CLI system"""
+        try:
+            # Create optimized prompt similar to CLI groq_client
+            batch_size = min(len(candidates), 10)  # Smaller for web service
+            candidates = candidates[:batch_size]
+            
+            prompt = f"""You are an expert in parallel computing, data races, and OpenMP optimization. 
+
+TASK: Analyze {len(candidates)} parallelization candidates. Focus on:
+1. DATA RACE DETECTION: Look for shared variable access patterns
+2. DEPENDENCY ANALYSIS: Check for loop-carried dependencies  
+3. ALGORITHM PATTERNS: Identify embarrassingly parallel, reduction, or complex patterns
+4. LOGIC ISSUES: Flag non-parallel code incorrectly marked as parallel
+
+"""
+            
+            for i, candidate in enumerate(candidates, 1):
+                prompt += f"""
+**Candidate {i}:**
+- File: {candidate.get('file', 'unknown')}
+- Function: {candidate.get('function', 'unknown')}
+- Line: {candidate.get('line', 0)}
+- Type: {candidate.get('candidate_type', 'unknown')}
+- Reason: {candidate.get('reason', 'No reason provided')}
+- Code Context: {candidate.get('context', 'No context available')[:300]}
+- Suggested: {candidate.get('suggested_patch', 'No suggestion')}
+"""
+            
+            prompt += f"""
+
+CRITICAL ANALYSIS RULES:
+- If code shows obvious data races or dependencies → "not_parallel"
+- If code is clearly non-parallel logic (I/O, sequential algorithms) → "not_parallel" 
+- If code is simple independent operations → "safe_parallel"
+- If code needs runtime dependency checking → "requires_runtime_check"
+
+Return EXACTLY this JSON format:
+{{
+  "candidate_1": {{
+    "classification": "safe_parallel|requires_runtime_check|not_parallel|logic_issue",
+    "reasoning": "Specific technical reason (data race, dependency, algorithm type)",
+    "confidence": 0.85,
+    "transformations": ["Specific OpenMP/parallel suggestions"],
+    "tests_recommended": ["Specific validation tests"],
+    "logic_issue_type": "none|false_positive|non_parallel_algorithm|data_race"
+  }},
+  "candidate_2": {{ ... }}
+}}
+
+Classifications:
+- "safe_parallel": Independent operations, no shared state, trivially parallelizable
+- "requires_runtime_check": Potential parallelizable but needs dependency analysis
+- "not_parallel": Has data races, dependencies, or inherently sequential 
+- "logic_issue": False positive - not actually a parallel opportunity
+
+Return ONLY the JSON object."""
+            
+            # Call AI API
+            if hasattr(self.groq_client, 'call_groq_api'):
+                ai_response_text = self.groq_client.call_groq_api(prompt)
+                
+                # Parse response
+                import json
+                import re
+                
+                # Clean response
+                response_text = ai_response_text.strip()
+                response_text = re.sub(r'<think>.*?</think>', '', response_text, flags=re.DOTALL)
+                response_text = response_text.strip()
+                
+                # Find JSON
+                start_idx = response_text.find('{')
+                if start_idx == -1:
+                    raise ValueError("No JSON found in AI response")
+                
+                # Find matching closing brace
+                brace_count = 0
+                end_idx = -1
+                for i, char in enumerate(response_text[start_idx:], start_idx):
+                    if char == '{':
+                        brace_count += 1
+                    elif char == '}':
+                        brace_count -= 1
+                        if brace_count == 0:
+                            end_idx = i
+                            break
+                
+                if end_idx == -1:
+                    raise ValueError("No valid JSON end found")
+                
+                json_text = response_text[start_idx:end_idx+1]
+                response_data = json.loads(json_text)
+                
+                # Extract analyses
+                analyses = []
+                for i in range(1, len(candidates) + 1):
+                    candidate_key = f"candidate_{i}"
+                    if candidate_key in response_data:
+                        analysis = response_data[candidate_key]
+                        
+                        # Ensure required fields
+                        analysis.setdefault('classification', 'requires_runtime_check')
+                        analysis.setdefault('reasoning', 'AI analysis incomplete')
+                        analysis.setdefault('confidence', 0.5)
+                        analysis.setdefault('transformations', [])
+                        analysis.setdefault('tests_recommended', [])
+                        analysis.setdefault('logic_issue_type', 'none')
+                        
+                        analyses.append(analysis)
+                    else:
+                        analyses.append({
+                            "classification": "error",
+                            "reasoning": "AI analysis not provided",
+                            "confidence": 0.0,
+                            "transformations": [],
+                            "tests_recommended": [],
+                            "logic_issue_type": "none"
+                        })
+                
+                return analyses
+                
+            else:
+                raise AttributeError("Groq client not available")
+                
+        except Exception as e:
+            logger.error(f"Optimized AI analysis failed: {e}")
+            # Return fallback analyses
+            return [{
+                "classification": "error",
+                "reasoning": f"AI analysis failed: {str(e)}",
+                "confidence": 0.0,
+                "transformations": [],
+                "tests_recommended": [],
+                "logic_issue_type": "none"
+            } for _ in candidates]

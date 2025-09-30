@@ -108,14 +108,14 @@ const CodeEditor = React.forwardRef<CodeEditorRef, CodeEditorProps>((
   const editorLanguage = language === 'cpp' ? 'cpp' : 'python';
 
   return (
-    <div className="monaco-editor-container border border-gray-300 rounded-lg overflow-hidden">
+    <div className="monaco-editor-container h-full border-0 overflow-hidden">
       <Editor
-        height="500px"
+        height="100%"
         language={editorLanguage}
         value={code}
         onChange={(value: string | undefined) => onChange(value || '')}
         onMount={handleEditorDidMount}
-        theme="vs"
+        theme="vs-dark"
         options={{
           selectOnLineNumbers: true,
           roundedSelection: false,
