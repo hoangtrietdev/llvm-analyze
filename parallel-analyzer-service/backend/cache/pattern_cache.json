@@ -262,5 +262,228 @@
     "pattern_hash": "860172eb6eb7d3431870db0ded5a8519039a207a89ad3278add436784cc9a760",
     "original_code_snippet": "\n// Sequential dependency - not parallelizable\nvoid sequentialDependency(std::vector<float>& data) {\n    for (size_t i = 1; i < data.size(); i++) {\n        data[i] = data[i] + data[i-1];  // data[i] d",
     "confidence": 0.95
+  },
+  "d8f977f30fd2dda1ccd4badbfc0857cc9c8f279c38548445eb5cb87a1f74c618": {
+    "analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
+      "confidence": 0.95,
+      "transformations": [
+        "#pragma omp simd",
+        "Enable compiler auto-vectorization"
+      ],
+      "tests_recommended": [
+        "Compare parallel vs sequential results",
+        "Performance benchmarking",
+        "Verify SIMD instruction generation"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "heuristic_analysis"
+    },
+    "timestamp": 1759258664.9475148,
+    "usage_count": 1,
+    "pattern_hash": "d8f977f30fd2dda1ccd4badbfc0857cc9c8f279c38548445eb5cb87a1f74c618",
+    "original_code_snippet": "    const int n = 1000;\n    int array[n];\n    \n    for (int i = 2; i < n; i++) {\n        array[i] = array[i-1] + array[i-2];  // Fibonacci-like dependency\n    }\n    ",
+    "confidence": 0.95
+  },
+  "35bd0edae95ef41d095a5a453adfeee7ea8c30093fe98038aaabb1ce5ed956dc": {
+    "analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
+      "confidence": 0.95,
+      "transformations": [
+        "#pragma omp simd",
+        "Enable compiler auto-vectorization"
+      ],
+      "tests_recommended": [
+        "Compare parallel vs sequential results",
+        "Performance benchmarking",
+        "Verify SIMD instruction generation"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "heuristic_analysis"
+    },
+    "timestamp": 1759258664.9486568,
+    "usage_count": 1,
+    "pattern_hash": "35bd0edae95ef41d095a5a453adfeee7ea8c30093fe98038aaabb1ce5ed956dc",
+    "original_code_snippet": "    const int n = 1000;\n    int array[n];\n    \n    for (int i = 1; i < n; i++) {\n        array[i] += array[i-1];  // Each iteration depends on previous\n    }\n    ",
+    "confidence": 0.95
+  },
+  "c2003424a295fff5edeeb4a31387f8b5583baccf0a1a797e70f932e1754a098b": {
+    "analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
+      "confidence": 0.9,
+      "transformations": [
+        "#pragma omp simd",
+        "Enable compiler auto-vectorization"
+      ],
+      "tests_recommended": [
+        "Compare parallel vs sequential results",
+        "Performance benchmarking",
+        "Verify SIMD instruction generation"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "heuristic_analysis"
+    },
+    "timestamp": 1759258681.628891,
+    "usage_count": 1,
+    "pattern_hash": "c2003424a295fff5edeeb4a31387f8b5583baccf0a1a797e70f932e1754a098b",
+    "original_code_snippet": "    \n    // Initialize matrices\n    for (size_t i = 0; i < N; i++) {\n        for (size_t j = 0; j < N; j++) {\n            A(i, j) = static_cast<double>(i + j);\n            B(i, j) = static_cast<double",
+    "confidence": 0.9
+  },
+  "a7cdedb388f1784d860b8756a9edf058fd7f4d6973519ba6aeea0dbd8a11e284": {
+    "analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "Static analysis identifies this as embarrassingly_parallel; positive indicators found in code context",
+      "confidence": 0.95,
+      "transformations": [
+        "#pragma omp parallel for"
+      ],
+      "tests_recommended": [
+        "Compare parallel vs sequential results",
+        "Performance benchmarking"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "heuristic_analysis"
+    },
+    "timestamp": 1759258681.630281,
+    "usage_count": 1,
+    "pattern_hash": "a7cdedb388f1784d860b8756a9edf058fd7f4d6973519ba6aeea0dbd8a11e284",
+    "original_code_snippet": "\n// Complex pattern - matrix multiplication (trickier to parallelize)\nvoid matrixMultiply(const Matrix& A, const Matrix& B, Matrix& C) {\n    for (size_t i = 0; i < A.getRows(); i++) {\n        for (siz",
+    "confidence": 0.95
+  },
+  "3b07dcbe1a423113f30eb64d52936ae743fc5a1d3538dd0b158e87b07f4596be": {
+    "analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "Static analysis identifies this as embarrassingly_parallel; positive indicators found in code context",
+      "confidence": 0.95,
+      "transformations": [
+        "#pragma omp parallel for"
+      ],
+      "tests_recommended": [
+        "Compare parallel vs sequential results",
+        "Performance benchmarking"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "heuristic_analysis"
+    },
+    "timestamp": 1759258681.631339,
+    "usage_count": 1,
+    "pattern_hash": "3b07dcbe1a423113f30eb64d52936ae743fc5a1d3538dd0b158e87b07f4596be",
+    "original_code_snippet": "// Parallel candidate with reduction - matrix norm\ndouble matrixFrobeniusNorm(const Matrix& A) {\n    double sum = 0.0;\n    for (size_t i = 0; i < A.getRows(); i++) {\n        for (size_t j = 0; j < A.g",
+    "confidence": 0.95
+  },
+  "be0191a499641434ec290e7e5613a384d15d9eb8f94bfcac46314ecf5b8a2665": {
+    "analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
+      "confidence": 0.9,
+      "transformations": [
+        "#pragma omp simd",
+        "Enable compiler auto-vectorization"
+      ],
+      "tests_recommended": [
+        "Compare parallel vs sequential results",
+        "Performance benchmarking",
+        "Verify SIMD instruction generation"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "heuristic_analysis"
+    },
+    "timestamp": 1759258681.6323211,
+    "usage_count": 1,
+    "pattern_hash": "be0191a499641434ec290e7e5613a384d15d9eb8f94bfcac46314ecf5b8a2665",
+    "original_code_snippet": "// Complex pattern - matrix multiplication (trickier to parallelize)\nvoid matrixMultiply(const Matrix& A, const Matrix& B, Matrix& C) {\n    for (size_t i = 0; i < A.getRows(); i++) {\n        for (size",
+    "confidence": 0.9
+  },
+  "a78f1697e5a3b1744f41ed88dbde02885561d09e8f72a74d54684e0541d60c43": {
+    "analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "Static analysis identifies this as embarrassingly_parallel; positive indicators found in code context",
+      "confidence": 0.95,
+      "transformations": [
+        "#pragma omp parallel for"
+      ],
+      "tests_recommended": [
+        "Compare parallel vs sequential results",
+        "Performance benchmarking"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "heuristic_analysis"
+    },
+    "timestamp": 1759259089.486067,
+    "usage_count": 1,
+    "pattern_hash": "a78f1697e5a3b1744f41ed88dbde02885561d09e8f72a74d54684e0541d60c43",
+    "original_code_snippet": "                    int colIndex = k * D4 + l;\n                    result[rowIndex][colIndex] = \n                        (data4D[i][j][k][l] - globalMin) / range;\n                }\n            }\n     ",
+    "confidence": 0.95
+  },
+  "df068388708183fba56338c7b177fae18d1ea47e8fbfc903e7a477cd41397a52": {
+    "analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
+      "confidence": 0.95,
+      "transformations": [
+        "#pragma omp simd",
+        "Enable compiler auto-vectorization"
+      ],
+      "tests_recommended": [
+        "Compare parallel vs sequential results",
+        "Performance benchmarking",
+        "Verify SIMD instruction generation"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "heuristic_analysis"
+    },
+    "timestamp": 1759259089.4875572,
+    "usage_count": 1,
+    "pattern_hash": "df068388708183fba56338c7b177fae18d1ea47e8fbfc903e7a477cd41397a52",
+    "original_code_snippet": "        for (int j = 0; j < D2; j++) {\n            int rowIndex = i * D2 + j;\n            for (int k = 0; k < D3; k++) {\n                for (int l = 0; l < D4; l++) {\n                    int colIndex",
+    "confidence": 0.95
+  },
+  "ce3663985fdb60af3c421399c06951800944affd5e2fea9f2d8477ca1b2b627d": {
+    "analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "Static analysis identifies this as vectorizable; risk factors detected that may complicate parallelization",
+      "confidence": 0.8,
+      "transformations": [
+        "#pragma omp simd",
+        "Enable compiler auto-vectorization"
+      ],
+      "tests_recommended": [
+        "Compare parallel vs sequential results",
+        "Performance benchmarking",
+        "Verify SIMD instruction generation"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "heuristic_analysis"
+    },
+    "timestamp": 1759259089.488811,
+    "usage_count": 1,
+    "pattern_hash": "ce3663985fdb60af3c421399c06951800944affd5e2fea9f2d8477ca1b2b627d",
+    "original_code_snippet": "    for (int i = 0; i < D1; i++) {\n        for (int j = 0; j < D2; j++) {\n            for (int k = 0; k < D3; k++) {\n                for (int l = 0; l < D4; l++) {\n                    data4D[i][j][k][",
+    "confidence": 0.8
+  },
+  "c892e9a59e114ef52665eb99e8dec4ca0826f1b455c7da4ecc392136ab34db9c": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "Static analysis identifies this as simple_loop; positive indicators found in code context",
+      "confidence": 0.6,
+      "transformations": [
+        "Manual parallelization analysis required"
+      ],
+      "tests_recommended": [
+        "Thorough dependency analysis required",
+        "Compare parallel vs sequential results",
+        "Performance benchmarking"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "heuristic_analysis"
+    },
+    "timestamp": 1759259089.489962,
+    "usage_count": 1,
+    "pattern_hash": "c892e9a59e114ef52665eb99e8dec4ca0826f1b455c7da4ecc392136ab34db9c",
+    "original_code_snippet": "                        (data4D[i][j][k][l] - globalMin) / range;\n                }\n            }\n        }\n    }\n\n    return result;",
+    "confidence": 0.6
   }
 }
