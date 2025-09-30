@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ParallelCandidate } from '../types/index';
 
 interface AnalysisResultsProps {
   results: ParallelCandidate[];
   onResultHover: (line: number | null) => void;
   onResultClick: (line: number) => void;
+}
+
+interface ExpandedSections {
+  [key: number]: {
+    aiDetails: boolean;
+    codeContext: boolean;
+    suggestions: boolean;
+  };
 }
 
 const getClassificationColor = (classification: string) => {
@@ -98,6 +106,21 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
   onResultHover,
   onResultClick
 }) => {
+  const [expandedSections, setExpandedSections] = useState<ExpandedSections>({});
+
+  const toggleSection = (resultIndex: number, section: keyof ExpandedSections[number]) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [resultIndex]: {
+        ...prev[resultIndex],
+        [section]: !prev[resultIndex]?.[section]
+      }
+    }));
+  };
+
+  const isExpanded = (resultIndex: number, section: keyof ExpandedSections[number]) => {
+    return expandedSections[resultIndex]?.[section] || false;
+  };
   if (results.length === 0) {
     return (
       <div className="flex items-center justify-center h-64 text-gray-400">
@@ -243,7 +266,7 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
             </div>
           )}
 
-          {/* AI Analysis */}
+          {/* Enhanced AI Analysis with Expand/Collapse */}
           <div className={`rounded-lg p-3 mb-3 ${
             result.ai_analysis.classification === 'safe_parallel' 
               ? 'bg-green-900 border border-green-700' 
@@ -253,19 +276,122 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
               ? 'bg-purple-900 border border-purple-700'
               : 'bg-yellow-900 border border-yellow-700'
           }`}>
-            <div className="flex items-center mb-2">
-              <span className="text-lg mr-2">{getClassificationIcon(result.ai_analysis.classification)}</span>
-              <h4 className="text-sm font-semibold text-gray-200">AI Analysis</h4>
-              {result.ai_analysis.confidence && (
-                <span className={`ml-2 text-xs font-medium ${getConfidenceColor(result.ai_analysis.confidence)}`}>
-                  ({Math.round(result.ai_analysis.confidence * 100)}% confidence)
-                </span>
-              )}
+            {/* AI Analysis Header - Always Visible */}
+            <div 
+              className="flex items-center justify-between cursor-pointer hover:bg-black hover:bg-opacity-20 rounded p-2 -m-2 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleSection(index, 'aiDetails');
+              }}
+            >
+              <div className="flex items-center">
+                <span className="text-lg mr-2">{getClassificationIcon(result.ai_analysis.classification)}</span>
+                <h4 className="text-sm font-semibold text-gray-200">AI Analysis</h4>
+                {result.ai_analysis.confidence && (
+                  <span className={`ml-2 text-xs font-medium ${getConfidenceColor(result.ai_analysis.confidence)}`}>
+                    ({Math.round(result.ai_analysis.confidence * 100)}% confidence)
+                  </span>
+                )}
+              </div>
+              <span className={`text-gray-400 transition-transform ${isExpanded(index, 'aiDetails') ? 'rotate-180' : ''}`}>
+                ▼
+              </span>
             </div>
             
-            <p className="text-sm text-gray-300 mb-3 leading-relaxed">{result.ai_analysis.reasoning}</p>
+            {/* Quick Summary - Always Visible */}
+            <p className="text-sm text-gray-300 mb-2 mt-2 leading-relaxed">{result.ai_analysis.reasoning}</p>
             
-            {/* Classification-specific guidance */}
+            {/* Expandable Detailed Analysis */}
+            {isExpanded(index, 'aiDetails') && (
+              <div className="space-y-3 mt-4 pt-3 border-t border-gray-600">
+                {/* Detailed Confidence Breakdown */}
+                <div className="bg-black bg-opacity-30 rounded p-3">
+                  <h5 className="text-xs font-semibold text-gray-300 mb-2">🎯 Confidence Breakdown:</h5>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Pattern Type ({result.candidate_type}):</span>
+                      <span className="text-gray-300">Base confidence</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Code Context Analysis:</span>
+                      <span className="text-gray-300">
+                        {result.ai_analysis.confidence > 0.8 ? '+High' : 
+                         result.ai_analysis.confidence > 0.6 ? '+Medium' : 'Risk factors detected'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between border-t border-gray-600 pt-2">
+                      <span className="text-gray-300 font-medium">Final Confidence:</span>
+                      <span className={`font-medium ${getConfidenceColor(result.ai_analysis.confidence)}`}>
+                        {Math.round(result.ai_analysis.confidence * 100)}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Pattern Analysis Details */}
+                <div className="bg-black bg-opacity-30 rounded p-3">
+                  <h5 className="text-xs font-semibold text-gray-300 mb-2">🔍 Pattern Analysis:</h5>
+                  <div className="space-y-1 text-xs text-gray-400">
+                    <div>• <span className="text-gray-300">Type:</span> {result.candidate_type.replace('_', ' ')}</div>
+                    <div>• <span className="text-gray-300">LLVM Detection:</span> {result.reason}</div>
+                    <div>• <span className="text-gray-300">AI Classification:</span> {result.ai_analysis.classification.replace('_', ' ')}</div>
+                    {result.ai_analysis.analysis_source && (
+                      <div>• <span className="text-gray-300">Analysis Source:</span> {result.ai_analysis.analysis_source}</div>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Code Context Analysis */}
+                <div className="bg-black bg-opacity-30 rounded p-3">
+                  <div 
+                    className="flex items-center justify-between cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleSection(index, 'codeContext');
+                    }}
+                  >
+                    <h5 className="text-xs font-semibold text-gray-300">📝 Code Context Analysis</h5>
+                    <span className={`text-gray-400 text-xs transition-transform ${isExpanded(index, 'codeContext') ? 'rotate-180' : ''}`}>
+                      ▼
+                    </span>
+                  </div>
+                  
+                  {isExpanded(index, 'codeContext') && (
+                    <div className="mt-2 space-y-2 text-xs">
+                      <div className="text-gray-400">
+                        Analysis of code around line {result.line}:
+                      </div>
+                      {result.ai_analysis.confidence > 0.8 && (
+                        <div className="text-green-300">
+                          ✅ Clean parallelizable pattern detected:<br/>
+                          • Simple array indexing<br/>
+                          • No function calls with side effects<br/>
+                          • Independent iterations
+                        </div>
+                      )}
+                      {result.ai_analysis.confidence > 0.6 && result.ai_analysis.confidence <= 0.8 && (
+                        <div className="text-yellow-300">
+                          ⚠️ Moderate complexity factors:<br/>
+                          • Some control flow present<br/>
+                          • Potential dependencies need verification<br/>
+                          • Manual review recommended
+                        </div>
+                      )}
+                      {result.ai_analysis.confidence <= 0.6 && (
+                        <div className="text-red-300">
+                          ❌ Risk factors identified:<br/>
+                          • Complex control flow<br/>
+                          • Function calls may have side effects<br/>
+                          • Sequential dependencies likely
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            {/* Classification-specific guidance - Always visible */}
             {result.ai_analysis.classification === 'safe_parallel' && (
               <div className="bg-green-800 rounded p-2 mb-2">
                 <p className="text-xs text-green-200 font-medium">
@@ -290,19 +416,107 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
               </div>
             )}
             
-            {result.ai_analysis.transformations && result.ai_analysis.transformations.length > 0 && (
-              <div className="mb-2">
-                <h5 className="text-xs font-semibold text-gray-300 mb-2">💡 Suggested Optimizations:</h5>
-                <div className="space-y-1">
-                  {result.ai_analysis.transformations.map((transformation, i) => (
-                    <div key={i} className="flex items-start bg-gray-700 rounded p-2">
-                      <span className="text-green-400 mr-2 text-xs">▸</span>
-                      <code className="text-xs text-gray-200 font-mono flex-1">{transformation}</code>
-                    </div>
-                  ))}
-                </div>
+            {/* Expandable Code Improvement Suggestions */}
+            <div className="bg-black bg-opacity-30 rounded p-3 mt-2">
+              <div 
+                className="flex items-center justify-between cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleSection(index, 'suggestions');
+                }}
+              >
+                <h5 className="text-xs font-semibold text-gray-300">💡 Code Improvement Suggestions</h5>
+                <span className={`text-gray-400 text-xs transition-transform ${isExpanded(index, 'suggestions') ? 'rotate-180' : ''}`}>
+                  ▼
+                </span>
               </div>
-            )}
+              
+              {isExpanded(index, 'suggestions') && (
+                <div className="mt-3 space-y-3">
+                  {/* Parallelization Transformations */}
+                  {result.ai_analysis.transformations && result.ai_analysis.transformations.length > 0 && (
+                    <div>
+                      <h6 className="text-xs font-medium text-gray-300 mb-2">🔧 Parallelization Code:</h6>
+                      <div className="space-y-2">
+                        {result.ai_analysis.transformations.map((transformation, i) => (
+                          <div key={i} className="bg-gray-800 rounded p-2">
+                            <code className="text-xs text-green-300 font-mono block">{transformation}</code>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Code-specific suggestions based on pattern */}
+                  <div>
+                    <h6 className="text-xs font-medium text-gray-300 mb-2">� Specific Recommendations:</h6>
+                    <div className="space-y-2 text-xs text-gray-400">
+                      {result.candidate_type === 'vectorizable' && (
+                        <>
+                          <div className="bg-blue-900 bg-opacity-50 rounded p-2">
+                            <div className="text-blue-200 font-medium mb-1">For Vectorization:</div>
+                            <div>• Use <code className="text-blue-300 bg-gray-800 px-1 rounded">-O3 -march=native</code> compiler flags</div>
+                            <div>• Consider <code className="text-blue-300 bg-gray-800 px-1 rounded">#pragma omp simd</code> for explicit vectorization</div>
+                            <div>• Ensure data alignment for optimal SIMD performance</div>
+                          </div>
+                        </>
+                      )}
+                      
+                      {result.candidate_type === 'embarrassingly_parallel' && (
+                        <div className="bg-green-900 bg-opacity-50 rounded p-2">
+                          <div className="text-green-200 font-medium mb-1">Perfect Parallel Candidate:</div>
+                          <div>• Add <code className="text-green-300 bg-gray-800 px-1 rounded">#pragma omp parallel for</code></div>
+                          <div>• Consider thread scheduling: <code className="text-green-300 bg-gray-800 px-1 rounded">schedule(dynamic)</code></div>
+                          <div>• No additional synchronization needed</div>
+                        </div>
+                      )}
+                      
+                      {result.candidate_type === 'reduction' && (
+                        <div className="bg-yellow-900 bg-opacity-50 rounded p-2">
+                          <div className="text-yellow-200 font-medium mb-1">For Reduction Operations:</div>
+                          <div>• Use <code className="text-yellow-300 bg-gray-800 px-1 rounded">#pragma omp parallel for reduction(+:sum)</code></div>
+                          <div>• Choose appropriate reduction operator (+, *, min, max)</div>
+                          <div>• Initialize reduction variable before loop</div>
+                        </div>
+                      )}
+                      
+                      {result.ai_analysis.confidence <= 0.6 && (
+                        <div className="bg-red-900 bg-opacity-50 rounded p-2">
+                          <div className="text-red-200 font-medium mb-1">Before Parallelization:</div>
+                          <div>• Analyze data dependencies thoroughly</div>
+                          <div>• Consider loop-carried dependencies</div>
+                          <div>• Test sequential vs parallel results</div>
+                          <div>• Profile for actual performance gains</div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Performance Expectations */}
+                  <div>
+                    <h6 className="text-xs font-medium text-gray-300 mb-2">📊 Expected Performance Impact:</h6>
+                    <div className="text-xs text-gray-400 space-y-1">
+                      {result.ai_analysis.confidence > 0.8 && (
+                        <div className="text-green-300">
+                          • High speedup potential (2-8x depending on hardware)
+                        </div>
+                      )}
+                      {result.ai_analysis.confidence > 0.6 && result.ai_analysis.confidence <= 0.8 && (
+                        <div className="text-yellow-300">
+                          • Moderate speedup expected (1.5-3x with careful optimization)
+                        </div>
+                      )}
+                      {result.ai_analysis.confidence <= 0.6 && (
+                        <div className="text-red-300">
+                          • Limited or no speedup likely - focus on algorithm optimization first
+                        </div>
+                      )}
+                      <div>• Optimal thread count: {Math.max(2, Math.min(8, Math.ceil(1 / (1.1 - result.ai_analysis.confidence))))}</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Suggested Patch */}

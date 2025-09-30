@@ -41,39 +41,41 @@ const CodeEditor = React.forwardRef<CodeEditorRef, CodeEditorProps>((
   const handleEditorDidMount = (editor: any, monaco: any) => {
     editorRef.current = editor;
     
-    // Configure editor options
-    editor.updateOptions({
-      fontSize: 14,
-      minimap: { enabled: true },
-      scrollBeyondLastLine: false,
-      automaticLayout: true,
+    // Define custom dark theme that matches our app
+    monaco.editor.defineTheme('custom-dark', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [],
+      colors: {
+        'editor.background': '#111827',
+        'editor.foreground': '#e5e7eb',
+        'editorLineNumber.foreground': '#6b7280',
+        'editorLineNumber.activeForeground': '#9ca3af',
+        'editor.selectionBackground': '#374151',
+        'editor.selectionHighlightBackground': '#374151',
+        'editorCursor.foreground': '#e5e7eb',
+        'editor.lineHighlightBackground': '#1f2937',
+        'editorWhitespace.foreground': '#4b5563',
+        'editorIndentGuide.background': '#4b5563',
+        'editorIndentGuide.activeBackground': '#6b7280',
+        'scrollbarSlider.background': '#374151',
+        'scrollbarSlider.hoverBackground': '#4b5563',
+        'scrollbarSlider.activeBackground': '#6b7280',
+      }
     });
-
-    // Add click handler for lines
-    if (onLineClick) {
-      editor.onMouseDown((e: any) => {
-        if (e.target.type === monaco.editor.MouseTargetType.GUTTER_LINE_NUMBERS) {
-          onLineClick(e.target.position.lineNumber);
+    
+    // Set the custom theme
+    monaco.editor.setTheme('custom-dark');
+    
+    // Handle click events to detect line clicks
+    editor.onMouseDown((e: any) => {
+      if (e.target.type === monaco.editor.MouseTargetType.GUTTER_LINE_NUMBERS) {
+        const lineNumber = e.target.position.lineNumber;
+        if (onLineClick) {
+          onLineClick(lineNumber);
         }
-      });
-    }
-
-    // Add custom CSS for highlighting
-    const style = document.createElement('style');
-    style.textContent = `
-      .highlighted-line {
-        background-color: rgba(255, 193, 7, 0.2) !important;
       }
-      .highlighted-glyph {
-        background-color: #ffc107 !important;
-        width: 3px !important;
-      }
-      .highlighted-line-decoration {
-        background-color: rgba(255, 193, 7, 0.3) !important;
-        width: 5px !important;
-      }
-    `;
-    document.head.appendChild(style);
+    });
   };
 
   // Update highlighted lines when prop changes
@@ -108,14 +110,14 @@ const CodeEditor = React.forwardRef<CodeEditorRef, CodeEditorProps>((
   const editorLanguage = language === 'cpp' ? 'cpp' : 'python';
 
   return (
-    <div className="monaco-editor-container h-full border-0 overflow-hidden">
+    <div className="monaco-editor-container h-full border-0 overflow-hidden bg-gray-900">
       <Editor
         height="100%"
         language={editorLanguage}
         value={code}
         onChange={(value: string | undefined) => onChange(value || '')}
         onMount={handleEditorDidMount}
-        theme="vs-dark"
+        theme="custom-dark"
         options={{
           selectOnLineNumbers: true,
           roundedSelection: false,
