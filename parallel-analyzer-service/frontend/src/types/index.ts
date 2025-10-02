@@ -1,5 +1,15 @@
 // Type definitions for the parallel analyzer frontend
 
+export interface CodeBlock {
+  type: string;
+  start_line: number;
+  end_line: number;
+  nesting_level: number;
+  parallelization_potential: 'excellent' | 'good' | 'moderate' | 'limited';
+  analysis_notes: string[];
+  block_analysis: string;
+}
+
 export interface OpenMPValidation {
   status: 'verified' | 'compliant' | 'similar' | 'unknown' | 'non_compliant' | 'no_pragma' | 'unavailable';
   confidence_boost: number;
@@ -66,6 +76,9 @@ export interface AnalysisResult {
   
   // Enhanced validation results
   enhanced_analysis?: EnhancedAnalysisResult;
+  
+  // Code block information
+  code_block?: CodeBlock;
 }
 
 export interface AnalysisResponse {

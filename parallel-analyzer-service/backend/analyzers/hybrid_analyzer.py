@@ -6,6 +6,7 @@ analysis to provide comprehensive parallelization recommendations.
 """
 
 import logging
+import re
 from typing import List, Dict, Any, Optional
 import asyncio
 
@@ -14,6 +15,7 @@ from .ai_analyzer import AIAnalyzer
 from .hotspot_analyzer import HotspotAnalyzer
 from .confidence_analyzer import ConfidenceAnalyzer
 from .pattern_cache import PatternCache
+from .code_block_analyzer import CodeBlockAnalyzer
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +40,7 @@ class HybridAnalyzer:
         self.hotspot_analyzer = HotspotAnalyzer()
         self.confidence_analyzer = ConfidenceAnalyzer()
         self.pattern_cache = PatternCache()
+        self.code_block_analyzer = CodeBlockAnalyzer()
         
         # Optimization settings (enhanced)
         self.max_candidates_for_ai = 10  # Reduced due to better filtering
@@ -75,6 +78,11 @@ class HybridAnalyzer:
             logger.info("Phase 1: Detecting computational hotspots...")
             hotspots = self.hotspot_analyzer.analyze_hotspots(code_content, filename)
             logger.info(f"Found {len(hotspots)} hotspots for analysis focus")
+        
+        # Phase 1.5: Code Block Analysis (Group related structures)
+        logger.info("Phase 1.5: Analyzing code blocks for grouped parallelization...")
+        code_blocks = self.code_block_analyzer.analyze_code_blocks(code_content, filename)
+        logger.info(f"Identified {len(code_blocks)} code blocks for analysis")
         
         # Phase 2: LLVM Analysis
         llvm_results = []
@@ -158,11 +166,17 @@ class HybridAnalyzer:
             ai_enhanced_results = filtered_candidates
             logger.warning("AI analyzer not available, returning LLVM results only")
         
-        # Phase 5: Final Processing and Statistics
-        logger.info("Phase 5: Final result processing...")
-        logger.info(f"🔍 Processing {len(ai_enhanced_results)} results for enhanced analysis")
+        # Phase 5: Block-Level Analysis Unification
+        logger.info("Phase 5: Unifying analysis results by code blocks...")
+        logger.info(f"🔍 Processing {len(ai_enhanced_results)} results for block unification")
         
-        # Add enhanced confidence scoring with OpenMP validation
+        # First, group results by code blocks and unify analysis
+        ai_enhanced_results = self._unify_block_analysis(ai_enhanced_results, code_blocks)
+        
+        # Phase 6: Final Processing and Statistics
+        logger.info("Phase 6: Final result processing...")
+        
+        # Add remaining metadata to results
         for result in ai_enhanced_results:
             result["hybrid_confidence"] = self._calculate_hybrid_confidence(result)
             
@@ -629,6 +643,200 @@ class HybridAnalyzer:
                 "logic_issue_type": "none",
                 "analysis_source": "ai_llm"
             }
+    
+    def _unify_block_analysis(self, results: List[Dict[str, Any]], code_blocks: List) -> List[Dict[str, Any]]:
+        """
+        Unify analysis results within code blocks to ensure consistency.
+        All lines within the same code block should have the same AI analysis classification.
+        """
+        if not code_blocks:
+            logger.info("No code blocks found, returning individual results")
+            return results
+            
+        logger.info(f"🔧 Unifying {len(results)} results across {len(code_blocks)} code blocks")
+        
+        # Group results by code block
+        block_groups = {}
+        ungrouped_results = []
+        
+        for result in results:
+            matching_block = self._find_matching_code_block(result, code_blocks)
+            if matching_block:
+                block_key = f"{matching_block.start_line}-{matching_block.end_line}"
+                if block_key not in block_groups:
+                    block_groups[block_key] = {
+                        'block': matching_block,
+                        'results': []
+                    }
+                block_groups[block_key]['results'].append(result)
+            else:
+                ungrouped_results.append(result)
+        
+        unified_results = []
+        
+        # Process each code block group
+        for block_key, group in block_groups.items():
+            block = group['block']
+            block_results = group['results']
+            
+            logger.info(f"📦 Unifying analysis for code block {block_key} with {len(block_results)} results")
+            
+            # Determine the unified analysis for this block
+            unified_analysis = self._determine_unified_block_analysis(block_results, block)
+            
+            # Apply unified analysis to all results in this block
+            for result in block_results:
+                # Update AI analysis to be consistent
+                result['ai_analysis'] = unified_analysis['ai_analysis'].copy()
+                
+                # Add consistent code block information
+                result["code_block"] = {
+                    "type": block.block_type,
+                    "start_line": block.start_line,
+                    "end_line": block.end_line,
+                    "nesting_level": block.nesting_level,
+                    "parallelization_potential": block.parallelization_potential,
+                    "analysis_notes": block.analysis_notes,
+                    "block_analysis": f"Code block ({block.start_line}-{block.end_line}): {block.parallelization_potential} parallelization potential"
+                }
+                
+                logger.info(f"🔄 Unified line {result.get('line')} analysis: {unified_analysis['ai_analysis']['classification']}")
+                unified_results.append(result)
+        
+        # Add ungrouped results unchanged
+        unified_results.extend(ungrouped_results)
+        
+        logger.info(f"✅ Block unification complete: {len(unified_results)} results ({len(block_groups)} blocks unified)")
+        return unified_results
+    
+    def _determine_unified_block_analysis(self, block_results: List[Dict[str, Any]], block) -> Dict[str, Any]:
+        """
+        Determine the unified analysis for a code block based on the block's characteristics
+        and the individual result patterns, ensuring consistency.
+        """
+        if not block_results:
+            return self._get_default_block_analysis(block)
+            
+        # Analyze the block's inherent characteristics to determine safety
+        block_safety = self._analyze_block_safety(block)
+        
+        # Count different analysis types to understand the patterns
+        classifications = [r.get('ai_analysis', {}).get('classification', '') for r in block_results]
+        candidate_types = [r.get('candidate_type', '') for r in block_results]
+        
+        logger.info(f"Block {block.start_line}-{block.end_line}: "
+                   f"types={set(candidate_types)}, classifications={set(classifications)}")
+        
+        # Determine unified classification based on block type and safety analysis
+        if block.block_type == 'nested_loops':
+            if block.parallelization_potential == 'limited':
+                unified_classification = 'requires_runtime_check'
+                unified_confidence = 0.6
+                reasoning = "Nested loop structure with limited parallelization potential; requires careful analysis"
+            else:
+                unified_classification = 'safe_parallel'  
+                unified_confidence = 0.8
+                reasoning = "Nested loop structure with good parallelization potential"
+        
+        elif block.block_type == 'vectorizable_loop':
+            unified_classification = 'safe_parallel'
+            unified_confidence = 0.9
+            reasoning = "Vectorizable loop structure with excellent parallelization potential"
+            
+        elif 'vectorizable' in candidate_types:
+            unified_classification = 'safe_parallel'
+            unified_confidence = 0.8
+            reasoning = "Block contains vectorizable patterns suitable for parallelization"
+            
+        else:
+            # Conservative approach for unknown patterns
+            if 'not_parallel' in classifications or block_safety['has_dependencies']:
+                unified_classification = 'not_parallel'
+                unified_confidence = 0.4
+                reasoning = "Block contains dependencies or patterns that limit parallelization"
+            else:
+                unified_classification = 'requires_runtime_check'
+                unified_confidence = 0.6
+                reasoning = "Block requires runtime verification for safe parallelization"
+        
+        # Get the best transformation suggestion from the block type
+        transformations = self._get_block_transformations(block)
+        
+        return {
+            'ai_analysis': {
+                'classification': unified_classification,
+                'reasoning': reasoning,
+                'confidence': unified_confidence,
+                'transformations': transformations,
+                'tests_recommended': [
+                    "Verify data dependencies within block",
+                    "Test parallel vs sequential execution", 
+                    "Performance benchmarking for entire block"
+                ],
+                'block_unified': True  # Flag to indicate this was unified
+            }
+        }
+    
+    def _analyze_block_safety(self, block) -> Dict[str, bool]:
+        """Analyze the safety characteristics of a code block"""
+        code = block.code_content.lower()
+        
+        # Check for data dependencies
+        has_dependencies = False
+        if re.search(r'\w+\[\s*\w+\s*[+-]\s*\w+\s*\]', code):  # array[i+offset] patterns
+            has_dependencies = True
+        if len(re.findall(r'\w+\s*\(.*\)', code)) > 2:  # multiple function calls
+            has_dependencies = True
+            
+        # Check for shared variables
+        has_shared_vars = '=' in code and ('static' in code or 'global' in code)
+        
+        return {
+            'has_dependencies': has_dependencies,
+            'has_shared_vars': has_shared_vars,
+            'is_simple': not has_dependencies and not has_shared_vars
+        }
+    
+    def _get_block_transformations(self, block) -> List[str]:
+        """Get appropriate transformations for a block type"""
+        if block.block_type == 'nested_loops':
+            return ["#pragma omp parallel for collapse(2)", "Consider loop interchange"]
+        elif block.block_type == 'vectorizable_loop':
+            return ["#pragma omp simd", "#pragma omp parallel for"]
+        else:
+            return ["#pragma omp parallel for", "Verify data dependencies"]
+    
+    def _get_default_block_analysis(self, block) -> Dict[str, Any]:
+        """Get default analysis when no individual results are available"""
+        return {
+            'ai_analysis': {
+                'classification': 'requires_runtime_check',
+                'reasoning': f"Block-level analysis for {block.block_type}",
+                'confidence': 0.5,
+                'transformations': self._get_block_transformations(block),
+                'tests_recommended': ["Runtime dependency analysis required"],
+                'block_unified': True
+            }
+        }
+
+    def _find_matching_code_block(self, result, code_blocks):
+        """Find the code block that contains this analysis result"""
+        result_line = result.get('line', 0)
+        if not result_line or not code_blocks:
+            return None
+        
+        # Find the smallest (most specific) block that contains this line
+        best_match = None
+        smallest_range = float('inf')
+        
+        for block in code_blocks:
+            if block.start_line <= result_line <= block.end_line:
+                block_range = block.end_line - block.start_line
+                if block_range < smallest_range:
+                    smallest_range = block_range
+                    best_match = block
+        
+        return best_match
     
     def _log_analysis_statistics(self, hotspots, confidence_stats, cache_stats, final_results):
         """Log comprehensive analysis statistics"""

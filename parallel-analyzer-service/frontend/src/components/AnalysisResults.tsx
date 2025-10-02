@@ -103,6 +103,80 @@ const cleanFunctionName = (functionName: string): string => {
   return functionName;
 };
 
+// Helper function to group results by code blocks and deduplicate by line ranges
+const groupResultsByCodeBlocks = (results: ParallelCandidate[]) => {
+  const groups = new Map<string, {
+    codeBlock: any;
+    results: ParallelCandidate[];
+    allCandidateTypes: string[];
+    allClassifications: string[];
+    hasIssues: boolean;
+  }>();
+  
+  results.forEach(result => {
+    if (result.code_block) {
+      // Group by code block range (this ensures uniqueness by block)
+      const key = `block-${result.code_block.start_line}-${result.code_block.end_line}`;
+      
+      if (!groups.has(key)) {
+        groups.set(key, {
+          codeBlock: result.code_block,
+          results: [],
+          allCandidateTypes: [],
+          allClassifications: [],
+          hasIssues: false
+        });
+      }
+      
+      const group = groups.get(key)!;
+      group.results.push(result);
+      
+      // Collect all candidate types for this block
+      if (!group.allCandidateTypes.includes(result.candidate_type)) {
+        group.allCandidateTypes.push(result.candidate_type);
+      }
+      
+      // Collect all AI classifications
+      if (!group.allClassifications.includes(result.ai_analysis.classification)) {
+        group.allClassifications.push(result.ai_analysis.classification);
+      }
+      
+      // Check for issues (logic issues or not_parallel)
+      if (result.ai_analysis.classification === 'logic_issue' || 
+          result.ai_analysis.classification === 'not_parallel' ||
+          result.candidate_type === 'risky') {
+        group.hasIssues = true;
+      }
+    } else {
+      // Individual results without code blocks (fallback)
+      const key = `line-${result.line}`;
+      if (!groups.has(key)) {
+        groups.set(key, {
+          codeBlock: null,
+          results: [result],
+          allCandidateTypes: [result.candidate_type],
+          allClassifications: [result.ai_analysis.classification],
+          hasIssues: result.ai_analysis.classification === 'logic_issue' || 
+                     result.ai_analysis.classification === 'not_parallel'
+        });
+      }
+    }
+  });
+  
+  return Array.from(groups.entries()).map(([key, group]) => ({
+    key,
+    results: group.results,
+    isCodeBlock: group.codeBlock != null,
+    codeBlock: group.codeBlock,
+    allCandidateTypes: group.allCandidateTypes,
+    allClassifications: group.allClassifications,
+    hasIssues: group.hasIssues,
+    startLine: group.codeBlock?.start_line || group.results[0]?.line,
+    endLine: group.codeBlock?.end_line || group.results[0]?.line,
+    totalFindings: group.results.length
+  })).sort((a, b) => a.startLine - b.startLine); // Sort by line number
+};
+
 const AnalysisResults: React.FC<AnalysisResultsProps> = ({
   results,
   onResultHover,
@@ -123,6 +197,10 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
   const isExpanded = (resultIndex: number, section: keyof ExpandedSections[number]) => {
     return expandedSections[resultIndex]?.[section] || false;
   };
+
+  // Group results by code blocks
+  const groupedResults = groupResultsByCodeBlocks(results);
+  
   if (results.length === 0) {
     return (
       <div className="flex items-center justify-center h-64 text-gray-400">
@@ -139,14 +217,129 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
     <div className="space-y-3">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-gray-200">
-          Analysis Results ({results.length})
+          Analysis Results ({groupedResults.length} code blocks, {results.length} findings)
         </h3>
         <div className="text-sm text-gray-400">
-          Click on results to jump to line
+          Click on blocks to jump to lines
         </div>
       </div>
 
-      {results.map((result, index) => (
+      {groupedResults.map((group, groupIndex) => (
+        <div key={group.key} className="border border-gray-600 rounded-lg overflow-hidden">
+          {/* Code Block Header */}
+          {group.isCodeBlock && group.codeBlock ? (
+            <div className="bg-gradient-to-r from-purple-900/30 to-blue-900/30 border-b border-gray-600 p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center space-x-3">
+                  <span className="text-lg">📦</span>
+                  <div>
+                    <h4 className="text-lg font-semibold text-gray-200">
+                      {group.codeBlock.type.replace('_', ' ').split(' ').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                    </h4>
+                    <p className="text-sm text-gray-400">
+                      Lines {group.codeBlock.start_line}-{group.codeBlock.end_line} • 
+                      Nesting Level {group.codeBlock.nesting_level} • 
+                      <span className="text-blue-400">{group.totalFindings} pattern{group.totalFindings > 1 ? 's' : ''} detected</span>
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <div className="text-xs text-gray-400 mr-2">
+                    {group.allCandidateTypes.join(', ')}
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    group.codeBlock.parallelization_potential === 'excellent' ? 'bg-green-900/50 text-green-400 border border-green-400/30' :
+                    group.codeBlock.parallelization_potential === 'good' ? 'bg-blue-900/50 text-blue-400 border border-blue-400/30' :
+                    group.codeBlock.parallelization_potential === 'moderate' ? 'bg-yellow-900/50 text-yellow-400 border border-yellow-400/30' :
+                    group.codeBlock.parallelization_potential === 'limited' ? 'bg-orange-900/50 text-orange-400 border border-orange-400/30' :
+                    'bg-red-900/50 text-red-400 border border-red-400/30'
+                  }`}>
+                    {group.codeBlock.parallelization_potential === 'excellent' ? '🚀 Excellent Potential' :
+                     group.codeBlock.parallelization_potential === 'good' ? '✅ Good Potential' :
+                     group.codeBlock.parallelization_potential === 'moderate' ? '⚡ Moderate Potential' :
+                     group.codeBlock.parallelization_potential === 'limited' ? '⚠️ Limited Potential' :
+                     '❌ Poor Potential'}
+                  </span>
+                </div>
+              </div>
+              
+              <p className="text-gray-300 mb-3">{group.codeBlock.block_analysis}</p>
+              
+              {group.codeBlock.analysis_notes && group.codeBlock.analysis_notes.length > 0 && (
+                <div className="bg-black/20 rounded p-3">
+                  <h5 className="text-sm font-medium text-gray-300 mb-2">🎯 Block Recommendations:</h5>
+                  <ul className="text-sm text-gray-400 space-y-1">
+                    {group.codeBlock.analysis_notes.slice(0, 3).map((note: string, idx: number) => (
+                      <li key={idx}>• {note}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
+              {/* Consolidated Findings Summary */}
+              <div className="bg-gray-800/40 rounded p-3 mt-3">
+                <h5 className="text-sm font-medium text-gray-300 mb-2">📊 Analysis Summary:</h5>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <span className="text-gray-400">Pattern Types:</span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {group.allCandidateTypes.map((type: string, idx: number) => (
+                        <span key={idx} className={`px-2 py-0.5 rounded ${
+                          type === 'vectorizable' ? 'bg-green-700 text-white' :
+                          type === 'simple_loop' ? 'bg-blue-700 text-white' :
+                          'bg-red-700 text-white'
+                        }`}>
+                          {type}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Safety Classifications:</span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {group.allClassifications.map((classification: string, idx: number) => (
+                        <span key={idx} className={`px-2 py-0.5 rounded ${
+                          classification === 'safe_parallel' ? 'bg-green-600 text-white' :
+                          classification === 'requires_runtime_check' ? 'bg-yellow-600 text-black' :
+                          classification === 'logic_issue' ? 'bg-red-600 text-white' :
+                          'bg-gray-600 text-white'
+                        }`}>
+                          {classification.replace('_', ' ')}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Show errors/issues if any */}
+                {group.hasIssues && (
+                  <div className="mt-2 p-2 bg-red-900/20 border border-red-700 rounded">
+                    <div className="text-xs text-red-300 font-medium mb-1">⚠️ Issues Detected in Block:</div>
+                    {group.results
+                      .filter(r => r.ai_analysis.classification === 'not_parallel' || 
+                                  r.ai_analysis.classification === 'logic_issue' ||
+                                  r.candidate_type === 'risky')
+                      .map((result, idx) => (
+                        <div key={idx} className="text-xs text-red-400">
+                          • Line {result.line}: {result.reason}
+                        </div>
+                      ))
+                    }
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="bg-gray-800/50 border-b border-gray-600 p-3">
+              <h4 className="text-md font-medium text-gray-300">Individual Finding</h4>
+              <p className="text-sm text-gray-400">Line {group.startLine}</p>
+            </div>
+          )}
+          
+          {/* Individual Results within the Block */}
+          <div className="divide-y divide-gray-700">
+            {group.results.map((result, index) => (
         <div
           key={index}
           className={`analysis-card transition-all duration-200 hover:shadow-lg ${
@@ -402,6 +595,44 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
                             </div>
                           )}
                         </div>
+                      </div>
+                    )}
+
+                    {/* Code Block Analysis */}
+                    {result.code_block && (
+                      <div className="border-t border-gray-600 pt-2 mt-2">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xs font-semibold text-purple-300">📦 Code Block Analysis:</span>
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            result.code_block.parallelization_potential === 'excellent' ? 'bg-green-900/30 text-green-400 border border-green-400/30' :
+                            result.code_block.parallelization_potential === 'good' ? 'bg-blue-900/30 text-blue-400 border border-blue-400/30' :
+                            result.code_block.parallelization_potential === 'moderate' ? 'bg-yellow-900/30 text-yellow-400 border border-yellow-400/30' :
+                            'bg-red-900/30 text-red-400 border border-red-400/30'
+                          }`}>
+                            {result.code_block.parallelization_potential === 'excellent' ? '🚀 Excellent' :
+                             result.code_block.parallelization_potential === 'good' ? '✅ Good' :
+                             result.code_block.parallelization_potential === 'moderate' ? '⚡ Moderate' :
+                             '⚠️ Limited'}
+                          </span>
+                        </div>
+                        
+                        <div className="text-xs text-gray-400 space-y-1">
+                          <div>• <span className="text-gray-300">Block Type:</span> {result.code_block.type.replace('_', ' ')}</div>
+                          <div>• <span className="text-gray-300">Lines:</span> {result.code_block.start_line}-{result.code_block.end_line}</div>
+                          <div>• <span className="text-gray-300">Nesting Level:</span> {result.code_block.nesting_level}</div>
+                          <div>• <span className="text-gray-300">Block Summary:</span> {result.code_block.block_analysis}</div>
+                        </div>
+                        
+                        {result.code_block.analysis_notes && result.code_block.analysis_notes.length > 0 && (
+                          <div className="mt-2 bg-gray-900/40 rounded px-2 py-2">
+                            <span className="text-gray-300 text-xs font-medium">Block Recommendations:</span>
+                            <ul className="text-xs text-gray-400 mt-1 space-y-1">
+                              {result.code_block.analysis_notes.map((note, idx) => (
+                                <li key={idx}>• {note}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </div>
                     )}
 
@@ -681,6 +912,9 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
                result.ai_analysis.classification === 'logic_issue' ? '🚨 Analysis error' :
                '🔍 Needs review'}
             </div>
+          </div>
+        </div>
+      ))}
           </div>
         </div>
       ))}

@@ -292,37 +292,107 @@ class OpenMPSpecValidator:
         return None
 
     def _find_similar_pattern(self, normalized_pragma: str, pattern_type: str = None) -> Optional[Tuple[OpenMPPattern, float]]:
-        """Find similar pattern with similarity score"""
+        """Find similar pattern with improved consistency for nested loops"""
         best_match = None
         best_score = 0.0
+        
+        # Normalize the pattern type for better matching
+        normalized_pattern_type = self._normalize_pattern_type(pattern_type)
         
         for pattern in self.verified_patterns:
             pattern_pragma = self._normalize_pragma(pattern.pragma)
             
-            # Calculate similarity score
+            # Calculate base similarity score
             similarity = self._calculate_pragma_similarity(normalized_pragma, pattern_pragma)
             
-            # Boost score for matching pattern type
-            if pattern_type and pattern.pattern_type == pattern_type:
-                similarity += 0.1
+            # Enhanced type matching for loop patterns
+            pattern_normalized_type = self._normalize_pattern_type(pattern.pattern_type)
+            
+            if pattern_normalized_type and normalized_pattern_type:
+                if pattern_normalized_type == normalized_pattern_type:
+                    similarity += 0.15  # Strong boost for exact type match
+                elif self._are_compatible_loop_types(normalized_pattern_type, pattern_normalized_type):
+                    similarity += 0.10  # Moderate boost for compatible types
+            
+            # Special boost for common nested loop patterns
+            if self._is_nested_loop_pattern(normalized_pragma, pattern_pragma):
+                similarity += 0.05
             
             if similarity > best_score and similarity >= 0.6:  # Minimum threshold
                 best_match = pattern
                 best_score = similarity
         
         return (best_match, best_score) if best_match else None
+    
+    def _normalize_pattern_type(self, pattern_type: str) -> str:
+        """Normalize pattern types for consistent matching"""
+        if not pattern_type:
+            return ""
+        
+        pattern_lower = pattern_type.lower()
+        
+        # Group similar loop types together
+        if any(keyword in pattern_lower for keyword in ["vector", "simd"]):
+            return "loop_vectorizable"
+        elif any(keyword in pattern_lower for keyword in ["loop", "parallel", "embarrassing"]):
+            return "loop_parallel"
+        elif "reduction" in pattern_lower:
+            return "reduction"
+        elif "task" in pattern_lower:
+            return "task_parallel"
+        else:
+            return pattern_lower
+    
+    def _are_compatible_loop_types(self, type1: str, type2: str) -> bool:
+        """Check if two pattern types are compatible (can use similar OpenMP constructs)"""
+        loop_family = ["loop_vectorizable", "loop_parallel"]
+        return (type1 in loop_family and type2 in loop_family)
+    
+    def _is_nested_loop_pattern(self, pragma1: str, pragma2: str) -> bool:
+        """Check if both pragmas are suitable for nested loop patterns"""
+        nested_loop_keywords = ["parallel for", "simd", "parallel", "for"]
+        
+        pragma1_has_loop = any(keyword in pragma1 for keyword in nested_loop_keywords)
+        pragma2_has_loop = any(keyword in pragma2 for keyword in nested_loop_keywords)
+        
+        return pragma1_has_loop and pragma2_has_loop
 
     def _calculate_pragma_similarity(self, pragma1: str, pragma2: str) -> float:
-        """Calculate similarity between two pragmas"""
+        """Calculate similarity between two pragmas with enhanced matching for loop constructs"""
         # Split into tokens
         tokens1 = set(pragma1.split())
         tokens2 = set(pragma2.split())
         
-        # Calculate Jaccard similarity
+        # Calculate base Jaccard similarity
         intersection = len(tokens1.intersection(tokens2))
         union = len(tokens1.union(tokens2))
+        base_similarity = intersection / union if union > 0 else 0.0
         
-        return intersection / union if union > 0 else 0.0
+        # Enhanced matching for common OpenMP patterns
+        similarity_boost = 0.0
+        
+        # Check for equivalent loop parallelization patterns
+        loop_equivalents = [
+            (["parallel", "for"], ["parallel", "for"]),
+            (["simd"], ["parallel", "for", "simd"]),
+            (["for"], ["parallel", "for"]),
+        ]
+        
+        for pattern1, pattern2 in loop_equivalents:
+            if (all(token in tokens1 for token in pattern1) and 
+                all(token in tokens2 for token in pattern2)) or \
+               (all(token in tokens2 for token in pattern1) and 
+                all(token in tokens1 for token in pattern2)):
+                similarity_boost += 0.2
+                break
+        
+        # Boost for common clauses
+        common_clauses = ["private", "reduction", "schedule", "collapse"]
+        for clause in common_clauses:
+            if clause in tokens1 and clause in tokens2:
+                similarity_boost += 0.05
+        
+        return min(1.0, base_similarity + similarity_boost)
 
     def _check_syntax_compliance(self, normalized_pragma: str) -> Dict:
         """Check pragma syntax against OpenMP specification"""

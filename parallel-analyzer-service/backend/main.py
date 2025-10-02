@@ -89,6 +89,15 @@ class AIAnalysis(BaseModel):
     tests_recommended: List[str]
     enhanced_confidence: Optional[EnhancedAnalysisResult] = None
 
+class CodeBlock(BaseModel):
+    type: str
+    start_line: int
+    end_line: int
+    nesting_level: int
+    parallelization_potential: str
+    analysis_notes: List[str]
+    block_analysis: str
+
 class ParallelCandidate(BaseModel):
     candidate_type: str
     file: str
@@ -98,6 +107,7 @@ class ParallelCandidate(BaseModel):
     suggested_patch: str
     ai_analysis: AIAnalysis
     enhanced_analysis: Optional[EnhancedAnalysisResult] = None
+    code_block: Optional[CodeBlock] = None
 
 class AnalysisResponse(BaseModel):
     success: bool
@@ -264,6 +274,23 @@ async def analyze_parallel_code(
                         verification_status="fallback_created"
                     )
 
+                # Convert code block data if present
+                code_block_data = None
+                if result.get("code_block"):
+                    logger.info(f"🔧 Converting code block data for result {result.get('line', 0)}")
+                    code_block_info = result["code_block"]
+                    code_block_data = CodeBlock(
+                        type=code_block_info["type"],
+                        start_line=code_block_info["start_line"],
+                        end_line=code_block_info["end_line"],
+                        nesting_level=code_block_info["nesting_level"],
+                        parallelization_potential=code_block_info["parallelization_potential"],
+                        analysis_notes=code_block_info["analysis_notes"],
+                        block_analysis=code_block_info["block_analysis"]
+                    )
+                else:
+                    logger.warning(f"❌ No code block data for result {result.get('line', 0)}")
+
                 candidate = ParallelCandidate(
                     candidate_type=result.get("candidate_type", "unknown"),
                     file=filename,
@@ -278,7 +305,8 @@ async def analyze_parallel_code(
                         transformations=result.get("ai_analysis", {}).get("transformations", []),
                         tests_recommended=result.get("ai_analysis", {}).get("tests_recommended", [])
                     ),
-                    enhanced_analysis=enhanced_analysis_data
+                    enhanced_analysis=enhanced_analysis_data,
+                    code_block=code_block_data
                 )
                 candidates.append(candidate)
             
