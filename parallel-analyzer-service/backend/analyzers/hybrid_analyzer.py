@@ -173,8 +173,15 @@ class HybridAnalyzer:
         # First, group results by code blocks and unify analysis
         ai_enhanced_results = self._unify_block_analysis(ai_enhanced_results, code_blocks)
         
-        # Phase 6: Final Processing and Statistics
-        logger.info("Phase 6: Final result processing...")
+        # Phase 6: Line-Level Aggregation (merge multiple results for same line)
+        logger.info("Phase 6: Aggregating multiple results per line...")
+        logger.info(f"🔗 Processing {len(ai_enhanced_results)} results for line aggregation")
+        
+        # Group and merge results by line number
+        ai_enhanced_results = self._aggregate_results_by_line(ai_enhanced_results)
+        
+        # Phase 7: Final Processing and Statistics
+        logger.info("Phase 7: Final result processing...")
         
         # Add remaining metadata to results
         for result in ai_enhanced_results:
@@ -818,6 +825,136 @@ class HybridAnalyzer:
                 'block_unified': True
             }
         }
+    
+    def _aggregate_results_by_line(self, results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """
+        Aggregate multiple analysis results for the same line number into a single consolidated result.
+        This handles cases where line 59 has both 'vectorizable' and 'risky' patterns.
+        """
+        if not results:
+            return results
+            
+        logger.info(f"📊 Aggregating {len(results)} results by line number")
+        
+        # Group results by line number
+        line_groups = {}
+        for result in results:
+            line_num = result.get('line', 0)
+            if line_num not in line_groups:
+                line_groups[line_num] = []
+            line_groups[line_num].append(result)
+        
+        aggregated_results = []
+        
+        for line_num, line_results in line_groups.items():
+            if len(line_results) == 1:
+                # Single result for this line - keep as is
+                aggregated_results.append(line_results[0])
+            else:
+                # Multiple results for same line - merge them
+                logger.info(f"🔗 Merging {len(line_results)} results for line {line_num}")
+                merged_result = self._merge_line_results(line_results, line_num)
+                aggregated_results.append(merged_result)
+        
+        # Sort by line number
+        aggregated_results.sort(key=lambda r: r.get('line', 0))
+        
+        logger.info(f"✅ Line aggregation complete: {len(results)} → {len(aggregated_results)} results")
+        return aggregated_results
+    
+    def _merge_line_results(self, line_results: List[Dict[str, Any]], line_num: int) -> Dict[str, Any]:
+        """
+        Merge multiple analysis results for the same line into a single comprehensive result.
+        """
+        if not line_results:
+            return {}
+            
+        # Use the first result as the base
+        merged = line_results[0].copy()
+        
+        # Collect all candidate types found for this line
+        all_candidate_types = list(set(r.get('candidate_type', '') for r in line_results))
+        all_reasons = list(set(r.get('reason', '') for r in line_results))
+        all_functions = list(set(r.get('function', '') for r in line_results))
+        
+        # Determine the primary candidate type (prioritize by safety)
+        type_priority = {
+            'vectorizable': 1,    # Highest priority (safest)
+            'simple_loop': 2,     
+            'risky': 3           # Lower priority (needs caution)
+        }
+        
+        primary_type = min(all_candidate_types, 
+                          key=lambda t: type_priority.get(t, 999), 
+                          default='unknown')
+        
+        # Merge AI analysis - use the most conservative/safest classification
+        ai_classifications = [r.get('ai_analysis', {}).get('classification', '') for r in line_results]
+        classification_priority = {
+            'safe_parallel': 1,
+            'requires_runtime_check': 2, 
+            'not_parallel': 3,
+            'logic_issue': 4
+        }
+        
+        primary_classification = min(ai_classifications,
+                                   key=lambda c: classification_priority.get(c, 999),
+                                   default='requires_runtime_check')
+        
+        # Get the best AI analysis from results with the primary classification
+        primary_ai_result = None
+        for r in line_results:
+            if r.get('ai_analysis', {}).get('classification') == primary_classification:
+                primary_ai_result = r
+                break
+        
+        if not primary_ai_result:
+            primary_ai_result = line_results[0]
+        
+        # Merge enhanced analysis - use the highest confidence
+        best_enhanced = max(line_results, 
+                           key=lambda r: r.get('enhanced_analysis', {}).get('confidence', 0))
+        
+        # Collect all transformations and suggestions
+        all_transformations = []
+        all_suggested_patches = []
+        for r in line_results:
+            transformations = r.get('ai_analysis', {}).get('transformations', [])
+            if transformations:
+                all_transformations.extend(transformations)
+            
+            patch = r.get('suggested_patch', '')
+            if patch and patch not in all_suggested_patches:
+                all_suggested_patches.append(patch)
+        
+        # Remove duplicates while preserving order
+        unique_transformations = []
+        for t in all_transformations:
+            if t not in unique_transformations:
+                unique_transformations.append(t)
+        
+        # Build the merged result
+        merged.update({
+            'candidate_type': primary_type,
+            'reason': f"Multiple patterns detected: {', '.join(all_reasons)}",
+            'suggested_patch': '\n'.join(all_suggested_patches),
+            'function': all_functions[0] if all_functions else merged.get('function', ''),
+            'ai_analysis': primary_ai_result.get('ai_analysis', {}).copy(),
+            'enhanced_analysis': best_enhanced.get('enhanced_analysis', {}).copy(),
+            'code_block': merged.get('code_block'),  # Keep existing code block info
+            'line_aggregated': True,  # Flag to indicate this was aggregated
+            'original_count': len(line_results),  # Track how many results were merged
+            'all_candidate_types': all_candidate_types,  # Keep all types for reference
+        })
+        
+        # Update AI analysis with merged transformations
+        if 'ai_analysis' in merged:
+            merged['ai_analysis']['transformations'] = unique_transformations
+            merged['ai_analysis']['reasoning'] = f"Consolidated analysis for line {line_num}: {primary_classification} based on {len(line_results)} detected patterns"
+        
+        logger.info(f"📋 Line {line_num}: Merged {all_candidate_types} → {primary_type} ({primary_classification})")
+        
+        return merged
 
     def _find_matching_code_block(self, result, code_blocks):
         """Find the code block that contains this analysis result"""

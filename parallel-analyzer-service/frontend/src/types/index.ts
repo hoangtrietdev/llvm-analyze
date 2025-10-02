@@ -79,6 +79,11 @@ export interface AnalysisResult {
   
   // Code block information
   code_block?: CodeBlock;
+  
+  // Line aggregation information (when multiple patterns found on same line)
+  line_aggregated?: boolean;
+  original_count?: number;
+  all_candidate_types?: string[];
 }
 
 export interface AnalysisResponse {
