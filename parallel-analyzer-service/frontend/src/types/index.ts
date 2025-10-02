@@ -1,5 +1,29 @@
 // Type definitions for the parallel analyzer frontend
 
+export interface OpenMPValidation {
+  status: 'verified' | 'compliant' | 'similar' | 'unknown' | 'non_compliant' | 'no_pragma' | 'unavailable';
+  confidence_boost: number;
+  reference_source?: string;
+  reference_url?: string;
+  similarity_score?: number;
+  compliance_notes?: string[];
+  pragma_validated?: string;
+}
+
+export interface ConfidenceBreakdown {
+  base_pattern: number;
+  code_context: number;
+  metadata: number;
+  openmp_validation: number;
+}
+
+export interface EnhancedAnalysisResult {
+  confidence: number;
+  confidence_breakdown: ConfidenceBreakdown;
+  openmp_validation: OpenMPValidation;
+  verification_status: string;
+}
+
 export interface AIAnalysis {
   classification: 'safe_parallel' | 'requires_runtime_check' | 'not_parallel' | 'logic_issue' | 'unknown';
   reasoning: string;
@@ -8,6 +32,9 @@ export interface AIAnalysis {
   tests_recommended: string[];
   logic_issue_type?: 'none' | 'false_positive' | 'non_parallel_algorithm' | 'data_race';
   analysis_source?: 'ai_llm' | 'fallback';
+  
+  // Enhanced validation data
+  enhanced_confidence?: EnhancedAnalysisResult;
 }
 
 export interface LLVMAnalysis {
@@ -25,7 +52,7 @@ export interface AnalysisComparison {
   confidence_boost: boolean;
 }
 
-export interface ParallelCandidate {
+export interface AnalysisResult {
   candidate_type: string;
   file: string;
   function: string;
@@ -33,14 +60,17 @@ export interface ParallelCandidate {
   reason: string;
   suggested_patch: string;
   ai_analysis: AIAnalysis;
-  hybrid_confidence?: number;
   llvm_analysis?: LLVMAnalysis;
   analysis_comparison?: AnalysisComparison;
+  hybrid_confidence?: number;
+  
+  // Enhanced validation results
+  enhanced_analysis?: EnhancedAnalysisResult;
 }
 
 export interface AnalysisResponse {
   success: boolean;
-  results: ParallelCandidate[];
+  results: AnalysisResult[];
   error?: string;
   processing_time?: number;
 }
@@ -57,3 +87,6 @@ export interface CodeExample {
   language: 'cpp' | 'python';
   description: string;
 }
+
+// Type alias for backward compatibility
+export type ParallelCandidate = AnalysisResult;

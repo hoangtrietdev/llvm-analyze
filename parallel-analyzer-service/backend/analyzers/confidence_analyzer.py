@@ -4,6 +4,8 @@ Confidence Analyzer - Skip low-confidence candidates
 This module implements confidence scoring and filtering to prioritize
 high-potential parallelization candidates, reducing AI analysis costs
 and improving overall result quality.
+
+Enhanced with OpenMP Specification Validation for authoritative confidence boosts.
 """
 
 import logging
@@ -12,6 +14,15 @@ from typing import List, Dict, Any, Optional, Tuple
 from enum import Enum
 
 logger = logging.getLogger(__name__)
+
+# Import OpenMP validator for specification compliance checking
+try:
+    from .openmp_validator import OpenMPSpecValidator, ValidationStatus
+    OPENMP_VALIDATOR_AVAILABLE = True
+except ImportError as e:
+    logger.warning(f"OpenMP validator not available: {e}")
+    OPENMP_VALIDATOR_AVAILABLE = False
+    ValidationStatus = None
 
 class ConfidenceLevel(Enum):
     """Confidence levels for parallelization candidates"""
@@ -37,6 +48,17 @@ class ConfidenceAnalyzer:
     def __init__(self):
         self.min_confidence_threshold = 0.6  # Skip candidates below this
         self.high_confidence_threshold = 0.8  # Prioritize candidates above this
+        
+        # Initialize OpenMP validator for specification compliance
+        if OPENMP_VALIDATOR_AVAILABLE:
+            try:
+                self.openmp_validator = OpenMPSpecValidator()
+                logger.info("OpenMP specification validator initialized successfully")
+            except Exception as e:
+                logger.warning(f"Failed to initialize OpenMP validator: {e}")
+                self.openmp_validator = None
+        else:
+            self.openmp_validator = None
         
         # Pattern confidence mappings
         self.pattern_confidence = {
@@ -85,9 +107,24 @@ class ConfidenceAnalyzer:
         Returns:
             Confidence score between 0.0 and 1.0
         """
+        return self.analyze_confidence_with_validation(candidate, code_context)["confidence"]
+
+    def analyze_confidence_with_validation(self, candidate: Dict[str, Any], 
+                                         code_context: str = "") -> Dict[str, Any]:
+        """
+        Enhanced confidence analysis with OpenMP specification validation
+        
+        Args:
+            candidate: LLVM analysis candidate
+            code_context: Source code context around the candidate
+            
+        Returns:
+            Dict containing confidence score and validation details
+        """
         base_confidence = self._get_base_pattern_confidence(candidate)
         
         # Analyze code context if available
+        context_modifier = 0.0
         if code_context:
             context_modifier = self._analyze_code_context(code_context)
             base_confidence += context_modifier
@@ -96,13 +133,31 @@ class ConfidenceAnalyzer:
         metadata_modifier = self._analyze_candidate_metadata(candidate)
         base_confidence += metadata_modifier
         
+        # OpenMP specification validation
+        validation_result = self._validate_openmp_compliance(candidate)
+        openmp_boost = validation_result["confidence_boost"]
+        base_confidence += openmp_boost
+        
         # Clamp to valid range
         final_confidence = max(0.0, min(1.0, base_confidence))
         
-        # Log confidence decision for debugging
-        self._log_confidence_decision(candidate, final_confidence, base_confidence)
+        # Prepare detailed result
+        result = {
+            "confidence": final_confidence,
+            "confidence_breakdown": {
+                "base_pattern": self._get_base_pattern_confidence(candidate),
+                "code_context": context_modifier,
+                "metadata": metadata_modifier,
+                "openmp_validation": openmp_boost
+            },
+            "openmp_validation": validation_result,
+            "verification_status": validation_result.get("status", "unknown")
+        }
         
-        return final_confidence
+        # Log confidence decision for debugging
+        self._log_confidence_decision_with_validation(candidate, result)
+        
+        return result
     
     def _get_base_pattern_confidence(self, candidate: Dict[str, Any]) -> float:
         """Get base confidence based on candidate type/pattern"""
@@ -201,6 +256,70 @@ class ConfidenceAnalyzer:
         
         return modifier
     
+    def _validate_openmp_compliance(self, candidate: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Validate OpenMP pragma suggestions against specification
+        
+        Args:
+            candidate: LLVM analysis candidate with suggested patch
+            
+        Returns:
+            Dict containing validation result and confidence boost
+        """
+        if not self.openmp_validator:
+            return {
+                "status": "unavailable",
+                "confidence_boost": 0.0,
+                "notes": ["OpenMP validator not available"]
+            }
+        
+        # Extract pragma from suggested patch
+        suggested_patch = candidate.get("suggested_patch", "")
+        if not suggested_patch or "#pragma omp" not in suggested_patch:
+            return {
+                "status": "no_pragma",
+                "confidence_boost": 0.0,
+                "notes": ["No OpenMP pragma found in suggestion"]
+            }
+        
+        # Extract the pragma line
+        pragma_lines = [line.strip() for line in suggested_patch.split('\n') 
+                       if line.strip().startswith('#pragma omp')]
+        
+        if not pragma_lines:
+            return {
+                "status": "no_pragma",
+                "confidence_boost": 0.0,
+                "notes": ["No valid OpenMP pragma found"]
+            }
+        
+        # Validate the first pragma (most important)
+        pragma = pragma_lines[0]
+        pattern_type = candidate.get("candidate_type", "")
+        
+        try:
+            validation_result = self.openmp_validator.validate_pragma_suggestion(
+                pragma, pattern_type
+            )
+            
+            return {
+                "status": validation_result.status.value,
+                "confidence_boost": validation_result.confidence_boost,
+                "reference_source": validation_result.reference_source,
+                "reference_url": validation_result.reference_url,
+                "similarity_score": validation_result.similarity_score,
+                "compliance_notes": validation_result.compliance_notes,
+                "pragma_validated": pragma
+            }
+            
+        except Exception as e:
+            logger.warning(f"OpenMP validation failed: {e}")
+            return {
+                "status": "validation_error",
+                "confidence_boost": 0.0,
+                "notes": [f"Validation error: {str(e)}"]
+            }
+
     def _log_confidence_decision(self, candidate: Dict[str, Any], 
                                final_confidence: float, base_confidence: float):
         """Log confidence analysis for debugging"""
@@ -211,6 +330,29 @@ class ConfidenceAnalyzer:
         logger.info(f"Confidence analysis: {function_name}:{line} "
                    f"({candidate_type}) = {final_confidence:.3f} "
                    f"(base: {base_confidence:.3f})")
+
+    def _log_confidence_decision_with_validation(self, candidate: Dict[str, Any], 
+                                               result: Dict[str, Any]):
+        """Enhanced logging with validation details"""
+        candidate_type = candidate.get("candidate_type", "unknown")
+        function_name = candidate.get("function", "unknown")
+        line = candidate.get("line", 0)
+        
+        breakdown = result["confidence_breakdown"]
+        validation = result["openmp_validation"]
+        
+        logger.info(f"✅ Enhanced confidence: {function_name}:{line} ({candidate_type}) = {result['confidence']:.3f}")
+        logger.debug(f"  📊 Breakdown: pattern={breakdown['base_pattern']:.2f} "
+                    f"context={breakdown['code_context']:+.2f} "
+                    f"meta={breakdown['metadata']:+.2f} "
+                    f"openmp={breakdown['openmp_validation']:+.2f}")
+        logger.debug(f"  🔍 Validation: {validation.get('status', 'unknown')}")
+        
+        if validation.get("reference_source"):
+            logger.debug(f"  📚 Reference: {validation['reference_source']}")
+        if validation.get("compliance_notes"):
+            for note in validation.get("compliance_notes", []):
+                logger.debug(f"  📝 {note}")
     
     def filter_by_confidence(self, candidates: List[Dict[str, Any]], 
                            code_content: str = "") -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:

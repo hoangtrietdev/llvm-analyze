@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ParallelCandidate } from '../types/index';
+import ValidationDetails from './ValidationDetails';
 
 interface AnalysisResultsProps {
   results: ParallelCandidate[];
@@ -12,6 +13,7 @@ interface ExpandedSections {
     aiDetails: boolean;
     codeContext: boolean;
     suggestions: boolean;
+    validation: boolean;
   };
 }
 
@@ -331,12 +333,95 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
                 {/* Pattern Analysis Details */}
                 <div className="bg-black bg-opacity-30 rounded p-3">
                   <h5 className="text-xs font-semibold text-gray-300 mb-2">🔍 Pattern Analysis:</h5>
-                  <div className="space-y-1 text-xs text-gray-400">
-                    <div>• <span className="text-gray-300">Type:</span> {result.candidate_type.replace('_', ' ')}</div>
-                    <div>• <span className="text-gray-300">LLVM Detection:</span> {result.reason}</div>
-                    <div>• <span className="text-gray-300">AI Classification:</span> {result.ai_analysis.classification.replace('_', ' ')}</div>
-                    {result.ai_analysis.analysis_source && (
-                      <div>• <span className="text-gray-300">Analysis Source:</span> {result.ai_analysis.analysis_source}</div>
+                  <div className="space-y-2">
+                    {/* Basic Pattern Information */}
+                    <div className="space-y-1 text-xs text-gray-400">
+                      <div>• <span className="text-gray-300">Type:</span> {result.candidate_type.replace('_', ' ')}</div>
+                      <div>• <span className="text-gray-300">LLVM Detection:</span> {result.reason}</div>
+                      <div>• <span className="text-gray-300">AI Classification:</span> {result.ai_analysis.classification.replace('_', ' ')}</div>
+                      {result.ai_analysis.analysis_source && (
+                        <div>• <span className="text-gray-300">Analysis Source:</span> {result.ai_analysis.analysis_source}</div>
+                      )}
+                    </div>
+
+                    {/* OpenMP Validation Information */}
+                    {result.enhanced_analysis?.openmp_validation && (
+                      <div className="border-t border-gray-600 pt-2 mt-2">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xs font-semibold text-blue-300">🔐 OpenMP Validation:</span>
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            result.enhanced_analysis.openmp_validation.status === 'verified' ? 'bg-green-900/30 text-green-400 border border-green-400/30' :
+                            result.enhanced_analysis.openmp_validation.status === 'compliant' ? 'bg-blue-900/30 text-blue-400 border border-blue-400/30' :
+                            result.enhanced_analysis.openmp_validation.status === 'similar' ? 'bg-yellow-900/30 text-yellow-400 border border-yellow-400/30' :
+                            result.enhanced_analysis.openmp_validation.status === 'non_compliant' ? 'bg-red-900/30 text-red-400 border border-red-400/30' :
+                            'bg-gray-900/30 text-gray-400 border border-gray-400/30'
+                          }`}>
+                            {result.enhanced_analysis.openmp_validation.status === 'verified' ? '🔐 Verified' :
+                             result.enhanced_analysis.openmp_validation.status === 'compliant' ? '✅ Compliant' :
+                             result.enhanced_analysis.openmp_validation.status === 'similar' ? '📋 Similar' :
+                             result.enhanced_analysis.openmp_validation.status === 'non_compliant' ? '⚠️ Non-Compliant' :
+                             '❓ Unknown'}
+                          </span>
+                        </div>
+                        
+                        <div className="space-y-1 text-xs">
+                          {result.enhanced_analysis.openmp_validation.confidence_boost > 0 && (
+                            <div className="text-green-400">
+                              • <span className="text-gray-300">Authority Boost:</span> +{(result.enhanced_analysis.openmp_validation.confidence_boost * 100).toFixed(0)}% confidence
+                            </div>
+                          )}
+                          
+                          {result.enhanced_analysis.openmp_validation.reference_source && (
+                            <div className="text-blue-300">
+                              • <span className="text-gray-300">Reference:</span> {result.enhanced_analysis.openmp_validation.reference_source}
+                              {result.enhanced_analysis.openmp_validation.reference_url && (
+                                <a 
+                                  href={result.enhanced_analysis.openmp_validation.reference_url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="ml-1 text-blue-400 hover:text-blue-300 underline"
+                                >
+                                  📖
+                                </a>
+                              )}
+                            </div>
+                          )}
+                          
+                          {result.enhanced_analysis.openmp_validation.pragma_validated && (
+                            <div className="bg-gray-900/40 rounded px-2 py-1 mt-1">
+                              <span className="text-gray-300 text-xs">Validated Pattern:</span>
+                              <code className="block text-green-300 text-xs font-mono mt-1">
+                                {result.enhanced_analysis.openmp_validation.pragma_validated}
+                              </code>
+                            </div>
+                          )}
+                          
+                          {result.enhanced_analysis.openmp_validation.similarity_score !== undefined && (
+                            <div className="text-gray-400">
+                              • <span className="text-gray-300">Similarity:</span> {(result.enhanced_analysis.openmp_validation.similarity_score * 100).toFixed(1)}% match
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Debug and Fallback for non-enhanced analysis */}
+                    {!result.enhanced_analysis?.openmp_validation && (
+                      <div className="border-t border-gray-600 pt-2 mt-2">
+                        <div className="text-xs text-gray-500 space-y-1">
+                          <div>
+                            <span className="text-yellow-400">⚠️</span> OpenMP validation data not available
+                          </div>
+                          <div className="text-gray-600">
+                            Debug: enhanced_analysis = {result.enhanced_analysis ? 'present' : 'null'}
+                          </div>
+                          {result.enhanced_analysis && !result.enhanced_analysis.openmp_validation && (
+                            <div className="text-gray-600">
+                              Enhanced analysis exists but missing openmp_validation field
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -438,7 +523,7 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
                     <div>
                       <h6 className="text-xs font-medium text-gray-300 mb-2">🔧 Parallelization Code:</h6>
                       <div className="space-y-2">
-                        {result.ai_analysis.transformations.map((transformation, i) => (
+                        {result.ai_analysis.transformations.map((transformation: string, i: number) => (
                           <div key={i} className="bg-gray-800 rounded p-2">
                             <code className="text-xs text-green-300 font-mono block">{transformation}</code>
                           </div>
@@ -537,13 +622,45 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
                 <h5 className="text-sm font-semibold text-blue-200">Recommended Validation Tests</h5>
               </div>
               <div className="space-y-2">
-                {result.ai_analysis.tests_recommended.map((test, i) => (
+                {result.ai_analysis.tests_recommended.map((test: string, i: number) => (
                   <div key={i} className="flex items-start bg-gray-800 rounded p-2">
                     <span className="text-blue-400 mr-2 text-xs font-bold">{i + 1}.</span>
                     <p className="text-xs text-blue-200 flex-1">{test}</p>
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Enhanced Validation Section */}
+          {result.enhanced_analysis && (
+            <div className="bg-black bg-opacity-30 rounded p-3 mt-2">
+              <div 
+                className="flex items-center justify-between cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleSection(index, 'validation');
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  <h5 className="text-xs font-semibold text-blue-300">🔐 Trust & Validation Analysis</h5>
+                  <span className={`px-2 py-1 rounded text-xs font-medium ${
+                    result.enhanced_analysis.confidence >= 0.8 ? 'bg-green-900/30 text-green-400' :
+                    result.enhanced_analysis.confidence >= 0.6 ? 'bg-yellow-900/30 text-yellow-400' :
+                    'bg-red-900/30 text-red-400'
+                  }`}>
+                    {(result.enhanced_analysis.confidence * 100).toFixed(0)}% Trusted
+                  </span>
+                </div>
+                <span className={`text-gray-400 text-xs transition-transform ${isExpanded(index, 'validation') ? 'rotate-180' : ''}`}>
+                  ▼
+                </span>
+              </div>
+              
+              <ValidationDetails 
+                enhancedAnalysis={result.enhanced_analysis}
+                isExpanded={isExpanded(index, 'validation')}
+              />
             </div>
           )}
 

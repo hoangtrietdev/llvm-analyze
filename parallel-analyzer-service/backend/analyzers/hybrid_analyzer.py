@@ -160,6 +160,35 @@ class HybridAnalyzer:
         
         # Phase 5: Final Processing and Statistics
         logger.info("Phase 5: Final result processing...")
+        logger.info(f"🔍 Processing {len(ai_enhanced_results)} results for enhanced analysis")
+        
+        # Add enhanced confidence scoring with OpenMP validation
+        for result in ai_enhanced_results:
+            result["hybrid_confidence"] = self._calculate_hybrid_confidence(result)
+            
+            # Add enhanced analysis with OpenMP validation
+            enhanced_analysis = self._get_enhanced_confidence_analysis(result, code_content)
+            if enhanced_analysis:
+                result["enhanced_analysis"] = enhanced_analysis
+                logger.info(f"✅ Added enhanced_analysis to result {result.get('function', 'unknown')}:{result.get('line', 0)}")
+            else:
+                logger.warning(f"❌ No enhanced_analysis for result {result.get('function', 'unknown')}:{result.get('line', 0)}")
+                # Add a minimal enhanced analysis for testing
+                result["enhanced_analysis"] = {
+                    "confidence": result.get("hybrid_confidence", 0.5),
+                    "confidence_breakdown": {
+                        "base_pattern": 0.5,
+                        "code_context": 0.1,
+                        "metadata": 0.1,
+                        "openmp_validation": 0.0
+                    },
+                    "openmp_validation": {
+                        "status": "unavailable",
+                        "confidence_boost": 0.0,
+                        "notes": ["Enhanced analysis debug mode"]
+                    },
+                    "verification_status": "debug_mode"
+                }
         
         # Log analysis statistics
         self._log_analysis_statistics(hotspots, confidence_stats, cache_stats, ai_enhanced_results)
@@ -233,9 +262,33 @@ class HybridAnalyzer:
             -(x.get("line", 0))          # Secondary: line number (descending)
         ), reverse=True)
         
-        # Add hybrid confidence scoring
+        # Add enhanced confidence scoring with OpenMP validation
         for result in combined:
             result["hybrid_confidence"] = self._calculate_hybrid_confidence(result)
+            
+            # Add enhanced analysis with OpenMP validation
+            enhanced_analysis = self._get_enhanced_confidence_analysis(result, code_content)
+            if enhanced_analysis:
+                result["enhanced_analysis"] = enhanced_analysis
+                logger.info(f"✅ Added enhanced_analysis to result {result.get('function', 'unknown')}:{result.get('line', 0)}")
+            else:
+                logger.warning(f"❌ No enhanced_analysis for result {result.get('function', 'unknown')}:{result.get('line', 0)}")
+                # Add a minimal enhanced analysis for testing
+                result["enhanced_analysis"] = {
+                    "confidence": result.get("hybrid_confidence", 0.5),
+                    "confidence_breakdown": {
+                        "base_pattern": 0.5,
+                        "code_context": 0.1,
+                        "metadata": 0.1,
+                        "openmp_validation": 0.0
+                    },
+                    "openmp_validation": {
+                        "status": "unavailable",
+                        "confidence_boost": 0.0,
+                        "notes": ["Enhanced analysis debug mode"]
+                    },
+                    "verification_status": "debug_mode"
+                }
         
         # Final validation - filter low confidence results
         validated = [r for r in combined if r.get("hybrid_confidence", 0) >= self.min_confidence_threshold]
@@ -440,6 +493,48 @@ class HybridAnalyzer:
         # Ensure within bounds
         return max(0.0, min(1.0, hybrid_confidence))
     
+    def _get_enhanced_confidence_analysis(self, result: Dict[str, Any], 
+                                        code_content: str) -> Optional[Dict[str, Any]]:
+        """
+        Get enhanced confidence analysis with OpenMP validation
+        
+        Args:
+            result: Analysis result from LLVM/AI
+            code_content: Source code content for context
+            
+        Returns:
+            Enhanced analysis with validation details or None if unavailable
+        """
+        try:
+            logger.info(f"Starting enhanced analysis for {result.get('function', 'unknown')}:{result.get('line', 0)}")
+            
+            # Check if confidence analyzer is available
+            if not hasattr(self, 'confidence_analyzer') or not self.confidence_analyzer:
+                logger.error("Confidence analyzer not available")
+                return None
+                
+            # Extract code context around the candidate
+            context = self._extract_candidate_context(code_content, result, context_lines=5)
+            logger.info(f"Extracted context: {len(context)} characters")
+            
+            # Use enhanced confidence analyzer
+            enhanced_result = self.confidence_analyzer.analyze_confidence_with_validation(
+                result, context
+            )
+            
+            # Debug logging
+            logger.info(f"✅ Enhanced analysis SUCCESS for {result.get('function', 'unknown')}:{result.get('line', 0)}: "
+                       f"confidence={enhanced_result.get('confidence', 0):.3f}, "
+                       f"openmp_status={enhanced_result.get('openmp_validation', {}).get('status', 'unknown')}")
+            
+            return enhanced_result
+            
+        except Exception as e:
+            logger.error(f"❌ Enhanced confidence analysis failed for {result.get('function', 'unknown')}:{result.get('line', 0)}: {e}")
+            import traceback
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            return None
+    
     def get_analysis_summary(self, results: List[Dict[str, Any]]) -> Dict[str, Any]:
         """
         Generate a summary of the analysis results
@@ -491,11 +586,18 @@ class HybridAnalyzer:
         if by_type.get("risky", 0) > 0:
             recommendations.append("Carefully analyze risky candidates for dependencies")
         
+        # Add enhanced analysis for the highest confidence result
+        enhanced_analysis = None
+        if results:
+            highest_conf_result = max(results, key=lambda x: x.get('hybrid_confidence', 0))
+            enhanced_analysis = highest_conf_result.get('enhanced_analysis')
+        
         return {
             "total_candidates": len(results),
             "by_type": by_type,
             "by_confidence": by_confidence,
-            "recommendations": recommendations or ["No specific recommendations"]
+            "recommendations": recommendations or ["No specific recommendations"],
+            "enhanced_analysis": enhanced_analysis
         }
     
     def _extract_candidate_context(self, code_content: str, candidate: Dict[str, Any], 

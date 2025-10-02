@@ -85,11 +85,16 @@ namespace PatternDetection {
     }
 
     std::string generateParallelPatch(Loop *L) {
-        return "#pragma omp parallel for\nfor(/* existing loop header */)";
+        return "// ✅ OpenMP 5.2 basic parallel for\n"
+               "#pragma omp parallel for\n"
+               "for(/* existing loop header */)";
     }
 
     std::string generateReductionPatch(Loop *L) {
-        return "#pragma omp parallel for reduction(+:sum)\nfor(/* existing loop header */)";
+        return "// ✅ OpenMP 5.2 reduction - adjust variable and operator\n"
+               "#pragma omp parallel for reduction(+:sum)\n"
+               "for(/* existing loop header */)\n"
+               "// Common operators: +, -, *, min:var, max:var";
     }
 
     // Enhanced pattern detection methods
@@ -411,20 +416,43 @@ namespace PatternDetection {
     }
 
     std::string generateOptimalPatch(const std::string& patternType, Loop *L) {
+        // Generate OpenMP pragmas following specification best practices
         if (patternType == "embarrassingly_parallel") {
-            return "#pragma omp parallel for";
+            return "// ✅ OpenMP 5.2 specification compliant\n"
+                   "#pragma omp parallel for\n"
+                   "// Reference: https://github.com/OpenMP/Examples";
         }
         else if (patternType == "vectorizable") {
-            return "#pragma omp simd\n#pragma omp parallel for";
+            return "// ✅ OpenMP 5.2 SIMD + parallel combination\n"
+                   "#pragma omp parallel for simd\n"
+                   "// Alternative: separate directives for fine control\n"
+                   "// #pragma omp parallel for\n"
+                   "// #pragma omp simd";
         }
         else if (patternType == "advanced_reduction") {
-            return "#pragma omp parallel for reduction(+:sum)  // Adjust reduction operator";
+            return "// ✅ OpenMP 5.2 reduction clause - adjust operator as needed\n"
+                   "#pragma omp parallel for reduction(+:sum)\n"
+                   "// Other operators: -, *, &, |, ^, &&, ||\n"
+                   "// min:var, max:var for min/max reductions";
         }
         else if (patternType == "matrix_multiply") {
-            return "#pragma omp parallel for collapse(2)";
+            return "// ✅ OpenMP 5.2 collapse for nested loops\n"
+                   "#pragma omp parallel for collapse(2)\n"
+                   "// Consider loop tiling for cache efficiency";
+        }
+        else if (patternType == "stencil") {
+            return "// ⚠️ OpenMP parallel - verify boundary conditions\n"
+                   "#pragma omp parallel for\n"
+                   "// Note: Check data dependencies at boundaries";
+        }
+        else if (patternType == "reduction") {
+            return "// ✅ OpenMP 5.2 standard reduction pattern\n"
+                   "#pragma omp parallel for reduction(+:sum)\n"
+                   "// Specify correct reduction variable and operator";
         }
         else {
-            return generateParallelPatch(L); // fallback to basic patch
+            return "// 📝 Basic OpenMP parallel - requires manual verification\n" +
+                   generateParallelPatch(L);
         }
     }
 
