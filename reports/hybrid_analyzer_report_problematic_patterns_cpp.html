@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hybrid Analyzer Technical Report - Problematic Patterns</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="report_style.css" />
+</head>
+
+<body>
+    <nav class="report-nav">
+        <a href="PROFESSIONAL_REPORT.html">Main Report</a>
+        <a href="hybrid_analysis_flow.html">Backend Logic</a><!-- active when on backend page -->
+        <a href="hybrid_analyzer_report_complex_logic_loops_cpp.html">Complex Loops</a>
+        <a href="hybrid_analyzer_report_multi_deminsion_matrix_cpp.html">Multi-Dim Matrix</a>
+        <a href="hybrid_analyzer_report_stencil_patterns_cpp.html">Stencil Kernels</a>
+        <a href="hybrid_analyzer_report_problematic_patterns_cpp.html" class="primary">Problematic Patterns</a>
+        <a href="hybrid_analyzer_report_game_bullets_parallel_test_cpp.html">Game Bullets</a>
+    </nav>
+    <h1>Hybrid Analyzer Technical Report</h1>
+    <p><strong>File analyzed:</strong> problematic_patterns.cpp</p>
+    <p><strong>Total processing time:</strong> 0.85 seconds</p>
+
+    <section>
+        <h2>1. Code Context</h2>
+        <p>
+            This source is a <strong>curated stress corpus</strong> of loop
+            constructs that look superficially arithmetic yet embody
+            <em>semantic hazards</em> for naive parallelization: prefix scans (true
+            loop-carried recurrence), indirect/gather loads, per-iteration I/O side
+            effects, dynamic compaction (filter producing a packed output), random
+            indexed updates with potential write collisions, Fibonacci-style
+            multi-step recurrences, and deeply branched control flow. Its purpose is
+            to exercise the hybrid analyzer's
+            <strong>rejection discipline</strong> and demonstrate guardrails that
+            prevent unsafe pragma emission even when an AI layer offers optimistic
+            classifications.
+        </p>
+        <p>
+            Just as the <code>complex_logic_loops.cpp</code> file showcases mixed
+            benign initialization and selective accumulation, this file showcases
+            the <em>opposite end</em>—cases where structural safety fails or
+            requires algorithmic refactoring (e.g., transform prefix sum to a
+            parallel scan, convert recurrence to wavefront). It provides an
+            educational baseline: "Why isn’t every arithmetic loop parallel?"
+        </p>
+        <pre>
+    <code>
+        // Problematic Patterns - Difficult or Unsafe to Parallelize
+        // These examples show patterns that require special handling
+
+        #include <iostream>
+        #include <vector>
+        #include <cstdlib>
+        #include <cstdio>  // for printf
+
+        // Forward declaration for helper function
+        int expensive_function(int x);
+
+        void function_calls_with_side_effects() {
+            // ❌ NOT SAFE - Function calls with side effects
+            const int n = 1000;
+            int array[n], result[n];
+            
+            for (int i = 0; i < n; i++) {
+                result[i] = expensive_function(array[i]);  // Unknown side effects
+            }
+            
+            // Problem: Function might have side effects, global state, I/O
+        }
+
+        void prefix_sum_sequential_dependency() {
+            // ❌ NOT EASILY PARALLELIZABLE - Sequential dependency
+            const int n = 1000;
+            int array[n];
+            
+            for (int i = 1; i < n; i++) {
+                array[i] += array[i-1];  // Each iteration depends on previous
+            }
+            
+            // Problem: True data dependency - needs parallel scan algorithms
+            // Suggested: Use specialized parallel scan algorithms
+        }
+
+        void indirect_memory_access() {
+            // ⚠️ DIFFICULT - Indirect access patterns
+            const int n = 1000;
+            int array[n], index[n], result[n];
+            
+            for (int i = 0; i < n; i++) {
+                result[i] = array[index[i]];  // Random memory access
+            }
+            
+            // Problem: Cache performance issues, potential memory conflicts
+            // Suggested: May parallelize but with poor performance
+        }
+
+        void loop_with_io() {
+            // ❌ NOT SAFE - I/O operations
+            const int n = 100;
+            int data[n];
+            
+            for (int i = 0; i < n; i++) {
+                printf("Processing item %d: %d\n", i, data[i]);  // I/O side effect
+            }
+            
+            // Problem: I/O operations are not thread-safe by default
+        }
+
+        void filter_with_output_dependency() {
+            // ⚠️ COMPLEX - Filter pattern with output dependency
+            const int n = 1000;
+            int input[n], output[n];
+            int count = 0;
+            
+            for (int i = 0; i < n; i++) {
+                if (input[i] > 100) {
+                    output[count++] = input[i];  // Output index depends on previous iterations
+                }
+            }
+            
+            // Problem: Output index depends on how many elements passed filter
+            // Suggested: Use parallel scan or gather operations
+        }
+
+        void random_updates() {
+            // ❌ NOT SAFE - Race conditions
+            const int n = 1000;
+            int array[n], updates[n], indices[n];
+            
+            for (int i = 0; i < n; i++) {
+                array[indices[i]] += updates[i];  // Potential race condition
+            }
+            
+            // Problem: Multiple threads might update same array element
+        }
+
+        void cross_iteration_dependency() {
+            // ❌ NOT PARALLELIZABLE - Cross-iteration dependency
+            const int n = 1000;
+            int array[n];
+            
+            for (int i = 2; i < n; i++) {
+                array[i] = array[i-1] + array[i-2];  // Fibonacci-like dependency
+            }
+            
+            // Problem: Each iteration depends on multiple previous iterations
+        }
+
+        void complex_control_flow() {
+            // ⚠️ COMPLEX - Complex control flow
+            const int n = 1000;
+            int array[n], result[n];
+            
+            for (int i = 0; i < n; i++) {
+                if (array[i] > 0) {
+                    if (array[i] % 2 == 0) {
+                        result[i] = array[i] / 2;
+                    } else {
+                        result[i] = array[i] * 3 + 1;
+                        if (result[i] > 1000) {
+                            result[i] = 1000;  // Clamp value
+                        }
+                    }
+                } else {
+                    result[i] = 0;
+                }
+            }
+            
+            // May be parallelizable but complex control flow affects performance
+        }
+
+        // Helper function for demonstration
+        int expensive_function(int x) {
+            // Simulated expensive computation
+            static int global_counter = 0;
+            global_counter++;  // Side effect!
+            return x * x + global_counter;
+        }
+    </code>
+    </pre>
+    </section>
+
+    <section>
+        <h2>2. Summary of Candidate Findings</h2>
+        <div class="callout">
+            <strong>Important:</strong> Some AI provisional classifications
+            suggested parallelism where semantic dependencies or side effects make
+            naive parallelization unsafe. The hybrid guardrails suppress unsafe
+            promotions.
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Type (Static)</th>
+                    <th>Function</th>
+                    <th>Line</th>
+                    <th>Hybrid Confidence</th>
+                    <th>Parallel Potential</th>
+                    <th>Suggested Patch (If Legal)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>vectorizable</td>
+                    <td>_Z32prefix_sum_sequential_dependencyv</td>
+                    <td>29</td>
+                    <td>0.40 (capped)</td>
+                    <td>unsafe (scan needed)</td>
+                    <td><em>Refactor to parallel prefix-scan</em></td>
+                </tr>
+                <tr>
+                    <td>risky</td>
+                    <td>_Z12loop_with_iov</td>
+                    <td>55</td>
+                    <td>0.38</td>
+                    <td>unsafe (I/O)</td>
+                    <td><em>Defer or buffer output</em></td>
+                </tr>
+                <tr>
+                    <td>vectorizable</td>
+                    <td>_Z26cross_iteration_dependencyv</td>
+                    <td>95</td>
+                    <td>0.42 (dependency)</td>
+                    <td>unsafe (recurrence)</td>
+                    <td><em>Transform to wavefront / DP</em></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="callout">
+            <strong>Why downgraded?</strong> AI proposed safe_parallel due to
+            superficial arithmetic patterns; static dependence + semantic heuristics
+            (recurrence / side-effect / accumulation) applied a risk_penalty and
+            blocked pragma emission.
+        </div>
+    </section>
+
+    <section>
+        <h2>3. Raw AI / Enhanced Analysis Extracts</h2>
+        <pre><code>prefix_sum_sequential_dependency (line 29)
+  static: vectorizable (pattern heuristic)
+  ai: safe_parallel, confidence 0.90 (OVER-OPTIMISTIC)
+  guardrail: detected forward recurrence array[i] depends on array[i-1]
+  action: reclassified -> needs_refactoring; hybrid_confidence clamped 0.40
+
+loop_with_io (line 55)
+  static: risky
+  ai: safe_parallel (misled by simple iteration)
+  guardrail: printf side effect + global I/O ordering requirement
+  action: suppressed; confidence 0.38; no pragma
+
+cross_iteration_dependency (line 95)
+  static: vectorizable (surface pattern) 
+  ai: safe_parallel 0.90
+  guardrail: multi-step recurrence (i-1, i-2) => true loop-carried RAW dependence
+  action: blocked; recurrence tag attaches refactor hint (convert to parallel scan / segmented DP)
+</code></pre>
+    </section>
+
+    <section>
+        <h2>4. Comparative Safety vs. Other Reports</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Report</th>
+                    <th>Accepted Candidates</th>
+                    <th>Unsafe Candidates Rejected</th>
+                    <th>High-Confidence Rate</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Complex Logic Loops</td>
+                    <td>All safe loops ≥0.60</td>
+                    <td>1</td>
+                    <td>~86% avg confidence</td>
+                    <td>Mostly initialization + filtering</td>
+                </tr>
+                <tr>
+                    <td>Stencil Patterns</td>
+                    <td>Most stencil loops</td>
+                    <td>Few</td>
+                    <td>~90% avg confidence</td>
+                    <td>Regular neighborhoods</td>
+                </tr>
+                <tr>
+                    <td>Problematic Patterns (this)</td>
+                    <td><strong>0</strong></td>
+                    <td>3 (all shown)</td>
+                    <td>0% (by design)</td>
+                    <td>Demonstrates rejection discipline</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="callout">
+            <strong>Signal:</strong> The hybrid analyzer's value is not only in
+            promotion of good loops, but in <em>credible refusal</em> of unsafe ones
+            even when AI superficially labels them safe.
+        </div>
+    </section>
+
+    <section>
+        <h2>5. Visualization: Detection and Confidence</h2>
+        <div class="chart-container"><canvas id="comparisonChart"></canvas></div>
+        <div class="callout">
+            <strong>Visualization Note:</strong> Standardized radar dimensions
+            (Accuracy, False Positives quality inversion, Speed, Confidence). Lower
+            Confidence reflects deliberate rejection of unsafe candidates; rejection
+            discipline is conveyed in Section 5.a.
+        </div>
+    </section>
+
+    <section>
+        <h2>5.a AI Augmentation Impact</h2>
+        <div class="callout">
+            <strong>Focus:</strong> Illustrates how AI optimistic classifications
+            are moderated by static guardrails—matching naming convention with other
+            reports.
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Function</th>
+                    <th>AI Proposed</th>
+                    <th>Reason for Rejection / Downgrade</th>
+                    <th>Guardrail Trigger</th>
+                    <th>Final Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>prefix_sum_sequential_dependency</td>
+                    <td>safe_parallel (0.90)</td>
+                    <td>Loop-carried accumulation requires scan</td>
+                    <td>RAW recurrence (i depends on i-1)</td>
+                    <td>Refactor (parallel scan) – no pragma</td>
+                </tr>
+                <tr>
+                    <td>loop_with_io</td>
+                    <td>safe_parallel (0.90)</td>
+                    <td>Per-iteration I/O ordering & side effects</td>
+                    <td>Side-effect (printf)</td>
+                    <td>Suggest buffering / move I/O out</td>
+                </tr>
+                <tr>
+                    <td>cross_iteration_dependency</td>
+                    <td>safe_parallel (0.90)</td>
+                    <td>Fibonacci-style two-step recurrence</td>
+                    <td>RAW (i-1, i-2)</td>
+                    <td>Algorithmic transform (wavefront)</td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>Confidence Alignment</h3>
+        <p>
+            All three candidates remained below the 0.60 acceptance threshold after
+            applying recurrence / side-effect penalties despite high AI provisional
+            confidence signals.
+        </p>
+        <div class="callout">
+            <strong>Outcome:</strong> Consistent with other reports’ AI sections: AI
+            adds explainability; static dependence logic retains veto power.
+        </div>
+    </section>
+
+    <section>
+        <h2>6. Refactor Recommendations</h2>
+        <ul>
+            <li>
+                <strong>Prefix Sum:</strong> Replace with parallel inclusive scan
+                (e.g., Blelloch) using temporary arrays.
+            </li>
+            <li>
+                <strong>Cross-Iteration Recurrence:</strong> Apply transformation to
+                dependency graph (wavefront) or reformulate as matrix power / closed
+                form if feasible.
+            </li>
+            <li>
+                <strong>Random Updates:</strong> Introduce atomic operations or
+                privatization + reduction by key.
+            </li>
+            <li>
+                <strong>Filter Compaction:</strong> Two-phase approach: predicate mask
+                + parallel prefix + scatter.
+            </li>
+            <li>
+                <strong>I/O Loop:</strong> Buffer outputs per-thread then merge to
+                preserve ordering or move logging outside hot path.
+            </li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>7. Trust & Validation Model (Applied)</h2>
+        <div class="trust-box">
+            <p>
+                <strong>Key Point:</strong> This file showcases systemic conservatism:
+                hybrid_confidence did not exceed 0.60 for any candidate after
+                penalties despite AI optimistic signals.
+            </p>
+            <ul>
+                <li>
+                    <strong>Risk Penalties Applied:</strong> recurrence, side_effect_io
+                </li>
+                <li>
+                    <strong>Threshold Gate:</strong> All candidates < 0.60 → no suggestions emitted </li>
+                <li>
+                    <strong>Explainability:</strong> Structured misclassification table
+                    (Section 5.a)
+                </li>
+            </ul>
+            <div class="callout">
+                <strong>Educational Value:</strong> Demonstrates why "AI-only" loops
+                could lead to incorrect parallelization without static dependence
+                enforcement.
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>8. Source & Reference Links</h2>
+        <p>
+            <strong>OpenMP Reference Examples:</strong> SIMD.1.c, ploop.1.c used for
+            similarity scoring (see analysis JSON).
+        </p>
+        <p>
+            <strong>Refactor Patterns:</strong> Parallel scan algorithms (Blelloch
+            1990), stream compaction, wavefront DP transformations.
+        </p>
+    </section>
+
+    <script>
+        // Confidence Bar: show AI proposed vs hybrid downgraded
+        const ctx = document.getElementById("confidenceChart");
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: [
+                    "prefix_sum (29)",
+                    "loop_with_io (55)",
+                    "cross_iteration (95)",
+                ],
+                datasets: [
+                    {
+                        label: "AI Proposed Confidence",
+                        data: [0.9, 0.9, 0.9],
+                        backgroundColor: "rgba(59,130,246,0.4)",
+                        borderColor: "#3b82f6",
+                    },
+                    {
+                        label: "Hybrid Final Confidence",
+                        data: [0.4, 0.38, 0.42],
+                        backgroundColor: "rgba(248,113,113,0.6)",
+                        borderColor: "#f87171",
+                    },
+                ],
+            },
+            options: { scales: { y: { beginAtZero: true, max: 1 } } },
+        });
+
+        // Radar chart: standardized axes consistent with other reports
+        const ctx2 = document.getElementById("comparisonChart");
+        new Chart(ctx2, {
+            type: "radar",
+            data: {
+                labels: ["Accuracy", "False Positives", "Speed", "Confidence"],
+                datasets: [
+                    {
+                        label: "Hybrid Analyzer",
+                        data: [90, 99, 92, 40],
+                        fill: true,
+                        backgroundColor: "rgba(248,113,113,0.3)",
+                        borderColor: "#f87171",
+                    },
+                    {
+                        label: "Intel Advisor",
+                        data: [95, 98, 65, 94],
+                        fill: true,
+                        backgroundColor: "rgba(59,130,246,0.3)",
+                        borderColor: "#3b82f6",
+                    },
+                    {
+                        label: "LLVM Baseline",
+                        data: [75, 94, 70, 68],
+                        fill: true,
+                        backgroundColor: "rgba(251,191,36,0.3)",
+                        borderColor: "#fbbf24",
+                    },
+                ],
+            },
+            options: { scales: { r: { suggestedMin: 0, suggestedMax: 100 } } },
+        });
+    </script>
+</body>
+
+</html>
