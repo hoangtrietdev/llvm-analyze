@@ -608,109 +608,160 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
                   </div>
                 )}
 
-                {/* Enhanced AI Analysis with Expand/Collapse */}
-                <div
-                  className={`rounded-lg p-3 mb-3 ${
-                    result.ai_analysis.classification === "safe_parallel"
-                      ? "bg-green-900 border border-green-700"
-                      : result.ai_analysis.classification === "not_parallel"
-                      ? "bg-red-900 border border-red-700"
-                      : result.ai_analysis.classification === "logic_issue"
-                      ? "bg-purple-900 border border-purple-700"
-                      : "bg-yellow-900 border border-yellow-700"
-                  }`}
-                >
-                  {/* AI Analysis Header - Always Visible */}
+                {/* Trust Score Analysis - Simplified */}
+                <div className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 border border-blue-700/50 rounded-lg p-4 mb-3">
+                  {/* Main Title with Final Trust Score */}
                   <div
-                    className="flex items-center justify-between cursor-pointer hover:bg-black hover:bg-opacity-20 rounded p-2 -m-2 transition-colors"
+                    className="flex items-center justify-between cursor-pointer hover:bg-black/20 rounded p-2 -m-2 transition-colors"
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleSection(index, "aiDetails");
                     }}
                   >
-                    <div className="flex items-center">
-                      <span className="text-lg mr-2">
-                        {getClassificationIcon(
-                          result.ai_analysis.classification
-                        )}
-                      </span>
-                      <h4 className="text-sm font-semibold text-gray-200">
-                        AI Analysis
-                      </h4>
-                      {result.ai_analysis.confidence && (
-                        <span
-                          className={`ml-2 text-xs font-medium ${getConfidenceColor(
-                            result.ai_analysis.confidence
-                          )}`}
-                        >
-                          ({Math.round(result.ai_analysis.confidence * 100)}%
-                          confidence)
-                        </span>
-                      )}
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">🎯</span>
+                      <div>
+                        <h4 className="text-base font-bold text-gray-100">
+                          Trust Score Analysis
+                        </h4>
+                        <p className="text-xs text-gray-400 mt-0.5">
+                          AI-validated parallelization confidence
+                        </p>
+                      </div>
                     </div>
-                    <span
-                      className={`text-gray-400 transition-transform ${
-                        isExpanded(index, "aiDetails") ? "rotate-180" : ""
-                      }`}
-                    >
-                      ▼
-                    </span>
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <div className="text-xs text-gray-400 mb-1">Final Trust Score</div>
+                        {(() => {
+                          const finalScore = result.enhanced_analysis?.confidence ?? result.ai_analysis.confidence;
+                          return (
+                            <span
+                              className={`text-2xl font-bold ${
+                                finalScore >= 0.8
+                                  ? "text-green-400"
+                                  : finalScore >= 0.6
+                                  ? "text-yellow-400"
+                                  : "text-red-400"
+                              }`}
+                            >
+                              {Math.round(finalScore * 100)}%
+                            </span>
+                          );
+                        })()}
+                      </div>
+                      <span
+                        className={`text-gray-400 transition-transform ml-2 ${
+                          isExpanded(index, "aiDetails") ? "rotate-180" : ""
+                        }`}
+                      >
+                        ▼
+                      </span>
+                    </div>
                   </div>
 
                   {/* Quick Summary - Always Visible */}
-                  <p className="text-sm text-gray-300 mb-2 mt-2 leading-relaxed">
-                    {result.ai_analysis.reasoning}
-                  </p>
+                  <div className="mt-3 pt-3 border-t border-gray-600">
+                    {/* Classification Badge */}
+                    <div className="mb-3">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getClassificationColor(
+                        result.ai_analysis.classification
+                      )}`}>
+                        {getClassificationIcon(result.ai_analysis.classification)}{" "}
+                        {result.ai_analysis.classification.replace("_", " ")}
+                      </span>
+                    </div>
 
-                  {/* Expandable Detailed Analysis */}
+                    {/* AI Analysis Breakdown */}
+                    <div className="bg-gray-800/40 rounded-lg p-3 mb-3">
+                      <h6 className="text-xs font-semibold text-gray-300 mb-2 flex items-center">
+                        <span className="mr-1">🤖</span>
+                        AI Analysis Components
+                      </h6>
+                      <div className="space-y-2 text-xs">
+                        {/* Code Context Analysis */}
+                        {(() => {
+                          const breakdown = result.enhanced_analysis?.confidence_breakdown;
+                          const codeContext = breakdown?.code_context ?? 0;
+                          const metadata = breakdown?.metadata ?? 0;
+                          
+                          return (
+                            <>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <span className={codeContext >= 0 ? "text-green-400" : "text-red-400"}>
+                                    {codeContext >= 0 ? "✓" : "⚠"}
+                                  </span>
+                                  <span className="text-gray-300">Code Context Analysis:</span>
+                                </div>
+                                <span className={`font-medium ${codeContext >= 0 ? "text-green-400" : "text-red-400"}`}>
+                                  {codeContext >= 0 ? "+" : ""}{(codeContext * 100).toFixed(0)}%
+                                </span>
+                              </div>
+                              {codeContext < 0 && (
+                                <div className="text-xs text-gray-400 ml-5 mb-1">
+                                  Risk factors detected in code patterns
+                                </div>
+                              )}
+                              {codeContext > 0 && (
+                                <div className="text-xs text-gray-400 ml-5 mb-1">
+                                  Clean, analyzable code structure
+                                </div>
+                              )}
+
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <span className={metadata >= 0 ? "text-green-400" : "text-orange-400"}>
+                                    {metadata >= 0 ? "✓" : "⚠"}
+                                  </span>
+                                  <span className="text-gray-300">Metadata Analysis:</span>
+                                </div>
+                                <span className={`font-medium ${metadata >= 0 ? "text-green-400" : "text-orange-400"}`}>
+                                  {metadata >= 0 ? "+" : ""}{(metadata * 100).toFixed(0)}%
+                                </span>
+                              </div>
+                              {metadata > 0 && (
+                                <div className="text-xs text-gray-400 ml-5 mb-1">
+                                  Good pattern match, favorable characteristics
+                                </div>
+                              )}
+                              {metadata <= 0 && (
+                                <div className="text-xs text-gray-400 ml-5 mb-1">
+                                  Additional analysis factors applied
+                                </div>
+                              )}
+
+                              {/* AI Confidence Result */}
+                              <div className="border-t border-gray-600 pt-2 mt-2">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-purple-400">→</span>
+                                    <span className="text-gray-200 font-medium">AI Confidence Result:</span>
+                                  </div>
+                                  <span className={`text-base font-bold ${getConfidenceColor(result.ai_analysis.confidence)}`}>
+                                    {Math.round(result.ai_analysis.confidence * 100)}%
+                                  </span>
+                                </div>
+                              </div>
+                            </>
+                          );
+                        })()}
+                      </div>
+                    </div>
+
+                    {/* AI Reasoning */}
+                    <p className="text-sm text-gray-300 leading-relaxed italic">
+                      "{result.ai_analysis.reasoning}"
+                    </p>
+                  </div>
+
+                  {/* Expandable Detailed Breakdown */}
                   {isExpanded(index, "aiDetails") && (
                     <div className="space-y-3 mt-4 pt-3 border-t border-gray-600">
-                      {/* Detailed Confidence Breakdown */}
-                      <div className="bg-black bg-opacity-30 rounded p-3">
-                        <h5 className="text-xs font-semibold text-gray-300 mb-2">
-                          🎯 Confidence Breakdown:
-                        </h5>
-                        <div className="space-y-2 text-xs">
-                          <div className="flex justify-between">
-                            <span className="text-gray-400">
-                              Pattern Type ({result.candidate_type}):
-                            </span>
-                            <span className="text-gray-300">
-                              Base confidence
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-400">
-                              Code Context Analysis:
-                            </span>
-                            <span className="text-gray-300">
-                              {result.ai_analysis.confidence > 0.8
-                                ? "+High"
-                                : result.ai_analysis.confidence > 0.6
-                                ? "+Medium"
-                                : "Risk factors detected"}
-                            </span>
-                          </div>
-                          <div className="flex justify-between border-t border-gray-600 pt-2">
-                            <span className="text-gray-300 font-medium">
-                              Final Confidence:
-                            </span>
-                            <span
-                              className={`font-medium ${getConfidenceColor(
-                                result.ai_analysis.confidence
-                              )}`}
-                            >
-                              {Math.round(result.ai_analysis.confidence * 100)}%
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Trust Score Calculation */}
+                      {/* Trust Score Components */}
                       <div className="bg-gray-900/60 rounded-lg p-4 border border-gray-700">
                         <h6 className="text-xs font-bold text-gray-300 mb-3 flex items-center">
-                          <span className="mr-2">📊</span>
-                          Trust Score Calculation (Additive Model)
+                          <span className="mr-2">�</span>
+                          How Trust Score is Calculated
                         </h6>
 
                         <div className="space-y-2 text-xs">

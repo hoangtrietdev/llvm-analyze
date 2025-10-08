@@ -81,35 +81,47 @@
   },
   "62c4db58e6eba87b246f0c21c745358b660291abfc8cca5cb023840c38867bd6": {
     "analysis": {
-      "classification": "requires_analysis",
-      "reasoning": "Individual candidate analysis",
-      "confidence": 0.7,
-      "transformations": [],
-      "tests_recommended": [],
+      "classification": "safe_parallel",
+      "reasoning": "Static analysis identifies this as embarrassingly_parallel; positive indicators found in code context",
+      "confidence": 0.95,
+      "transformations": [
+        "#pragma omp parallel for"
+      ],
+      "tests_recommended": [
+        "Compare parallel vs sequential results",
+        "Performance benchmarking"
+      ],
       "logic_issue_type": "none",
-      "analysis_source": "ai_llm"
+      "analysis_source": "heuristic_analysis"
     },
-    "timestamp": 1759257209.472894,
+    "timestamp": 1759913834.868356,
     "usage_count": 1,
     "pattern_hash": "62c4db58e6eba87b246f0c21c745358b660291abfc8cca5cb023840c38867bd6",
     "original_code_snippet": "};\n\nvoid matrixAdd(const Matrix& A, const Matrix& B, Matrix& C) {\n    for (size_t i = 0; i < A.rows; ++i) {\n        for (size_t j = 0; j < A.cols; ++j) {\n            C.data[i][j] = A.data[i][j] + B.da",
-    "confidence": 0.7
+    "confidence": 0.95
   },
   "6cc3f0e59ce6202ae174c36a597b8bae878a40dcdee94b39556c3b9f72f1b513": {
     "analysis": {
-      "classification": "requires_analysis",
-      "reasoning": "Individual candidate analysis",
-      "confidence": 0.7,
-      "transformations": [],
-      "tests_recommended": [],
+      "classification": "safe_parallel",
+      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
+      "confidence": 0.95,
+      "transformations": [
+        "#pragma omp simd",
+        "Enable compiler auto-vectorization"
+      ],
+      "tests_recommended": [
+        "Compare parallel vs sequential results",
+        "Performance benchmarking",
+        "Verify SIMD instruction generation"
+      ],
       "logic_issue_type": "none",
-      "analysis_source": "ai_llm"
+      "analysis_source": "heuristic_analysis"
     },
-    "timestamp": 1759257209.473763,
+    "timestamp": 1759913834.8709,
     "usage_count": 1,
     "pattern_hash": "6cc3f0e59ce6202ae174c36a597b8bae878a40dcdee94b39556c3b9f72f1b513",
     "original_code_snippet": "\nvoid matrixAdd(const Matrix& A, const Matrix& B, Matrix& C) {\n    for (size_t i = 0; i < A.rows; ++i) {\n        for (size_t j = 0; j < A.cols; ++j) {\n            C.data[i][j] = A.data[i][j] + B.data[",
-    "confidence": 0.7
+    "confidence": 0.95
   },
   "8c95ea39b2404cd0d72d641151de314f1346532ccba63d06cfb7c3fd65dffb5d": {
     "analysis": {
@@ -192,7 +204,7 @@
       "logic_issue_type": "none",
       "analysis_source": "heuristic_analysis"
     },
-    "timestamp": 1759257972.852562,
+    "timestamp": 1759913856.102581,
     "usage_count": 1,
     "pattern_hash": "fa54c4a271a56ea1cd425a116c3d6273a861a2aa0d1fc2bd022d262089361a4c",
     "original_code_snippet": "\n// Another parallel candidate - element-wise multiplication\nvoid vectorMultiply(const float* a, const float* b, float* result, int n) {\n    for (int i = 0; i < n; i++) {\n        result[i] = a[i] * b[",
@@ -213,7 +225,7 @@
       "logic_issue_type": "none",
       "analysis_source": "heuristic_analysis"
     },
-    "timestamp": 1759257972.8538508,
+    "timestamp": 1759913856.097862,
     "usage_count": 1,
     "pattern_hash": "de687555261750d3702c3fb01de4afb812a30620ad921c9f3ecf5854b1220202",
     "original_code_snippet": "\n// Simple parallel loop candidate - vector addition\nvoid vectorAdd(const std::vector<float>& a, const std::vector<float>& b, std::vector<float>& c) {\n    for (size_t i = 0; i < a.size(); i++) {\n     ",
@@ -234,7 +246,7 @@
       "logic_issue_type": "none",
       "analysis_source": "heuristic_analysis"
     },
-    "timestamp": 1759257972.854783,
+    "timestamp": 1759913856.104519,
     "usage_count": 1,
     "pattern_hash": "a54df4cecc0fb97caadd0af04d53951a02d4215e796b81fdaaa776c4860d81d7",
     "original_code_snippet": "// Reduction pattern - sum computation\nfloat computeSum(const std::vector<float>& data) {\n    float sum = 0.0f;\n    for (size_t i = 0; i < data.size(); i++) {\n        sum += data[i];  // Reduction pat",
@@ -257,7 +269,7 @@
       "logic_issue_type": "none",
       "analysis_source": "heuristic_analysis"
     },
-    "timestamp": 1759257972.855777,
+    "timestamp": 1759913856.100779,
     "usage_count": 1,
     "pattern_hash": "860172eb6eb7d3431870db0ded5a8519039a207a89ad3278add436784cc9a760",
     "original_code_snippet": "\n// Sequential dependency - not parallelizable\nvoid sequentialDependency(std::vector<float>& data) {\n    for (size_t i = 1; i < data.size(); i++) {\n        data[i] = data[i] + data[i-1];  // data[i] d",
@@ -326,7 +338,7 @@
       "logic_issue_type": "none",
       "analysis_source": "heuristic_analysis"
     },
-    "timestamp": 1759258681.628891,
+    "timestamp": 1759913880.995492,
     "usage_count": 1,
     "pattern_hash": "c2003424a295fff5edeeb4a31387f8b5583baccf0a1a797e70f932e1754a098b",
     "original_code_snippet": "    \n    // Initialize matrices\n    for (size_t i = 0; i < N; i++) {\n        for (size_t j = 0; j < N; j++) {\n            A(i, j) = static_cast<double>(i + j);\n            B(i, j) = static_cast<double",
@@ -347,7 +359,7 @@
       "logic_issue_type": "none",
       "analysis_source": "heuristic_analysis"
     },
-    "timestamp": 1759258681.630281,
+    "timestamp": 1759913881.0021079,
     "usage_count": 1,
     "pattern_hash": "a7cdedb388f1784d860b8756a9edf058fd7f4d6973519ba6aeea0dbd8a11e284",
     "original_code_snippet": "\n// Complex pattern - matrix multiplication (trickier to parallelize)\nvoid matrixMultiply(const Matrix& A, const Matrix& B, Matrix& C) {\n    for (size_t i = 0; i < A.getRows(); i++) {\n        for (siz",
@@ -368,7 +380,7 @@
       "logic_issue_type": "none",
       "analysis_source": "heuristic_analysis"
     },
-    "timestamp": 1759258681.631339,
+    "timestamp": 1759913881.003795,
     "usage_count": 1,
     "pattern_hash": "3b07dcbe1a423113f30eb64d52936ae743fc5a1d3538dd0b158e87b07f4596be",
     "original_code_snippet": "// Parallel candidate with reduction - matrix norm\ndouble matrixFrobeniusNorm(const Matrix& A) {\n    double sum = 0.0;\n    for (size_t i = 0; i < A.getRows(); i++) {\n        for (size_t j = 0; j < A.g",
@@ -391,7 +403,7 @@
       "logic_issue_type": "none",
       "analysis_source": "heuristic_analysis"
     },
-    "timestamp": 1759258681.6323211,
+    "timestamp": 1759913881.006146,
     "usage_count": 1,
     "pattern_hash": "be0191a499641434ec290e7e5613a384d15d9eb8f94bfcac46314ecf5b8a2665",
     "original_code_snippet": "// Complex pattern - matrix multiplication (trickier to parallelize)\nvoid matrixMultiply(const Matrix& A, const Matrix& B, Matrix& C) {\n    for (size_t i = 0; i < A.getRows(); i++) {\n        for (size",
@@ -1422,5 +1434,27 @@
     "pattern_hash": "3d2544a62799c3356db9103983cde8c0852a3db13b5e7812f40608e72e6adebf",
     "original_code_snippet": "    std::vector<int> data(1000);\n    \n    // Simple loop that should be easily parallelizable\n    for (int i = 0; i < 1000; i++) {\n        data[i] = i * 2;  // No dependencies, perfect for paralleliza",
     "confidence": 0.95
+  },
+  "879a599df7f888424df69b04cbb740c7501b62c1dbd9fd1dbce034e61c911916": {
+    "analysis": {
+      "classification": "not_parallel",
+      "reasoning": "Static analysis identifies this as simple_loop; positive indicators found in code context",
+      "confidence": 0.55,
+      "transformations": [
+        "Manual parallelization analysis required"
+      ],
+      "tests_recommended": [
+        "Thorough dependency analysis required",
+        "Compare parallel vs sequential results",
+        "Performance benchmarking"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "heuristic_analysis"
+    },
+    "timestamp": 1759913881.008204,
+    "usage_count": 1,
+    "pattern_hash": "879a599df7f888424df69b04cbb740c7501b62c1dbd9fd1dbce034e61c911916",
+    "original_code_snippet": "    Matrix A(N, N), B(N, N), C(N, N);\n    \n    // Initialize matrices\n    for (size_t i = 0; i < N; i++) {\n        for (size_t j = 0; j < N; j++) {\n            A(i, j) = static_cast<double>(i + j);\n  ",
+    "confidence": 0.55
   }
 }
