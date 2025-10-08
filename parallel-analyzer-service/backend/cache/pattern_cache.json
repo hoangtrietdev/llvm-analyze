@@ -280,7 +280,7 @@
       "logic_issue_type": "none",
       "analysis_source": "heuristic_analysis"
     },
-    "timestamp": 1759258664.9475148,
+    "timestamp": 1759863630.802216,
     "usage_count": 1,
     "pattern_hash": "d8f977f30fd2dda1ccd4badbfc0857cc9c8f279c38548445eb5cb87a1f74c618",
     "original_code_snippet": "    const int n = 1000;\n    int array[n];\n    \n    for (int i = 2; i < n; i++) {\n        array[i] = array[i-1] + array[i-2];  // Fibonacci-like dependency\n    }\n    ",
@@ -303,7 +303,7 @@
       "logic_issue_type": "none",
       "analysis_source": "heuristic_analysis"
     },
-    "timestamp": 1759258664.9486568,
+    "timestamp": 1759863630.805237,
     "usage_count": 1,
     "pattern_hash": "35bd0edae95ef41d095a5a453adfeee7ea8c30093fe98038aaabb1ce5ed956dc",
     "original_code_snippet": "    const int n = 1000;\n    int array[n];\n    \n    for (int i = 1; i < n; i++) {\n        array[i] += array[i-1];  // Each iteration depends on previous\n    }\n    ",
@@ -1376,5 +1376,51 @@
     "pattern_hash": "2875fe0394748288c82076fc507e9946b7b8828bf0aef9283cd943620ec52976",
     "original_code_snippet": "                    float dy = b->position.y - t->pos.y;\n                    float dist2 = dx * dx + dy * dy;\n                    float r = b->type->radius + t->radius;\n                    if (dist2 <",
     "confidence": 0.55
+  },
+  "72fdfc8cd868891cb260941835bb8f079190f9b488843f98b028a5d4e911c9b2": {
+    "analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
+      "confidence": 0.95,
+      "transformations": [
+        "#pragma omp simd",
+        "Enable compiler auto-vectorization"
+      ],
+      "tests_recommended": [
+        "Compare parallel vs sequential results",
+        "Performance benchmarking",
+        "Verify SIMD instruction generation"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "heuristic_analysis"
+    },
+    "timestamp": 1759912667.273942,
+    "usage_count": 1,
+    "pattern_hash": "72fdfc8cd868891cb260941835bb8f079190f9b488843f98b028a5d4e911c9b2",
+    "original_code_snippet": "    }\n    \n    // Complex loop with dependencies that AI should catch\n    for (int i = 1; i < 1000; i++) {\n        data[i] = data[i-1] + i;  // Sequential dependency - NOT parallelizable\n    }\n    ",
+    "confidence": 0.95
+  },
+  "3d2544a62799c3356db9103983cde8c0852a3db13b5e7812f40608e72e6adebf": {
+    "analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
+      "confidence": 0.95,
+      "transformations": [
+        "#pragma omp simd",
+        "Enable compiler auto-vectorization"
+      ],
+      "tests_recommended": [
+        "Compare parallel vs sequential results",
+        "Performance benchmarking",
+        "Verify SIMD instruction generation"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "heuristic_analysis"
+    },
+    "timestamp": 1759912667.2765708,
+    "usage_count": 1,
+    "pattern_hash": "3d2544a62799c3356db9103983cde8c0852a3db13b5e7812f40608e72e6adebf",
+    "original_code_snippet": "    std::vector<int> data(1000);\n    \n    // Simple loop that should be easily parallelizable\n    for (int i = 0; i < 1000; i++) {\n        data[i] = i * 2;  // No dependencies, perfect for paralleliza",
+    "confidence": 0.95
   }
 }

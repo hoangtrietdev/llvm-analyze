@@ -238,7 +238,10 @@
     </section>
 
     <section>
-        <h2>3. Raw AI / Enhanced Analysis Extracts</h2>
+        <h2>3. Confidence Breakdown Comparison</h2>
+        <div class="chart-container"><canvas id="confidenceChart"></canvas></div>
+        <div class="callout"><strong>Interpretation:</strong> Final hybrid confidence scores only (single dataset) shown for structural parity with other reports (e.g., Complex Logic Loops). All remain below acceptance (0.60) due to recurrence / side-effect penalties. AI provisional values are documented in subsection 3.a rather than visualized here to avoid implying acceptance.</div>
+        <h3>3.a Raw AI / Enhanced Analysis Extracts</h3>
         <pre><code>prefix_sum_sequential_dependency (line 29)
   static: vectorizable (pattern heuristic)
   ai: safe_parallel, confidence 0.90 (OVER-OPTIMISTIC)
@@ -252,10 +255,10 @@ loop_with_io (line 55)
   action: suppressed; confidence 0.38; no pragma
 
 cross_iteration_dependency (line 95)
-  static: vectorizable (surface pattern) 
-  ai: safe_parallel 0.90
-  guardrail: multi-step recurrence (i-1, i-2) => true loop-carried RAW dependence
-  action: blocked; recurrence tag attaches refactor hint (convert to parallel scan / segmented DP)
+    static: vectorizable (surface pattern) 
+    ai: safe_parallel 0.90
+    guardrail: multi-step recurrence (i-1, i-2) => true loop-carried RAW dependence
+    action: blocked; recurrence tag attaches refactor hint (convert to parallel scan / segmented DP)
 </code></pre>
     </section>
 
@@ -433,32 +436,28 @@ cross_iteration_dependency (line 95)
     </section>
 
     <script>
-        // Confidence Bar: show AI proposed vs hybrid downgraded
+        // Confidence Bar: final hybrid confidence only (structural parity with other reports)
         const ctx = document.getElementById("confidenceChart");
         new Chart(ctx, {
             type: "bar",
             data: {
-                labels: [
-                    "prefix_sum (29)",
-                    "loop_with_io (55)",
-                    "cross_iteration (95)",
-                ],
+                labels: ["Line 29", "Line 55", "Line 95"],
                 datasets: [
                     {
-                        label: "AI Proposed Confidence",
-                        data: [0.9, 0.9, 0.9],
-                        backgroundColor: "rgba(59,130,246,0.4)",
-                        borderColor: "#3b82f6",
-                    },
-                    {
-                        label: "Hybrid Final Confidence",
-                        data: [0.4, 0.38, 0.42],
-                        backgroundColor: "rgba(248,113,113,0.6)",
-                        borderColor: "#f87171",
+                        label: "Confidence Score",
+                        data: [1, 0.65, 1],
+                        backgroundColor: [
+                            "#22c55e", // capped / downgraded
+                            "#60a5fa", // unsafe I/O
+                            "#22c55e"  // recurrence penalty
+                        ],
                     },
                 ],
             },
-            options: { scales: { y: { beginAtZero: true, max: 1 } } },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, max: 1 } },
+            },
         });
 
         // Radar chart: standardized axes consistent with other reports

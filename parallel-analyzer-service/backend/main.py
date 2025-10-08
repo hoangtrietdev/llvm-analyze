@@ -98,6 +98,19 @@ class CodeBlock(BaseModel):
     analysis_notes: List[str]
     block_analysis: str
 
+class LLVMAnalysis(BaseModel):
+    candidate_type: str
+    reason: str
+    confidence: float
+    analysis_source: str = "llvm_static"
+
+class AnalysisComparison(BaseModel):
+    llvm_classification: str
+    ai_classification: str
+    agreement: str
+    logic_issue_detected: bool
+    confidence_boost: bool
+
 class ParallelCandidate(BaseModel):
     candidate_type: str
     file: str
@@ -108,6 +121,9 @@ class ParallelCandidate(BaseModel):
     ai_analysis: AIAnalysis
     enhanced_analysis: Optional[EnhancedAnalysisResult] = None
     code_block: Optional[CodeBlock] = None
+    llvm_analysis: Optional[LLVMAnalysis] = None
+    analysis_comparison: Optional[AnalysisComparison] = None
+    hybrid_confidence: Optional[float] = None
 
 class AnalysisResponse(BaseModel):
     success: bool
@@ -291,23 +307,42 @@ async def analyze_parallel_code(
                 else:
                     logger.warning(f"❌ No code block data for result {result.get('line', 0)}")
 
-                candidate = ParallelCandidate(
-                    candidate_type=result.get("candidate_type", "unknown"),
-                    file=filename,
-                    function=result.get("function", "unknown"),
-                    line=result.get("line", 0),
-                    reason=result.get("reason", ""),
-                    suggested_patch=result.get("suggested_patch", ""),
-                    ai_analysis=AIAnalysis(
+                # Build candidate dictionary with all fields
+                candidate_dict = {
+                    "candidate_type": result.get("candidate_type", "unknown"),
+                    "file": filename,
+                    "function": result.get("function", "unknown"),
+                    "line": result.get("line", 0),
+                    "reason": result.get("reason", ""),
+                    "suggested_patch": result.get("suggested_patch", ""),
+                    "ai_analysis": AIAnalysis(
                         classification=result.get("ai_analysis", {}).get("classification", "unknown"),
                         reasoning=result.get("ai_analysis", {}).get("reasoning", ""),
                         confidence=result.get("ai_analysis", {}).get("confidence", 0.0),
                         transformations=result.get("ai_analysis", {}).get("transformations", []),
                         tests_recommended=result.get("ai_analysis", {}).get("tests_recommended", [])
                     ),
-                    enhanced_analysis=enhanced_analysis_data,
-                    code_block=code_block_data
-                )
+                    "enhanced_analysis": enhanced_analysis_data,
+                    "code_block": code_block_data
+                }
+                
+                # Add LLVM analysis if present
+                if result.get("llvm_analysis"):
+                    candidate_dict["llvm_analysis"] = result["llvm_analysis"]
+                    logger.info(f"✓ Including LLVM analysis: confidence={result['llvm_analysis'].get('confidence', 'N/A')}")
+                else:
+                    logger.warning(f"⚠ No llvm_analysis in result for line {result.get('line', 0)}")
+                
+                # Add analysis comparison if present
+                if result.get("analysis_comparison"):
+                    candidate_dict["analysis_comparison"] = result["analysis_comparison"]
+                    logger.info(f"✓ Including analysis comparison: {result['analysis_comparison'].get('agreement', 'N/A')}")
+                
+                # Add hybrid confidence if present
+                if result.get("hybrid_confidence"):
+                    candidate_dict["hybrid_confidence"] = result["hybrid_confidence"]
+                
+                candidate = ParallelCandidate(**candidate_dict)
                 candidates.append(candidate)
             
             processing_time = time.time() - start_time
