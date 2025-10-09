@@ -124,6 +124,8 @@ class ParallelCandidate(BaseModel):
     llvm_analysis: Optional[LLVMAnalysis] = None
     analysis_comparison: Optional[AnalysisComparison] = None
     hybrid_confidence: Optional[float] = None
+    # Unified final score for UI/analytics
+    final_trust_score: Optional[float] = None
 
 class AnalysisResponse(BaseModel):
     success: bool

@@ -557,9 +557,9 @@ Return ONLY the JSON object."""
         The confidence score is based on actual AI assessment, not hardcoded values.
         """
         try:
-            if self.simple_groq and self.simple_groq.is_available():
+            if self.simple_client and self.simple_client.is_available():
                 # Use the SimpleGroqClient for individual candidate analysis
-                analysis_results = self.simple_groq.analyze_candidates_batch([candidate])
+                analysis_results = self.simple_client.analyze_candidates_batch([candidate])
                 
                 if analysis_results and len(analysis_results) > 0:
                     result = analysis_results[0]

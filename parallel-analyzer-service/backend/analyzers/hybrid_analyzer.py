@@ -192,6 +192,8 @@ class HybridAnalyzer:
             if enhanced_analysis:
                 result["enhanced_analysis"] = enhanced_analysis
                 logger.info(f"✅ Added enhanced_analysis to result {result.get('function', 'unknown')}:{result.get('line', 0)}")
+                # Unified final score prefers enhanced confidence when present
+                result["final_trust_score"] = enhanced_analysis.get("confidence", result["hybrid_confidence"]) 
             else:
                 logger.warning(f"❌ No enhanced_analysis for result {result.get('function', 'unknown')}:{result.get('line', 0)}")
                 # Add a minimal enhanced analysis for testing
@@ -210,6 +212,7 @@ class HybridAnalyzer:
                     },
                     "verification_status": "debug_mode"
                 }
+                result["final_trust_score"] = result.get("hybrid_confidence", 0.5)
         
         # Log analysis statistics
         self._log_analysis_statistics(hotspots, confidence_stats, cache_stats, ai_enhanced_results)

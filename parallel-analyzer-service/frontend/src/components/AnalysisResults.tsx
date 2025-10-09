@@ -215,7 +215,8 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
     resultIndex: number,
     section: keyof ExpandedSections[number]
   ) => {
-    return expandedSections[resultIndex]?.[section] || false;
+    // Default all sections to expanded (true) when no explicit state exists
+    return expandedSections[resultIndex]?.[section] ?? true;
   };
 
   // Group results by code blocks
@@ -644,7 +645,9 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
                           </div>
                           {(() => {
                             const finalScore =
+                              result.final_trust_score ??
                               result.enhanced_analysis?.confidence ??
+                              result.hybrid_confidence ??
                               result.ai_analysis.confidence;
                             return (
                               <span
@@ -1602,16 +1605,18 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
                   <div className="mt-3 pt-2 border-t border-gray-600 flex items-center justify-between text-xs text-gray-400">
                     <div className="flex items-center space-x-4">
                       <span>LLVM: {result.candidate_type}</span>
-                      {result.hybrid_confidence && (
-                        <span
-                          className={getConfidenceColor(
-                            result.hybrid_confidence
-                          )}
-                        >
-                          Hybrid Score:{" "}
-                          {Math.round(result.hybrid_confidence * 100)}%
-                        </span>
-                      )}
+                      {(() => {
+                        const finalScore =
+                          result.final_trust_score ??
+                          result.enhanced_analysis?.confidence ??
+                          result.hybrid_confidence ??
+                          result.ai_analysis.confidence;
+                        return (
+                          <span className={getConfidenceColor(finalScore)}>
+                            Final Trust Score: {Math.round(finalScore * 100)}%
+                          </span>
+                        );
+                      })()}
                     </div>
                     <div className="text-right">
                       {result.ai_analysis.classification === "safe_parallel"

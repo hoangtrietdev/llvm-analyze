@@ -73,6 +73,7 @@ export interface AnalysisResult {
   llvm_analysis?: LLVMAnalysis;
   analysis_comparison?: AnalysisComparison;
   hybrid_confidence?: number;
+  final_trust_score?: number;
   
   // Enhanced validation results
   enhanced_analysis?: EnhancedAnalysisResult;
