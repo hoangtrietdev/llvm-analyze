@@ -5,7 +5,9 @@ A sophisticated production-ready analyzer that combines LLVM static analysis wit
 ## 🎯 Overview
 
 This advanced system provides **hybrid analysis** that delivers **95% accuracy** with **70% cost reduction** through:
-http://34.27.79.137/
+
+https://parallel-analyzer.duckdns.org/
+
 <img width="1785" height="942" alt="Application Result" src="https://github.com/user-attachments/assets/83ef51e0-1ec8-4024-9309-6a8051454c07" />
 
 ### 🔍 **Multi-Phase Analysis Pipeline**
