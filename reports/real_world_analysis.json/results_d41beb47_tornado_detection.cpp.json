@@ -1,0 +1,197 @@
+[
+  {
+    "candidate_type": "simple_loop",
+    "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+    "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorI9RadarScanNS2_IS4_EEEEEEPS6_EEED1B8ne210101Ev",
+    "line": 49,
+    "reason": "Multiple patterns detected: Found conditional branch that may be a loop, Array access with simple indexing detected",
+    "suggested_patch": "#pragma omp parallel for\n#pragma omp parallel for\nfor(/* existing loop header */)",
+    "hotspot_score": 983.0,
+    "hotspot_priority": true,
+    "confidence_score": 1.0,
+    "ai_analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "Consolidated analysis for line 49: requires_runtime_check based on 2 detected patterns",
+      "confidence": 0.6,
+      "transformations": [
+        "#pragma omp parallel for collapse(2)",
+        "Consider loop interchange"
+      ],
+      "tests_recommended": [
+        "Verify data dependencies within block",
+        "Test parallel vs sequential execution",
+        "Performance benchmarking for entire block"
+      ],
+      "block_unified": true
+    },
+    "code_block": {
+      "type": "nested_loops",
+      "start_line": 27,
+      "end_line": 55,
+      "nesting_level": 5,
+      "parallelization_potential": "limited",
+      "analysis_notes": [
+        "Nested loop structure detected",
+        "Data dependencies may limit parallelization",
+        "Consider loop interchange or blocking",
+        "Inner loop may be vectorizable if dependencies are in outer loop only"
+      ],
+      "block_analysis": "Code block (27-55): limited parallelization potential"
+    },
+    "enhanced_analysis": {
+      "confidence": 0.78,
+      "confidence_breakdown": {
+        "base_pattern": 0.5,
+        "code_context": -0.01999999999999999,
+        "metadata": 0.15000000000000002,
+        "openmp_validation": 0.15
+      },
+      "openmp_validation": {
+        "status": "similar",
+        "confidence_boost": 0.15,
+        "reference_source": "directives/sources/compound_names.1.c",
+        "reference_url": "https://github.com/OpenMP/Examples/blob/main/directives/sources/compound_names.1.c",
+        "similarity_score": 1.2,
+        "compliance_notes": [
+          "Similar pattern found (similarity: 1.20)"
+        ],
+        "pragma_validated": "#pragma omp parallel for"
+      },
+      "verification_status": "similar"
+    },
+    "line_aggregated": true,
+    "original_count": 2,
+    "all_candidate_types": [
+      "embarrassingly_parallel",
+      "simple_loop"
+    ],
+    "hybrid_confidence": 0.39,
+    "final_trust_score": 0.78
+  },
+  {
+    "candidate_type": "simple_loop",
+    "file": "sample/src/real-world/weather/tornado_detection.cpp",
+    "function": "main",
+    "line": 59,
+    "reason": "Found conditional branch that may be a loop",
+    "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+    "hotspot_score": 418.0,
+    "hotspot_priority": true,
+    "confidence_score": 0.68,
+    "ai_analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "Nested loop structure with good parallelization potential",
+      "confidence": 0.8,
+      "transformations": [
+        "#pragma omp parallel for collapse(2)",
+        "Consider loop interchange"
+      ],
+      "tests_recommended": [
+        "Verify data dependencies within block",
+        "Test parallel vs sequential execution",
+        "Performance benchmarking for entire block"
+      ],
+      "block_unified": true
+    },
+    "code_block": {
+      "type": "nested_loops",
+      "start_line": 59,
+      "end_line": 67,
+      "nesting_level": 2,
+      "parallelization_potential": "good",
+      "analysis_notes": [
+        "Nested loop structure with good parallelization potential",
+        "Outer loop can use #pragma omp parallel for",
+        "Inner loop can use #pragma omp simd for vectorization",
+        "Consider collapse(2) for better load balancing"
+      ],
+      "block_analysis": "Code block (59-67): good parallelization potential"
+    },
+    "hybrid_confidence": 0.57,
+    "enhanced_analysis": {
+      "confidence": 0.68,
+      "confidence_breakdown": {
+        "base_pattern": 0.5,
+        "code_context": -0.01999999999999999,
+        "metadata": 0.05,
+        "openmp_validation": 0.15
+      },
+      "openmp_validation": {
+        "status": "similar",
+        "confidence_boost": 0.15,
+        "reference_source": "directives/sources/compound_names.1.c",
+        "reference_url": "https://github.com/OpenMP/Examples/blob/main/directives/sources/compound_names.1.c",
+        "similarity_score": 1.2,
+        "compliance_notes": [
+          "Similar pattern found (similarity: 1.20)"
+        ],
+        "pragma_validated": "#pragma omp parallel for"
+      },
+      "verification_status": "similar"
+    },
+    "final_trust_score": 0.68
+  },
+  {
+    "candidate_type": "vectorizable",
+    "file": "sample/src/real-world/weather/tornado_detection.cpp",
+    "function": "main",
+    "line": 60,
+    "reason": "Array access with arithmetic operations - good for SIMD",
+    "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+    "hotspot_score": 418.0,
+    "hotspot_priority": true,
+    "confidence_score": 1.0,
+    "ai_analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "Nested loop structure with good parallelization potential",
+      "confidence": 0.8,
+      "transformations": [
+        "#pragma omp parallel for collapse(2)",
+        "Consider loop interchange"
+      ],
+      "tests_recommended": [
+        "Verify data dependencies within block",
+        "Test parallel vs sequential execution",
+        "Performance benchmarking for entire block"
+      ],
+      "block_unified": true
+    },
+    "code_block": {
+      "type": "nested_loops",
+      "start_line": 59,
+      "end_line": 67,
+      "nesting_level": 2,
+      "parallelization_potential": "good",
+      "analysis_notes": [
+        "Nested loop structure with good parallelization potential",
+        "Outer loop can use #pragma omp parallel for",
+        "Inner loop can use #pragma omp simd for vectorization",
+        "Consider collapse(2) for better load balancing"
+      ],
+      "block_analysis": "Code block (59-67): good parallelization potential"
+    },
+    "hybrid_confidence": 0.62,
+    "enhanced_analysis": {
+      "confidence": 1.0,
+      "confidence_breakdown": {
+        "base_pattern": 0.85,
+        "code_context": -0.01999999999999999,
+        "metadata": 0.05,
+        "openmp_validation": 0.3
+      },
+      "openmp_validation": {
+        "status": "verified",
+        "confidence_boost": 0.3,
+        "reference_source": "SIMD/sources/SIMD.1.c",
+        "reference_url": "https://github.com/OpenMP/Examples/blob/main/SIMD/sources/SIMD.1.c",
+        "similarity_score": 1.0,
+        "compliance_notes": [
+          "Exact match found in SIMD/sources/SIMD.1.c"
+        ],
+        "pragma_validated": "#pragma omp simd"
+      },
+      "verification_status": "verified"
+    },
+    "final_trust_score": 1.0
+  }
+]

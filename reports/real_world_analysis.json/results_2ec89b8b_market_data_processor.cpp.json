@@ -1,0 +1,65 @@
+[
+  {
+    "candidate_type": "embarrassingly_parallel",
+    "file": "sample/src/real-world/trading/market_data_processor.cpp",
+    "function": "main",
+    "line": 54,
+    "reason": "Array access with simple indexing detected",
+    "suggested_patch": "#pragma omp parallel for",
+    "hotspot_score": 120.0,
+    "hotspot_priority": true,
+    "confidence_score": 0.88,
+    "ai_analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "Vectorizable loop structure with excellent parallelization potential",
+      "confidence": 0.9,
+      "transformations": [
+        "#pragma omp simd",
+        "#pragma omp parallel for"
+      ],
+      "tests_recommended": [
+        "Verify data dependencies within block",
+        "Test parallel vs sequential execution",
+        "Performance benchmarking for entire block"
+      ],
+      "block_unified": true
+    },
+    "code_block": {
+      "type": "vectorizable_loop",
+      "start_line": 54,
+      "end_line": 59,
+      "nesting_level": 1,
+      "parallelization_potential": "excellent",
+      "analysis_notes": [
+        "Arithmetic-heavy loop suitable for vectorization",
+        "Use #pragma omp simd for SIMD parallelization",
+        "Good candidate for compiler auto-vectorization",
+        "Check for alignment and loop bounds"
+      ],
+      "block_analysis": "Code block (54-59): excellent parallelization potential"
+    },
+    "hybrid_confidence": 0.635,
+    "enhanced_analysis": {
+      "confidence": 0.88,
+      "confidence_breakdown": {
+        "base_pattern": 0.95,
+        "code_context": -0.31999999999999995,
+        "metadata": 0.10000000000000002,
+        "openmp_validation": 0.15
+      },
+      "openmp_validation": {
+        "status": "similar",
+        "confidence_boost": 0.15,
+        "reference_source": "directives/sources/compound_names.1.c",
+        "reference_url": "https://github.com/OpenMP/Examples/blob/main/directives/sources/compound_names.1.c",
+        "similarity_score": 1.2,
+        "compliance_notes": [
+          "Similar pattern found (similarity: 1.20)"
+        ],
+        "pragma_validated": "#pragma omp parallel for"
+      },
+      "verification_status": "similar"
+    },
+    "final_trust_score": 0.88
+  }
+]
