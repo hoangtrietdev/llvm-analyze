@@ -2,443 +2,431 @@
   "72fdfc8cd868891cb260941835bb8f079190f9b488843f98b028a5d4e911c9b2": {
     "analysis": {
       "classification": "safe_parallel",
-      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
-      "confidence": 0.95,
+      "reasoning": "The code is marked as vectorizable with array access and arithmetic operations, which is suitable for SIMD parallelization and does not inherently contain data races or dependencies.",
+      "confidence": 0.85,
       "transformations": [
-        "#pragma omp simd",
-        "Enable compiler auto-vectorization"
+        "Apply OpenMP SIMD directives (#pragma omp simd) to the loop"
       ],
       "tests_recommended": [
-        "Compare parallel vs sequential results",
-        "Performance benchmarking",
-        "Verify SIMD instruction generation"
+        "Validate performance improvement with parallelization",
+        "Check for correctness with different input sizes"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833315.287071,
+    "timestamp": 1766409898.278209,
     "usage_count": 1,
     "pattern_hash": "72fdfc8cd868891cb260941835bb8f079190f9b488843f98b028a5d4e911c9b2",
     "original_code_snippet": "    }\n    \n    // Complex loop with dependencies that AI should catch\n    for (int i = 1; i < 1000; i++) {\n        data[i] = data[i-1] + i;  // Sequential dependency - NOT parallelizable\n    }\n    ",
-    "confidence": 0.95
+    "confidence": 0.85
   },
   "3d2544a62799c3356db9103983cde8c0852a3db13b5e7812f40608e72e6adebf": {
     "analysis": {
       "classification": "safe_parallel",
-      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
-      "confidence": 0.95,
+      "reasoning": "The code is marked as vectorizable with array access and arithmetic operations, which is suitable for SIMD parallelization and does not inherently contain data races or dependencies.",
+      "confidence": 0.85,
       "transformations": [
-        "#pragma omp simd",
-        "Enable compiler auto-vectorization"
+        "Apply OpenMP SIMD directives (#pragma omp simd) to the loop"
       ],
       "tests_recommended": [
-        "Compare parallel vs sequential results",
-        "Performance benchmarking",
-        "Verify SIMD instruction generation"
+        "Validate performance improvement with parallelization, check for correctness"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833315.287648,
+    "timestamp": 1766409898.899412,
     "usage_count": 1,
     "pattern_hash": "3d2544a62799c3356db9103983cde8c0852a3db13b5e7812f40608e72e6adebf",
     "original_code_snippet": "    std::vector<int> data(1000);\n    \n    // Simple loop that should be easily parallelizable\n    for (int i = 0; i < 1000; i++) {\n        data[i] = i * 2;  // No dependencies, perfect for paralleliza",
-    "confidence": 0.95
+    "confidence": 0.85
   },
   "c2003424a295fff5edeeb4a31387f8b5583baccf0a1a797e70f932e1754a098b": {
     "analysis": {
-      "classification": "safe_parallel",
-      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
-      "confidence": 0.9,
+      "classification": "requires_runtime_check",
+      "reasoning": "Vectorizable array access with arithmetic operations may indicate potential for parallelization, but without code context, runtime dependency checking is necessary to confirm safety",
+      "confidence": 0.6,
       "transformations": [
-        "#pragma omp simd",
-        "Enable compiler auto-vectorization"
+        "OpenMP parallel for loop",
+        "SIMD vectorization"
       ],
       "tests_recommended": [
-        "Compare parallel vs sequential results",
-        "Performance benchmarking",
-        "Verify SIMD instruction generation"
+        "Dependency analysis tests",
+        "Data race detection tests"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833315.894759,
+    "timestamp": 1766409900.065244,
     "usage_count": 1,
     "pattern_hash": "c2003424a295fff5edeeb4a31387f8b5583baccf0a1a797e70f932e1754a098b",
     "original_code_snippet": "    \n    // Initialize matrices\n    for (size_t i = 0; i < N; i++) {\n        for (size_t j = 0; j < N; j++) {\n            A(i, j) = static_cast<double>(i + j);\n            B(i, j) = static_cast<double",
-    "confidence": 0.9
+    "confidence": 0.6
   },
   "a7cdedb388f1784d860b8756a9edf058fd7f4d6973519ba6aeea0dbd8a11e284": {
     "analysis": {
       "classification": "safe_parallel",
-      "reasoning": "Static analysis identifies this as embarrassingly_parallel; positive indicators found in code context",
-      "confidence": 0.95,
+      "reasoning": "The code exhibits an embarrassingly parallel pattern with array access using simple indexing, indicating independent operations that can be safely parallelized.",
+      "confidence": 0.9,
       "transformations": [
-        "#pragma omp parallel for"
+        "Apply OpenMP parallel for directive to the loop"
       ],
       "tests_recommended": [
-        "Compare parallel vs sequential results",
-        "Performance benchmarking"
+        "Validate matrix multiplication results with sequential and parallel implementations"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833315.895506,
+    "timestamp": 1766409900.568371,
     "usage_count": 1,
     "pattern_hash": "a7cdedb388f1784d860b8756a9edf058fd7f4d6973519ba6aeea0dbd8a11e284",
     "original_code_snippet": "\n// Complex pattern - matrix multiplication (trickier to parallelize)\nvoid matrixMultiply(const Matrix& A, const Matrix& B, Matrix& C) {\n    for (size_t i = 0; i < A.getRows(); i++) {\n        for (siz",
-    "confidence": 0.95
+    "confidence": 0.9
   },
   "3b07dcbe1a423113f30eb64d52936ae743fc5a1d3538dd0b158e87b07f4596be": {
     "analysis": {
       "classification": "safe_parallel",
-      "reasoning": "Static analysis identifies this as embarrassingly_parallel; positive indicators found in code context",
-      "confidence": 0.95,
+      "reasoning": "The function appears to be embarrassingly parallel with simple independent operations, and array access with simple indexing was detected, indicating no obvious data races or dependencies.",
+      "confidence": 0.85,
       "transformations": [
-        "#pragma omp parallel for"
+        "Apply OpenMP parallel for directive to the loop",
+        "Use private variables for each thread"
       ],
       "tests_recommended": [
-        "Compare parallel vs sequential results",
-        "Performance benchmarking"
+        "Validate the correctness of the parallelized function with sample inputs",
+        "Test for data races using tools like Helgrind"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833315.89615,
+    "timestamp": 1766409901.2281868,
     "usage_count": 1,
     "pattern_hash": "3b07dcbe1a423113f30eb64d52936ae743fc5a1d3538dd0b158e87b07f4596be",
     "original_code_snippet": "// Parallel candidate with reduction - matrix norm\ndouble matrixFrobeniusNorm(const Matrix& A) {\n    double sum = 0.0;\n    for (size_t i = 0; i < A.getRows(); i++) {\n        for (size_t j = 0; j < A.g",
-    "confidence": 0.95
+    "confidence": 0.85
   },
   "be0191a499641434ec290e7e5613a384d15d9eb8f94bfcac46314ecf5b8a2665": {
     "analysis": {
-      "classification": "safe_parallel",
-      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
-      "confidence": 0.9,
+      "classification": "requires_runtime_check",
+      "reasoning": "The code is marked as vectorizable with array access and arithmetic operations, which is suitable for SIMD. However, without context, it's unclear if there are any loop-carried dependencies or data races that could affect parallelization.",
+      "confidence": 0.7,
       "transformations": [
-        "#pragma omp simd",
-        "Enable compiler auto-vectorization"
+        "Apply OpenMP parallel for directive with SIMD clause",
+        "Use reduction clause if applicable"
       ],
       "tests_recommended": [
-        "Compare parallel vs sequential results",
-        "Performance benchmarking",
-        "Verify SIMD instruction generation"
+        "Test with different input sizes and thread counts",
+        "Verify correctness using a sequential implementation"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833315.8967822,
+    "timestamp": 1766409902.161793,
     "usage_count": 1,
     "pattern_hash": "be0191a499641434ec290e7e5613a384d15d9eb8f94bfcac46314ecf5b8a2665",
     "original_code_snippet": "// Complex pattern - matrix multiplication (trickier to parallelize)\nvoid matrixMultiply(const Matrix& A, const Matrix& B, Matrix& C) {\n    for (size_t i = 0; i < A.getRows(); i++) {\n        for (size",
-    "confidence": 0.9
+    "confidence": 0.7
   },
   "879a599df7f888424df69b04cbb740c7501b62c1dbd9fd1dbce034e61c911916": {
     "analysis": {
-      "classification": "not_parallel",
-      "reasoning": "Static analysis identifies this as simple_loop; positive indicators found in code context",
-      "confidence": 0.55,
+      "classification": "requires_runtime_check",
+      "reasoning": "Potential loop-carried dependencies and lack of context for shared variable access patterns",
+      "confidence": 0.6,
       "transformations": [
-        "Manual parallelization analysis required"
+        "Apply OpenMP loop parallelization with dependency checking",
+        "Use reduction clauses for aggregate operations if applicable"
       ],
       "tests_recommended": [
-        "Thorough dependency analysis required",
-        "Compare parallel vs sequential results",
-        "Performance benchmarking"
+        "Validate parallel execution with various input sizes",
+        "Check for data races using tools like Valgrind or Intel Inspector"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833315.89746,
+    "timestamp": 1766409902.7977228,
     "usage_count": 1,
     "pattern_hash": "879a599df7f888424df69b04cbb740c7501b62c1dbd9fd1dbce034e61c911916",
     "original_code_snippet": "    Matrix A(N, N), B(N, N), C(N, N);\n    \n    // Initialize matrices\n    for (size_t i = 0; i < N; i++) {\n        for (size_t j = 0; j < N; j++) {\n            A(i, j) = static_cast<double>(i + j);\n  ",
-    "confidence": 0.55
+    "confidence": 0.6
   },
   "4459df57790d6cc35594493c13f4a346b2d9f3bda9eb174dbab9cda1013ecf85": {
     "analysis": {
       "classification": "safe_parallel",
-      "reasoning": "Static analysis identifies this as embarrassingly_parallel; positive indicators found in code context",
-      "confidence": 0.95,
+      "reasoning": "The code exhibits an embarrassingly parallel pattern with array access using simple indexing, indicating independent operations that can be safely parallelized.",
+      "confidence": 0.9,
       "transformations": [
-        "#pragma omp parallel for"
+        "Apply OpenMP parallel for directive to the loop",
+        "Use reduction clause for dot product accumulation"
       ],
       "tests_recommended": [
-        "Compare parallel vs sequential results",
-        "Performance benchmarking"
+        "Validate parallel results against sequential implementation",
+        "Test with varying input sizes and thread counts"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833316.5221279,
+    "timestamp": 1766409904.1291971,
     "usage_count": 1,
     "pattern_hash": "4459df57790d6cc35594493c13f4a346b2d9f3bda9eb174dbab9cda1013ecf85",
     "original_code_snippet": "// Dot product - reduction with two arrays\ndouble dotProduct(const std::vector<double>& a, const std::vector<double>& b) {\n    double sum = 0.0;\n    for (size_t i = 0; i < a.size(); i++) {\n        sum",
-    "confidence": 0.95
+    "confidence": 0.9
   },
   "48aa6a7219abcee8872ce20f364581636746af15e0d8fa3b0bee2b8f602059b4": {
     "analysis": {
       "classification": "safe_parallel",
-      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
-      "confidence": 0.95,
+      "reasoning": "The code is marked as vectorizable with array access and arithmetic operations, which is suitable for SIMD and suggests independent operations, indicating an embarrassingly parallel pattern.",
+      "confidence": 0.85,
       "transformations": [
-        "#pragma omp simd",
-        "Enable compiler auto-vectorization"
+        "Apply OpenMP SIMD directive (#pragma omp simd) to the loop"
       ],
       "tests_recommended": [
-        "Compare parallel vs sequential results",
-        "Performance benchmarking",
-        "Verify SIMD instruction generation"
+        "Validate the parallelized code with a test suite to ensure correctness"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833316.52296,
+    "timestamp": 1766409904.847991,
     "usage_count": 1,
     "pattern_hash": "48aa6a7219abcee8872ce20f364581636746af15e0d8fa3b0bee2b8f602059b4",
     "original_code_snippet": "std::vector<double> runningSum(const std::vector<double>& data) {\n    std::vector<double> result(data.size());\n    result[0] = data[0];\n    for (size_t i = 1; i < data.size(); i++) {\n        result[i]",
-    "confidence": 0.95
+    "confidence": 0.85
   },
   "262ebf74ce48cf7c15547e3fed25ae22b3ea950ecce56600f5e98b8ca9751cac": {
     "analysis": {
       "classification": "safe_parallel",
-      "reasoning": "Static analysis identifies this as embarrassingly_parallel; positive indicators found in code context",
-      "confidence": 0.95,
+      "reasoning": "The code exhibits an embarrassingly parallel pattern with array access using simple indexing, indicating independent operations that can be safely parallelized.",
+      "confidence": 0.9,
       "transformations": [
-        "#pragma omp parallel for"
+        "Apply OpenMP parallel for directive to the loop",
+        "Use reduction clause for sum operation"
       ],
       "tests_recommended": [
-        "Compare parallel vs sequential results",
-        "Performance benchmarking"
+        "Validate parallel results against sequential execution",
+        "Test with varying input sizes and thread counts"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833316.5236359,
+    "timestamp": 1766409905.398537,
     "usage_count": 1,
     "pattern_hash": "262ebf74ce48cf7c15547e3fed25ae22b3ea950ecce56600f5e98b8ca9751cac",
     "original_code_snippet": "// Simple reduction - sum\ndouble sumReduction(const std::vector<double>& data) {\n    double sum = 0.0;\n    for (size_t i = 0; i < data.size(); i++) {\n        sum += data[i];\n    }\n    return sum;",
-    "confidence": 0.95
+    "confidence": 0.9
   },
   "5d9d9ea1371008cfdb32e56a4e26cf70f6b3edfcbbaf9cca4764ba9fd0b0f32c": {
     "analysis": {
       "classification": "safe_parallel",
-      "reasoning": "Static analysis identifies this as embarrassingly_parallel; positive indicators found in code context",
-      "confidence": 0.95,
+      "reasoning": "The function appears to be an embarrassingly parallel algorithm with array access using simple indexing, indicating independent operations with no data races or loop-carried dependencies.",
+      "confidence": 0.85,
       "transformations": [
-        "#pragma omp parallel for"
+        "Apply OpenMP parallel for directive to the loop",
+        "Use reduction clause for final result aggregation"
       ],
       "tests_recommended": [
-        "Compare parallel vs sequential results",
-        "Performance benchmarking"
+        "Validate output against sequential version",
+        "Test with varying input sizes and parallel thread counts"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833316.524339,
+    "timestamp": 1766409906.195085,
     "usage_count": 1,
     "pattern_hash": "5d9d9ea1371008cfdb32e56a4e26cf70f6b3edfcbbaf9cca4764ba9fd0b0f32c",
     "original_code_snippet": "    for (size_t i = 1; i < data.size(); i++) {\n        if (data[i] > maxVal) {\n            maxVal = data[i];\n        }\n    }\n    return maxVal;\n}",
-    "confidence": 0.95
+    "confidence": 0.85
   },
   "7c17e38a274b60f4f161d5c8bcab39ef8a9e8414b23151bc16b2548b67091b3b": {
     "analysis": {
       "classification": "safe_parallel",
-      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
-      "confidence": 0.95,
+      "reasoning": "The function appears to be performing a reduction operation, which is a common pattern in parallel computing. The 'vectorizable' type and 'array access with arithmetic operations' reason suggest that the code can be safely parallelized using SIMD instructions.",
+      "confidence": 0.85,
       "transformations": [
-        "#pragma omp simd",
-        "Enable compiler auto-vectorization"
+        "OpenMP parallel for loop",
+        "SIMD vectorization using #pragma simd"
       ],
       "tests_recommended": [
-        "Compare parallel vs sequential results",
-        "Performance benchmarking",
-        "Verify SIMD instruction generation"
+        "Validation tests for correctness of reduction operation",
+        "Performance tests to measure speedup"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833316.5251682,
+    "timestamp": 1766409906.820582,
     "usage_count": 1,
     "pattern_hash": "7c17e38a274b60f4f161d5c8bcab39ef8a9e8414b23151bc16b2548b67091b3b",
     "original_code_snippet": "// Max reduction\ndouble maxReduction(const std::vector<double>& data) {\n    double maxVal = data[0];\n    for (size_t i = 1; i < data.size(); i++) {\n        if (data[i] > maxVal) {\n            maxVal =",
-    "confidence": 0.95
+    "confidence": 0.85
   },
   "8c95ea39b2404cd0d72d641151de314f1346532ccba63d06cfb7c3fd65dffb5d": {
     "analysis": {
-      "classification": "safe_parallel",
-      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
-      "confidence": 0.9,
+      "classification": "requires_runtime_check",
+      "reasoning": "The code is marked as vectorizable with array access and arithmetic operations, which is suitable for SIMD. However, without context, it's unclear if there are any loop-carried dependencies or data races that would prevent parallelization.",
+      "confidence": 0.7,
       "transformations": [
-        "#pragma omp simd",
-        "Enable compiler auto-vectorization"
+        "OpenMP parallel for loop",
+        "SIMD vectorization"
       ],
       "tests_recommended": [
-        "Compare parallel vs sequential results",
-        "Performance benchmarking",
-        "Verify SIMD instruction generation"
+        "Dependency analysis tests",
+        "Data race detection tests"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833317.021268,
+    "timestamp": 1766409907.8302221,
     "usage_count": 1,
     "pattern_hash": "8c95ea39b2404cd0d72d641151de314f1346532ccba63d06cfb7c3fd65dffb5d",
     "original_code_snippet": "    double kernel[3][3] = {{-1, -1, -1}, {-1, 8, -1}, {-1, -1, -1}};\n    \n    for (int i = 1; i < N-1; i++) {\n        for (int j = 1; j < N-1; j++) {\n            double sum = 0.0;\n            for (int",
-    "confidence": 0.9
+    "confidence": 0.7
   },
   "fd046a232c7720416b56d57859b8a8aecdf7d0be868fed07b7807a4f525cb431": {
     "analysis": {
-      "classification": "safe_parallel",
-      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
-      "confidence": 0.95,
+      "classification": "requires_runtime_check",
+      "reasoning": "The code is marked as vectorizable with array access and arithmetic operations, which is suitable for SIMD. However, without context, it's unclear if there are any loop-carried dependencies or data races that would prevent parallelization.",
+      "confidence": 0.7,
       "transformations": [
-        "#pragma omp simd",
-        "Enable compiler auto-vectorization"
+        "OpenMP parallel for loop",
+        "SIMD vectorization"
       ],
       "tests_recommended": [
-        "Compare parallel vs sequential results",
-        "Performance benchmarking",
-        "Verify SIMD instruction generation"
+        "Dependency analysis tests",
+        "Data race detection tests"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833317.022159,
+    "timestamp": 1766409908.3433652,
     "usage_count": 1,
     "pattern_hash": "fd046a232c7720416b56d57859b8a8aecdf7d0be868fed07b7807a4f525cb431",
     "original_code_snippet": "    // 9-point stencil\n    \n    for (int i = 1; i < N-1; i++) {\n        for (int j = 1; j < N-1; j++) {\n            global_new_grid[i][j] = (\n                global_grid[i-1][j-1] + global_grid[i-1][j",
-    "confidence": 0.95
+    "confidence": 0.7
   },
   "aa073518de576c1e8545df9efc4928b0f8076a7e46398bc6ff3fa98c17238a5a": {
     "analysis": {
-      "classification": "safe_parallel",
-      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
-      "confidence": 0.95,
+      "classification": "requires_runtime_check",
+      "reasoning": "The code is marked as vectorizable with array access and arithmetic operations, which is suitable for SIMD. However, without context, it's unclear if there are any loop-carried dependencies or data races that could affect parallelization.",
+      "confidence": 0.7,
       "transformations": [
-        "#pragma omp simd",
-        "Enable compiler auto-vectorization"
+        "OpenMP parallel for loop",
+        "SIMD vectorization"
       ],
       "tests_recommended": [
-        "Compare parallel vs sequential results",
-        "Performance benchmarking",
-        "Verify SIMD instruction generation"
+        "Dependency analysis",
+        "Data race detection"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833317.025375,
+    "timestamp": 1766409908.789584,
     "usage_count": 1,
     "pattern_hash": "aa073518de576c1e8545df9efc4928b0f8076a7e46398bc6ff3fa98c17238a5a",
     "original_code_snippet": "    // Simple image blur\n    \n    for (int i = 1; i < M-1; i++) {\n        for (int j = 1; j < M-1; j++) {\n            int sum = global_image_big[i-1][j-1] + global_image_big[i-1][j] + global_image_big",
-    "confidence": 0.95
+    "confidence": 0.7
   },
   "acb4c52a6cae58c4ca61dd43d9dd386f96666cfd6db8dff1e3424215fbf79836": {
     "analysis": {
       "classification": "safe_parallel",
-      "reasoning": "Static analysis identifies this as vectorizable; positive indicators found in code context",
-      "confidence": 0.95,
+      "reasoning": "The code is marked as vectorizable with array access and arithmetic operations, which is suitable for SIMD and suggests independent operations.",
+      "confidence": 0.85,
       "transformations": [
-        "#pragma omp simd",
-        "Enable compiler auto-vectorization"
+        "Apply OpenMP parallel for directive",
+        "Use SIMD instructions for array operations"
       ],
       "tests_recommended": [
-        "Compare parallel vs sequential results",
-        "Performance benchmarking",
-        "Verify SIMD instruction generation"
+        "Validate output against sequential version",
+        "Test for speedup with increasing thread count"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833317.026109,
+    "timestamp": 1766409909.29341,
     "usage_count": 1,
     "pattern_hash": "acb4c52a6cae58c4ca61dd43d9dd386f96666cfd6db8dff1e3424215fbf79836",
     "original_code_snippet": "    // 2D stencil - 5-point stencil (heat equation)\n    \n    for (int i = 1; i < N-1; i++) {\n        for (int j = 1; j < N-1; j++) {\n            global_new_grid[i][j] = (global_grid[i-1][j] + global_g",
-    "confidence": 0.95
+    "confidence": 0.85
   },
   "5ca7d3174849355bf8a96dddc3b61d924e97c07c50b91847b1bc82d6de7ca5bf": {
     "analysis": {
-      "classification": "not_parallel",
-      "reasoning": "Static analysis identifies this as simple_loop; positive indicators found in code context",
-      "confidence": 0.55,
+      "classification": "requires_runtime_check",
+      "reasoning": "Potential loop-carried dependencies and conditional branch may introduce data races or dependencies",
+      "confidence": 0.7,
       "transformations": [
-        "Manual parallelization analysis required"
+        "OpenMP loop parallelization with dependency checking",
+        "Conditional branch optimization"
       ],
       "tests_recommended": [
-        "Thorough dependency analysis required",
-        "Compare parallel vs sequential results",
-        "Performance benchmarking"
+        "Runtime dependency checking tests",
+        "Data race detection tests"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833317.02696,
+    "timestamp": 1766409909.711638,
     "usage_count": 1,
     "pattern_hash": "5ca7d3174849355bf8a96dddc3b61d924e97c07c50b91847b1bc82d6de7ca5bf",
     "original_code_snippet": "    // 2D convolution with 3x3 kernel\n    double kernel[3][3] = {{-1, -1, -1}, {-1, 8, -1}, {-1, -1, -1}};\n    \n    for (int i = 1; i < N-1; i++) {\n        for (int j = 1; j < N-1; j++) {\n            ",
-    "confidence": 0.55
+    "confidence": 0.7
   },
   "457bc5a79106fbee5d8b58a0080a23ca2f7e10c9732bc043931ab9201ece5d53": {
     "analysis": {
-      "classification": "not_parallel",
-      "reasoning": "Static analysis identifies this as simple_loop; positive indicators found in code context",
-      "confidence": 0.55,
+      "classification": "requires_runtime_check",
+      "reasoning": "Potential loop-carried dependencies and lack of context for shared variable access patterns",
+      "confidence": 0.6,
       "transformations": [
-        "Manual parallelization analysis required"
+        "Apply OpenMP loop directives with dependency checking",
+        "Use reduction clauses for potential reduction patterns"
       ],
       "tests_recommended": [
-        "Thorough dependency analysis required",
-        "Compare parallel vs sequential results",
-        "Performance benchmarking"
+        "Validate output with sequential and parallel executions",
+        "Test with different input sizes and loop iterations"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833317.027785,
+    "timestamp": 1766409910.262649,
     "usage_count": 1,
     "pattern_hash": "457bc5a79106fbee5d8b58a0080a23ca2f7e10c9732bc043931ab9201ece5d53",
     "original_code_snippet": "    for (int i = 1; i < N-1; i++) {\n        for (int j = 1; j < N-1; j++) {\n            double sum = 0.0;\n            for (int ki = -1; ki <= 1; ki++) {\n                for (int kj = -1; kj <= 1; kj++",
-    "confidence": 0.55
+    "confidence": 0.6
   },
   "a95332e544d9e59c7f675397119a3123a37fdb900fc554ede232f42b9975f9f1": {
     "analysis": {
       "classification": "requires_runtime_check",
-      "reasoning": "Static analysis identifies this as simple_loop; positive indicators found in code context",
-      "confidence": 0.6,
+      "reasoning": "Potential loop-carried dependencies and conditional branch may introduce data races or dependencies, requiring runtime checking to ensure safe parallelization",
+      "confidence": 0.7,
       "transformations": [
-        "Manual parallelization analysis required"
+        "OpenMP loop parallelization with dependency checking",
+        "Conditional branch optimization"
       ],
       "tests_recommended": [
-        "Thorough dependency analysis required",
-        "Compare parallel vs sequential results",
-        "Performance benchmarking"
+        "Dependency analysis tests",
+        "Data race detection tests"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833317.028502,
+    "timestamp": 1766409910.740536,
     "usage_count": 1,
     "pattern_hash": "a95332e544d9e59c7f675397119a3123a37fdb900fc554ede232f42b9975f9f1",
     "original_code_snippet": "void stencil_2d_9point() {\n    // 9-point stencil\n    \n    for (int i = 1; i < N-1; i++) {\n        for (int j = 1; j < N-1; j++) {\n            global_new_grid[i][j] = (\n                global_grid[i-1",
-    "confidence": 0.6
+    "confidence": 0.7
   },
   "506d8bee5c97e33967a8db0e09d7e3aa99b4c9ff187d12da346adb71437549db": {
     "analysis": {
       "classification": "requires_runtime_check",
-      "reasoning": "Static analysis identifies this as simple_loop; positive indicators found in code context",
+      "reasoning": "Potential loop-carried dependencies due to conditional branch and lack of context about shared variable access patterns",
       "confidence": 0.6,
       "transformations": [
-        "Manual parallelization analysis required"
+        "Apply OpenMP loop parallelization with dependency checking",
+        "Use OpenMP's 'nowait' clause for potential false sharing reduction"
       ],
       "tests_recommended": [
-        "Thorough dependency analysis required",
-        "Compare parallel vs sequential results",
-        "Performance benchmarking"
+        "Runtime dependency checking tests",
+        "Data race detection tests using tools like Valgrind"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833317.029279,
+    "timestamp": 1766409911.305922,
     "usage_count": 1,
     "pattern_hash": "506d8bee5c97e33967a8db0e09d7e3aa99b4c9ff187d12da346adb71437549db",
     "original_code_snippet": "void image_blur() {\n    // Simple image blur\n    \n    for (int i = 1; i < M-1; i++) {\n        for (int j = 1; j < M-1; j++) {\n            int sum = global_image_big[i-1][j-1] + global_image_big[i-1][j",
@@ -447,45 +435,1040 @@
   "86802635c968ffd3e0eabedf3bbfb02d1ee9b4457af563a0009e5c7c0a447825": {
     "analysis": {
       "classification": "requires_runtime_check",
-      "reasoning": "Static analysis identifies this as simple_loop; positive indicators found in code context",
-      "confidence": 0.6,
+      "reasoning": "Potential loop-carried dependencies and conditional branch may introduce data races or dependencies",
+      "confidence": 0.7,
       "transformations": [
-        "Manual parallelization analysis required"
+        "OpenMP loop parallelization with dependency checking",
+        "Private variables for conditional branch"
       ],
       "tests_recommended": [
-        "Thorough dependency analysis required",
-        "Compare parallel vs sequential results",
-        "Performance benchmarking"
+        "Runtime dependency checking tests",
+        "Data race detection tests"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833317.0300548,
+    "timestamp": 1766409911.752992,
     "usage_count": 1,
     "pattern_hash": "86802635c968ffd3e0eabedf3bbfb02d1ee9b4457af563a0009e5c7c0a447825",
     "original_code_snippet": "void stencil_2d_simple() {\n    // 2D stencil - 5-point stencil (heat equation)\n    \n    for (int i = 1; i < N-1; i++) {\n        for (int j = 1; j < N-1; j++) {\n            global_new_grid[i][j] = (glo",
-    "confidence": 0.6
+    "confidence": 0.7
   },
   "6f4a2034803d77786d050741d96dead34cecc9bebdbc0898edb75545c574fe36": {
     "analysis": {
-      "classification": "not_parallel",
-      "reasoning": "Static analysis identifies this as risky; positive indicators found in code context",
-      "confidence": 0.55,
+      "classification": "requires_runtime_check",
+      "reasoning": "The presence of function calls or complex operations in the convolution_2dv function may indicate potential data races or dependencies, requiring runtime dependency checking to ensure safe parallelization.",
+      "confidence": 0.7,
       "transformations": [
-        "Manual parallelization analysis required"
+        "Apply OpenMP parallel for directive with dependency checking",
+        "Use OpenMP tasking for function calls"
       ],
       "tests_recommended": [
-        "Thorough dependency analysis required",
-        "Compare parallel vs sequential results",
-        "Performance benchmarking"
+        "Validate parallelization using OpenMP's dependency checking tools",
+        "Test for data races using tools like Helgrind"
       ],
       "logic_issue_type": "none",
-      "analysis_source": "heuristic_analysis"
+      "analysis_source": "ai_llm"
     },
-    "timestamp": 1759833317.03081,
+    "timestamp": 1766409912.415532,
     "usage_count": 1,
     "pattern_hash": "6f4a2034803d77786d050741d96dead34cecc9bebdbc0898edb75545c574fe36",
     "original_code_snippet": "        for (int j = 1; j < N-1; j++) {\n            double sum = 0.0;\n            for (int ki = -1; ki <= 1; ki++) {\n                for (int kj = -1; kj <= 1; kj++) {\n                    sum += globa",
-    "confidence": 0.55
+    "confidence": 0.7
+  },
+  "7005e825c09dfa93df1ba1deb22d4801ee071c133ae51c31ac65b79aa20e20c3": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "The code is marked as vectorizable with array access and arithmetic operations, which is suitable for SIMD. However, without specific code context, it's uncertain whether there are loop-carried dependencies or data races that could affect parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop",
+        "SIMD vectorization"
+      ],
+      "tests_recommended": [
+        "Dependency analysis tests",
+        "Data race detection tests"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409950.643116,
+    "usage_count": 1,
+    "pattern_hash": "7005e825c09dfa93df1ba1deb22d4801ee071c133ae51c31ac65b79aa20e20c3",
+    "original_code_snippet": "    for (size_t block = 0; block < len / 64; block++) {\n        uint32_t w[64] = {0};\n        \n        for (int i = 0; i < 16; i++) {\n            w[i] = (data[block*64 + i*4] << 24) |\n                ",
+    "confidence": 0.7
+  },
+  "2765e02900f19c82f19ae109968b144e49ada2d75da89e7b94a69169fca8de65": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "The code is marked as vectorizable with array access and arithmetic operations, which is suitable for SIMD. However, without context, it's unclear if there are any loop-carried dependencies or data races that would prevent parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop",
+        "SIMD vectorization"
+      ],
+      "tests_recommended": [
+        "Dependency analysis tests",
+        "Data race detection tests"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409951.1526022,
+    "usage_count": 1,
+    "pattern_hash": "2765e02900f19c82f19ae109968b144e49ada2d75da89e7b94a69169fca8de65",
+    "original_code_snippet": "        state[4] += e; state[5] += f; state[6] += g; state[7] += h;\n    }\n    \n    for (int i = 0; i < 8; i++) {\n        hash[i*4] = (state[i] >> 24) & 0xff;\n        hash[i*4 + 1] = (state[i] >> 16) &",
+    "confidence": 0.7
+  },
+  "4871be123b1604ff63a9d3524f20c84bb0ca3ed24ec3c8502336e9d796d6a4f3": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "The presence of function calls or complex operations in the sha256_process function may indicate potential data races or dependencies, but without more context, runtime dependency checking is necessary to determine parallelization safety.",
+      "confidence": 0.7,
+      "transformations": [
+        "Apply OpenMP parallel for directive with dependency checking",
+        "Use OpenMP tasking for function calls"
+      ],
+      "tests_recommended": [
+        "Validate parallelization using OpenMP's dependency checking tools",
+        "Test for data races using tools like Helgrind"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409951.89472,
+    "usage_count": 1,
+    "pattern_hash": "4871be123b1604ff63a9d3524f20c84bb0ca3ed24ec3c8502336e9d796d6a4f3",
+    "original_code_snippet": "        0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19\n    };\n    \n    for (size_t block = 0; block < len / 64; block++) {\n        uint32_t w[64] = {0};\n        \n        for (int i = 0; i < 16; i++) {",
+    "confidence": 0.7
+  },
+  "4b661493c8141dbcafbb8f44433327de4c0c11f8c1f8015f3d564696a2e4930d": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "Function calls or complex operations detected, potential for loop-carried dependencies or data races",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP loop parallelization with dependency checking",
+        "Data race detection using OpenMP's atomic directives"
+      ],
+      "tests_recommended": [
+        "Unit tests for SHA-256 hash function correctness",
+        "Performance tests for parallelized hash function"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409952.591908,
+    "usage_count": 1,
+    "pattern_hash": "4b661493c8141dbcafbb8f44433327de4c0c11f8c1f8015f3d564696a2e4930d",
+    "original_code_snippet": "                   (data[block*64 + i*4 + 3]);\n        }\n        \n        for (int i = 16; i < 64; i++) {\n            uint32_t s0 = rotate_left(w[i-15], 7) ^ rotate_left(w[i-15], 18) ^ (w[i-15] >> 3);",
+    "confidence": 0.7
+  },
+  "0111eb4d6da9c7fc54b01311807a1f413e0094b701ee6c09b8a276441e82d5c9": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "Function calls or complex operations detected, potential for loop-carried dependencies or data races",
+      "confidence": 0.7,
+      "transformations": [
+        "Apply OpenMP parallel for directive with dependency checking",
+        "Use OpenMP tasking for function calls"
+      ],
+      "tests_recommended": [
+        "Validate output with sequential and parallel executions",
+        "Test for data races using tools like Helgrind"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409953.17683,
+    "usage_count": 1,
+    "pattern_hash": "0111eb4d6da9c7fc54b01311807a1f413e0094b701ee6c09b8a276441e82d5c9",
+    "original_code_snippet": "        uint32_t a = state[0], b = state[1], c = state[2], d = state[3];\n        uint32_t e = state[4], f = state[5], g = state[6], h = state[7];\n        \n        for (int i = 0; i < 64; i++) {\n      ",
+    "confidence": 0.7
+  },
+  "2beea23f9fc7189653878d9a48962ee2b787822a5fc91bc70805a0554f25fd2c": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "Array access with arithmetic operations suggests potential for SIMD parallelization, but lack of context makes it uncertain if there are loop-carried dependencies or data races",
+      "confidence": 0.6,
+      "transformations": [
+        "OpenMP parallel for loop with dependency checking",
+        "SIMD vectorization using OpenMP SIMD directives"
+      ],
+      "tests_recommended": [
+        "Unit tests for correctness with varying input sizes",
+        "Performance tests to measure speedup"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409954.577009,
+    "usage_count": 1,
+    "pattern_hash": "2beea23f9fc7189653878d9a48962ee2b787822a5fc91bc70805a0554f25fd2c",
+    "original_code_snippet": "            numParties, std::vector<uint64_t>(numSessions));\n        \n        for (int party = 0; party < numParties; party++) {\n            for (int session = 0; session < numSessions; session++) {\n ",
+    "confidence": 0.6
+  },
+  "37bc1fd9ee83b09c20a67e05c7c1d2492c79b4f4c05ec646b433d35a76a0ac19": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "Array access with arithmetic operations may indicate potential for SIMD parallelization, but without context, runtime dependency checking is necessary to confirm parallelizability due to possible loop-carried dependencies or shared variable access patterns",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop with dependency checking",
+        "SIMD vectorization using OpenMP SIMD directives"
+      ],
+      "tests_recommended": [
+        "Unit tests for correctness under parallel execution",
+        "Performance tests to measure speedup"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409955.411459,
+    "usage_count": 1,
+    "pattern_hash": "37bc1fd9ee83b09c20a67e05c7c1d2492c79b4f4c05ec646b433d35a76a0ac19",
+    "original_code_snippet": "        \n        // Round 1: Each party computes intermediate values\n        std::vector<uint64_t> z(numParties);\n        for (int i = 0; i < numParties; i++) {\n            int next = (i + 1) % numPar",
+    "confidence": 0.7
+  },
+  "20beca0347b3d6d1fc49c11f2612c9a8f9938ad1c126459c6a8a302722f1016c": {
+    "analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "The code is classified as embarrassingly parallel with array access using simple indexing, indicating independent operations with no apparent data races or dependencies.",
+      "confidence": 0.85,
+      "transformations": [
+        "Apply OpenMP parallel for directive to the loop",
+        "Use private variables for each thread"
+      ],
+      "tests_recommended": [
+        "Validate output against sequential version",
+        "Test with different input sizes and thread counts"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409956.1683662,
+    "usage_count": 1,
+    "pattern_hash": "20beca0347b3d6d1fc49c11f2612c9a8f9938ad1c126459c6a8a302722f1016c",
+    "original_code_snippet": "        for (int i = 0; i < numParties; i++) {\n            uint64_t key = publicKeys[i];\n            \n            for (int j = 1; j < numParties; j++) {\n                int idx = (i + j) % numParties;",
+    "confidence": 0.85
+  },
+  "0eb8efed16e0b6dfb69159b5f710e23d09ee65d26a657096f48b0d52ce788ff3": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "Array access with arithmetic operations may indicate potential for SIMD parallelization, but without code context, runtime dependency checking is necessary to confirm parallelizability",
+      "confidence": 0.6,
+      "transformations": [
+        "OpenMP parallel for loop with SIMD directives"
+      ],
+      "tests_recommended": [
+        "Dependency analysis tests",
+        "Data race detection tests"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409956.728987,
+    "usage_count": 1,
+    "pattern_hash": "0eb8efed16e0b6dfb69159b5f710e23d09ee65d26a657096f48b0d52ce788ff3",
+    "original_code_snippet": "        }\n        \n        // Round 2: Broadcast and compute shared key\n        for (int i = 0; i < numParties; i++) {\n            uint64_t key = publicKeys[i];\n            \n            for (int j = 1",
+    "confidence": 0.6
+  },
+  "a6d95cba9d502a1fac99bbbce935bd7e70be61d6603e3b0f00a00173e155001f": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "Potential loop-carried dependencies and conditional branches may introduce data races or dependencies, requiring runtime checking to ensure safe parallelization",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP loop parallelization with dependency checking",
+        "Conditional branch optimization"
+      ],
+      "tests_recommended": [
+        "Runtime dependency checking tests",
+        "Data race detection tests"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409957.340209,
+    "usage_count": 1,
+    "pattern_hash": "a6d95cba9d502a1fac99bbbce935bd7e70be61d6603e3b0f00a00173e155001f",
+    "original_code_snippet": "        std::vector<std::vector<uint64_t>> sessionKeys(\n            numParties, std::vector<uint64_t>(numSessions));\n        \n        for (int party = 0; party < numParties; party++) {\n            for",
+    "confidence": 0.7
+  },
+  "127ba84b9f7c9b95230dd2eb48778f7db63d704de27751a4edebecdd4baead90": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "Array access with arithmetic operations may indicate potential loop-carried dependencies or data races, requiring runtime dependency checking",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP loop parallelization with dependency checking",
+        "SIMD vectorization using OpenMP SIMD directives"
+      ],
+      "tests_recommended": [
+        "Loop dependency analysis",
+        "Data race detection tests"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409958.3435462,
+    "usage_count": 1,
+    "pattern_hash": "127ba84b9f7c9b95230dd2eb48778f7db63d704de27751a4edebecdd4baead90",
+    "original_code_snippet": "void latticeEncrypt(int64_t* ciphertext, int64_t* public_key, int message_bit,\n                   int n, int q) {\n    // Select random subset of public key elements\n    for (int i = 0; i < n; i++) {\n ",
+    "confidence": 0.7
+  },
+  "fcd17c87e54831b7e8f2b2df50c6236ab861a6bcac38e20ba1e1bf62913d4b7e": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "Array access with arithmetic operations may indicate potential loop-carried dependencies or data races, requiring runtime dependency checking",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP loop parallelization with dependency checking",
+        "SIMD vectorization using OpenMP SIMD directives"
+      ],
+      "tests_recommended": [
+        "Loop dependency analysis tests",
+        "Data race detection tests"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409958.983865,
+    "usage_count": 1,
+    "pattern_hash": "fcd17c87e54831b7e8f2b2df50c6236ab861a6bcac38e20ba1e1bf62913d4b7e",
+    "original_code_snippet": "int latticeDecrypt(int64_t* ciphertext, int64_t* private_key, int n, int q) {\n    int64_t inner_product = 0;\n    \n    for (int i = 0; i < n; i++) {\n        inner_product = (inner_product + ciphertext[",
+    "confidence": 0.7
+  },
+  "3e9276356256bb0ad613984be6a68a75355bd2cab6d6496605f017e8be910fc6": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "The presence of a conditional branch within a loop may indicate potential loop-carried dependencies or data races, requiring runtime dependency checking to ensure safe parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP loop parallelization with dependency checking",
+        "Use of reduction clauses if applicable"
+      ],
+      "tests_recommended": [
+        "Runtime dependency checking tests",
+        "Data race detection tests"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409959.498136,
+    "usage_count": 1,
+    "pattern_hash": "3e9276356256bb0ad613984be6a68a75355bd2cab6d6496605f017e8be910fc6",
+    "original_code_snippet": "void generateLatticeKeys(int64_t* public_key, int64_t* private_key, \n                        int n, int q, double sigma) {\n    // Generate random private key\n    for (int i = 0; i < n; i++) {\n        ",
+    "confidence": 0.7
+  },
+  "571ad366c137441192a9c97fa645d5b12bcd8035bbf4d113b91a2116b18e92d0": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "Potential loop-carried dependencies and conditional branch may introduce data races or dependencies",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP loop parallelization with dependency checking",
+        "Use of reduction clauses for aggregate operations"
+      ],
+      "tests_recommended": [
+        "Runtime dependency checking tests",
+        "Data race detection tests"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409960.0077162,
+    "usage_count": 1,
+    "pattern_hash": "571ad366c137441192a9c97fa645d5b12bcd8035bbf4d113b91a2116b18e92d0",
+    "original_code_snippet": "    }\n    \n    // Generate public key: b = a*s + e (mod q)\n    for (int i = 0; i < n; i++) {\n        int64_t a_i = rand() % q;\n        int64_t error = (int64_t)(sigma * ((double)rand() / RAND_MAX - 0.",
+    "confidence": 0.7
+  },
+  "73a457601586fdce0a0ea3064c3f608967c6a1ce86344ec940eda37b78529ae5": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "The code is marked as vectorizable with array access and arithmetic operations, which is suitable for SIMD. However, without specific code context, it's uncertain whether there are loop-carried dependencies or data races. Runtime dependency checking is necessary to ensure safe parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop with dependency checking",
+        "SIMD instructions for arithmetic operations"
+      ],
+      "tests_recommended": [
+        "Dependency analysis tests",
+        "Data race detection tests"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409961.563749,
+    "usage_count": 1,
+    "pattern_hash": "73a457601586fdce0a0ea3064c3f608967c6a1ce86344ec940eda37b78529ae5",
+    "original_code_snippet": "        uint64_t secret = 0;\n        \n        // Lagrange interpolation at x = 0\n        for (size_t i = 0; i < shares.size(); i++) {\n            uint64_t numerator = 1;\n            uint64_t denominat",
+    "confidence": 0.7
+  },
+  "80a15e67305c74aa8fdedd238be20cd0e70aeb4da32f72e3aaa909bfd6ee166a": {
+    "analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "The code is classified as embarrassingly parallel with array access and simple indexing, indicating independent operations with no apparent data races or dependencies.",
+      "confidence": 0.85,
+      "transformations": [
+        "Apply OpenMP parallel for directive to the loop",
+        "Use private variables for each thread"
+      ],
+      "tests_recommended": [
+        "Validate parallel execution with multiple threads",
+        "Check for correctness with different input sizes"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409962.750656,
+    "usage_count": 1,
+    "pattern_hash": "80a15e67305c74aa8fdedd238be20cd0e70aeb4da32f72e3aaa909bfd6ee166a",
+    "original_code_snippet": "                           circuit[i].qR * proof.b[i] +\n                           circuit[i].qO * proof.c[i] +\n                           circuit[i].qM * proof.a[i] * proof.b[i] +\n                   ",
+    "confidence": 0.85
+  },
+  "3564d2fd8e91328d58210e38020ddb0b26e6894b6e392b9444492eacf5bd090b": {
+    "analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "The code is classified as embarrassingly parallel with array access using simple indexing, indicating independent operations with no apparent data races or dependencies.",
+      "confidence": 0.85,
+      "transformations": [
+        "Apply OpenMP parallel for directive to the loop",
+        "Use private variables for each thread"
+      ],
+      "tests_recommended": [
+        "Validate output against sequential execution",
+        "Test with varying input sizes and thread counts"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409963.323861,
+    "usage_count": 1,
+    "pattern_hash": "3564d2fd8e91328d58210e38020ddb0b26e6894b6e392b9444492eacf5bd090b",
+    "original_code_snippet": "        long long result = 1;\n        base %= mod;\n        \n        while (exp > 0) {\n            if (exp % 2 == 1) {\n                result = (result * base) % mod;\n            }",
+    "confidence": 0.85
+  },
+  "29097f7da6f08a2659bfe9c5f36a781463a49dcc9dfe1e32eebfaff7b3db0fb5": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "The presence of a conditional branch within a loop may indicate potential loop-carried dependencies or data races, requiring runtime dependency checking to ensure safe parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP loop parallelization with dependency checking",
+        "Use of reduction clauses if applicable"
+      ],
+      "tests_recommended": [
+        "Validation tests for data integrity and correctness under parallel execution",
+        "Performance tests to evaluate speedup and scalability"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409963.915393,
+    "usage_count": 1,
+    "pattern_hash": "29097f7da6f08a2659bfe9c5f36a781463a49dcc9dfe1e32eebfaff7b3db0fb5",
+    "original_code_snippet": "        base %= mod;\n        \n        while (exp > 0) {\n            if (exp % 2 == 1) {\n                result = (result * base) % mod;\n            }\n            base = (base * base) % mod;",
+    "confidence": 0.7
+  },
+  "69b436b30bc475ff94213452758a5bcb74d7a74b94120568be705ac22f552005": {
+    "analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "The code is classified as embarrassingly parallel with array access using simple indexing, indicating independent operations with no apparent data races or dependencies.",
+      "confidence": 0.85,
+      "transformations": [
+        "Apply OpenMP parallel for directive to the loop",
+        "Use private variables for each thread"
+      ],
+      "tests_recommended": [
+        "Validate parallel execution using OpenMP with various input sizes",
+        "Check for correctness using sequential execution as a baseline"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409965.797896,
+    "usage_count": 1,
+    "pattern_hash": "69b436b30bc475ff94213452758a5bcb74d7a74b94120568be705ac22f552005",
+    "original_code_snippet": "                nodes[parentIdx].hash = hashPair(\n                    nodes[leftIdx].hash,\n                    nodes[rightIdx].hash\n                );\n                nodes[parentIdx].leftChild = left",
+    "confidence": 0.85
+  },
+  "a7abdbb84e925e28d418b977b59bb47043b13880718463d585deb30a7285df91": {
+    "analysis": {
+      "classification": "not_parallel",
+      "reasoning": "The function _ZNSt3__16vectorIbNS_9allocatorIbEEE7reserveEm is a part of the vector class and is used for memory allocation, which is not a parallelizable operation. Additionally, the lack of context in the provided code makes it difficult to determine the exact nature of the parallelization, but the function name suggests a sequential operation.",
+      "confidence": 0.9,
+      "transformations": [
+        "No OpenMP suggestions as the operation is inherently sequential"
+      ],
+      "tests_recommended": [
+        "Validation tests for correct memory allocation and deallocation"
+      ],
+      "logic_issue_type": "non_parallel_algorithm",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409966.453001,
+    "usage_count": 1,
+    "pattern_hash": "a7abdbb84e925e28d418b977b59bb47043b13880718463d585deb30a7285df91",
+    "original_code_snippet": "        while (level > 1) {\n            int nextLevel = level / 2;\n            int nextOffset = offset - nextLevel;\n            \n            // Process each parent node\n            for (int i = 0; i <",
+    "confidence": 0.9
+  },
+  "00e085add4137b5d6d3eaa0709bafc1c3a80cba40939dd1b271dc09ab6384490": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "The code is marked as vectorizable with array access and arithmetic operations, which is suitable for SIMD. However, without context, it's unclear if there are any loop-carried dependencies or data races. Runtime dependency checking is necessary to ensure safe parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop",
+        "SIMD vectorization using #pragma simd"
+      ],
+      "tests_recommended": [
+        "Dependency analysis tests",
+        "Data race detection tests"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409966.984305,
+    "usage_count": 1,
+    "pattern_hash": "00e085add4137b5d6d3eaa0709bafc1c3a80cba40939dd1b271dc09ab6384490",
+    "original_code_snippet": "        std::vector<uint8_t> hash(32);\n        \n        uint64_t h = 0xcbf29ce484222325;\n        for (uint8_t byte : data) {\n            h ^= byte;\n            h *= 0x100000001b3;\n        }",
+    "confidence": 0.7
+  },
+  "9df2bece8576695881daf75469d23a3e021960f31b4478284d00bf5c8e4ab38c": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "The code is marked as vectorizable with array access and arithmetic operations, which is suitable for SIMD. However, without specific code context, it's uncertain whether there are loop-carried dependencies or data races. Runtime dependency checking is necessary to ensure safe parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loops",
+        "SIMD vectorization"
+      ],
+      "tests_recommended": [
+        "Dependency analysis tests",
+        "Data race detection tests"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409967.526759,
+    "usage_count": 1,
+    "pattern_hash": "9df2bece8576695881daf75469d23a3e021960f31b4478284d00bf5c8e4ab38c",
+    "original_code_snippet": "        for (uint8_t byte : data) {\n            h ^= byte;\n            h *= 0x100000001b3;\n        }\n        \n        for (int i = 0; i < 32; i++) {\n            hash[i] = (h >> (i * 8)) & 0xFF;",
+    "confidence": 0.7
+  },
+  "bf57cb73b9ca6cef815ea6ef0983d98d9aa1c44df1f85f6ea1a6ef4bf18f306c": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "The code is marked as vectorizable with array access and arithmetic operations, which is suitable for SIMD. However, without context, it's unclear if there are any loop-carried dependencies or data races. Runtime dependency checking is necessary to ensure safe parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop",
+        "SIMD vectorization using #pragma simd"
+      ],
+      "tests_recommended": [
+        "Dependency analysis tests",
+        "Data race detection tests"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409968.119523,
+    "usage_count": 1,
+    "pattern_hash": "bf57cb73b9ca6cef815ea6ef0983d98d9aa1c44df1f85f6ea1a6ef4bf18f306c",
+    "original_code_snippet": "        nodes.resize(2 * treeSize - 1);\n        \n        // Hash leaf nodes\n        for (int i = 0; i < n; i++) {\n            nodes[treeSize - 1 + i].hash = computeHash(data[i]);\n        }\n        ",
+    "confidence": 0.7
+  },
+  "7ecf9720bf6e77613b518fb0d0290bde613b0b57cf35d76321795819aab2dda7": {
+    "analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "The function appears to be embarrassingly parallel with array access using simple indexing, indicating independent operations with no data races or dependencies.",
+      "confidence": 0.85,
+      "transformations": [
+        "Apply OpenMP parallel for directive to the loop",
+        "Use private variables for each thread"
+      ],
+      "tests_recommended": [
+        "Validate output with sequential execution",
+        "Test with varying input sizes and thread counts"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409968.772195,
+    "usage_count": 1,
+    "pattern_hash": "7ecf9720bf6e77613b518fb0d0290bde613b0b57cf35d76321795819aab2dda7",
+    "original_code_snippet": "                     const std::vector<uint8_t>& root) {\n        std::vector<uint8_t> currentHash = computeHash(leaf);\n        \n        for (size_t i = 0; i < proof.siblings.size(); i++) {\n           ",
+    "confidence": 0.85
+  },
+  "bff1688f67ee389b1fb3cc68d0f23f776f53ebf24590c28dca1a528db7526afd": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "The function _ZN18LatticeBasedCrypto10ntruKeyGenERKNS_10NTRUParamsE has array access with arithmetic operations which is good for SIMD, but without code context, it's unclear if there are any loop-carried dependencies or data races that would prevent parallelization.",
+      "confidence": 0.6,
+      "transformations": [
+        "OpenMP loop parallelization with dependency checking",
+        "SIMD vectorization using OpenMP SIMD directives"
+      ],
+      "tests_recommended": [
+        "Unit tests for data integrity after parallelization",
+        "Performance tests to measure speedup"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409970.1744661,
+    "usage_count": 1,
+    "pattern_hash": "bff1688f67ee389b1fb3cc68d0f23f776f53ebf24590c28dca1a528db7526afd",
+    "original_code_snippet": "        for (int s = 1; s < n; s *= 2) {\n            int m = 2 * s;\n            int wm = 1;\n            \n            for (int k = 0; k < s; k++) {\n                for (int i = k; i < n; i += m) {\n    ",
+    "confidence": 0.6
+  },
+  "96d3d598f8d338ecd08debb7ebffd839695ac020df0b081d37acea89ddc3bdfb": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "Array access with arithmetic operations may indicate potential loop-carried dependencies or data races, requiring runtime dependency checking",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop with dependency checking",
+        "SIMD vectorization using OpenMP SIMD directives"
+      ],
+      "tests_recommended": [
+        "Unit tests for data integrity",
+        "Performance tests for parallelization efficiency"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409970.8754969,
+    "usage_count": 1,
+    "pattern_hash": "96d3d598f8d338ecd08debb7ebffd839695ac020df0b081d37acea89ddc3bdfb",
+    "original_code_snippet": "        keypair.publicKeyB.resize(samples);\n        for (int i = 0; i < samples; i++) {\n            int dot = 0;\n            for (int j = 0; j < params.n; j++) {\n                dot += keypair.publicK",
+    "confidence": 0.7
+  },
+  "8d1c2eae40e9a1a12cee1b9f3586c091eca2b07ac5902e5f881b6a46c36bdba4": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409971.008137,
+    "usage_count": 1,
+    "pattern_hash": "8d1c2eae40e9a1a12cee1b9f3586c091eca2b07ac5902e5f881b6a46c36bdba4",
+    "original_code_snippet": "                    u[j] = (u[j] + A[i][j]) % params.q;\n                }\n            }\n        }\n        \n        // v = sum of b[i] for i in S + m * (q/2)\n        int v = 0;",
+    "confidence": 0.5
+  },
+  "e13cd26fdaf98c3a4f94224672bad052ab8624775fdc0f92e8f14a6147f0702a": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "The function contains complex operations and function calls, which may introduce loop-carried dependencies or data races. Runtime dependency checking is necessary to ensure correct parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "Apply OpenMP parallel for directive with dependency checking",
+        "Use OpenMP tasking for function calls"
+      ],
+      "tests_recommended": [
+        "Test with different input sizes to verify correctness",
+        "Use a parallelism-aware debugger to detect data races"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409971.6751099,
+    "usage_count": 1,
+    "pattern_hash": "e13cd26fdaf98c3a4f94224672bad052ab8624775fdc0f92e8f14a6147f0702a",
+    "original_code_snippet": "            \n            int error = sampleGaussian(params.sigma);\n            keypair.publicKeyB[i] = (dot + error) % params.q;\n            if (keypair.publicKeyB[i] < 0) keypair.publicKeyB[i] += par",
+    "confidence": 0.7
+  },
+  "1571a5a7d1dfd9042d8438406ae392389f84cd8d7fec7477d4bb97ed90fc8052": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409971.975453,
+    "usage_count": 1,
+    "pattern_hash": "1571a5a7d1dfd9042d8438406ae392389f84cd8d7fec7477d4bb97ed90fc8052",
+    "original_code_snippet": "        std::vector<int> result = poly;\n        \n        // Cooley-Tukey butterfly\n        for (int s = 1; s < n; s *= 2) {\n            int m = 2 * s;\n            int wm = 1;\n            ",
+    "confidence": 0.5
+  },
+  "646f33fe4a5e8d6a30316a20dc5f93ce028d918a41db46f384010ab6a692f2ef": {
+    "analysis": {
+      "classification": "safe_parallel",
+      "reasoning": "The function appears to be embarrassingly parallel with array access using simple indexing, indicating independent operations with no loop-carried dependencies or data races.",
+      "confidence": 0.85,
+      "transformations": [
+        "Apply OpenMP parallel for directive to the loop",
+        "Use private variables for each thread"
+      ],
+      "tests_recommended": [
+        "Validate output against sequential version",
+        "Test with multiple thread counts"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409974.1775181,
+    "usage_count": 1,
+    "pattern_hash": "646f33fe4a5e8d6a30316a20dc5f93ce028d918a41db46f384010ab6a692f2ef",
+    "original_code_snippet": "    Point temp = P;\n    k--;\n    \n    while (k > 0) {\n        if (k % 2 == 1) {\n            result = point_add(result, temp, p, a);\n        }",
+    "confidence": 0.85
+  },
+  "3959d71f260e734dd2df8ce301e39637a2a031eab852a3568082bf3195372729": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409974.2641332,
+    "usage_count": 1,
+    "pattern_hash": "3959d71f260e734dd2df8ce301e39637a2a031eab852a3568082bf3195372729",
+    "original_code_snippet": "    k--;\n    \n    while (k > 0) {\n        if (k % 2 == 1) {\n            result = point_add(result, temp, p, a);\n        }\n        temp = point_add(temp, temp, p, a);",
+    "confidence": 0.5
+  },
+  "1d687a083438289e0339de2f8ebbeda671598c4ff0082f2782c8ac64c301b13c": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409974.804659,
+    "usage_count": 1,
+    "pattern_hash": "1d687a083438289e0339de2f8ebbeda671598c4ff0082f2782c8ac64c301b13c",
+    "original_code_snippet": "        // MixColumns\n        for (int j = 0; j < 4; j++) {\n            uint8_t a[4];\n            for (int i = 0; i < 4; i++) a[i] = state[i][j];\n            \n            state[0][j] = a[0] ^ a[1] ^ a",
+    "confidence": 0.5
+  },
+  "4bba5498ab28918ffd1dd706e8faf4cdd0fa98fc3967578e17a1daeb521354e1": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409974.878371,
+    "usage_count": 1,
+    "pattern_hash": "4bba5498ab28918ffd1dd706e8faf4cdd0fa98fc3967578e17a1daeb521354e1",
+    "original_code_snippet": "        \n        // AddRoundKey\n        for (int i = 0; i < 4; i++) {\n            for (int j = 0; j < 4; j++) {\n                state[i][j] ^= round_keys[round][i*4 + j];\n            }\n        }",
+    "confidence": 0.5
+  },
+  "15cc6ea0b30176528bdd3704b703244bec570b9e420204aea38533217b2f1963": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409974.951374,
+    "usage_count": 1,
+    "pattern_hash": "15cc6ea0b30176528bdd3704b703244bec570b9e420204aea38533217b2f1963",
+    "original_code_snippet": "        }\n        \n        // MixColumns\n        for (int j = 0; j < 4; j++) {\n            uint8_t a[4];\n            for (int i = 0; i < 4; i++) a[i] = state[i][j];\n            ",
+    "confidence": 0.5
+  },
+  "3bcfff87022782c98ba89c32ab55b4c6defd942d71d68c263963e299f1ce19d1": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409975.024804,
+    "usage_count": 1,
+    "pattern_hash": "3bcfff87022782c98ba89c32ab55b4c6defd942d71d68c263963e299f1ce19d1",
+    "original_code_snippet": "        \n        // ShiftRows\n        for (int i = 1; i < 4; i++) {\n            for (int j = 0; j < i; j++) {\n                uint8_t temp = state[i][0];\n                state[i][0] = state[i][1];\n   ",
+    "confidence": 0.5
+  },
+  "9bf7e5aa48b14cb50344607e6237c01dcee28964d17705c279910c9dbda7ae14": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409975.098191,
+    "usage_count": 1,
+    "pattern_hash": "9bf7e5aa48b14cb50344607e6237c01dcee28964d17705c279910c9dbda7ae14",
+    "original_code_snippet": "        }\n        \n        // ShiftRows\n        for (int i = 1; i < 4; i++) {\n            for (int j = 0; j < i; j++) {\n                uint8_t temp = state[i][0];\n                state[i][0] = state[",
+    "confidence": 0.5
+  },
+  "6da2f19bdda271dd0e569ecc054ef037e1c878bf436ac90169abc952991840fe": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409975.176725,
+    "usage_count": 1,
+    "pattern_hash": "6da2f19bdda271dd0e569ecc054ef037e1c878bf436ac90169abc952991840fe",
+    "original_code_snippet": "    }\n    \n    // Main rounds\n    for (int round = 1; round < 14; round++) {\n        // SubBytes\n        for (int i = 0; i < 4; i++) {\n            for (int j = 0; j < 4; j++) {",
+    "confidence": 0.5
+  },
+  "e1add366ff29fdc739062475764b7e40276234bc1af2743e41dc02ce3cac8d6d": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "Array access with arithmetic operations may indicate potential loop-carried dependencies or data races, requiring runtime dependency checking",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP loop parallelization with dependency checking",
+        "SIMD vectorization using OpenMP SIMD directives"
+      ],
+      "tests_recommended": [
+        "Loop dependency analysis tests",
+        "Data race detection tests"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    "timestamp": 1766409977.1314719,
+    "usage_count": 1,
+    "pattern_hash": "e1add366ff29fdc739062475764b7e40276234bc1af2743e41dc02ce3cac8d6d",
+    "original_code_snippet": "        \n        for (int i = 0; i < degree; i += len) {\n            long long w = 1;\n            for (int j = 0; j < len / 2; j++) {\n                long long u = poly[i + j];\n                long lo",
+    "confidence": 0.7
+  },
+  "624a9cebbeef83699f9fb0155f58fb4ca3a3078bcdea0c50178947006a439f40": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409977.2158022,
+    "usage_count": 1,
+    "pattern_hash": "624a9cebbeef83699f9fb0155f58fb4ca3a3078bcdea0c50178947006a439f40",
+    "original_code_snippet": "    std::vector<long long> temp(2 * degree, 0);\n    \n    for (int i = 0; i < degree; i++) {\n        for (int j = 0; j < degree; j++) {\n            temp[i + j] = (temp[i + j] + a[i] * b[j]) % modulus;\n",
+    "confidence": 0.5
+  },
+  "5a244ee5478087101fc3687e50444c8a638b6e17ebcfb253359fc8b003878488": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409977.298375,
+    "usage_count": 1,
+    "pattern_hash": "5a244ee5478087101fc3687e50444c8a638b6e17ebcfb253359fc8b003878488",
+    "original_code_snippet": "    polynomialMultiply(ct1 + degree, ct2 + degree, temp2.data(), degree, modulus);\n    \n    // Relinearization (simplified)\n    for (int i = 0; i < degree; i++) {\n        result[i] = temp0[i];\n       ",
+    "confidence": 0.5
+  },
+  "0630e6213c06d10c078c599aad62034e85f7989e37cc704668442692cc013234": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409977.36654,
+    "usage_count": 1,
+    "pattern_hash": "0630e6213c06d10c078c599aad62034e85f7989e37cc704668442692cc013234",
+    "original_code_snippet": "    \n    // c0 = pk0 * u + e0 + m\n    polynomialMultiply(public_key, u.data(), ciphertext, degree, modulus);\n    for (int i = 0; i < degree; i++) {\n        ciphertext[i] = (ciphertext[i] + e0[i] + pla",
+    "confidence": 0.5
+  },
+  "848a5d11add9582529ca5a39370abc8ea90b77fff43763aa6c3b17e55bbf48cb": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409977.4290829,
+    "usage_count": 1,
+    "pattern_hash": "848a5d11add9582529ca5a39370abc8ea90b77fff43763aa6c3b17e55bbf48cb",
+    "original_code_snippet": "\nvoid bgvHomomorphicAdd(long long* ct1, long long* ct2, long long* result,\n                      int degree, long long modulus) {\n    for (int i = 0; i < 2 * degree; i++) {\n        result[i] = (ct1[i]",
+    "confidence": 0.5
+  },
+  "88519650a4643667c135c9f770caeb9bf085da50fa0fb16a6bfcaf7535da61cb": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409977.500084,
+    "usage_count": 1,
+    "pattern_hash": "88519650a4643667c135c9f770caeb9bf085da50fa0fb16a6bfcaf7535da61cb",
+    "original_code_snippet": "    \n    // c1 = pk1 * u + e1\n    polynomialMultiply(public_key + degree, u.data(), ciphertext + degree, degree, modulus);\n    for (int i = 0; i < degree; i++) {\n        ciphertext[degree + i] = (ciph",
+    "confidence": 0.5
+  },
+  "27574bc25a7360eaf482724b7ba1abeee16417c9343fe5b8e15d5e4283ece0fc": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409977.587059,
+    "usage_count": 1,
+    "pattern_hash": "27574bc25a7360eaf482724b7ba1abeee16417c9343fe5b8e15d5e4283ece0fc",
+    "original_code_snippet": "                       int degree, long long modulus) {\n    std::vector<long long> temp(2 * degree, 0);\n    \n    for (int i = 0; i < degree; i++) {\n        for (int j = 0; j < degree; j++) {\n         ",
+    "confidence": 0.5
+  },
+  "c4916ac4abd1d0ded544a1f7811005fc7649fc1415e4b4740fc4faffdc4eb4ac": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409978.277664,
+    "usage_count": 1,
+    "pattern_hash": "c4916ac4abd1d0ded544a1f7811005fc7649fc1415e4b4740fc4faffdc4eb4ac",
+    "original_code_snippet": "        std::vector<int> result(N, 0);\n        \n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < N; j++) {\n                int idx = (i + j) % N;\n                result[idx] += a[",
+    "confidence": 0.5
+  },
+  "07b428421cfd985507f957ccc99ad181cd1cda5a3738fddc725f6231ac3d6b1f": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409978.341433,
+    "usage_count": 1,
+    "pattern_hash": "07b428421cfd985507f957ccc99ad181cd1cda5a3738fddc725f6231ac3d6b1f",
+    "original_code_snippet": "        \n        // Center coefficients around 0\n        for (int i = 0; i < N; i++) {\n            if (a[i] > q / 2) {\n                a[i] -= q;\n            }\n        }",
+    "confidence": 0.5
+  },
+  "dda461a7aac2cd72c2f6cf190ce8488418bf0e3b40eb2b94c066fea2eb7cbd84": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409978.416378,
+    "usage_count": 1,
+    "pattern_hash": "dda461a7aac2cd72c2f6cf190ce8488418bf0e3b40eb2b94c066fea2eb7cbd84",
+    "original_code_snippet": "        std::vector<int> rh = polyMult(r, publicKey);\n        std::vector<int> ciphertext(N);\n        \n        for (int i = 0; i < N; i++) {\n            ciphertext[i] = (rh[i] + message[i]) % q;\n     ",
+    "confidence": 0.5
+  },
+  "afae8b0af11cda009bb3091497e7dc4d401383362e2e4dd1c89582a72d247cf9": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409978.4827552,
+    "usage_count": 1,
+    "pattern_hash": "afae8b0af11cda009bb3091497e7dc4d401383362e2e4dd1c89582a72d247cf9",
+    "original_code_snippet": "    std::vector<int> polyMod(const std::vector<int>& poly, int modulus) {\n        std::vector<int> result(N);\n        \n        for (int i = 0; i < N; i++) {\n            result[i] = ((poly[i] % modulus",
+    "confidence": 0.5
+  },
+  "e18ace3f4f7fa94f9e75cb196c26ae234cfb57b40c5b5941540db646b0ffbe3c": {
+    "analysis": {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    "timestamp": 1766409978.5662029,
+    "usage_count": 1,
+    "pattern_hash": "e18ace3f4f7fa94f9e75cb196c26ae234cfb57b40c5b5941540db646b0ffbe3c",
+    "original_code_snippet": "        \n        // Placeholder: actual inversion is complex\n        // Using approximation for demonstration\n        for (int i = 0; i < N; i++) {\n            inverse[i] = 1;  // Simplified\n        }",
+    "confidence": 0.5
   }
 }
