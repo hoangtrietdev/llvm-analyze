@@ -34,8 +34,11 @@ void variationalOpticalFlow(double* I1, double* I2, double* u, double* v,
             }
         }
         
-        u = u_new;
-        v = v_new;
+        // Copy data back from vectors to arrays
+        for (int i = 0; i < width*height; i++) {
+            u[i] = u_new[i];
+            v[i] = v_new[i];
+        }
     }
 }
 
