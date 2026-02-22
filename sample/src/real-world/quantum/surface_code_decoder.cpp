@@ -2,6 +2,7 @@
 #include <vector>
 #include <cmath>
 #include <bitset>
+#include <random>
 
 void measureStabilizers(int* qubits, int* syndrome, int lattice_size) {
     // Surface code: measure X and Z stabilizers on lattice
@@ -60,7 +61,7 @@ void decodeMinimumWeight(int* syndrome, int* errors, int lattice_size) {
     }
 }
 
-void simulateNoise Channel(int* qubits, int n_qubits, double error_rate,
+void simulateNoiseChannel(int* qubits, int n_qubits, double error_rate,
                           std::mt19937& rng) {
     std::uniform_real_distribution<> uniform(0.0, 1.0);
     

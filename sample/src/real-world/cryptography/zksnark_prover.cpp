@@ -108,7 +108,8 @@ bool zksnarkVerify(G1Point& proof_A, G2Point& proof_B, G1Point& proof_C,
 
 int main() {
     const int n_variables = 100, n_constraints = 50, n_public = 10;
-    const long long p = 21888242871839275222246405745257275088548364400416034343698204186575808495617LL;
+    // Simplified prime for demonstration (real zkSNARKs use 254-bit BN128 curve)
+    const long long p = 2147483647LL;  // 32-bit Mersenne prime
     
     std::vector<G1Point> crs_g1(n_variables * 2);
     std::vector<G2Point> crs_g2(n_variables);

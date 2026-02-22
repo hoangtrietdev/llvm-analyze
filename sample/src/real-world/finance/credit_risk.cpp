@@ -118,7 +118,7 @@ public:
         std::vector<double> features;
         
         features.push_back(borrower.creditScore / 850.0);  // Normalize
-        features.push_back(borrower.dti);
+        features.push_back(borrower.totalDebt / borrower.annualIncome);  // DTI ratio
         features.push_back(loan.ltv);
         features.push_back(std::log(borrower.annualIncome + 1) / 15);
         features.push_back(borrower.employmentYears / 40.0);

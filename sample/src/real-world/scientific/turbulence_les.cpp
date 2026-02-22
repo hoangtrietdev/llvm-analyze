@@ -2,7 +2,7 @@
 #include <vector>
 #include <cmath>
 
-void lesNavier Stokes(double* u, double* v, double* w, double* p, 
+void lesNavierStokes(double* u, double* v, double* w, double* p, 
                      int nx, int ny, int nz, double dt, double dx, double nu) {
     std::vector<double> u_new(nx*ny*nz), v_new(nx*ny*nz), w_new(nx*ny*nz);
     

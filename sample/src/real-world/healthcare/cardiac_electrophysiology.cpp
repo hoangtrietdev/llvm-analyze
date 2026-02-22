@@ -2,7 +2,7 @@
 #include <vector>
 #include <cmath>
 
-void monodomain Equation(double* V, double* I_ion, double* stimulus,
+void monodomainEquation(double* V, double* I_ion, double* stimulus,
                         double* diffusion_tensor, int nx, int ny, int nz,
                         double dt, double dx, double chi, double Cm) {
     std::vector<double> V_new(nx*ny*nz);

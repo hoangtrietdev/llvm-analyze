@@ -27,7 +27,7 @@ public:
         FieldElement a, b;
         FieldElement modulus;
         
-        Point add(const Point& P, const Point& Q) {
+        Point add(const Point& P, const Point& Q) const {
             if (P.x.value == 0 && P.y.value == 0) return Q;
             if (Q.x.value == 0 && Q.y.value == 0) return P;
             
@@ -55,7 +55,7 @@ public:
             return {xR, yR};
         }
         
-        Point scalarMult(const Point& P, uint64_t k) {
+        Point scalarMult(const Point& P, uint64_t k) const {
             Point result = {FieldElement{0, modulus.value}, FieldElement{0, modulus.value}};
             Point current = P;
             
@@ -70,7 +70,7 @@ public:
             return result;
         }
         
-        FieldElement inverse(const FieldElement& x) {
+        FieldElement inverse(const FieldElement& x) const {
             // Extended Euclidean algorithm
             int64_t a = x.value;
             int64_t m = x.modulus;
