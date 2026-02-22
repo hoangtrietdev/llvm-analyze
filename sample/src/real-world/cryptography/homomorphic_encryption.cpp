@@ -153,7 +153,8 @@ public:
     
     // Compute encrypted sum of array
     uint64_t encryptedSum(const std::vector<uint64_t>& encrypted_values) {
-        uint64_t result = encrypt(0, std::mt19937_64(std::random_device{}()));
+        std::mt19937_64 gen(std::random_device{}());
+        uint64_t result = encrypt(0, gen);
         
         for (const auto& val : encrypted_values) {
             result = homomorphicAdd(result, val);
@@ -166,7 +167,8 @@ public:
     uint64_t encryptedWeightedSum(const std::vector<uint64_t>& encrypted_values,
                                   const std::vector<uint64_t>& weights) {
         
-        uint64_t result = encrypt(0, std::mt19937_64(std::random_device{}()));
+        std::mt19937_64 gen(std::random_device{}());
+        uint64_t result = encrypt(0, gen);
         
         for (size_t i = 0; i < encrypted_values.size(); i++) {
             uint64_t weighted = homomorphicMultiply(encrypted_values[i], weights[i]);
@@ -186,7 +188,8 @@ public:
     uint64_t encryptedDotProduct(const std::vector<uint64_t>& encrypted_vec1,
                                 const std::vector<uint64_t>& encrypted_vec2) {
         
-        uint64_t result = encrypt(0, std::mt19937_64(std::random_device{}()));
+        std::mt19937_64 gen(std::random_device{}());
+        uint64_t result = encrypt(0, gen);
         
         for (size_t i = 0; i < encrypted_vec1.size(); i++) {
             // Note: This is simplified - in practice we need both vectors encrypted
@@ -201,14 +204,16 @@ public:
     uint64_t privateSetIntersection(const std::vector<uint64_t>& encrypted_set1,
                                     const std::vector<uint64_t>& encrypted_set2) {
         
-        uint64_t count = encrypt(0, std::mt19937_64(std::random_device{}()));
+        std::mt19937_64 gen(std::random_device{}());
+        uint64_t count = encrypt(0, gen);
         
         // Compare encrypted elements
+        std::mt19937_64 gen_inner(std::random_device{}());
         for (const auto& e1 : encrypted_set1) {
             for (const auto& e2 : encrypted_set2) {
                 // In real implementation, would use equality testing protocol
                 if (e1 == e2) {
-                    uint64_t one = encrypt(1, std::mt19937_64(std::random_device{}()));
+                    uint64_t one = encrypt(1, gen_inner);
                     count = homomorphicAdd(count, one);
                 }
             }
@@ -265,7 +270,8 @@ public:
         
         for (int i = 0; i < rows_A; i++) {
             for (int j = 0; j < cols_B; j++) {
-                uint64_t sum = encrypt(0, std::mt19937_64(std::random_device{}()));
+                std::mt19937_64 gen(std::random_device{}());
+                uint64_t sum = encrypt(0, gen);
                 
                 for (int k = 0; k < cols_A; k++) {
                     // Simplified - would need proper homomorphic multiplication

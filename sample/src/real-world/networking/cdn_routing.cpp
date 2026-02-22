@@ -432,7 +432,7 @@ public:
     struct CDNMetrics {
         double cacheHitRatio;
         double avgLatency;
-        double bandwidth Usage;
+        double bandwidthUsage;
         int totalRequests;
         int cachedRequests;
         double totalCost;

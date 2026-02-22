@@ -235,7 +235,8 @@ public:
             // d coefficients are +1, d are -1, rest are 0
             std::vector<int> positions;
             for (int i = 0; i < N; i++) positions.push_back(i);
-            std::random_shuffle(positions.begin(), positions.end());
+            std::mt19937 rng(std::random_device{}());
+            std::shuffle(positions.begin(), positions.end(), rng);
             
             for (int i = 0; i < d; i++) {
                 p.coeffs[positions[i]] = 1;

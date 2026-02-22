@@ -165,7 +165,7 @@ public:
     }
     
     // Large homogeneous portfolio approximation
-    double largePoo lApproximation(const Tranche& tranche, double correlation) {
+    double largePoolApproximation(const Tranche& tranche, double correlation) {
         double totalNotional = portfolio.size() * portfolio[0].notional;
         double pd = portfolio[0].defaultProbability;
         double lgd = 1 - portfolio[0].recoveryRate;
@@ -242,7 +242,7 @@ private:
     
     double priceWithCorrelation(const Tranche& tranche, double correlation) {
         // Simplified pricing with given correlation
-        return largePoo lApproximation(tranche, correlation);
+        return largePoolApproximation(tranche, correlation);
     }
 };
 

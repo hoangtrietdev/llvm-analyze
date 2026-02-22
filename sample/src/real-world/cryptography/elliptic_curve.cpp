@@ -33,7 +33,8 @@ public:
         CurveParams curve;
         curve.a = 0;
         curve.b = 7;
-        curve.p = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F;
+        // Simplified 64-bit prime for demonstration (real secp256k1 uses 256-bit)
+        curve.p = 0xFFFFFFFFFFFFFFC5ULL;  // Large 64-bit prime
         // In practice would use full 256-bit values
         return curve;
     }
@@ -42,8 +43,9 @@ public:
     CurveParams getP256() {
         CurveParams curve;
         curve.a = -3;
-        curve.b = 0x5AC635D8AA3A93E7B3EBBD55769886BC651D06B0CC53B0F63BCE3C3E27D2604B;
-        curve.p = 0xFFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF;
+        // Simplified 64-bit values for demonstration (real P-256 uses 256-bit)
+        curve.b = 0x5AC635D8AA3A93E7ULL;
+        curve.p = 0xFFFFFF0000000001ULL;
         return curve;
     }
     
@@ -312,7 +314,7 @@ public:
     // Elliptic Curve Integrated Encryption Scheme (ECIES)
     struct ECIESCiphertext {
         Point ephemeralPublicKey;
-        std::vector<uint8_t> encrypted Data;
+        std::vector<uint8_t> encryptedData;
         std::vector<uint8_t> mac;
     };
     
