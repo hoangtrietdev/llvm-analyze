@@ -640,7 +640,7 @@ int main() {
     auto registered = reg.warpImage(moving, optimal);
     
     double similarity = reg.ncc(fixed, registered);
-    double mi = reg.mutualInformation(fixed, registered);
+    double mutualInfo = reg.mutualInformation(fixed, registered);
     
     // Deformable registration
     MedicalImaging::DeformableRegistration defReg;

@@ -45,10 +45,10 @@ int main() {
     std::vector<double> pressure(nx*ny*nz, 1000.0);
     std::vector<double> wind_u(nx*ny*nz, 5.0);
     std::vector<double> wind_v(nx*ny*nz, 3.0);
-    std::vector<bool> severe_cells(nx*ny, false);
+    std::vector<char> severe_cells(nx*ny, 0);
     
     detectSevereThunderstorms(temperature.data(), dewpoint.data(), pressure.data(),
-                             wind_u.data(), wind_v.data(), severe_cells.data(),
+                             wind_u.data(), wind_v.data(), (bool*)severe_cells.data(),
                              nx, ny, nz);
     return 0;
 }

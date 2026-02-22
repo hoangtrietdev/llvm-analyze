@@ -3,6 +3,7 @@
 #include <map>
 #include <queue>
 #include <cmath>
+#include <random>
 
 class OrderBookSimulator {
 public:
@@ -53,10 +54,12 @@ public:
         auto& oppositeBook = (order.side == BUY) ? asks : bids;
         
         while (order.quantity > 0 && !oppositeBook.empty()) {
-            auto it = (order.side == BUY) ? 
-                     oppositeBook.begin() : oppositeBook.rbegin();
-            
-            double bestPrice = it->first;
+            double bestPrice;
+            if (order.side == BUY) {
+                bestPrice = oppositeBook.begin()->first;
+            } else {
+                bestPrice = oppositeBook.rbegin()->first;
+            }
             
             // Check price condition
             if ((order.side == BUY && order.price < bestPrice) ||
@@ -65,7 +68,7 @@ public:
             }
             
             // Match quantities
-            auto& level = it->second;
+            auto& level = (order.side == BUY) ? oppositeBook.begin()->second : oppositeBook.rbegin()->second;
             while (order.quantity > 0 && !level.orders.empty()) {
                 Order& restingOrder = level.orders.front();
                 
@@ -86,7 +89,15 @@ public:
             
             // Remove empty price level
             if (level.orders.empty()) {
-                oppositeBook.erase(it->first);
+                if (order.side == BUY) {
+                    oppositeBook.erase(bestPrice);
+                } else {
+                    // For rbegin, need to convert to regular iterator
+                    auto it_to_erase = oppositeBook.find(bestPrice);
+                    if (it_to_erase != oppositeBook.end()) {
+                        oppositeBook.erase(it_to_erase);
+                    }
+                }
             }
         }
         

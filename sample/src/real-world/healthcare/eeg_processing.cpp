@@ -64,11 +64,11 @@ int main() {
     std::vector<double> alpha_power(n_channels);
     std::vector<double> beta_power(n_channels);
     std::vector<double> theta_power(n_channels);
-    std::vector<bool> seizure_detected(n_channels);
+    std::vector<char> seizure_detected(n_channels);
     
     analyzeEEG(eeg_signal.data(), n_channels, n_samples, 
               alpha_power.data(), beta_power.data(), theta_power.data());
-    detectSeizure(eeg_signal.data(), n_channels, n_samples, seizure_detected.data());
+    detectSeizure(eeg_signal.data(), n_channels, n_samples, (bool*)seizure_detected.data());
     
     return 0;
 }

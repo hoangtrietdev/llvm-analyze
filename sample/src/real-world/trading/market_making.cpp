@@ -21,7 +21,7 @@ void calculateOptimalSpread(double mid_price, double volatility, double inventor
     ask_offset = reservation_price + optimal_spread / 2.0 - mid_price;
 }
 
-double estimateAdverseSel ection(std::vector<Order>& recent_trades, double mid_price) {
+double estimateAdverseSelection(std::vector<Order>& recent_trades, double mid_price) {
     // Calculate adverse selection cost
     double sum_signed_volume = 0.0;
     double total_volume = 0.0;

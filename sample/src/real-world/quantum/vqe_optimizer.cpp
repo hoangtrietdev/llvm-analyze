@@ -13,7 +13,7 @@ private:
     std::vector<double> parameters;
     
 public:
-    VQE(int n) : num_qubits(n) {
+    VariationalQuantumEigensolver(int n) : num_qubits(n) {
         int dim = 1 << n;
         state_vector.resize(dim);
         hamiltonian.resize(dim, std::vector<double>(dim, 0.0));

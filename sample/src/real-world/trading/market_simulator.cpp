@@ -552,7 +552,7 @@ int main() {
     auto stats = sim.getMarketStats();
     
     // Backtest simple moving average strategy
-    auto strategy = [](const MarketData& data, int position) -> int {
+    auto strategy = [](const MarketSimulator::MarketData& data, int position) -> int {
         // Simplified: always buy
         return (position == 0) ? 1 : 0;
     };

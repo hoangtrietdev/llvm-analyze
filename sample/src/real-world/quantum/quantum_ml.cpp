@@ -21,7 +21,7 @@ public:
     };
     
     // Hadamard gate
-    void hadamard(QuantumCircuit& circuit, int qubit) {
+    static void hadamard(QuantumCircuit& circuit, int qubit) {
         int dim = 1 << circuit.numQubits;
         std::vector<Complex> newState(dim);
         
@@ -40,7 +40,7 @@ public:
     }
     
     // Rotation gates
-    void rotateY(QuantumCircuit& circuit, int qubit, double theta) {
+    static void rotateY(QuantumCircuit& circuit, int qubit, double theta) {
         int dim = 1 << circuit.numQubits;
         std::vector<Complex> newState(dim);
         
@@ -62,7 +62,7 @@ public:
     }
     
     // CNOT gate
-    void cnot(QuantumCircuit& circuit, int control, int target) {
+    static void cnot(QuantumCircuit& circuit, int control, int target) {
         int dim = 1 << circuit.numQubits;
         std::vector<Complex> newState = circuit.state;
         

@@ -83,9 +83,10 @@ int main() {
         imbalances[t] = imbalance;
     }
     
+    std::vector<char> toxic_flow_buf(n_ticks);
     predictShortTermPrice(prices.data(), volumes.data(), imbalances.data(),
                          predictions.data(), n_ticks, 20);
-    detectToxicFlow(trade_sizes.data(), price_changes.data(), toxic_flow.data(),
+    detectToxicFlow(trade_sizes.data(), price_changes.data(), (bool*)toxic_flow_buf.data(),
                    n_ticks, 50);
     
     return 0;

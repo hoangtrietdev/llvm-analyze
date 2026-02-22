@@ -93,7 +93,9 @@ void solvePoissonEquation(double* potential, double* charge_density,
             }
         }
         
-        potential = pot_new;
+        for (size_t i = 0; i < pot_new.size(); i++) {
+            potential[i] = pot_new[i];
+        }
     }
 }
 
