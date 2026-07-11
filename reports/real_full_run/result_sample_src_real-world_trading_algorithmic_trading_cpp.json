@@ -1,0 +1,608 @@
+{
+  "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+    "llvm_initial": 41,
+    "llvm_sys_noise": 22,
+    "llvm_project": 19,
+    "after_filter": 11,
+    "ai_batches": 1,
+    "ai_results": 11,
+    "omp_verified": 0,
+    "total_ms": 737.4,
+    "llvm_ms": 449.1
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 170,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 35,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "    TradingStrategy(double initial_cash) : cash(initial_cash), position(0) {}\n    \n    std::vector<double> calculate_sma(int period) {\n        std::vector<double> sma(market_data.size(), 0.0);\n        \n        for (size_t i = period - 1; i < market_data.size(); i++) {\n            double sum = 0.0;\n            for (int j = 0; j < period; j++) {\n                sum += market_data[i - j].close;\n            }\n            sma[i] = sum / period;\n        }\n        \n        return sma;\n    }\n    \n    std::vector<double> calculate_ema(int period) {\n        std::vector<double> ema(market_data.size(), 0.0);\n        double multiplier = 2.0 / (period + 1);\n        \n        // Initialize with SMA\n        double sum = 0.0;\n        for (int i = 0; i < period; i++) {\n            sum += market_data[i].close;\n        }\n        ema[period - 1] = sum / period;\n        \n        // Calculate EMA\n        for (size_t i = period; i < market_data.size(); i++) {\n            ema[i] = (market_data[i].close - ema[i-1]) * multiplier + ema[i-1];\n        }\n        \n        return ema;\n    }\n    "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 37,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.9299999999999999,
+      "context": "    std::vector<double> calculate_sma(int period) {\n        std::vector<double> sma(market_data.size(), 0.0);\n        \n        for (size_t i = period - 1; i < market_data.size(); i++) {\n            double sum = 0.0;\n            for (int j = 0; j < period; j++) {\n                sum += market_data[i - j].close;\n            }\n            sma[i] = sum / period;\n        }\n        \n        return sma;\n    }\n    \n    std::vector<double> calculate_ema(int period) {\n        std::vector<double> ema(market_data.size(), 0.0);\n        double multiplier = 2.0 / (period + 1);\n        \n        // Initialize with SMA\n        double sum = 0.0;\n        for (int i = 0; i < period; i++) {\n            sum += market_data[i].close;\n        }\n        ema[period - 1] = sum / period;\n        \n        // Calculate EMA\n        for (size_t i = period; i < market_data.size(); i++) {\n            ema[i] = (market_data[i].close - ema[i-1]) * multiplier + ema[i-1];\n        }\n        \n        return ema;\n    }\n    \n    std::vector<double> calculate_rsi(int period) {\n        std::vector<double> rsi(market_data.size(), 50.0);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 101,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 107,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            double price = market_data[i].close;\n            double mean = sma[i];\n            double deviation = (price - mean) / mean;\n            \n            // Entry signals\n            if (position == 0) {\n                if (deviation < -entry_threshold) {\n                    // Buy signal\n                    int quantity = static_cast<int>(cash * 0.95 / price);\n                    if (quantity > 0) {\n                        position = quantity;\n                        cash -= quantity * price;\n                        trades.push_back({market_data[i].timestamp, 'B', price, quantity, 0.0});\n                    }\n                } else if (deviation > entry_threshold) {\n                    // Short signal\n                    int quantity = static_cast<int>(cash * 0.95 / price);\n                    if (quantity > 0) {\n                        position = -quantity;\n                        cash += quantity * price;\n                        trades.push_back({market_data[i].timestamp, 'S', price, quantity, 0.0});\n                    }\n                }\n            }\n            // Exit signals\n            else {\n                if ((position > 0 && deviation > exit_threshold) ||\n                    (position < 0 && deviation < -exit_threshold)) {\n                    // Close position\n                    double pnl = position * (price - trades.back().price);\n                    cash += position * price;\n                    \n                    trades.push_back({market_data[i].timestamp, \n                        (position > 0) ? 'S' : 'B', price, abs(position), pnl});\n                    position = 0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 108,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            double mean = sma[i];\n            double deviation = (price - mean) / mean;\n            \n            // Entry signals\n            if (position == 0) {\n                if (deviation < -entry_threshold) {\n                    // Buy signal\n                    int quantity = static_cast<int>(cash * 0.95 / price);\n                    if (quantity > 0) {\n                        position = quantity;\n                        cash -= quantity * price;\n                        trades.push_back({market_data[i].timestamp, 'B', price, quantity, 0.0});\n                    }\n                } else if (deviation > entry_threshold) {\n                    // Short signal\n                    int quantity = static_cast<int>(cash * 0.95 / price);\n                    if (quantity > 0) {\n                        position = -quantity;\n                        cash += quantity * price;\n                        trades.push_back({market_data[i].timestamp, 'S', price, quantity, 0.0});\n                    }\n                }\n            }\n            // Exit signals\n            else {\n                if ((position > 0 && deviation > exit_threshold) ||\n                    (position < 0 && deviation < -exit_threshold)) {\n                    // Close position\n                    double pnl = position * (price - trades.back().price);\n                    cash += position * price;\n                    \n                    trades.push_back({market_data[i].timestamp, \n                        (position > 0) ? 'S' : 'B', price, abs(position), pnl});\n                    position = 0;\n                }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 111,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            // Entry signals\n            if (position == 0) {\n                if (deviation < -entry_threshold) {\n                    // Buy signal\n                    int quantity = static_cast<int>(cash * 0.95 / price);\n                    if (quantity > 0) {\n                        position = quantity;\n                        cash -= quantity * price;\n                        trades.push_back({market_data[i].timestamp, 'B', price, quantity, 0.0});\n                    }\n                } else if (deviation > entry_threshold) {\n                    // Short signal\n                    int quantity = static_cast<int>(cash * 0.95 / price);\n                    if (quantity > 0) {\n                        position = -quantity;\n                        cash += quantity * price;\n                        trades.push_back({market_data[i].timestamp, 'S', price, quantity, 0.0});\n                    }\n                }\n            }\n            // Exit signals\n            else {\n                if ((position > 0 && deviation > exit_threshold) ||\n                    (position < 0 && deviation < -exit_threshold)) {\n                    // Close position\n                    double pnl = position * (price - trades.back().price);\n                    cash += position * price;\n                    \n                    trades.push_back({market_data[i].timestamp, \n                        (position > 0) ? 'S' : 'B', price, abs(position), pnl});\n                    position = 0;\n                }\n            }\n        }\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 116,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 119,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 128,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    }\n                }\n            }\n            // Exit signals\n            else {\n                if ((position > 0 && deviation > exit_threshold) ||\n                    (position < 0 && deviation < -exit_threshold)) {\n                    // Close position\n                    double pnl = position * (price - trades.back().price);\n                    cash += position * price;\n                    \n                    trades.push_back({market_data[i].timestamp, \n                        (position > 0) ? 'S' : 'B', price, abs(position), pnl});\n                    position = 0;\n                }\n            }\n        }\n    }\n    \n    void momentum_strategy() {\n        std::vector<double> fast_ema = calculate_ema(12);\n        std::vector<double> slow_ema = calculate_ema(26);\n        std::vector<double> rsi = calculate_rsi(14);\n        \n        for (size_t i = 26; i < market_data.size(); i++) {\n            double price = market_data[i].close;\n            bool macd_bullish = fast_ema[i] > slow_ema[i];\n            bool macd_bearish = fast_ema[i] < slow_ema[i];\n            \n            if (position == 0) {\n                if (macd_bullish && rsi[i] > 30 && rsi[i] < 70) {\n                    int quantity = static_cast<int>(cash * 0.95 / price);\n                    if (quantity > 0) {\n                        position = quantity;\n                        cash -= quantity * price;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 129,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                }\n            }\n            // Exit signals\n            else {\n                if ((position > 0 && deviation > exit_threshold) ||\n                    (position < 0 && deviation < -exit_threshold)) {\n                    // Close position\n                    double pnl = position * (price - trades.back().price);\n                    cash += position * price;\n                    \n                    trades.push_back({market_data[i].timestamp, \n                        (position > 0) ? 'S' : 'B', price, abs(position), pnl});\n                    position = 0;\n                }\n            }\n        }\n    }\n    \n    void momentum_strategy() {\n        std::vector<double> fast_ema = calculate_ema(12);\n        std::vector<double> slow_ema = calculate_ema(26);\n        std::vector<double> rsi = calculate_rsi(14);\n        \n        for (size_t i = 26; i < market_data.size(); i++) {\n            double price = market_data[i].close;\n            bool macd_bullish = fast_ema[i] > slow_ema[i];\n            bool macd_bearish = fast_ema[i] < slow_ema[i];\n            \n            if (position == 0) {\n                if (macd_bullish && rsi[i] > 30 && rsi[i] < 70) {\n                    int quantity = static_cast<int>(cash * 0.95 / price);\n                    if (quantity > 0) {\n                        position = quantity;\n                        cash -= quantity * price;\n                        trades.push_back({market_data[i].timestamp, 'B', price, quantity, 0.0});"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 101,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 183,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        \n        total_return = (current_value - initial_value) / initial_value;\n        \n        // Calculate Sharpe ratio\n        int wins = 0;\n        for (const auto& trade : trades) {\n            if (trade.pnl > 0) {\n                wins++;\n                returns.push_back(trade.pnl / initial_value);\n            } else if (trade.pnl < 0) {\n                returns.push_back(trade.pnl / initial_value);\n            }\n        }\n        \n        if (!returns.empty()) {\n            double mean_return = 0.0;\n            for (double r : returns) mean_return += r;\n            mean_return /= returns.size();\n            \n            double std_dev = 0.0;\n            for (double r : returns) {\n                std_dev += (r - mean_return) * (r - mean_return);\n            }\n            std_dev = sqrt(std_dev / returns.size());\n            \n            sharpe_ratio = (mean_return - 0.02/252) / std_dev * sqrt(252);\n            win_rate = (100 * wins) / trades.size();\n        }\n    }\n};\n\nint main() {\n    TradingStrategy strategy(100000.0);\n    \n    strategy.mean_reversion_strategy(0.02, 0.01);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 192,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 184,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.98,
+      "context": "        total_return = (current_value - initial_value) / initial_value;\n        \n        // Calculate Sharpe ratio\n        int wins = 0;\n        for (const auto& trade : trades) {\n            if (trade.pnl > 0) {\n                wins++;\n                returns.push_back(trade.pnl / initial_value);\n            } else if (trade.pnl < 0) {\n                returns.push_back(trade.pnl / initial_value);\n            }\n        }\n        \n        if (!returns.empty()) {\n            double mean_return = 0.0;\n            for (double r : returns) mean_return += r;\n            mean_return /= returns.size();\n            \n            double std_dev = 0.0;\n            for (double r : returns) {\n                std_dev += (r - mean_return) * (r - mean_return);\n            }\n            std_dev = sqrt(std_dev / returns.size());\n            \n            sharpe_ratio = (mean_return - 0.02/252) / std_dev * sqrt(252);\n            win_rate = (100 * wins) / trades.size();\n        }\n    }\n};\n\nint main() {\n    TradingStrategy strategy(100000.0);\n    \n    strategy.mean_reversion_strategy(0.02, 0.01);\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 187,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 183,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        total_return = (current_value - initial_value) / initial_value;\n        \n        // Calculate Sharpe ratio\n        int wins = 0;\n        for (const auto& trade : trades) {\n            if (trade.pnl > 0) {\n                wins++;\n                returns.push_back(trade.pnl / initial_value);\n            } else if (trade.pnl < 0) {\n                returns.push_back(trade.pnl / initial_value);\n            }\n        }\n        \n        if (!returns.empty()) {\n            double mean_return = 0.0;\n            for (double r : returns) mean_return += r;\n            mean_return /= returns.size();\n            \n            double std_dev = 0.0;\n            for (double r : returns) {\n                std_dev += (r - mean_return) * (r - mean_return);\n            }\n            std_dev = sqrt(std_dev / returns.size());\n            \n            sharpe_ratio = (mean_return - 0.02/252) / std_dev * sqrt(252);\n            win_rate = (100 * wins) / trades.size();\n        }\n    }\n};\n\nint main() {\n    TradingStrategy strategy(100000.0);\n    \n    strategy.mean_reversion_strategy(0.02, 0.01);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 194,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8800000000000001,
+      "context": "            }\n        }\n        \n        if (!returns.empty()) {\n            double mean_return = 0.0;\n            for (double r : returns) mean_return += r;\n            mean_return /= returns.size();\n            \n            double std_dev = 0.0;\n            for (double r : returns) {\n                std_dev += (r - mean_return) * (r - mean_return);\n            }\n            std_dev = sqrt(std_dev / returns.size());\n            \n            sharpe_ratio = (mean_return - 0.02/252) / std_dev * sqrt(252);\n            win_rate = (100 * wins) / trades.size();\n        }\n    }\n};\n\nint main() {\n    TradingStrategy strategy(100000.0);\n    \n    strategy.mean_reversion_strategy(0.02, 0.01);\n    \n    double total_return, sharpe_ratio, max_drawdown;\n    int win_rate;\n    strategy.calculate_performance_metrics(total_return, sharpe_ratio, \n                                          max_drawdown, win_rate);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 198,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.30000000000000004
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15TradingStrategyD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15TradingStrategyD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI5TradeNS_9allocatorIS1_EEE9push_backB8ne210101EOS1_",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI5TradeNS_9allocatorIS1_EEE9push_backB8ne210101EOS1_",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorI5TradeNS_9allocatorIS1_EEE9push_backB8ne210101EOS1_",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorI5TradeNS_9allocatorIS1_EEE9push_backB8ne210101EOS1_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 107,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            double price = market_data[i].close;\n            double mean = sma[i];\n            double deviation = (price - mean) / mean;\n            \n            // Entry signals\n            if (position == 0) {\n                if (deviation < -entry_threshold) {\n                    // Buy signal\n                    int quantity = static_cast<int>(cash * 0.95 / price);\n                    if (quantity > 0) {\n                        position = quantity;\n                        cash -= quantity * price;\n                        trades.push_back({market_data[i].timestamp, 'B', price, quantity, 0.0});\n                    }\n                } else if (deviation > entry_threshold) {\n                    // Short signal\n                    int quantity = static_cast<int>(cash * 0.95 / price);\n                    if (quantity > 0) {\n                        position = -quantity;\n                        cash += quantity * price;\n                        trades.push_back({market_data[i].timestamp, 'S', price, quantity, 0.0});\n                    }\n                }\n            }\n            // Exit signals\n            else {\n                if ((position > 0 && deviation > exit_threshold) ||\n                    (position < 0 && deviation < -exit_threshold)) {\n                    // Close position\n                    double pnl = position * (price - trades.back().price);\n                    cash += position * price;\n                    \n                    trades.push_back({market_data[i].timestamp, \n                        (position > 0) ? 'S' : 'B', price, abs(position), pnl});\n                    position = 0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 183,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        total_return = (current_value - initial_value) / initial_value;\n        \n        // Calculate Sharpe ratio\n        int wins = 0;\n        for (const auto& trade : trades) {\n            if (trade.pnl > 0) {\n                wins++;\n                returns.push_back(trade.pnl / initial_value);\n            } else if (trade.pnl < 0) {\n                returns.push_back(trade.pnl / initial_value);\n            }\n        }\n        \n        if (!returns.empty()) {\n            double mean_return = 0.0;\n            for (double r : returns) mean_return += r;\n            mean_return /= returns.size();\n            \n            double std_dev = 0.0;\n            for (double r : returns) {\n                std_dev += (r - mean_return) * (r - mean_return);\n            }\n            std_dev = sqrt(std_dev / returns.size());\n            \n            sharpe_ratio = (mean_return - 0.02/252) / std_dev * sqrt(252);\n            win_rate = (100 * wins) / trades.size();\n        }\n    }\n};\n\nint main() {\n    TradingStrategy strategy(100000.0);\n    \n    strategy.mean_reversion_strategy(0.02, 0.01);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 184,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.98,
+      "context": "        total_return = (current_value - initial_value) / initial_value;\n        \n        // Calculate Sharpe ratio\n        int wins = 0;\n        for (const auto& trade : trades) {\n            if (trade.pnl > 0) {\n                wins++;\n                returns.push_back(trade.pnl / initial_value);\n            } else if (trade.pnl < 0) {\n                returns.push_back(trade.pnl / initial_value);\n            }\n        }\n        \n        if (!returns.empty()) {\n            double mean_return = 0.0;\n            for (double r : returns) mean_return += r;\n            mean_return /= returns.size();\n            \n            double std_dev = 0.0;\n            for (double r : returns) {\n                std_dev += (r - mean_return) * (r - mean_return);\n            }\n            std_dev = sqrt(std_dev / returns.size());\n            \n            sharpe_ratio = (mean_return - 0.02/252) / std_dev * sqrt(252);\n            win_rate = (100 * wins) / trades.size();\n        }\n    }\n};\n\nint main() {\n    TradingStrategy strategy(100000.0);\n    \n    strategy.mean_reversion_strategy(0.02, 0.01);\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.98
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 37,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.9299999999999999,
+      "context": "    std::vector<double> calculate_sma(int period) {\n        std::vector<double> sma(market_data.size(), 0.0);\n        \n        for (size_t i = period - 1; i < market_data.size(); i++) {\n            double sum = 0.0;\n            for (int j = 0; j < period; j++) {\n                sum += market_data[i - j].close;\n            }\n            sma[i] = sum / period;\n        }\n        \n        return sma;\n    }\n    \n    std::vector<double> calculate_ema(int period) {\n        std::vector<double> ema(market_data.size(), 0.0);\n        double multiplier = 2.0 / (period + 1);\n        \n        // Initialize with SMA\n        double sum = 0.0;\n        for (int i = 0; i < period; i++) {\n            sum += market_data[i].close;\n        }\n        ema[period - 1] = sum / period;\n        \n        // Calculate EMA\n        for (size_t i = period; i < market_data.size(); i++) {\n            ema[i] = (market_data[i].close - ema[i-1]) * multiplier + ema[i-1];\n        }\n        \n        return ema;\n    }\n    \n    std::vector<double> calculate_rsi(int period) {\n        std::vector<double> rsi(market_data.size(), 50.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.9299999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 194,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8800000000000001,
+      "context": "            }\n        }\n        \n        if (!returns.empty()) {\n            double mean_return = 0.0;\n            for (double r : returns) mean_return += r;\n            mean_return /= returns.size();\n            \n            double std_dev = 0.0;\n            for (double r : returns) {\n                std_dev += (r - mean_return) * (r - mean_return);\n            }\n            std_dev = sqrt(std_dev / returns.size());\n            \n            sharpe_ratio = (mean_return - 0.02/252) / std_dev * sqrt(252);\n            win_rate = (100 * wins) / trades.size();\n        }\n    }\n};\n\nint main() {\n    TradingStrategy strategy(100000.0);\n    \n    strategy.mean_reversion_strategy(0.02, 0.01);\n    \n    double total_return, sharpe_ratio, max_drawdown;\n    int win_rate;\n    strategy.calculate_performance_metrics(total_return, sharpe_ratio, \n                                          max_drawdown, win_rate);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8800000000000001
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 35,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "    TradingStrategy(double initial_cash) : cash(initial_cash), position(0) {}\n    \n    std::vector<double> calculate_sma(int period) {\n        std::vector<double> sma(market_data.size(), 0.0);\n        \n        for (size_t i = period - 1; i < market_data.size(); i++) {\n            double sum = 0.0;\n            for (int j = 0; j < period; j++) {\n                sum += market_data[i - j].close;\n            }\n            sma[i] = sum / period;\n        }\n        \n        return sma;\n    }\n    \n    std::vector<double> calculate_ema(int period) {\n        std::vector<double> ema(market_data.size(), 0.0);\n        double multiplier = 2.0 / (period + 1);\n        \n        // Initialize with SMA\n        double sum = 0.0;\n        for (int i = 0; i < period; i++) {\n            sum += market_data[i].close;\n        }\n        ema[period - 1] = sum / period;\n        \n        // Calculate EMA\n        for (size_t i = period; i < market_data.size(); i++) {\n            ema[i] = (market_data[i].close - ema[i-1]) * multiplier + ema[i-1];\n        }\n        \n        return ema;\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 108,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            double mean = sma[i];\n            double deviation = (price - mean) / mean;\n            \n            // Entry signals\n            if (position == 0) {\n                if (deviation < -entry_threshold) {\n                    // Buy signal\n                    int quantity = static_cast<int>(cash * 0.95 / price);\n                    if (quantity > 0) {\n                        position = quantity;\n                        cash -= quantity * price;\n                        trades.push_back({market_data[i].timestamp, 'B', price, quantity, 0.0});\n                    }\n                } else if (deviation > entry_threshold) {\n                    // Short signal\n                    int quantity = static_cast<int>(cash * 0.95 / price);\n                    if (quantity > 0) {\n                        position = -quantity;\n                        cash += quantity * price;\n                        trades.push_back({market_data[i].timestamp, 'S', price, quantity, 0.0});\n                    }\n                }\n            }\n            // Exit signals\n            else {\n                if ((position > 0 && deviation > exit_threshold) ||\n                    (position < 0 && deviation < -exit_threshold)) {\n                    // Close position\n                    double pnl = position * (price - trades.back().price);\n                    cash += position * price;\n                    \n                    trades.push_back({market_data[i].timestamp, \n                        (position > 0) ? 'S' : 'B', price, abs(position), pnl});\n                    position = 0;\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 111,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            // Entry signals\n            if (position == 0) {\n                if (deviation < -entry_threshold) {\n                    // Buy signal\n                    int quantity = static_cast<int>(cash * 0.95 / price);\n                    if (quantity > 0) {\n                        position = quantity;\n                        cash -= quantity * price;\n                        trades.push_back({market_data[i].timestamp, 'B', price, quantity, 0.0});\n                    }\n                } else if (deviation > entry_threshold) {\n                    // Short signal\n                    int quantity = static_cast<int>(cash * 0.95 / price);\n                    if (quantity > 0) {\n                        position = -quantity;\n                        cash += quantity * price;\n                        trades.push_back({market_data[i].timestamp, 'S', price, quantity, 0.0});\n                    }\n                }\n            }\n            // Exit signals\n            else {\n                if ((position > 0 && deviation > exit_threshold) ||\n                    (position < 0 && deviation < -exit_threshold)) {\n                    // Close position\n                    double pnl = position * (price - trades.back().price);\n                    cash += position * price;\n                    \n                    trades.push_back({market_data[i].timestamp, \n                        (position > 0) ? 'S' : 'B', price, abs(position), pnl});\n                    position = 0;\n                }\n            }\n        }\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 128,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    }\n                }\n            }\n            // Exit signals\n            else {\n                if ((position > 0 && deviation > exit_threshold) ||\n                    (position < 0 && deviation < -exit_threshold)) {\n                    // Close position\n                    double pnl = position * (price - trades.back().price);\n                    cash += position * price;\n                    \n                    trades.push_back({market_data[i].timestamp, \n                        (position > 0) ? 'S' : 'B', price, abs(position), pnl});\n                    position = 0;\n                }\n            }\n        }\n    }\n    \n    void momentum_strategy() {\n        std::vector<double> fast_ema = calculate_ema(12);\n        std::vector<double> slow_ema = calculate_ema(26);\n        std::vector<double> rsi = calculate_rsi(14);\n        \n        for (size_t i = 26; i < market_data.size(); i++) {\n            double price = market_data[i].close;\n            bool macd_bullish = fast_ema[i] > slow_ema[i];\n            bool macd_bearish = fast_ema[i] < slow_ema[i];\n            \n            if (position == 0) {\n                if (macd_bullish && rsi[i] > 30 && rsi[i] < 70) {\n                    int quantity = static_cast<int>(cash * 0.95 / price);\n                    if (quantity > 0) {\n                        position = quantity;\n                        cash -= quantity * price;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy23mean_reversion_strategyEdd",
+      "line": 129,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                }\n            }\n            // Exit signals\n            else {\n                if ((position > 0 && deviation > exit_threshold) ||\n                    (position < 0 && deviation < -exit_threshold)) {\n                    // Close position\n                    double pnl = position * (price - trades.back().price);\n                    cash += position * price;\n                    \n                    trades.push_back({market_data[i].timestamp, \n                        (position > 0) ? 'S' : 'B', price, abs(position), pnl});\n                    position = 0;\n                }\n            }\n        }\n    }\n    \n    void momentum_strategy() {\n        std::vector<double> fast_ema = calculate_ema(12);\n        std::vector<double> slow_ema = calculate_ema(26);\n        std::vector<double> rsi = calculate_rsi(14);\n        \n        for (size_t i = 26; i < market_data.size(); i++) {\n            double price = market_data[i].close;\n            bool macd_bullish = fast_ema[i] > slow_ema[i];\n            bool macd_bearish = fast_ema[i] < slow_ema[i];\n            \n            if (position == 0) {\n                if (macd_bullish && rsi[i] > 30 && rsi[i] < 70) {\n                    int quantity = static_cast<int>(cash * 0.95 / price);\n                    if (quantity > 0) {\n                        position = quantity;\n                        cash -= quantity * price;\n                        trades.push_back({market_data[i].timestamp, 'B', price, quantity, 0.0});",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/algorithmic_trading.cpp",
+      "function": "_ZN15TradingStrategy29calculate_performance_metricsERdS0_S0_Ri",
+      "line": 183,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        \n        total_return = (current_value - initial_value) / initial_value;\n        \n        // Calculate Sharpe ratio\n        int wins = 0;\n        for (const auto& trade : trades) {\n            if (trade.pnl > 0) {\n                wins++;\n                returns.push_back(trade.pnl / initial_value);\n            } else if (trade.pnl < 0) {\n                returns.push_back(trade.pnl / initial_value);\n            }\n        }\n        \n        if (!returns.empty()) {\n            double mean_return = 0.0;\n            for (double r : returns) mean_return += r;\n            mean_return /= returns.size();\n            \n            double std_dev = 0.0;\n            for (double r : returns) {\n                std_dev += (r - mean_return) * (r - mean_return);\n            }\n            std_dev = sqrt(std_dev / returns.size());\n            \n            sharpe_ratio = (mean_return - 0.02/252) / std_dev * sqrt(252);\n            win_rate = (100 * wins) / trades.size();\n        }\n    }\n};\n\nint main() {\n    TradingStrategy strategy(100000.0);\n    \n    strategy.mean_reversion_strategy(0.02, 0.01);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    }
+  ]
+}

@@ -1,0 +1,1225 @@
+{
+  "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+    "llvm_initial": 121,
+    "llvm_sys_noise": 103,
+    "llvm_project": 18,
+    "after_filter": 10,
+    "ai_batches": 1,
+    "ai_results": 10,
+    "omp_verified": 0,
+    "total_ms": 745.5,
+    "llvm_ms": 510.6
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "main",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "main",
+      "line": 36,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "main",
+      "line": 44,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "main",
+      "line": 37,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    void calculate_grid_potential() {\n        double grid_spacing = 0.5;  // Angstroms\n        \n        for (int i = 0; i < GRID_RESOLUTION; i++) {\n            for (int j = 0; j < GRID_RESOLUTION; j++) {\n                for (int k = 0; k < GRID_RESOLUTION; k++) {\n                    double gx = i * grid_spacing;\n                    double gy = j * grid_spacing;\n                    double gz = k * grid_spacing;\n                    \n                    double potential = 0.0;\n                    \n                    for (const auto& atom : protein_atoms) {\n                        double dx = gx - atom.x;\n                        double dy = gy - atom.y;\n                        double dz = gz - atom.z;\n                        double r = sqrt(dx*dx + dy*dy + dz*dz);\n                        \n                        if (r > 0.1) {\n                            // Lennard-Jones potential\n                            double sigma = atom.radius;\n                            double epsilon = 0.1;\n                            double r6 = pow(sigma/r, 6);\n                            potential += 4.0 * epsilon * (r6*r6 - r6);\n                            \n                            // Coulomb potential\n                            potential += 332.0 * atom.charge / r;\n                        }\n                    }\n                    \n                    grid_potential[i][j][k] = potential;\n                }\n            }\n        }\n    }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "main",
+      "line": 50,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.4
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "main",
+      "line": 44,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    double gy = j * grid_spacing;\n                    double gz = k * grid_spacing;\n                    \n                    double potential = 0.0;\n                    \n                    for (const auto& atom : protein_atoms) {\n                        double dx = gx - atom.x;\n                        double dy = gy - atom.y;\n                        double dz = gz - atom.z;\n                        double r = sqrt(dx*dx + dy*dy + dz*dz);\n                        \n                        if (r > 0.1) {\n                            // Lennard-Jones potential\n                            double sigma = atom.radius;\n                            double epsilon = 0.1;\n                            double r6 = pow(sigma/r, 6);\n                            potential += 4.0 * epsilon * (r6*r6 - r6);\n                            \n                            // Coulomb potential\n                            potential += 332.0 * atom.charge / r;\n                        }\n                    }\n                    \n                    grid_potential[i][j][k] = potential;\n                }\n            }\n        }\n    }\n    \n    double calculate_binding_energy(const std::vector<double>& pose) {\n        // pose: [x, y, z, rot_x, rot_y, rot_z]\n        double energy = 0.0;\n        \n        // Transform ligand atoms\n        std::vector<Atom> transformed_ligand = ligand_atoms;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDocker13optimize_poseEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker13optimize_poseEi",
+      "line": 108,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    std::vector<double> optimize_pose(int max_iterations) {\n        std::vector<double> best_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};\n        double best_energy = calculate_binding_energy(best_pose);\n        \n        for (int iter = 0; iter < max_iterations; iter++) {\n            std::vector<double> new_pose = best_pose;\n            \n            // Perturbation\n            for (int i = 0; i < 6; i++) {\n                new_pose[i] += (rand() % 1000 - 500) / 1000.0;\n            }\n            \n            double new_energy = calculate_binding_energy(new_pose);\n            \n            // Metropolis criterion\n            if (new_energy < best_energy || \n                exp((best_energy - new_energy) / 0.6) > (rand() % 1000) / 1000.0) {\n                best_pose = new_pose;\n                best_energy = new_energy;\n            }\n        }\n        \n        return best_pose;\n    }\n};\n\nint main() {\n    MolecularDocker docker;\n    \n    docker.calculate_grid_potential();\n    std::vector<double> optimal_pose = docker.optimize_pose(10000);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDocker13optimize_poseEi",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDocker13optimize_poseEi",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDocker13optimize_poseEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker13optimize_poseEi",
+      "line": 112,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        for (int iter = 0; iter < max_iterations; iter++) {\n            std::vector<double> new_pose = best_pose;\n            \n            // Perturbation\n            for (int i = 0; i < 6; i++) {\n                new_pose[i] += (rand() % 1000 - 500) / 1000.0;\n            }\n            \n            double new_energy = calculate_binding_energy(new_pose);\n            \n            // Metropolis criterion\n            if (new_energy < best_energy || \n                exp((best_energy - new_energy) / 0.6) > (rand() % 1000) / 1000.0) {\n                best_pose = new_pose;\n                best_energy = new_energy;\n            }\n        }\n        \n        return best_pose;\n    }\n};\n\nint main() {\n    MolecularDocker docker;\n    \n    docker.calculate_grid_potential();\n    std::vector<double> optimal_pose = docker.optimize_pose(10000);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker13optimize_poseEi",
+      "line": 119,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker13optimize_poseEi",
+      "line": 119,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDocker13optimize_poseEi",
+      "line": 1031,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDocker13optimize_poseEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker13optimize_poseEi",
+      "line": 108,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDocker13optimize_poseEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDocker13optimize_poseEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDockerD1Ev",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDockerD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDockerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDockerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDockerC2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDockerC2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDockerC2Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDockerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDockerC2Ev",
+      "line": 1360,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDockerC2Ev",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDockerC2Ev",
+      "line": 1360,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDockerC2Ev",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDockerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDockerC2Ev",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDockerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE6resizeEmRKS5_",
+      "line": 1369,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE6resizeEmRKS5_",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE6resizeEmRKS5_",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE6resizeEmRKS5_",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE6resizeEmRKS5_",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE6resizeEmRKS5_",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE6resizeEmRKS5_",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE6resizeEmRKS5_",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE8__appendEmRKS5_",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE8__appendEmRKS5_",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE8__appendEmRKS5_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE8__appendEmRKS5_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE8__appendEmRKS5_",
+      "line": 935,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE8__appendEmRKS5_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE8__appendEmRKS5_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE8__appendEmRKS5_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE8__appendEmRKS5_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEEERNS2_IS6_EEE18__construct_at_endEmRKS6_",
+      "line": 257,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEEERNS2_IS6_EEE18__construct_at_endEmRKS6_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEEERNS2_IS6_EEE18__construct_at_endEmRKS6_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEEERNS2_IS6_EEE18__construct_at_endEmRKS6_",
+      "line": 257,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorIdNS1_IdEEEEEEPS4_S6_S6_EET2_RT_T0_T1_S7_",
+      "line": 542,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorIdNS1_IdEEEEEEPS4_S6_S6_EET2_RT_T0_T1_S7_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorIdNS1_IdEEEEEEPS4_S6_S6_EET2_RT_T0_T1_S7_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorIdNS1_IdEEEEEEPS4_S6_S6_EET2_RT_T0_T1_S7_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorIdNS1_IdEEEEEEPS4_S6_S6_EET2_RT_T0_T1_S7_",
+      "line": 542,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorIdNS2_IdEEEEEEPS5_EEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorIdNS2_IdEEEEEEPS5_EEED1B8ne210101Ev",
+      "line": 49,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorIdNS2_IdEEEEEEPS5_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorIdNS2_IdEEEEEEPS5_EEED1B8ne210101Ev",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEEERNS2_IS6_EEED2Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEEERNS2_IS6_EEED2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEEERNS2_IS6_EEED2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEEERNS2_IS6_EEED2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEEERNS2_IS6_EEED2Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEEERNS2_IS6_EEED2Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEEERNS2_IS6_EEED2Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI4AtomNS_9allocatorIS1_EEE8__appendEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI4AtomNS_9allocatorIS1_EEE8__appendEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI4AtomNS_9allocatorIS1_EEE8__appendEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorI4AtomNS_9allocatorIS1_EEE8__appendEm",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorI4AtomNS_9allocatorIS1_EEE8__appendEm",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorI4AtomNS_9allocatorIS1_EEE8__appendEm",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDocker24calculate_binding_energyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 591,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDocker24calculate_binding_energyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker24calculate_binding_energyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 74,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        // pose: [x, y, z, rot_x, rot_y, rot_z]\n        double energy = 0.0;\n        \n        // Transform ligand atoms\n        std::vector<Atom> transformed_ligand = ligand_atoms;\n        for (auto& atom : transformed_ligand) {\n            // Apply rotation and translation\n            double x = atom.x * cos(pose[5]) - atom.y * sin(pose[5]);\n            double y = atom.x * sin(pose[5]) + atom.y * cos(pose[5]);\n            atom.x = x + pose[0];\n            atom.y = y + pose[1];\n            atom.z = atom.z + pose[2];\n        }\n        \n        // Calculate interaction energy\n        for (const auto& latom : transformed_ligand) {\n            for (const auto& patom : protein_atoms) {\n                double dx = latom.x - patom.x;\n                double dy = latom.y - patom.y;\n                double dz = latom.z - patom.z;\n                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                \n                if (r > 0.1 && r < 12.0) {\n                    double sigma = (latom.radius + patom.radius) / 2.0;\n                    double epsilon = 0.1;\n                    double r6 = pow(sigma/r, 6);\n                    energy += 4.0 * epsilon * (r6*r6 - r6);\n                    energy += 332.0 * latom.charge * patom.charge / r;\n                }\n            }\n        }\n        \n        return energy;\n    }\n    "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker24calculate_binding_energyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 84,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "            atom.y = y + pose[1];\n            atom.z = atom.z + pose[2];\n        }\n        \n        // Calculate interaction energy\n        for (const auto& latom : transformed_ligand) {\n            for (const auto& patom : protein_atoms) {\n                double dx = latom.x - patom.x;\n                double dy = latom.y - patom.y;\n                double dz = latom.z - patom.z;\n                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                \n                if (r > 0.1 && r < 12.0) {\n                    double sigma = (latom.radius + patom.radius) / 2.0;\n                    double epsilon = 0.1;\n                    double r6 = pow(sigma/r, 6);\n                    energy += 4.0 * epsilon * (r6*r6 - r6);\n                    energy += 332.0 * latom.charge * patom.charge / r;\n                }\n            }\n        }\n        \n        return energy;\n    }\n    \n    std::vector<double> optimize_pose(int max_iterations) {\n        std::vector<double> best_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};\n        double best_energy = calculate_binding_energy(best_pose);\n        \n        for (int iter = 0; iter < max_iterations; iter++) {\n            std::vector<double> new_pose = best_pose;\n            \n            // Perturbation\n            for (int i = 0; i < 6; i++) {\n                new_pose[i] += (rand() % 1000 - 500) / 1000.0;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker24calculate_binding_energyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 74,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        // pose: [x, y, z, rot_x, rot_y, rot_z]\n        double energy = 0.0;\n        \n        // Transform ligand atoms\n        std::vector<Atom> transformed_ligand = ligand_atoms;\n        for (auto& atom : transformed_ligand) {\n            // Apply rotation and translation\n            double x = atom.x * cos(pose[5]) - atom.y * sin(pose[5]);\n            double y = atom.x * sin(pose[5]) + atom.y * cos(pose[5]);\n            atom.x = x + pose[0];\n            atom.y = y + pose[1];\n            atom.z = atom.z + pose[2];\n        }\n        \n        // Calculate interaction energy\n        for (const auto& latom : transformed_ligand) {\n            for (const auto& patom : protein_atoms) {\n                double dx = latom.x - patom.x;\n                double dy = latom.y - patom.y;\n                double dz = latom.z - patom.z;\n                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                \n                if (r > 0.1 && r < 12.0) {\n                    double sigma = (latom.radius + patom.radius) / 2.0;\n                    double epsilon = 0.1;\n                    double r6 = pow(sigma/r, 6);\n                    energy += 4.0 * epsilon * (r6*r6 - r6);\n                    energy += 332.0 * latom.charge * patom.charge / r;\n                }\n            }\n        }\n        \n        return energy;\n    }\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15MolecularDocker24calculate_binding_energyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker24calculate_binding_energyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 85,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "            atom.z = atom.z + pose[2];\n        }\n        \n        // Calculate interaction energy\n        for (const auto& latom : transformed_ligand) {\n            for (const auto& patom : protein_atoms) {\n                double dx = latom.x - patom.x;\n                double dy = latom.y - patom.y;\n                double dz = latom.z - patom.z;\n                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                \n                if (r > 0.1 && r < 12.0) {\n                    double sigma = (latom.radius + patom.radius) / 2.0;\n                    double epsilon = 0.1;\n                    double r6 = pow(sigma/r, 6);\n                    energy += 4.0 * epsilon * (r6*r6 - r6);\n                    energy += 332.0 * latom.charge * patom.charge / r;\n                }\n            }\n        }\n        \n        return energy;\n    }\n    \n    std::vector<double> optimize_pose(int max_iterations) {\n        std::vector<double> best_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};\n        double best_energy = calculate_binding_energy(best_pose);\n        \n        for (int iter = 0; iter < max_iterations; iter++) {\n            std::vector<double> new_pose = best_pose;\n            \n            // Perturbation\n            for (int i = 0; i < 6; i++) {\n                new_pose[i] += (rand() % 1000 - 500) / 1000.0;\n            }"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker24calculate_binding_energyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            atom.y = y + pose[1];\n            atom.z = atom.z + pose[2];\n        }\n        \n        // Calculate interaction energy\n        for (const auto& latom : transformed_ligand) {\n            for (const auto& patom : protein_atoms) {\n                double dx = latom.x - patom.x;\n                double dy = latom.y - patom.y;\n                double dz = latom.z - patom.z;\n                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                \n                if (r > 0.1 && r < 12.0) {\n                    double sigma = (latom.radius + patom.radius) / 2.0;\n                    double epsilon = 0.1;\n                    double r6 = pow(sigma/r, 6);\n                    energy += 4.0 * epsilon * (r6*r6 - r6);\n                    energy += 332.0 * latom.charge * patom.charge / r;\n                }\n            }\n        }\n        \n        return energy;\n    }\n    \n    std::vector<double> optimize_pose(int max_iterations) {\n        std::vector<double> best_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};\n        double best_energy = calculate_binding_energy(best_pose);\n        \n        for (int iter = 0; iter < max_iterations; iter++) {\n            std::vector<double> new_pose = best_pose;\n            \n            // Perturbation\n            for (int i = 0; i < 6; i++) {\n                new_pose[i] += (rand() % 1000 - 500) / 1000.0;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker24calculate_binding_energyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 91,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker24calculate_binding_energyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 85,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            atom.z = atom.z + pose[2];\n        }\n        \n        // Calculate interaction energy\n        for (const auto& latom : transformed_ligand) {\n            for (const auto& patom : protein_atoms) {\n                double dx = latom.x - patom.x;\n                double dy = latom.y - patom.y;\n                double dz = latom.z - patom.z;\n                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                \n                if (r > 0.1 && r < 12.0) {\n                    double sigma = (latom.radius + patom.radius) / 2.0;\n                    double epsilon = 0.1;\n                    double r6 = pow(sigma/r, 6);\n                    energy += 4.0 * epsilon * (r6*r6 - r6);\n                    energy += 332.0 * latom.charge * patom.charge / r;\n                }\n            }\n        }\n        \n        return energy;\n    }\n    \n    std::vector<double> optimize_pose(int max_iterations) {\n        std::vector<double> best_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};\n        double best_energy = calculate_binding_energy(best_pose);\n        \n        for (int iter = 0; iter < max_iterations; iter++) {\n            std::vector<double> new_pose = best_pose;\n            \n            // Perturbation\n            for (int i = 0; i < 6; i++) {\n                new_pose[i] += (rand() % 1000 - 500) / 1000.0;\n            }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 1058,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 1059,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 889,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 572,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "main",
+      "line": 37,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    void calculate_grid_potential() {\n        double grid_spacing = 0.5;  // Angstroms\n        \n        for (int i = 0; i < GRID_RESOLUTION; i++) {\n            for (int j = 0; j < GRID_RESOLUTION; j++) {\n                for (int k = 0; k < GRID_RESOLUTION; k++) {\n                    double gx = i * grid_spacing;\n                    double gy = j * grid_spacing;\n                    double gz = k * grid_spacing;\n                    \n                    double potential = 0.0;\n                    \n                    for (const auto& atom : protein_atoms) {\n                        double dx = gx - atom.x;\n                        double dy = gy - atom.y;\n                        double dz = gz - atom.z;\n                        double r = sqrt(dx*dx + dy*dy + dz*dz);\n                        \n                        if (r > 0.1) {\n                            // Lennard-Jones potential\n                            double sigma = atom.radius;\n                            double epsilon = 0.1;\n                            double r6 = pow(sigma/r, 6);\n                            potential += 4.0 * epsilon * (r6*r6 - r6);\n                            \n                            // Coulomb potential\n                            potential += 332.0 * atom.charge / r;\n                        }\n                    }\n                    \n                    grid_potential[i][j][k] = potential;\n                }\n            }\n        }\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "main",
+      "line": 44,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    double gy = j * grid_spacing;\n                    double gz = k * grid_spacing;\n                    \n                    double potential = 0.0;\n                    \n                    for (const auto& atom : protein_atoms) {\n                        double dx = gx - atom.x;\n                        double dy = gy - atom.y;\n                        double dz = gz - atom.z;\n                        double r = sqrt(dx*dx + dy*dy + dz*dz);\n                        \n                        if (r > 0.1) {\n                            // Lennard-Jones potential\n                            double sigma = atom.radius;\n                            double epsilon = 0.1;\n                            double r6 = pow(sigma/r, 6);\n                            potential += 4.0 * epsilon * (r6*r6 - r6);\n                            \n                            // Coulomb potential\n                            potential += 332.0 * atom.charge / r;\n                        }\n                    }\n                    \n                    grid_potential[i][j][k] = potential;\n                }\n            }\n        }\n    }\n    \n    double calculate_binding_energy(const std::vector<double>& pose) {\n        // pose: [x, y, z, rot_x, rot_y, rot_z]\n        double energy = 0.0;\n        \n        // Transform ligand atoms\n        std::vector<Atom> transformed_ligand = ligand_atoms;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker13optimize_poseEi",
+      "line": 112,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        for (int iter = 0; iter < max_iterations; iter++) {\n            std::vector<double> new_pose = best_pose;\n            \n            // Perturbation\n            for (int i = 0; i < 6; i++) {\n                new_pose[i] += (rand() % 1000 - 500) / 1000.0;\n            }\n            \n            double new_energy = calculate_binding_energy(new_pose);\n            \n            // Metropolis criterion\n            if (new_energy < best_energy || \n                exp((best_energy - new_energy) / 0.6) > (rand() % 1000) / 1000.0) {\n                best_pose = new_pose;\n                best_energy = new_energy;\n            }\n        }\n        \n        return best_pose;\n    }\n};\n\nint main() {\n    MolecularDocker docker;\n    \n    docker.calculate_grid_potential();\n    std::vector<double> optimal_pose = docker.optimize_pose(10000);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker24calculate_binding_energyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            atom.y = y + pose[1];\n            atom.z = atom.z + pose[2];\n        }\n        \n        // Calculate interaction energy\n        for (const auto& latom : transformed_ligand) {\n            for (const auto& patom : protein_atoms) {\n                double dx = latom.x - patom.x;\n                double dy = latom.y - patom.y;\n                double dz = latom.z - patom.z;\n                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                \n                if (r > 0.1 && r < 12.0) {\n                    double sigma = (latom.radius + patom.radius) / 2.0;\n                    double epsilon = 0.1;\n                    double r6 = pow(sigma/r, 6);\n                    energy += 4.0 * epsilon * (r6*r6 - r6);\n                    energy += 332.0 * latom.charge * patom.charge / r;\n                }\n            }\n        }\n        \n        return energy;\n    }\n    \n    std::vector<double> optimize_pose(int max_iterations) {\n        std::vector<double> best_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};\n        double best_energy = calculate_binding_energy(best_pose);\n        \n        for (int iter = 0; iter < max_iterations; iter++) {\n            std::vector<double> new_pose = best_pose;\n            \n            // Perturbation\n            for (int i = 0; i < 6; i++) {\n                new_pose[i] += (rand() % 1000 - 500) / 1000.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker24calculate_binding_energyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 85,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            atom.z = atom.z + pose[2];\n        }\n        \n        // Calculate interaction energy\n        for (const auto& latom : transformed_ligand) {\n            for (const auto& patom : protein_atoms) {\n                double dx = latom.x - patom.x;\n                double dy = latom.y - patom.y;\n                double dz = latom.z - patom.z;\n                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                \n                if (r > 0.1 && r < 12.0) {\n                    double sigma = (latom.radius + patom.radius) / 2.0;\n                    double epsilon = 0.1;\n                    double r6 = pow(sigma/r, 6);\n                    energy += 4.0 * epsilon * (r6*r6 - r6);\n                    energy += 332.0 * latom.charge * patom.charge / r;\n                }\n            }\n        }\n        \n        return energy;\n    }\n    \n    std::vector<double> optimize_pose(int max_iterations) {\n        std::vector<double> best_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};\n        double best_energy = calculate_binding_energy(best_pose);\n        \n        for (int iter = 0; iter < max_iterations; iter++) {\n            std::vector<double> new_pose = best_pose;\n            \n            // Perturbation\n            for (int i = 0; i < 6; i++) {\n                new_pose[i] += (rand() % 1000 - 500) / 1000.0;\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker24calculate_binding_energyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 85,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "            atom.z = atom.z + pose[2];\n        }\n        \n        // Calculate interaction energy\n        for (const auto& latom : transformed_ligand) {\n            for (const auto& patom : protein_atoms) {\n                double dx = latom.x - patom.x;\n                double dy = latom.y - patom.y;\n                double dz = latom.z - patom.z;\n                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                \n                if (r > 0.1 && r < 12.0) {\n                    double sigma = (latom.radius + patom.radius) / 2.0;\n                    double epsilon = 0.1;\n                    double r6 = pow(sigma/r, 6);\n                    energy += 4.0 * epsilon * (r6*r6 - r6);\n                    energy += 332.0 * latom.charge * patom.charge / r;\n                }\n            }\n        }\n        \n        return energy;\n    }\n    \n    std::vector<double> optimize_pose(int max_iterations) {\n        std::vector<double> best_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};\n        double best_energy = calculate_binding_energy(best_pose);\n        \n        for (int iter = 0; iter < max_iterations; iter++) {\n            std::vector<double> new_pose = best_pose;\n            \n            // Perturbation\n            for (int i = 0; i < 6; i++) {\n                new_pose[i] += (rand() % 1000 - 500) / 1000.0;\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker13optimize_poseEi",
+      "line": 108,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    std::vector<double> optimize_pose(int max_iterations) {\n        std::vector<double> best_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};\n        double best_energy = calculate_binding_energy(best_pose);\n        \n        for (int iter = 0; iter < max_iterations; iter++) {\n            std::vector<double> new_pose = best_pose;\n            \n            // Perturbation\n            for (int i = 0; i < 6; i++) {\n                new_pose[i] += (rand() % 1000 - 500) / 1000.0;\n            }\n            \n            double new_energy = calculate_binding_energy(new_pose);\n            \n            // Metropolis criterion\n            if (new_energy < best_energy || \n                exp((best_energy - new_energy) / 0.6) > (rand() % 1000) / 1000.0) {\n                best_pose = new_pose;\n                best_energy = new_energy;\n            }\n        }\n        \n        return best_pose;\n    }\n};\n\nint main() {\n    MolecularDocker docker;\n    \n    docker.calculate_grid_potential();\n    std::vector<double> optimal_pose = docker.optimize_pose(10000);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker24calculate_binding_energyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 74,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        // pose: [x, y, z, rot_x, rot_y, rot_z]\n        double energy = 0.0;\n        \n        // Transform ligand atoms\n        std::vector<Atom> transformed_ligand = ligand_atoms;\n        for (auto& atom : transformed_ligand) {\n            // Apply rotation and translation\n            double x = atom.x * cos(pose[5]) - atom.y * sin(pose[5]);\n            double y = atom.x * sin(pose[5]) + atom.y * cos(pose[5]);\n            atom.x = x + pose[0];\n            atom.y = y + pose[1];\n            atom.z = atom.z + pose[2];\n        }\n        \n        // Calculate interaction energy\n        for (const auto& latom : transformed_ligand) {\n            for (const auto& patom : protein_atoms) {\n                double dx = latom.x - patom.x;\n                double dy = latom.y - patom.y;\n                double dz = latom.z - patom.z;\n                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                \n                if (r > 0.1 && r < 12.0) {\n                    double sigma = (latom.radius + patom.radius) / 2.0;\n                    double epsilon = 0.1;\n                    double r6 = pow(sigma/r, 6);\n                    energy += 4.0 * epsilon * (r6*r6 - r6);\n                    energy += 332.0 * latom.charge * patom.charge / r;\n                }\n            }\n        }\n        \n        return energy;\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker24calculate_binding_energyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 84,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "            atom.y = y + pose[1];\n            atom.z = atom.z + pose[2];\n        }\n        \n        // Calculate interaction energy\n        for (const auto& latom : transformed_ligand) {\n            for (const auto& patom : protein_atoms) {\n                double dx = latom.x - patom.x;\n                double dy = latom.y - patom.y;\n                double dz = latom.z - patom.z;\n                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                \n                if (r > 0.1 && r < 12.0) {\n                    double sigma = (latom.radius + patom.radius) / 2.0;\n                    double epsilon = 0.1;\n                    double r6 = pow(sigma/r, 6);\n                    energy += 4.0 * epsilon * (r6*r6 - r6);\n                    energy += 332.0 * latom.charge * patom.charge / r;\n                }\n            }\n        }\n        \n        return energy;\n    }\n    \n    std::vector<double> optimize_pose(int max_iterations) {\n        std::vector<double> best_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};\n        double best_energy = calculate_binding_energy(best_pose);\n        \n        for (int iter = 0; iter < max_iterations; iter++) {\n            std::vector<double> new_pose = best_pose;\n            \n            // Perturbation\n            for (int i = 0; i < 6; i++) {\n                new_pose[i] += (rand() % 1000 - 500) / 1000.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/drug_docking.cpp",
+      "function": "_ZN15MolecularDocker24calculate_binding_energyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 74,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        // pose: [x, y, z, rot_x, rot_y, rot_z]\n        double energy = 0.0;\n        \n        // Transform ligand atoms\n        std::vector<Atom> transformed_ligand = ligand_atoms;\n        for (auto& atom : transformed_ligand) {\n            // Apply rotation and translation\n            double x = atom.x * cos(pose[5]) - atom.y * sin(pose[5]);\n            double y = atom.x * sin(pose[5]) + atom.y * cos(pose[5]);\n            atom.x = x + pose[0];\n            atom.y = y + pose[1];\n            atom.z = atom.z + pose[2];\n        }\n        \n        // Calculate interaction energy\n        for (const auto& latom : transformed_ligand) {\n            for (const auto& patom : protein_atoms) {\n                double dx = latom.x - patom.x;\n                double dy = latom.y - patom.y;\n                double dz = latom.z - patom.z;\n                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                \n                if (r > 0.1 && r < 12.0) {\n                    double sigma = (latom.radius + patom.radius) / 2.0;\n                    double epsilon = 0.1;\n                    double r6 = pow(sigma/r, 6);\n                    energy += 4.0 * epsilon * (r6*r6 - r6);\n                    energy += 332.0 * latom.charge * patom.charge / r;\n                }\n            }\n        }\n        \n        return energy;\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    }
+  ]
+}

@@ -1,0 +1,1365 @@
+{
+  "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+    "llvm_initial": 78,
+    "llvm_sys_noise": 38,
+    "llvm_project": 40,
+    "after_filter": 31,
+    "ai_batches": 3,
+    "ai_results": 31,
+    "omp_verified": 0,
+    "total_ms": 7156.9,
+    "llvm_ms": 422.9
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "main",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "main",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "main",
+      "line": 293,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "main",
+      "line": 59,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "main",
+      "line": 64,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.42000000000000004
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "main",
+      "line": 59,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)\n        double sourceDistance = 1000.0;  // 100cm SAD\n        double sourceX = sourceDistance * std::sin(angleRad);\n        double sourceZ = sourceDistance * std::cos(angleRad);\n        \n        // For each voxel, calculate dose contribution\n        for (auto& voxel : grid) {\n            // Ray from source through voxel\n            double dx = voxel.x - sourceX;\n            double dy = voxel.y;\n            double dz = voxel.z - sourceZ;\n            double distance = std::sqrt(dx*dx + dy*dy + dz*dz);\n            \n            // Inverse square law\n            double inverseSquare = (sourceDistance * sourceDistance) / \n                                  (distance * distance);\n            "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "main",
+      "line": 78,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "main",
+      "line": 78,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "main",
+      "line": 64,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)\n        double sourceDistance = 1000.0;  // 100cm SAD\n        double sourceX = sourceDistance * std::sin(angleRad);\n        double sourceZ = sourceDistance * std::cos(angleRad);\n        \n        // For each voxel, calculate dose contribution\n        for (auto& voxel : grid) {\n            // Ray from source through voxel\n            double dx = voxel.x - sourceX;\n            double dy = voxel.y;\n            double dz = voxel.z - sourceZ;\n            double distance = std::sqrt(dx*dx + dy*dy + dz*dz);\n            \n            // Inverse square law\n            double inverseSquare = (sourceDistance * sourceDistance) / \n                                  (distance * distance);\n            \n            // Depth in tissue\n            double depth = distance - sourceDistance;\n            \n            // Tissue absorption (simplified exponential)\n            double attenuation = std::exp(-0.05 * depth);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 149,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 113,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    std::vector<double> optimizeIMRT(int maxIterations) {\n        int numBeams = beams.size();\n        std::vector<double> beamWeights(numBeams);\n        \n        // Initialize weights\n        for (int i = 0; i < numBeams; i++) {\n            beamWeights[i] = 1.0 / numBeams;\n        }\n        \n        double learningRate = 0.01;\n        \n        for (int iter = 0; iter < maxIterations; iter++) {\n            // Calculate dose with current weights\n            for (int i = 0; i < numBeams; i++) {\n                beams[i].weight = beamWeights[i];\n            }\n            calculateDoseDistribution();\n            \n            // Compute objective function and gradient\n            double objective = 0.0;\n            std::vector<double> gradient(numBeams, 0.0);\n            \n            for (const auto& voxel : grid) {\n                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 119,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            beamWeights[i] = 1.0 / numBeams;\n        }\n        \n        double learningRate = 0.01;\n        \n        for (int iter = 0; iter < maxIterations; iter++) {\n            // Calculate dose with current weights\n            for (int i = 0; i < numBeams; i++) {\n                beams[i].weight = beamWeights[i];\n            }\n            calculateDoseDistribution();\n            \n            // Compute objective function and gradient\n            double objective = 0.0;\n            std::vector<double> gradient(numBeams, 0.0);\n            \n            for (const auto& voxel : grid) {\n                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 113,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<double> optimizeIMRT(int maxIterations) {\n        int numBeams = beams.size();\n        std::vector<double> beamWeights(numBeams);\n        \n        // Initialize weights\n        for (int i = 0; i < numBeams; i++) {\n            beamWeights[i] = 1.0 / numBeams;\n        }\n        \n        double learningRate = 0.01;\n        \n        for (int iter = 0; iter < maxIterations; iter++) {\n            // Calculate dose with current weights\n            for (int i = 0; i < numBeams; i++) {\n                beams[i].weight = beamWeights[i];\n            }\n            calculateDoseDistribution();\n            \n            // Compute objective function and gradient\n            double objective = 0.0;\n            std::vector<double> gradient(numBeams, 0.0);\n            \n            for (const auto& voxel : grid) {\n                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 121,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        \n        double learningRate = 0.01;\n        \n        for (int iter = 0; iter < maxIterations; iter++) {\n            // Calculate dose with current weights\n            for (int i = 0; i < numBeams; i++) {\n                beams[i].weight = beamWeights[i];\n            }\n            calculateDoseDistribution();\n            \n            // Compute objective function and gradient\n            double objective = 0.0;\n            std::vector<double> gradient(numBeams, 0.0);\n            \n            for (const auto& voxel : grid) {\n                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 121,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        double learningRate = 0.01;\n        \n        for (int iter = 0; iter < maxIterations; iter++) {\n            // Calculate dose with current weights\n            for (int i = 0; i < numBeams; i++) {\n                beams[i].weight = beamWeights[i];\n            }\n            calculateDoseDistribution();\n            \n            // Compute objective function and gradient\n            double objective = 0.0;\n            std::vector<double> gradient(numBeams, 0.0);\n            \n            for (const auto& voxel : grid) {\n                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 170,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 130,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.47
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 162,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            \n            // Update weights\n            for (int i = 0; i < numBeams; i++) {\n                beamWeights[i] -= learningRate * gradient[i];\n                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }\n            \n            // Normalize\n            double sum = 0.0;\n            for (double w : beamWeights) sum += w;\n            for (double& w : beamWeights) w /= sum;\n        }\n        \n        return beamWeights;\n    }\n    \n    // Dose Volume Histogram calculation\n    struct DVHPoint {\n        double dose;\n        double volume;\n    };\n    \n    std::vector<DVHPoint> calculateDVH(int organIndex) {\n        std::vector<double> doses;\n        \n        // Collect doses for this organ\n        for (const auto& voxel : grid) {\n            if (voxel.organIndex == organIndex) {\n                doses.push_back(voxel.dose);\n            }\n        }\n        "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 131,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            // Compute objective function and gradient\n            double objective = 0.0;\n            std::vector<double> gradient(numBeams, 0.0);\n            \n            for (const auto& voxel : grid) {\n                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                }\n                \n                objective += organ.importance * error * error;\n                \n                // Gradient: how does each beam affect this voxel?\n                for (int b = 0; b < numBeams; b++) {\n                    double doseContribution = calculateVoxelBeamDose(voxel, beams[b]);\n                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 136,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                }\n                \n                objective += organ.importance * error * error;\n                \n                // Gradient: how does each beam affect this voxel?\n                for (int b = 0; b < numBeams; b++) {\n                    double doseContribution = calculateVoxelBeamDose(voxel, beams[b]);\n                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            \n            // Update weights\n            for (int i = 0; i < numBeams; i++) {\n                beamWeights[i] -= learningRate * gradient[i];\n                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 138,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                }\n                \n                objective += organ.importance * error * error;\n                \n                // Gradient: how does each beam affect this voxel?\n                for (int b = 0; b < numBeams; b++) {\n                    double doseContribution = calculateVoxelBeamDose(voxel, beams[b]);\n                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            \n            // Update weights\n            for (int i = 0; i < numBeams; i++) {\n                beamWeights[i] -= learningRate * gradient[i];\n                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }\n            \n            // Normalize"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 142,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                }\n                \n                objective += organ.importance * error * error;\n                \n                // Gradient: how does each beam affect this voxel?\n                for (int b = 0; b < numBeams; b++) {\n                    double doseContribution = calculateVoxelBeamDose(voxel, beams[b]);\n                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            \n            // Update weights\n            for (int i = 0; i < numBeams; i++) {\n                beamWeights[i] -= learningRate * gradient[i];\n                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }\n            \n            // Normalize\n            double sum = 0.0;\n            for (double w : beamWeights) sum += w;\n            for (double& w : beamWeights) w /= sum;\n        }"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 147,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                }\n                \n                objective += organ.importance * error * error;\n                \n                // Gradient: how does each beam affect this voxel?\n                for (int b = 0; b < numBeams; b++) {\n                    double doseContribution = calculateVoxelBeamDose(voxel, beams[b]);\n                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            \n            // Update weights\n            for (int i = 0; i < numBeams; i++) {\n                beamWeights[i] -= learningRate * gradient[i];\n                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }\n            \n            // Normalize\n            double sum = 0.0;\n            for (double w : beamWeights) sum += w;\n            for (double& w : beamWeights) w /= sum;\n        }\n        \n        return beamWeights;\n    }\n    \n    // Dose Volume Histogram calculation"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 155,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                }\n                \n                objective += organ.importance * error * error;\n                \n                // Gradient: how does each beam affect this voxel?\n                for (int b = 0; b < numBeams; b++) {\n                    double doseContribution = calculateVoxelBeamDose(voxel, beams[b]);\n                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            \n            // Update weights\n            for (int i = 0; i < numBeams; i++) {\n                beamWeights[i] -= learningRate * gradient[i];\n                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }\n            \n            // Normalize\n            double sum = 0.0;\n            for (double w : beamWeights) sum += w;\n            for (double& w : beamWeights) w /= sum;\n        }\n        \n        return beamWeights;\n    }\n    \n    // Dose Volume Histogram calculation\n    struct DVHPoint {\n        double dose;\n        double volume;\n    };\n    \n    std::vector<DVHPoint> calculateDVH(int organIndex) {\n        std::vector<double> doses;\n        "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 155,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                }\n                \n                objective += organ.importance * error * error;\n                \n                // Gradient: how does each beam affect this voxel?\n                for (int b = 0; b < numBeams; b++) {\n                    double doseContribution = calculateVoxelBeamDose(voxel, beams[b]);\n                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            \n            // Update weights\n            for (int i = 0; i < numBeams; i++) {\n                beamWeights[i] -= learningRate * gradient[i];\n                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }\n            \n            // Normalize\n            double sum = 0.0;\n            for (double w : beamWeights) sum += w;\n            for (double& w : beamWeights) w /= sum;\n        }\n        \n        return beamWeights;\n    }\n    \n    // Dose Volume Histogram calculation\n    struct DVHPoint {\n        double dose;\n        double volume;\n    };\n    \n    std::vector<DVHPoint> calculateDVH(int organIndex) {\n        std::vector<double> doses;\n        "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 130,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            \n            // Compute objective function and gradient\n            double objective = 0.0;\n            std::vector<double> gradient(numBeams, 0.0);\n            \n            for (const auto& voxel : grid) {\n                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                }\n                \n                objective += organ.importance * error * error;\n                \n                // Gradient: how does each beam affect this voxel?\n                for (int b = 0; b < numBeams; b++) {\n                    double doseContribution = calculateVoxelBeamDose(voxel, beams[b]);\n                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 169,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 162,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            \n            // Update weights\n            for (int i = 0; i < numBeams; i++) {\n                beamWeights[i] -= learningRate * gradient[i];\n                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }\n            \n            // Normalize\n            double sum = 0.0;\n            for (double w : beamWeights) sum += w;\n            for (double& w : beamWeights) w /= sum;\n        }\n        \n        return beamWeights;\n    }\n    \n    // Dose Volume Histogram calculation\n    struct DVHPoint {\n        double dose;\n        double volume;\n    };\n    \n    std::vector<DVHPoint> calculateDVH(int organIndex) {\n        std::vector<double> doses;\n        \n        // Collect doses for this organ\n        for (const auto& voxel : grid) {\n            if (voxel.organIndex == organIndex) {\n                doses.push_back(voxel.dose);\n            }\n        }\n        "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 169,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }\n            \n            // Normalize\n            double sum = 0.0;\n            for (double w : beamWeights) sum += w;\n            for (double& w : beamWeights) w /= sum;\n        }\n        \n        return beamWeights;\n    }\n    \n    // Dose Volume Histogram calculation\n    struct DVHPoint {\n        double dose;\n        double volume;\n    };\n    \n    std::vector<DVHPoint> calculateDVH(int organIndex) {\n        std::vector<double> doses;\n        \n        // Collect doses for this organ\n        for (const auto& voxel : grid) {\n            if (voxel.organIndex == organIndex) {\n                doses.push_back(voxel.dose);\n            }\n        }\n        \n        if (doses.empty()) return {};\n        \n        std::sort(doses.begin(), doses.end());\n        \n        std::vector<DVHPoint> dvh;\n        int numBins = 100;\n        double maxDose = doses.back();"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 119,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            beamWeights[i] = 1.0 / numBeams;\n        }\n        \n        double learningRate = 0.01;\n        \n        for (int iter = 0; iter < maxIterations; iter++) {\n            // Calculate dose with current weights\n            for (int i = 0; i < numBeams; i++) {\n                beams[i].weight = beamWeights[i];\n            }\n            calculateDoseDistribution();\n            \n            // Compute objective function and gradient\n            double objective = 0.0;\n            std::vector<double> gradient(numBeams, 0.0);\n            \n            for (const auto& voxel : grid) {\n                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 170,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n            \n            // Normalize\n            double sum = 0.0;\n            for (double w : beamWeights) sum += w;\n            for (double& w : beamWeights) w /= sum;\n        }\n        \n        return beamWeights;\n    }\n    \n    // Dose Volume Histogram calculation\n    struct DVHPoint {\n        double dose;\n        double volume;\n    };\n    \n    std::vector<DVHPoint> calculateDVH(int organIndex) {\n        std::vector<double> doses;\n        \n        // Collect doses for this organ\n        for (const auto& voxel : grid) {\n            if (voxel.organIndex == organIndex) {\n                doses.push_back(voxel.dose);\n            }\n        }\n        \n        if (doses.empty()) return {};\n        \n        std::sort(doses.begin(), doses.end());\n        \n        std::vector<DVHPoint> dvh;\n        int numBins = 100;\n        double maxDose = doses.back();\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner25calculateDoseDistributionEv",
+      "line": 59,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)\n        double sourceDistance = 1000.0;  // 100cm SAD\n        double sourceX = sourceDistance * std::sin(angleRad);\n        double sourceZ = sourceDistance * std::cos(angleRad);\n        \n        // For each voxel, calculate dose contribution\n        for (auto& voxel : grid) {\n            // Ray from source through voxel\n            double dx = voxel.x - sourceX;\n            double dy = voxel.y;\n            double dz = voxel.z - sourceZ;\n            double distance = std::sqrt(dx*dx + dy*dy + dz*dz);\n            \n            // Inverse square law\n            double inverseSquare = (sourceDistance * sourceDistance) / \n                                  (distance * distance);\n            "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner25calculateDoseDistributionEv",
+      "line": 64,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.52
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner25calculateDoseDistributionEv",
+      "line": 59,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)\n        double sourceDistance = 1000.0;  // 100cm SAD\n        double sourceX = sourceDistance * std::sin(angleRad);\n        double sourceZ = sourceDistance * std::cos(angleRad);\n        \n        // For each voxel, calculate dose contribution\n        for (auto& voxel : grid) {\n            // Ray from source through voxel\n            double dx = voxel.x - sourceX;\n            double dy = voxel.y;\n            double dz = voxel.z - sourceZ;\n            double distance = std::sqrt(dx*dx + dy*dy + dz*dz);\n            \n            // Inverse square law\n            double inverseSquare = (sourceDistance * sourceDistance) / \n                                  (distance * distance);\n            "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner25calculateDoseDistributionEv",
+      "line": 78,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        double sourceDistance = 1000.0;  // 100cm SAD\n        double sourceX = sourceDistance * std::sin(angleRad);\n        double sourceZ = sourceDistance * std::cos(angleRad);\n        \n        // For each voxel, calculate dose contribution\n        for (auto& voxel : grid) {\n            // Ray from source through voxel\n            double dx = voxel.x - sourceX;\n            double dy = voxel.y;\n            double dz = voxel.z - sourceZ;\n            double distance = std::sqrt(dx*dx + dy*dy + dz*dz);\n            \n            // Inverse square law\n            double inverseSquare = (sourceDistance * sourceDistance) / \n                                  (distance * distance);\n            \n            // Depth in tissue\n            double depth = distance - sourceDistance;\n            \n            // Tissue absorption (simplified exponential)\n            double attenuation = std::exp(-0.05 * depth);\n            \n            // Radial fall-off\n            double lateral = std::sqrt(dx*dx + dy*dy);\n            double radialFalloff = std::exp(-lateral * lateral / (50.0 * 50.0));\n            \n            // Total dose\n            double dose = beam.weight * beam.intensity * \n                         inverseSquare * attenuation * radialFalloff;\n            \n            voxel.dose += dose;\n        }\n    }\n    \n    // Intensity Modulated Radiation Therapy (IMRT) optimization"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner25calculateDoseDistributionEv",
+      "line": 78,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        double sourceDistance = 1000.0;  // 100cm SAD\n        double sourceX = sourceDistance * std::sin(angleRad);\n        double sourceZ = sourceDistance * std::cos(angleRad);\n        \n        // For each voxel, calculate dose contribution\n        for (auto& voxel : grid) {\n            // Ray from source through voxel\n            double dx = voxel.x - sourceX;\n            double dy = voxel.y;\n            double dz = voxel.z - sourceZ;\n            double distance = std::sqrt(dx*dx + dy*dy + dz*dz);\n            \n            // Inverse square law\n            double inverseSquare = (sourceDistance * sourceDistance) / \n                                  (distance * distance);\n            \n            // Depth in tissue\n            double depth = distance - sourceDistance;\n            \n            // Tissue absorption (simplified exponential)\n            double attenuation = std::exp(-0.05 * depth);\n            \n            // Radial fall-off\n            double lateral = std::sqrt(dx*dx + dy*dy);\n            double radialFalloff = std::exp(-lateral * lateral / (50.0 * 50.0));\n            \n            // Total dose\n            double dose = beam.weight * beam.intensity * \n                         inverseSquare * attenuation * radialFalloff;\n            \n            voxel.dose += dose;\n        }\n    }\n    \n    // Intensity Modulated Radiation Therapy (IMRT) optimization"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner25calculateDoseDistributionEv",
+      "line": 64,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)\n        double sourceDistance = 1000.0;  // 100cm SAD\n        double sourceX = sourceDistance * std::sin(angleRad);\n        double sourceZ = sourceDistance * std::cos(angleRad);\n        \n        // For each voxel, calculate dose contribution\n        for (auto& voxel : grid) {\n            // Ray from source through voxel\n            double dx = voxel.x - sourceX;\n            double dy = voxel.y;\n            double dz = voxel.z - sourceZ;\n            double distance = std::sqrt(dx*dx + dy*dy + dz*dz);\n            \n            // Inverse square law\n            double inverseSquare = (sourceDistance * sourceDistance) / \n                                  (distance * distance);\n            \n            // Depth in tissue\n            double depth = distance - sourceDistance;\n            \n            // Tissue absorption (simplified exponential)\n            double attenuation = std::exp(-0.05 * depth);"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19RadiotherapyPlannerD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19RadiotherapyPlannerD1Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN19RadiotherapyPlannerD1Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19RadiotherapyPlannerD1Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19RadiotherapyPlannerD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19RadiotherapyPlannerD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19RadiotherapyPlannerC2Eiii",
+      "line": 1360,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19RadiotherapyPlannerC2Eiii",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlannerC2Eiii",
+      "line": 42,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        grid.resize(x * y * z);\n        initializeGrid();\n    }\n    \n    void initializeGrid() {\n        for (int k = 0; k < gridZ; k++) {\n            for (int j = 0; j < gridY; j++) {\n                for (int i = 0; i < gridX; i++) {\n                    int idx = k * gridX * gridY + j * gridX + i;\n                    grid[idx].x = i * 2.0;  // 2mm voxel size\n                    grid[idx].y = j * 2.0;\n                    grid[idx].z = k * 2.0;\n                    grid[idx].dose = 0.0;\n                    grid[idx].organIndex = -1;\n                }\n            }\n        }\n    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlannerC2Eiii",
+      "line": 43,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        initializeGrid();\n    }\n    \n    void initializeGrid() {\n        for (int k = 0; k < gridZ; k++) {\n            for (int j = 0; j < gridY; j++) {\n                for (int i = 0; i < gridX; i++) {\n                    int idx = k * gridX * gridY + j * gridX + i;\n                    grid[idx].x = i * 2.0;  // 2mm voxel size\n                    grid[idx].y = j * 2.0;\n                    grid[idx].z = k * 2.0;\n                    grid[idx].dose = 0.0;\n                    grid[idx].organIndex = -1;\n                }\n            }\n        }\n    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlannerC2Eiii",
+      "line": 44,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void initializeGrid() {\n        for (int k = 0; k < gridZ; k++) {\n            for (int j = 0; j < gridY; j++) {\n                for (int i = 0; i < gridX; i++) {\n                    int idx = k * gridX * gridY + j * gridX + i;\n                    grid[idx].x = i * 2.0;  // 2mm voxel size\n                    grid[idx].y = j * 2.0;\n                    grid[idx].z = k * 2.0;\n                    grid[idx].dose = 0.0;\n                    grid[idx].organIndex = -1;\n                }\n            }\n        }\n    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)\n        double sourceDistance = 1000.0;  // 100cm SAD"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlannerC2Eiii",
+      "line": 42,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        grid.resize(x * y * z);\n        initializeGrid();\n    }\n    \n    void initializeGrid() {\n        for (int k = 0; k < gridZ; k++) {\n            for (int j = 0; j < gridY; j++) {\n                for (int i = 0; i < gridX; i++) {\n                    int idx = k * gridX * gridY + j * gridX + i;\n                    grid[idx].x = i * 2.0;  // 2mm voxel size\n                    grid[idx].y = j * 2.0;\n                    grid[idx].z = k * 2.0;\n                    grid[idx].dose = 0.0;\n                    grid[idx].organIndex = -1;\n                }\n            }\n        }\n    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlannerC2Eiii",
+      "line": 43,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        initializeGrid();\n    }\n    \n    void initializeGrid() {\n        for (int k = 0; k < gridZ; k++) {\n            for (int j = 0; j < gridY; j++) {\n                for (int i = 0; i < gridX; i++) {\n                    int idx = k * gridX * gridY + j * gridX + i;\n                    grid[idx].x = i * 2.0;  // 2mm voxel size\n                    grid[idx].y = j * 2.0;\n                    grid[idx].z = k * 2.0;\n                    grid[idx].dose = 0.0;\n                    grid[idx].organIndex = -1;\n                }\n            }\n        }\n    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlannerC2Eiii",
+      "line": 44,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    void initializeGrid() {\n        for (int k = 0; k < gridZ; k++) {\n            for (int j = 0; j < gridY; j++) {\n                for (int i = 0; i < gridX; i++) {\n                    int idx = k * gridX * gridY + j * gridX + i;\n                    grid[idx].x = i * 2.0;  // 2mm voxel size\n                    grid[idx].y = j * 2.0;\n                    grid[idx].z = k * 2.0;\n                    grid[idx].dose = 0.0;\n                    grid[idx].organIndex = -1;\n                }\n            }\n        }\n    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)\n        double sourceDistance = 1000.0;  // 100cm SAD"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19RadiotherapyPlannerC2Eiii",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19RadiotherapyPlannerC2Eiii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN19RadiotherapyPlanner5OrganENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN19RadiotherapyPlanner5OrganENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__16vectorIN19RadiotherapyPlanner5OrganENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN19RadiotherapyPlanner5OrganENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN19RadiotherapyPlanner5VoxelENS_9allocatorIS2_EEE8__appendEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN19RadiotherapyPlanner5VoxelENS_9allocatorIS2_EEE8__appendEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN19RadiotherapyPlanner5VoxelENS_9allocatorIS2_EEE8__appendEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN19RadiotherapyPlanner5VoxelENS_9allocatorIS2_EEE8__appendEm",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIN19RadiotherapyPlanner5VoxelENS_9allocatorIS2_EEE8__appendEm",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN19RadiotherapyPlanner5VoxelENS_9allocatorIS2_EEE8__appendEm",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "main",
+      "line": 59,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)\n        double sourceDistance = 1000.0;  // 100cm SAD\n        double sourceX = sourceDistance * std::sin(angleRad);\n        double sourceZ = sourceDistance * std::cos(angleRad);\n        \n        // For each voxel, calculate dose contribution\n        for (auto& voxel : grid) {\n            // Ray from source through voxel\n            double dx = voxel.x - sourceX;\n            double dy = voxel.y;\n            double dz = voxel.z - sourceZ;\n            double distance = std::sqrt(dx*dx + dy*dy + dz*dz);\n            \n            // Inverse square law\n            double inverseSquare = (sourceDistance * sourceDistance) / \n                                  (distance * distance);\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "main",
+      "line": 64,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)\n        double sourceDistance = 1000.0;  // 100cm SAD\n        double sourceX = sourceDistance * std::sin(angleRad);\n        double sourceZ = sourceDistance * std::cos(angleRad);\n        \n        // For each voxel, calculate dose contribution\n        for (auto& voxel : grid) {\n            // Ray from source through voxel\n            double dx = voxel.x - sourceX;\n            double dy = voxel.y;\n            double dz = voxel.z - sourceZ;\n            double distance = std::sqrt(dx*dx + dy*dy + dz*dz);\n            \n            // Inverse square law\n            double inverseSquare = (sourceDistance * sourceDistance) / \n                                  (distance * distance);\n            \n            // Depth in tissue\n            double depth = distance - sourceDistance;\n            \n            // Tissue absorption (simplified exponential)\n            double attenuation = std::exp(-0.05 * depth);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 113,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<double> optimizeIMRT(int maxIterations) {\n        int numBeams = beams.size();\n        std::vector<double> beamWeights(numBeams);\n        \n        // Initialize weights\n        for (int i = 0; i < numBeams; i++) {\n            beamWeights[i] = 1.0 / numBeams;\n        }\n        \n        double learningRate = 0.01;\n        \n        for (int iter = 0; iter < maxIterations; iter++) {\n            // Calculate dose with current weights\n            for (int i = 0; i < numBeams; i++) {\n                beams[i].weight = beamWeights[i];\n            }\n            calculateDoseDistribution();\n            \n            // Compute objective function and gradient\n            double objective = 0.0;\n            std::vector<double> gradient(numBeams, 0.0);\n            \n            for (const auto& voxel : grid) {\n                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 121,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        double learningRate = 0.01;\n        \n        for (int iter = 0; iter < maxIterations; iter++) {\n            // Calculate dose with current weights\n            for (int i = 0; i < numBeams; i++) {\n                beams[i].weight = beamWeights[i];\n            }\n            calculateDoseDistribution();\n            \n            // Compute objective function and gradient\n            double objective = 0.0;\n            std::vector<double> gradient(numBeams, 0.0);\n            \n            for (const auto& voxel : grid) {\n                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 131,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            // Compute objective function and gradient\n            double objective = 0.0;\n            std::vector<double> gradient(numBeams, 0.0);\n            \n            for (const auto& voxel : grid) {\n                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                }\n                \n                objective += organ.importance * error * error;\n                \n                // Gradient: how does each beam affect this voxel?\n                for (int b = 0; b < numBeams; b++) {\n                    double doseContribution = calculateVoxelBeamDose(voxel, beams[b]);\n                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 136,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                }\n                \n                objective += organ.importance * error * error;\n                \n                // Gradient: how does each beam affect this voxel?\n                for (int b = 0; b < numBeams; b++) {\n                    double doseContribution = calculateVoxelBeamDose(voxel, beams[b]);\n                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            \n            // Update weights\n            for (int i = 0; i < numBeams; i++) {\n                beamWeights[i] -= learningRate * gradient[i];\n                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 138,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                }\n                \n                objective += organ.importance * error * error;\n                \n                // Gradient: how does each beam affect this voxel?\n                for (int b = 0; b < numBeams; b++) {\n                    double doseContribution = calculateVoxelBeamDose(voxel, beams[b]);\n                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            \n            // Update weights\n            for (int i = 0; i < numBeams; i++) {\n                beamWeights[i] -= learningRate * gradient[i];\n                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }\n            \n            // Normalize",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 147,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                }\n                \n                objective += organ.importance * error * error;\n                \n                // Gradient: how does each beam affect this voxel?\n                for (int b = 0; b < numBeams; b++) {\n                    double doseContribution = calculateVoxelBeamDose(voxel, beams[b]);\n                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            \n            // Update weights\n            for (int i = 0; i < numBeams; i++) {\n                beamWeights[i] -= learningRate * gradient[i];\n                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }\n            \n            // Normalize\n            double sum = 0.0;\n            for (double w : beamWeights) sum += w;\n            for (double& w : beamWeights) w /= sum;\n        }\n        \n        return beamWeights;\n    }\n    \n    // Dose Volume Histogram calculation",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 155,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                }\n                \n                objective += organ.importance * error * error;\n                \n                // Gradient: how does each beam affect this voxel?\n                for (int b = 0; b < numBeams; b++) {\n                    double doseContribution = calculateVoxelBeamDose(voxel, beams[b]);\n                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            \n            // Update weights\n            for (int i = 0; i < numBeams; i++) {\n                beamWeights[i] -= learningRate * gradient[i];\n                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }\n            \n            // Normalize\n            double sum = 0.0;\n            for (double w : beamWeights) sum += w;\n            for (double& w : beamWeights) w /= sum;\n        }\n        \n        return beamWeights;\n    }\n    \n    // Dose Volume Histogram calculation\n    struct DVHPoint {\n        double dose;\n        double volume;\n    };\n    \n    std::vector<DVHPoint> calculateDVH(int organIndex) {\n        std::vector<double> doses;\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 130,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            \n            // Compute objective function and gradient\n            double objective = 0.0;\n            std::vector<double> gradient(numBeams, 0.0);\n            \n            for (const auto& voxel : grid) {\n                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                }\n                \n                objective += organ.importance * error * error;\n                \n                // Gradient: how does each beam affect this voxel?\n                for (int b = 0; b < numBeams; b++) {\n                    double doseContribution = calculateVoxelBeamDose(voxel, beams[b]);\n                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 169,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }\n            \n            // Normalize\n            double sum = 0.0;\n            for (double w : beamWeights) sum += w;\n            for (double& w : beamWeights) w /= sum;\n        }\n        \n        return beamWeights;\n    }\n    \n    // Dose Volume Histogram calculation\n    struct DVHPoint {\n        double dose;\n        double volume;\n    };\n    \n    std::vector<DVHPoint> calculateDVH(int organIndex) {\n        std::vector<double> doses;\n        \n        // Collect doses for this organ\n        for (const auto& voxel : grid) {\n            if (voxel.organIndex == organIndex) {\n                doses.push_back(voxel.dose);\n            }\n        }\n        \n        if (doses.empty()) return {};\n        \n        std::sort(doses.begin(), doses.end());\n        \n        std::vector<DVHPoint> dvh;\n        int numBins = 100;\n        double maxDose = doses.back();",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 170,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n            \n            // Normalize\n            double sum = 0.0;\n            for (double w : beamWeights) sum += w;\n            for (double& w : beamWeights) w /= sum;\n        }\n        \n        return beamWeights;\n    }\n    \n    // Dose Volume Histogram calculation\n    struct DVHPoint {\n        double dose;\n        double volume;\n    };\n    \n    std::vector<DVHPoint> calculateDVH(int organIndex) {\n        std::vector<double> doses;\n        \n        // Collect doses for this organ\n        for (const auto& voxel : grid) {\n            if (voxel.organIndex == organIndex) {\n                doses.push_back(voxel.dose);\n            }\n        }\n        \n        if (doses.empty()) return {};\n        \n        std::sort(doses.begin(), doses.end());\n        \n        std::vector<DVHPoint> dvh;\n        int numBins = 100;\n        double maxDose = doses.back();\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner25calculateDoseDistributionEv",
+      "line": 59,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)\n        double sourceDistance = 1000.0;  // 100cm SAD\n        double sourceX = sourceDistance * std::sin(angleRad);\n        double sourceZ = sourceDistance * std::cos(angleRad);\n        \n        // For each voxel, calculate dose contribution\n        for (auto& voxel : grid) {\n            // Ray from source through voxel\n            double dx = voxel.x - sourceX;\n            double dy = voxel.y;\n            double dz = voxel.z - sourceZ;\n            double distance = std::sqrt(dx*dx + dy*dy + dz*dz);\n            \n            // Inverse square law\n            double inverseSquare = (sourceDistance * sourceDistance) / \n                                  (distance * distance);\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner25calculateDoseDistributionEv",
+      "line": 64,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)\n        double sourceDistance = 1000.0;  // 100cm SAD\n        double sourceX = sourceDistance * std::sin(angleRad);\n        double sourceZ = sourceDistance * std::cos(angleRad);\n        \n        // For each voxel, calculate dose contribution\n        for (auto& voxel : grid) {\n            // Ray from source through voxel\n            double dx = voxel.x - sourceX;\n            double dy = voxel.y;\n            double dz = voxel.z - sourceZ;\n            double distance = std::sqrt(dx*dx + dy*dy + dz*dz);\n            \n            // Inverse square law\n            double inverseSquare = (sourceDistance * sourceDistance) / \n                                  (distance * distance);\n            \n            // Depth in tissue\n            double depth = distance - sourceDistance;\n            \n            // Tissue absorption (simplified exponential)\n            double attenuation = std::exp(-0.05 * depth);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlannerC2Eiii",
+      "line": 44,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    void initializeGrid() {\n        for (int k = 0; k < gridZ; k++) {\n            for (int j = 0; j < gridY; j++) {\n                for (int i = 0; i < gridX; i++) {\n                    int idx = k * gridX * gridY + j * gridX + i;\n                    grid[idx].x = i * 2.0;  // 2mm voxel size\n                    grid[idx].y = j * 2.0;\n                    grid[idx].z = k * 2.0;\n                    grid[idx].dose = 0.0;\n                    grid[idx].organIndex = -1;\n                }\n            }\n        }\n    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)\n        double sourceDistance = 1000.0;  // 100cm SAD",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 142,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                }\n                \n                objective += organ.importance * error * error;\n                \n                // Gradient: how does each beam affect this voxel?\n                for (int b = 0; b < numBeams; b++) {\n                    double doseContribution = calculateVoxelBeamDose(voxel, beams[b]);\n                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            \n            // Update weights\n            for (int i = 0; i < numBeams; i++) {\n                beamWeights[i] -= learningRate * gradient[i];\n                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }\n            \n            // Normalize\n            double sum = 0.0;\n            for (double w : beamWeights) sum += w;\n            for (double& w : beamWeights) w /= sum;\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.93
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 113,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    std::vector<double> optimizeIMRT(int maxIterations) {\n        int numBeams = beams.size();\n        std::vector<double> beamWeights(numBeams);\n        \n        // Initialize weights\n        for (int i = 0; i < numBeams; i++) {\n            beamWeights[i] = 1.0 / numBeams;\n        }\n        \n        double learningRate = 0.01;\n        \n        for (int iter = 0; iter < maxIterations; iter++) {\n            // Calculate dose with current weights\n            for (int i = 0; i < numBeams; i++) {\n                beams[i].weight = beamWeights[i];\n            }\n            calculateDoseDistribution();\n            \n            // Compute objective function and gradient\n            double objective = 0.0;\n            std::vector<double> gradient(numBeams, 0.0);\n            \n            for (const auto& voxel : grid) {\n                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 162,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            \n            // Update weights\n            for (int i = 0; i < numBeams; i++) {\n                beamWeights[i] -= learningRate * gradient[i];\n                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }\n            \n            // Normalize\n            double sum = 0.0;\n            for (double w : beamWeights) sum += w;\n            for (double& w : beamWeights) w /= sum;\n        }\n        \n        return beamWeights;\n    }\n    \n    // Dose Volume Histogram calculation\n    struct DVHPoint {\n        double dose;\n        double volume;\n    };\n    \n    std::vector<DVHPoint> calculateDVH(int organIndex) {\n        std::vector<double> doses;\n        \n        // Collect doses for this organ\n        for (const auto& voxel : grid) {\n            if (voxel.organIndex == organIndex) {\n                doses.push_back(voxel.dose);\n            }\n        }\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 155,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                }\n                \n                objective += organ.importance * error * error;\n                \n                // Gradient: how does each beam affect this voxel?\n                for (int b = 0; b < numBeams; b++) {\n                    double doseContribution = calculateVoxelBeamDose(voxel, beams[b]);\n                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            \n            // Update weights\n            for (int i = 0; i < numBeams; i++) {\n                beamWeights[i] -= learningRate * gradient[i];\n                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }\n            \n            // Normalize\n            double sum = 0.0;\n            for (double w : beamWeights) sum += w;\n            for (double& w : beamWeights) w /= sum;\n        }\n        \n        return beamWeights;\n    }\n    \n    // Dose Volume Histogram calculation\n    struct DVHPoint {\n        double dose;\n        double volume;\n    };\n    \n    std::vector<DVHPoint> calculateDVH(int organIndex) {\n        std::vector<double> doses;\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 162,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                    gradient[b] += 2.0 * organ.importance * error * doseContribution;\n                }\n            }\n            \n            // Update weights\n            for (int i = 0; i < numBeams; i++) {\n                beamWeights[i] -= learningRate * gradient[i];\n                beamWeights[i] = std::max(0.0, beamWeights[i]);\n            }\n            \n            // Normalize\n            double sum = 0.0;\n            for (double w : beamWeights) sum += w;\n            for (double& w : beamWeights) w /= sum;\n        }\n        \n        return beamWeights;\n    }\n    \n    // Dose Volume Histogram calculation\n    struct DVHPoint {\n        double dose;\n        double volume;\n    };\n    \n    std::vector<DVHPoint> calculateDVH(int organIndex) {\n        std::vector<double> doses;\n        \n        // Collect doses for this organ\n        for (const auto& voxel : grid) {\n            if (voxel.organIndex == organIndex) {\n                doses.push_back(voxel.dose);\n            }\n        }\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 119,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            beamWeights[i] = 1.0 / numBeams;\n        }\n        \n        double learningRate = 0.01;\n        \n        for (int iter = 0; iter < maxIterations; iter++) {\n            // Calculate dose with current weights\n            for (int i = 0; i < numBeams; i++) {\n                beams[i].weight = beamWeights[i];\n            }\n            calculateDoseDistribution();\n            \n            // Compute objective function and gradient\n            double objective = 0.0;\n            std::vector<double> gradient(numBeams, 0.0);\n            \n            for (const auto& voxel : grid) {\n                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 121,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        \n        double learningRate = 0.01;\n        \n        for (int iter = 0; iter < maxIterations; iter++) {\n            // Calculate dose with current weights\n            for (int i = 0; i < numBeams; i++) {\n                beams[i].weight = beamWeights[i];\n            }\n            calculateDoseDistribution();\n            \n            // Compute objective function and gradient\n            double objective = 0.0;\n            std::vector<double> gradient(numBeams, 0.0);\n            \n            for (const auto& voxel : grid) {\n                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner12optimizeIMRTEi",
+      "line": 119,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            beamWeights[i] = 1.0 / numBeams;\n        }\n        \n        double learningRate = 0.01;\n        \n        for (int iter = 0; iter < maxIterations; iter++) {\n            // Calculate dose with current weights\n            for (int i = 0; i < numBeams; i++) {\n                beams[i].weight = beamWeights[i];\n            }\n            calculateDoseDistribution();\n            \n            // Compute objective function and gradient\n            double objective = 0.0;\n            std::vector<double> gradient(numBeams, 0.0);\n            \n            for (const auto& voxel : grid) {\n                if (voxel.organIndex < 0) continue;\n                \n                const auto& organ = organs[voxel.organIndex];\n                double error = 0.0;\n                \n                if (organ.isTarget) {\n                    // Underdose penalty\n                    if (voxel.dose < organ.minDose) {\n                        error = organ.minDose - voxel.dose;\n                    }\n                    // Overdose penalty\n                    else if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;\n                    }\n                } else {\n                    // Organ at risk: penalize any dose above threshold\n                    if (voxel.dose > organ.maxDose) {\n                        error = voxel.dose - organ.maxDose;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlannerC2Eiii",
+      "line": 42,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        grid.resize(x * y * z);\n        initializeGrid();\n    }\n    \n    void initializeGrid() {\n        for (int k = 0; k < gridZ; k++) {\n            for (int j = 0; j < gridY; j++) {\n                for (int i = 0; i < gridX; i++) {\n                    int idx = k * gridX * gridY + j * gridX + i;\n                    grid[idx].x = i * 2.0;  // 2mm voxel size\n                    grid[idx].y = j * 2.0;\n                    grid[idx].z = k * 2.0;\n                    grid[idx].dose = 0.0;\n                    grid[idx].organIndex = -1;\n                }\n            }\n        }\n    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlannerC2Eiii",
+      "line": 43,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        initializeGrid();\n    }\n    \n    void initializeGrid() {\n        for (int k = 0; k < gridZ; k++) {\n            for (int j = 0; j < gridY; j++) {\n                for (int i = 0; i < gridX; i++) {\n                    int idx = k * gridX * gridY + j * gridX + i;\n                    grid[idx].x = i * 2.0;  // 2mm voxel size\n                    grid[idx].y = j * 2.0;\n                    grid[idx].z = k * 2.0;\n                    grid[idx].dose = 0.0;\n                    grid[idx].organIndex = -1;\n                }\n            }\n        }\n    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlannerC2Eiii",
+      "line": 44,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void initializeGrid() {\n        for (int k = 0; k < gridZ; k++) {\n            for (int j = 0; j < gridY; j++) {\n                for (int i = 0; i < gridX; i++) {\n                    int idx = k * gridX * gridY + j * gridX + i;\n                    grid[idx].x = i * 2.0;  // 2mm voxel size\n                    grid[idx].y = j * 2.0;\n                    grid[idx].z = k * 2.0;\n                    grid[idx].dose = 0.0;\n                    grid[idx].organIndex = -1;\n                }\n            }\n        }\n    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)\n        double sourceDistance = 1000.0;  // 100cm SAD",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlannerC2Eiii",
+      "line": 42,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        grid.resize(x * y * z);\n        initializeGrid();\n    }\n    \n    void initializeGrid() {\n        for (int k = 0; k < gridZ; k++) {\n            for (int j = 0; j < gridY; j++) {\n                for (int i = 0; i < gridX; i++) {\n                    int idx = k * gridX * gridY + j * gridX + i;\n                    grid[idx].x = i * 2.0;  // 2mm voxel size\n                    grid[idx].y = j * 2.0;\n                    grid[idx].z = k * 2.0;\n                    grid[idx].dose = 0.0;\n                    grid[idx].organIndex = -1;\n                }\n            }\n        }\n    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlannerC2Eiii",
+      "line": 43,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        initializeGrid();\n    }\n    \n    void initializeGrid() {\n        for (int k = 0; k < gridZ; k++) {\n            for (int j = 0; j < gridY; j++) {\n                for (int i = 0; i < gridX; i++) {\n                    int idx = k * gridX * gridY + j * gridX + i;\n                    grid[idx].x = i * 2.0;  // 2mm voxel size\n                    grid[idx].y = j * 2.0;\n                    grid[idx].z = k * 2.0;\n                    grid[idx].dose = 0.0;\n                    grid[idx].organIndex = -1;\n                }\n            }\n        }\n    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner25calculateDoseDistributionEv",
+      "line": 59,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    }\n    \n    // Pencil beam dose calculation\n    void calculateDoseDistribution() {\n        // Reset doses\n        for (auto& voxel : grid) {\n            voxel.dose = 0.0;\n        }\n        \n        // Calculate contribution from each beam\n        for (const auto& beam : beams) {\n            calculateBeamDose(beam);\n        }\n    }\n    \n    void calculateBeamDose(const Beam& beam) {\n        double angleRad = beam.angle * M_PI / 180.0;\n        \n        // Beam source position (isocenter at origin)\n        double sourceDistance = 1000.0;  // 100cm SAD\n        double sourceX = sourceDistance * std::sin(angleRad);\n        double sourceZ = sourceDistance * std::cos(angleRad);\n        \n        // For each voxel, calculate dose contribution\n        for (auto& voxel : grid) {\n            // Ray from source through voxel\n            double dx = voxel.x - sourceX;\n            double dy = voxel.y;\n            double dz = voxel.z - sourceZ;\n            double distance = std::sqrt(dx*dx + dy*dy + dz*dz);\n            \n            // Inverse square law\n            double inverseSquare = (sourceDistance * sourceDistance) / \n                                  (distance * distance);\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner25calculateDoseDistributionEv",
+      "line": 78,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        double sourceDistance = 1000.0;  // 100cm SAD\n        double sourceX = sourceDistance * std::sin(angleRad);\n        double sourceZ = sourceDistance * std::cos(angleRad);\n        \n        // For each voxel, calculate dose contribution\n        for (auto& voxel : grid) {\n            // Ray from source through voxel\n            double dx = voxel.x - sourceX;\n            double dy = voxel.y;\n            double dz = voxel.z - sourceZ;\n            double distance = std::sqrt(dx*dx + dy*dy + dz*dz);\n            \n            // Inverse square law\n            double inverseSquare = (sourceDistance * sourceDistance) / \n                                  (distance * distance);\n            \n            // Depth in tissue\n            double depth = distance - sourceDistance;\n            \n            // Tissue absorption (simplified exponential)\n            double attenuation = std::exp(-0.05 * depth);\n            \n            // Radial fall-off\n            double lateral = std::sqrt(dx*dx + dy*dy);\n            double radialFalloff = std::exp(-lateral * lateral / (50.0 * 50.0));\n            \n            // Total dose\n            double dose = beam.weight * beam.intensity * \n                         inverseSquare * attenuation * radialFalloff;\n            \n            voxel.dose += dose;\n        }\n    }\n    \n    // Intensity Modulated Radiation Therapy (IMRT) optimization",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/radiotherapy_planning.cpp",
+      "function": "_ZN19RadiotherapyPlanner25calculateDoseDistributionEv",
+      "line": 78,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        double sourceDistance = 1000.0;  // 100cm SAD\n        double sourceX = sourceDistance * std::sin(angleRad);\n        double sourceZ = sourceDistance * std::cos(angleRad);\n        \n        // For each voxel, calculate dose contribution\n        for (auto& voxel : grid) {\n            // Ray from source through voxel\n            double dx = voxel.x - sourceX;\n            double dy = voxel.y;\n            double dz = voxel.z - sourceZ;\n            double distance = std::sqrt(dx*dx + dy*dy + dz*dz);\n            \n            // Inverse square law\n            double inverseSquare = (sourceDistance * sourceDistance) / \n                                  (distance * distance);\n            \n            // Depth in tissue\n            double depth = distance - sourceDistance;\n            \n            // Tissue absorption (simplified exponential)\n            double attenuation = std::exp(-0.05 * depth);\n            \n            // Radial fall-off\n            double lateral = std::sqrt(dx*dx + dy*dy);\n            double radialFalloff = std::exp(-lateral * lateral / (50.0 * 50.0));\n            \n            // Total dose\n            double dose = beam.weight * beam.intensity * \n                         inverseSquare * attenuation * radialFalloff;\n            \n            voxel.dose += dose;\n        }\n    }\n    \n    // Intensity Modulated Radiation Therapy (IMRT) optimization",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    }
+  ]
+}

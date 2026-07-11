@@ -1,0 +1,295 @@
+{
+  "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+    "llvm_initial": 16,
+    "llvm_sys_noise": 0,
+    "llvm_project": 16,
+    "after_filter": 6,
+    "ai_batches": 1,
+    "ai_results": 6,
+    "omp_verified": 0,
+    "total_ms": 959.9,
+    "llvm_ms": 346.9
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid propagateSeismicWaves(double* displacement, double* velocity, double* stress,\n                          double* density, double* elastic_modulus,\n                          int nx, int ny, int nz, double dt, double dx, int timesteps) {\n    for (int t = 0; t < timesteps; t++) {\n        // Update stress\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double strain_x = (displacement[(i+1)*ny*nz+j*nz+k] - \n                                     displacement[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                    double strain_y = (displacement[i*ny*nz+(j+1)*nz+k] - \n                                     displacement[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                    double strain_z = (displacement[i*ny*nz+j*nz+(k+1)] - \n                                     displacement[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n                    \n                    stress[idx] = elastic_modulus[idx] * (strain_x + strain_y + strain_z);\n                }\n            }\n        }\n        \n        // Update velocity\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double stress_grad = (stress[(i+1)*ny*nz+j*nz+k] - \n                                        stress[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                    \n                    velocity[idx] += dt * stress_grad / density[idx];\n                }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 28,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 12,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                          int nx, int ny, int nz, double dt, double dx, int timesteps) {\n    for (int t = 0; t < timesteps; t++) {\n        // Update stress\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double strain_x = (displacement[(i+1)*ny*nz+j*nz+k] - \n                                     displacement[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                    double strain_y = (displacement[i*ny*nz+(j+1)*nz+k] - \n                                     displacement[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                    double strain_z = (displacement[i*ny*nz+j*nz+(k+1)] - \n                                     displacement[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n                    \n                    stress[idx] = elastic_modulus[idx] * (strain_x + strain_y + strain_z);\n                }\n            }\n        }\n        \n        // Update velocity\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double stress_grad = (stress[(i+1)*ny*nz+j*nz+k] - \n                                        stress[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                    \n                    velocity[idx] += dt * stress_grad / density[idx];\n                }\n            }\n        }\n        \n        // Update displacement"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 42,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                }\n            }\n        }\n        \n        // Update displacement\n        for (int i = 0; i < nx*ny*nz; i++) {\n            displacement[i] += dt * velocity[i];\n        }\n    }\n}\n\nint main() {\n    const int nx = 200, ny = 200, nz = 100;\n    std::vector<double> displacement(nx*ny*nz, 0);\n    std::vector<double> velocity(nx*ny*nz, 0);\n    std::vector<double> stress(nx*ny*nz, 0);\n    std::vector<double> density(nx*ny*nz, 2500.0);\n    std::vector<double> elastic_modulus(nx*ny*nz, 5e10);\n    \n    propagateSeismicWaves(displacement.data(), velocity.data(), stress.data(),\n                         density.data(), elastic_modulus.data(),\n                         nx, ny, nz, 0.0001, 10.0, 5000);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 29,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 30,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 28,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 29,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 30,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        }\n        \n        // Update velocity\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double stress_grad = (stress[(i+1)*ny*nz+j*nz+k] - \n                                        stress[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                    \n                    velocity[idx] += dt * stress_grad / density[idx];\n                }\n            }\n        }\n        \n        // Update displacement\n        for (int i = 0; i < nx*ny*nz; i++) {\n            displacement[i] += dt * velocity[i];\n        }\n    }\n}\n\nint main() {\n    const int nx = 200, ny = 200, nz = 100;\n    std::vector<double> displacement(nx*ny*nz, 0);\n    std::vector<double> velocity(nx*ny*nz, 0);\n    std::vector<double> stress(nx*ny*nz, 0);\n    std::vector<double> density(nx*ny*nz, 2500.0);\n    std::vector<double> elastic_modulus(nx*ny*nz, 5e10);\n    \n    propagateSeismicWaves(displacement.data(), velocity.data(), stress.data(),\n                         density.data(), elastic_modulus.data(),\n                         nx, ny, nz, 0.0001, 10.0, 5000);\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid propagateSeismicWaves(double* displacement, double* velocity, double* stress,\n                          double* density, double* elastic_modulus,\n                          int nx, int ny, int nz, double dt, double dx, int timesteps) {\n    for (int t = 0; t < timesteps; t++) {\n        // Update stress\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double strain_x = (displacement[(i+1)*ny*nz+j*nz+k] - \n                                     displacement[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                    double strain_y = (displacement[i*ny*nz+(j+1)*nz+k] - \n                                     displacement[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                    double strain_z = (displacement[i*ny*nz+j*nz+(k+1)] - \n                                     displacement[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n                    \n                    stress[idx] = elastic_modulus[idx] * (strain_x + strain_y + strain_z);\n                }\n            }\n        }\n        \n        // Update velocity\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double stress_grad = (stress[(i+1)*ny*nz+j*nz+k] - \n                                        stress[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                    \n                    velocity[idx] += dt * stress_grad / density[idx];\n                }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 42,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                }\n            }\n        }\n        \n        // Update displacement\n        for (int i = 0; i < nx*ny*nz; i++) {\n            displacement[i] += dt * velocity[i];\n        }\n    }\n}\n\nint main() {\n    const int nx = 200, ny = 200, nz = 100;\n    std::vector<double> displacement(nx*ny*nz, 0);\n    std::vector<double> velocity(nx*ny*nz, 0);\n    std::vector<double> stress(nx*ny*nz, 0);\n    std::vector<double> density(nx*ny*nz, 2500.0);\n    std::vector<double> elastic_modulus(nx*ny*nz, 5e10);\n    \n    propagateSeismicWaves(displacement.data(), velocity.data(), stress.data(),\n                         density.data(), elastic_modulus.data(),\n                         nx, ny, nz, 0.0001, 10.0, 5000);\n    \n    return 0;\n}"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 12,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                          int nx, int ny, int nz, double dt, double dx, int timesteps) {\n    for (int t = 0; t < timesteps; t++) {\n        // Update stress\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double strain_x = (displacement[(i+1)*ny*nz+j*nz+k] - \n                                     displacement[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                    double strain_y = (displacement[i*ny*nz+(j+1)*nz+k] - \n                                     displacement[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                    double strain_z = (displacement[i*ny*nz+j*nz+(k+1)] - \n                                     displacement[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n                    \n                    stress[idx] = elastic_modulus[idx] * (strain_x + strain_y + strain_z);\n                }\n            }\n        }\n        \n        // Update velocity\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double stress_grad = (stress[(i+1)*ny*nz+j*nz+k] - \n                                        stress[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                    \n                    velocity[idx] += dt * stress_grad / density[idx];\n                }\n            }\n        }\n        \n        // Update displacement",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 30,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        }\n        \n        // Update velocity\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double stress_grad = (stress[(i+1)*ny*nz+j*nz+k] - \n                                        stress[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                    \n                    velocity[idx] += dt * stress_grad / density[idx];\n                }\n            }\n        }\n        \n        // Update displacement\n        for (int i = 0; i < nx*ny*nz; i++) {\n            displacement[i] += dt * velocity[i];\n        }\n    }\n}\n\nint main() {\n    const int nx = 200, ny = 200, nz = 100;\n    std::vector<double> displacement(nx*ny*nz, 0);\n    std::vector<double> velocity(nx*ny*nz, 0);\n    std::vector<double> stress(nx*ny*nz, 0);\n    std::vector<double> density(nx*ny*nz, 2500.0);\n    std::vector<double> elastic_modulus(nx*ny*nz, 5e10);\n    \n    propagateSeismicWaves(displacement.data(), velocity.data(), stress.data(),\n                         density.data(), elastic_modulus.data(),\n                         nx, ny, nz, 0.0001, 10.0, 5000);\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 42,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                }\n            }\n        }\n        \n        // Update displacement\n        for (int i = 0; i < nx*ny*nz; i++) {\n            displacement[i] += dt * velocity[i];\n        }\n    }\n}\n\nint main() {\n    const int nx = 200, ny = 200, nz = 100;\n    std::vector<double> displacement(nx*ny*nz, 0);\n    std::vector<double> velocity(nx*ny*nz, 0);\n    std::vector<double> stress(nx*ny*nz, 0);\n    std::vector<double> density(nx*ny*nz, 2500.0);\n    std::vector<double> elastic_modulus(nx*ny*nz, 5e10);\n    \n    propagateSeismicWaves(displacement.data(), velocity.data(), stress.data(),\n                         density.data(), elastic_modulus.data(),\n                         nx, ny, nz, 0.0001, 10.0, 5000);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 42,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                }\n            }\n        }\n        \n        // Update displacement\n        for (int i = 0; i < nx*ny*nz; i++) {\n            displacement[i] += dt * velocity[i];\n        }\n    }\n}\n\nint main() {\n    const int nx = 200, ny = 200, nz = 100;\n    std::vector<double> displacement(nx*ny*nz, 0);\n    std::vector<double> velocity(nx*ny*nz, 0);\n    std::vector<double> stress(nx*ny*nz, 0);\n    std::vector<double> density(nx*ny*nz, 2500.0);\n    std::vector<double> elastic_modulus(nx*ny*nz, 5e10);\n    \n    propagateSeismicWaves(displacement.data(), velocity.data(), stress.data(),\n                         density.data(), elastic_modulus.data(),\n                         nx, ny, nz, 0.0001, 10.0, 5000);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid propagateSeismicWaves(double* displacement, double* velocity, double* stress,\n                          double* density, double* elastic_modulus,\n                          int nx, int ny, int nz, double dt, double dx, int timesteps) {\n    for (int t = 0; t < timesteps; t++) {\n        // Update stress\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double strain_x = (displacement[(i+1)*ny*nz+j*nz+k] - \n                                     displacement[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                    double strain_y = (displacement[i*ny*nz+(j+1)*nz+k] - \n                                     displacement[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                    double strain_z = (displacement[i*ny*nz+j*nz+(k+1)] - \n                                     displacement[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n                    \n                    stress[idx] = elastic_modulus[idx] * (strain_x + strain_y + strain_z);\n                }\n            }\n        }\n        \n        // Update velocity\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double stress_grad = (stress[(i+1)*ny*nz+j*nz+k] - \n                                        stress[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                    \n                    velocity[idx] += dt * stress_grad / density[idx];\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/seismic_propagation.cpp",
+      "function": "_Z21propagateSeismicWavesPdS_S_S_S_iiiddi",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid propagateSeismicWaves(double* displacement, double* velocity, double* stress,\n                          double* density, double* elastic_modulus,\n                          int nx, int ny, int nz, double dt, double dx, int timesteps) {\n    for (int t = 0; t < timesteps; t++) {\n        // Update stress\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double strain_x = (displacement[(i+1)*ny*nz+j*nz+k] - \n                                     displacement[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                    double strain_y = (displacement[i*ny*nz+(j+1)*nz+k] - \n                                     displacement[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                    double strain_z = (displacement[i*ny*nz+j*nz+(k+1)] - \n                                     displacement[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n                    \n                    stress[idx] = elastic_modulus[idx] * (strain_x + strain_y + strain_z);\n                }\n            }\n        }\n        \n        // Update velocity\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double stress_grad = (stress[(i+1)*ny*nz+j*nz+k] - \n                                        stress[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                    \n                    velocity[idx] += dt * stress_grad / density[idx];\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+  "file": "sample/src/real-world/weather/air_quality_modeling.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/weather/air_quality_modeling.cpp",
+    "llvm_initial": 10,
+    "llvm_sys_noise": 0,
+    "llvm_project": 10,
+    "after_filter": 3,
+    "ai_batches": 1,
+    "ai_results": 3,
+    "omp_verified": 0,
+    "total_ms": 507.6,
+    "llvm_ms": 340.6
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/air_quality_modeling.cpp",
+      "function": "_Z18simulateAirQualityPdS_S_S_iiii",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void simulateAirQuality(double* pm25, double* wind_u, double* wind_v, double* emissions,\n                       int nx, int ny, int nz, int timesteps) {\n    const double diffusion_coef = 0.1;\n    const double decay_rate = 0.01;\n    \n    for (int t = 0; t < timesteps; t++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    // Advection by wind\n                    double advection = wind_u[idx] * (pm25[(i+1)*ny*nz+j*nz+k] - pm25[(i-1)*ny*nz+j*nz+k]) / 2.0 +\n                                      wind_v[idx] * (pm25[i*ny*nz+(j+1)*nz+k] - pm25[i*ny*nz+(j-1)*nz+k]) / 2.0;\n                    \n                    // Diffusion\n                    double diffusion = diffusion_coef * (\n                        pm25[(i-1)*ny*nz+j*nz+k] + pm25[(i+1)*ny*nz+j*nz+k] +\n                        pm25[i*ny*nz+(j-1)*nz+k] + pm25[i*ny*nz+(j+1)*nz+k] +\n                        pm25[i*ny*nz+j*nz+(k-1)] + pm25[i*ny*nz+j*nz+(k+1)] - 6*pm25[idx]\n                    );\n                    \n                    pm25[idx] += emissions[idx] - advection + diffusion - decay_rate * pm25[idx];\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100, nz = 50;\n    std::vector<double> pm25(nx*ny*nz, 10.0);\n    std::vector<double> wind_u(nx*ny*nz, 2.0);\n    std::vector<double> wind_v(nx*ny*nz, 1.0);\n    std::vector<double> emissions(nx*ny*nz, 0.5);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/air_quality_modeling.cpp",
+      "function": "_Z18simulateAirQualityPdS_S_S_iiii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/air_quality_modeling.cpp",
+      "function": "_Z18simulateAirQualityPdS_S_S_iiii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/air_quality_modeling.cpp",
+      "function": "_Z18simulateAirQualityPdS_S_S_iiii",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void simulateAirQuality(double* pm25, double* wind_u, double* wind_v, double* emissions,\n                       int nx, int ny, int nz, int timesteps) {\n    const double diffusion_coef = 0.1;\n    const double decay_rate = 0.01;\n    \n    for (int t = 0; t < timesteps; t++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    // Advection by wind\n                    double advection = wind_u[idx] * (pm25[(i+1)*ny*nz+j*nz+k] - pm25[(i-1)*ny*nz+j*nz+k]) / 2.0 +\n                                      wind_v[idx] * (pm25[i*ny*nz+(j+1)*nz+k] - pm25[i*ny*nz+(j-1)*nz+k]) / 2.0;\n                    \n                    // Diffusion\n                    double diffusion = diffusion_coef * (\n                        pm25[(i-1)*ny*nz+j*nz+k] + pm25[(i+1)*ny*nz+j*nz+k] +\n                        pm25[i*ny*nz+(j-1)*nz+k] + pm25[i*ny*nz+(j+1)*nz+k] +\n                        pm25[i*ny*nz+j*nz+(k-1)] + pm25[i*ny*nz+j*nz+(k+1)] - 6*pm25[idx]\n                    );\n                    \n                    pm25[idx] += emissions[idx] - advection + diffusion - decay_rate * pm25[idx];\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100, nz = 50;\n    std::vector<double> pm25(nx*ny*nz, 10.0);\n    std::vector<double> wind_u(nx*ny*nz, 2.0);\n    std::vector<double> wind_v(nx*ny*nz, 1.0);\n    std::vector<double> emissions(nx*ny*nz, 0.5);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/air_quality_modeling.cpp",
+      "function": "_Z18simulateAirQualityPdS_S_S_iiii",
+      "line": 13,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    const double decay_rate = 0.01;\n    \n    for (int t = 0; t < timesteps; t++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    // Advection by wind\n                    double advection = wind_u[idx] * (pm25[(i+1)*ny*nz+j*nz+k] - pm25[(i-1)*ny*nz+j*nz+k]) / 2.0 +\n                                      wind_v[idx] * (pm25[i*ny*nz+(j+1)*nz+k] - pm25[i*ny*nz+(j-1)*nz+k]) / 2.0;\n                    \n                    // Diffusion\n                    double diffusion = diffusion_coef * (\n                        pm25[(i-1)*ny*nz+j*nz+k] + pm25[(i+1)*ny*nz+j*nz+k] +\n                        pm25[i*ny*nz+(j-1)*nz+k] + pm25[i*ny*nz+(j+1)*nz+k] +\n                        pm25[i*ny*nz+j*nz+(k-1)] + pm25[i*ny*nz+j*nz+(k+1)] - 6*pm25[idx]\n                    );\n                    \n                    pm25[idx] += emissions[idx] - advection + diffusion - decay_rate * pm25[idx];\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100, nz = 50;\n    std::vector<double> pm25(nx*ny*nz, 10.0);\n    std::vector<double> wind_u(nx*ny*nz, 2.0);\n    std::vector<double> wind_v(nx*ny*nz, 1.0);\n    std::vector<double> emissions(nx*ny*nz, 0.5);\n    \n    simulateAirQuality(pm25.data(), wind_u.data(), wind_v.data(), \n                      emissions.data(), nx, ny, nz, 100);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/air_quality_modeling.cpp",
+      "function": "_Z18simulateAirQualityPdS_S_S_iiii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/air_quality_modeling.cpp",
+      "function": "_Z18simulateAirQualityPdS_S_S_iiii",
+      "line": 13,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.44999999999999996
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/air_quality_modeling.cpp",
+      "function": "_Z18simulateAirQualityPdS_S_S_iiii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/air_quality_modeling.cpp",
+      "function": "_Z18simulateAirQualityPdS_S_S_iiii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/air_quality_modeling.cpp",
+      "function": "_Z18simulateAirQualityPdS_S_S_iiii",
+      "line": 13,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.44999999999999996
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/air_quality_modeling.cpp",
+      "function": "_Z18simulateAirQualityPdS_S_S_iiii",
+      "line": 13,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    const double decay_rate = 0.01;\n    \n    for (int t = 0; t < timesteps; t++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    // Advection by wind\n                    double advection = wind_u[idx] * (pm25[(i+1)*ny*nz+j*nz+k] - pm25[(i-1)*ny*nz+j*nz+k]) / 2.0 +\n                                      wind_v[idx] * (pm25[i*ny*nz+(j+1)*nz+k] - pm25[i*ny*nz+(j-1)*nz+k]) / 2.0;\n                    \n                    // Diffusion\n                    double diffusion = diffusion_coef * (\n                        pm25[(i-1)*ny*nz+j*nz+k] + pm25[(i+1)*ny*nz+j*nz+k] +\n                        pm25[i*ny*nz+(j-1)*nz+k] + pm25[i*ny*nz+(j+1)*nz+k] +\n                        pm25[i*ny*nz+j*nz+(k-1)] + pm25[i*ny*nz+j*nz+(k+1)] - 6*pm25[idx]\n                    );\n                    \n                    pm25[idx] += emissions[idx] - advection + diffusion - decay_rate * pm25[idx];\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100, nz = 50;\n    std::vector<double> pm25(nx*ny*nz, 10.0);\n    std::vector<double> wind_u(nx*ny*nz, 2.0);\n    std::vector<double> wind_v(nx*ny*nz, 1.0);\n    std::vector<double> emissions(nx*ny*nz, 0.5);\n    \n    simulateAirQuality(pm25.data(), wind_u.data(), wind_v.data(), \n                      emissions.data(), nx, ny, nz, 100);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/air_quality_modeling.cpp",
+      "function": "_Z18simulateAirQualityPdS_S_S_iiii",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void simulateAirQuality(double* pm25, double* wind_u, double* wind_v, double* emissions,\n                       int nx, int ny, int nz, int timesteps) {\n    const double diffusion_coef = 0.1;\n    const double decay_rate = 0.01;\n    \n    for (int t = 0; t < timesteps; t++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    // Advection by wind\n                    double advection = wind_u[idx] * (pm25[(i+1)*ny*nz+j*nz+k] - pm25[(i-1)*ny*nz+j*nz+k]) / 2.0 +\n                                      wind_v[idx] * (pm25[i*ny*nz+(j+1)*nz+k] - pm25[i*ny*nz+(j-1)*nz+k]) / 2.0;\n                    \n                    // Diffusion\n                    double diffusion = diffusion_coef * (\n                        pm25[(i-1)*ny*nz+j*nz+k] + pm25[(i+1)*ny*nz+j*nz+k] +\n                        pm25[i*ny*nz+(j-1)*nz+k] + pm25[i*ny*nz+(j+1)*nz+k] +\n                        pm25[i*ny*nz+j*nz+(k-1)] + pm25[i*ny*nz+j*nz+(k+1)] - 6*pm25[idx]\n                    );\n                    \n                    pm25[idx] += emissions[idx] - advection + diffusion - decay_rate * pm25[idx];\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100, nz = 50;\n    std::vector<double> pm25(nx*ny*nz, 10.0);\n    std::vector<double> wind_u(nx*ny*nz, 2.0);\n    std::vector<double> wind_v(nx*ny*nz, 1.0);\n    std::vector<double> emissions(nx*ny*nz, 0.5);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/air_quality_modeling.cpp",
+      "function": "_Z18simulateAirQualityPdS_S_S_iiii",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void simulateAirQuality(double* pm25, double* wind_u, double* wind_v, double* emissions,\n                       int nx, int ny, int nz, int timesteps) {\n    const double diffusion_coef = 0.1;\n    const double decay_rate = 0.01;\n    \n    for (int t = 0; t < timesteps; t++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    // Advection by wind\n                    double advection = wind_u[idx] * (pm25[(i+1)*ny*nz+j*nz+k] - pm25[(i-1)*ny*nz+j*nz+k]) / 2.0 +\n                                      wind_v[idx] * (pm25[i*ny*nz+(j+1)*nz+k] - pm25[i*ny*nz+(j-1)*nz+k]) / 2.0;\n                    \n                    // Diffusion\n                    double diffusion = diffusion_coef * (\n                        pm25[(i-1)*ny*nz+j*nz+k] + pm25[(i+1)*ny*nz+j*nz+k] +\n                        pm25[i*ny*nz+(j-1)*nz+k] + pm25[i*ny*nz+(j+1)*nz+k] +\n                        pm25[i*ny*nz+j*nz+(k-1)] + pm25[i*ny*nz+j*nz+(k+1)] - 6*pm25[idx]\n                    );\n                    \n                    pm25[idx] += emissions[idx] - advection + diffusion - decay_rate * pm25[idx];\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100, nz = 50;\n    std::vector<double> pm25(nx*ny*nz, 10.0);\n    std::vector<double> wind_u(nx*ny*nz, 2.0);\n    std::vector<double> wind_v(nx*ny*nz, 1.0);\n    std::vector<double> emissions(nx*ny*nz, 0.5);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

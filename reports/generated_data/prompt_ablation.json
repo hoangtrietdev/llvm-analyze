@@ -1,0 +1,74 @@
+{
+  "generated_at": "2026-07-11T13:50:12.966539Z",
+  "simulated": true,
+  "candidate_count": 393,
+  "max_samples_per_prompt": 393,
+  "prompt_variants": {
+    "P1_minimal": {
+      "label": "P1 \u2014 Minimal",
+      "rationale": "An extremely short prompt with no JSON schema and no output constraints. The LLM decides the response format freely, which is very easy to write but nearly impossible to parse reliably at scale.",
+      "metrics": {
+        "TP": 56,
+        "FP": 228,
+        "TN": 68,
+        "FN": 27,
+        "total": 379,
+        "precision": 0.1972,
+        "recall": 0.6747,
+        "f1": 0.3052,
+        "accuracy": 0.3272,
+        "specificity": 0.2297
+      }
+    },
+    "P2_structured": {
+      "label": "P2 \u2014 Structured + Schema (CURRENT)",
+      "rationale": "The current prompt in ai_analyzer.py (lines 422-471). Defines exactly four classification labels, provides a JSON schema, and requires both 'reasoning' and 'logic_issue_type' fields.",
+      "metrics": {
+        "TP": 73,
+        "FP": 276,
+        "TN": 20,
+        "FN": 10,
+        "total": 379,
+        "precision": 0.2092,
+        "recall": 0.8795,
+        "f1": 0.338,
+        "accuracy": 0.2454,
+        "specificity": 0.0676
+      }
+    },
+    "P3_fewshot_cot": {
+      "label": "P3 \u2014 Few-shot + Chain-of-Thought",
+      "rationale": "Adds two labelled examples (one parallel, one serial) and requires step-by-step reasoning before each classification decision. Improves accuracy on edge cases but at ~2x token cost.",
+      "metrics": {
+        "TP": 76,
+        "FP": 285,
+        "TN": 11,
+        "FN": 7,
+        "total": 379,
+        "precision": 0.2105,
+        "recall": 0.9157,
+        "f1": 0.3423,
+        "accuracy": 0.2296,
+        "specificity": 0.0372
+      }
+    },
+    "P4_openmp_spec": {
+      "label": "P4 \u2014 OpenMP Spec-Grounded",
+      "rationale": "Explicitly grounds the classification in OpenMP 5.2 specification rules (privatisation, reduction clauses, race conditions). Produces the highest raw accuracy but at significant token and maintenance cost.",
+      "metrics": {
+        "TP": 76,
+        "FP": 287,
+        "TN": 9,
+        "FN": 7,
+        "total": 379,
+        "precision": 0.2094,
+        "recall": 0.9157,
+        "f1": 0.3408,
+        "accuracy": 0.2243,
+        "specificity": 0.0304
+      }
+    }
+  },
+  "recommendation": "P2_structured",
+  "recommendation_rationale": "Best balance of F1, token cost, parse reliability, and output traceability. Upgrade to P3 (few-shot CoT) if system F1 drops below 0.85."
+}

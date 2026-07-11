@@ -1,0 +1,484 @@
+{
+  "file": "sample/src/real-world/finance/factor_models.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/finance/factor_models.cpp",
+    "llvm_initial": 15,
+    "llvm_sys_noise": 0,
+    "llvm_project": 15,
+    "after_filter": 15,
+    "ai_batches": 1,
+    "ai_results": 15,
+    "omp_verified": 0,
+    "total_ms": 623.4,
+    "llvm_ms": 363.8
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z24calculateFactorExposuresPdS_S_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "#include <cmath>\n\nvoid calculateFactorExposures(double* returns, double* factor_returns, \n                              double* exposures, int n_assets, int n_factors, \n                              int n_periods) {\n    for (int asset = 0; asset < n_assets; asset++) {\n        for (int factor = 0; factor < n_factors; factor++) {\n            double cov = 0.0, var = 0.0;\n            \n            for (int t = 0; t < n_periods; t++) {\n                cov += returns[asset * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n                var += factor_returns[factor * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n            }\n            \n            exposures[asset * n_factors + factor] = cov / var;\n        }\n    }\n}\n\nvoid calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z24calculateFactorExposuresPdS_S_iii",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "\nvoid calculateFactorExposures(double* returns, double* factor_returns, \n                              double* exposures, int n_assets, int n_factors, \n                              int n_periods) {\n    for (int asset = 0; asset < n_assets; asset++) {\n        for (int factor = 0; factor < n_factors; factor++) {\n            double cov = 0.0, var = 0.0;\n            \n            for (int t = 0; t < n_periods; t++) {\n                cov += returns[asset * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n                var += factor_returns[factor * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n            }\n            \n            exposures[asset * n_factors + factor] = cov / var;\n        }\n    }\n}\n\nvoid calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z24calculateFactorExposuresPdS_S_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "                              int n_periods) {\n    for (int asset = 0; asset < n_assets; asset++) {\n        for (int factor = 0; factor < n_factors; factor++) {\n            double cov = 0.0, var = 0.0;\n            \n            for (int t = 0; t < n_periods; t++) {\n                cov += returns[asset * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n                var += factor_returns[factor * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n            }\n            \n            exposures[asset * n_factors + factor] = cov / var;\n        }\n    }\n}\n\nvoid calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }\n}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z24calculateFactorExposuresPdS_S_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "#include <cmath>\n\nvoid calculateFactorExposures(double* returns, double* factor_returns, \n                              double* exposures, int n_assets, int n_factors, \n                              int n_periods) {\n    for (int asset = 0; asset < n_assets; asset++) {\n        for (int factor = 0; factor < n_factors; factor++) {\n            double cov = 0.0, var = 0.0;\n            \n            for (int t = 0; t < n_periods; t++) {\n                cov += returns[asset * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n                var += factor_returns[factor * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n            }\n            \n            exposures[asset * n_factors + factor] = cov / var;\n        }\n    }\n}\n\nvoid calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z24calculateFactorExposuresPdS_S_iii",
+      "line": 9,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\nvoid calculateFactorExposures(double* returns, double* factor_returns, \n                              double* exposures, int n_assets, int n_factors, \n                              int n_periods) {\n    for (int asset = 0; asset < n_assets; asset++) {\n        for (int factor = 0; factor < n_factors; factor++) {\n            double cov = 0.0, var = 0.0;\n            \n            for (int t = 0; t < n_periods; t++) {\n                cov += returns[asset * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n                var += factor_returns[factor * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n            }\n            \n            exposures[asset * n_factors + factor] = cov / var;\n        }\n    }\n}\n\nvoid calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z24calculateFactorExposuresPdS_S_iii",
+      "line": 12,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "                              int n_periods) {\n    for (int asset = 0; asset < n_assets; asset++) {\n        for (int factor = 0; factor < n_factors; factor++) {\n            double cov = 0.0, var = 0.0;\n            \n            for (int t = 0; t < n_periods; t++) {\n                cov += returns[asset * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n                var += factor_returns[factor * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n            }\n            \n            exposures[asset * n_factors + factor] = cov / var;\n        }\n    }\n}\n\nvoid calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }\n}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z19calculateFactorRiskPdS_S_ii",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "    }\n}\n\nvoid calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }\n}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,\n                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z19calculateFactorRiskPdS_S_ii",
+      "line": 29,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }\n}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,\n                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {\n    const int n_assets = 500, n_factors = 10, n_periods = 252;\n    \n    std::vector<double> returns(n_assets * n_periods, 0.001);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z19calculateFactorRiskPdS_S_ii",
+      "line": 26,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "    }\n}\n\nvoid calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }\n}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,\n                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z19calculateFactorRiskPdS_S_ii",
+      "line": 29,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "void calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }\n}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,\n                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {\n    const int n_assets = 500, n_factors = 10, n_periods = 252;\n    \n    std::vector<double> returns(n_assets * n_periods, 0.001);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z19calculateFactorRiskPdS_S_ii",
+      "line": 30,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }\n}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,\n                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {\n    const int n_assets = 500, n_factors = 10, n_periods = 252;\n    \n    std::vector<double> returns(n_assets * n_periods, 0.001);\n    std::vector<double> factor_returns(n_factors * n_periods, 0.0005);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z20attributePerformancePdS_S_S_S_ii",
+      "line": 44,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,\n                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {\n    const int n_assets = 500, n_factors = 10, n_periods = 252;\n    \n    std::vector<double> returns(n_assets * n_periods, 0.001);\n    std::vector<double> factor_returns(n_factors * n_periods, 0.0005);\n    std::vector<double> exposures(n_assets * n_factors);\n    std::vector<double> factor_covariance(n_factors * n_factors, 0.0001);\n    std::vector<double> asset_risk(n_assets);\n    std::vector<double> portfolio_weights(n_assets, 1.0/n_assets);\n    std::vector<double> factor_attribution(n_factors);\n    \n    calculateFactorExposures(returns.data(), factor_returns.data(), exposures.data(),\n                            n_assets, n_factors, n_periods);\n    calculateFactorRisk(exposures.data(), factor_covariance.data(), asset_risk.data(),\n                       n_assets, n_factors);\n    attributePerformance(portfolio_weights.data(), returns.data(), factor_returns.data(),\n                        exposures.data(), factor_attribution.data(), n_assets, n_factors);\n    \n    return 0;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z20attributePerformancePdS_S_S_S_ii",
+      "line": 47,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {\n    const int n_assets = 500, n_factors = 10, n_periods = 252;\n    \n    std::vector<double> returns(n_assets * n_periods, 0.001);\n    std::vector<double> factor_returns(n_factors * n_periods, 0.0005);\n    std::vector<double> exposures(n_assets * n_factors);\n    std::vector<double> factor_covariance(n_factors * n_factors, 0.0001);\n    std::vector<double> asset_risk(n_assets);\n    std::vector<double> portfolio_weights(n_assets, 1.0/n_assets);\n    std::vector<double> factor_attribution(n_factors);\n    \n    calculateFactorExposures(returns.data(), factor_returns.data(), exposures.data(),\n                            n_assets, n_factors, n_periods);\n    calculateFactorRisk(exposures.data(), factor_covariance.data(), asset_risk.data(),\n                       n_assets, n_factors);\n    attributePerformance(portfolio_weights.data(), returns.data(), factor_returns.data(),\n                        exposures.data(), factor_attribution.data(), n_assets, n_factors);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z20attributePerformancePdS_S_S_S_ii",
+      "line": 44,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,\n                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {\n    const int n_assets = 500, n_factors = 10, n_periods = 252;\n    \n    std::vector<double> returns(n_assets * n_periods, 0.001);\n    std::vector<double> factor_returns(n_factors * n_periods, 0.0005);\n    std::vector<double> exposures(n_assets * n_factors);\n    std::vector<double> factor_covariance(n_factors * n_factors, 0.0001);\n    std::vector<double> asset_risk(n_assets);\n    std::vector<double> portfolio_weights(n_assets, 1.0/n_assets);\n    std::vector<double> factor_attribution(n_factors);\n    \n    calculateFactorExposures(returns.data(), factor_returns.data(), exposures.data(),\n                            n_assets, n_factors, n_periods);\n    calculateFactorRisk(exposures.data(), factor_covariance.data(), asset_risk.data(),\n                       n_assets, n_factors);\n    attributePerformance(portfolio_weights.data(), returns.data(), factor_returns.data(),\n                        exposures.data(), factor_attribution.data(), n_assets, n_factors);\n    \n    return 0;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z20attributePerformancePdS_S_S_S_ii",
+      "line": 47,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {\n    const int n_assets = 500, n_factors = 10, n_periods = 252;\n    \n    std::vector<double> returns(n_assets * n_periods, 0.001);\n    std::vector<double> factor_returns(n_factors * n_periods, 0.0005);\n    std::vector<double> exposures(n_assets * n_factors);\n    std::vector<double> factor_covariance(n_factors * n_factors, 0.0001);\n    std::vector<double> asset_risk(n_assets);\n    std::vector<double> portfolio_weights(n_assets, 1.0/n_assets);\n    std::vector<double> factor_attribution(n_factors);\n    \n    calculateFactorExposures(returns.data(), factor_returns.data(), exposures.data(),\n                            n_assets, n_factors, n_periods);\n    calculateFactorRisk(exposures.data(), factor_covariance.data(), asset_risk.data(),\n                       n_assets, n_factors);\n    attributePerformance(portfolio_weights.data(), returns.data(), factor_returns.data(),\n                        exposures.data(), factor_attribution.data(), n_assets, n_factors);\n    \n    return 0;\n}"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z24calculateFactorExposuresPdS_S_iii",
+      "line": 9,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\nvoid calculateFactorExposures(double* returns, double* factor_returns, \n                              double* exposures, int n_assets, int n_factors, \n                              int n_periods) {\n    for (int asset = 0; asset < n_assets; asset++) {\n        for (int factor = 0; factor < n_factors; factor++) {\n            double cov = 0.0, var = 0.0;\n            \n            for (int t = 0; t < n_periods; t++) {\n                cov += returns[asset * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n                var += factor_returns[factor * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n            }\n            \n            exposures[asset * n_factors + factor] = cov / var;\n        }\n    }\n}\n\nvoid calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z19calculateFactorRiskPdS_S_ii",
+      "line": 29,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }\n}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,\n                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {\n    const int n_assets = 500, n_factors = 10, n_periods = 252;\n    \n    std::vector<double> returns(n_assets * n_periods, 0.001);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z20attributePerformancePdS_S_S_S_ii",
+      "line": 47,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {\n    const int n_assets = 500, n_factors = 10, n_periods = 252;\n    \n    std::vector<double> returns(n_assets * n_periods, 0.001);\n    std::vector<double> factor_returns(n_factors * n_periods, 0.0005);\n    std::vector<double> exposures(n_assets * n_factors);\n    std::vector<double> factor_covariance(n_factors * n_factors, 0.0001);\n    std::vector<double> asset_risk(n_assets);\n    std::vector<double> portfolio_weights(n_assets, 1.0/n_assets);\n    std::vector<double> factor_attribution(n_factors);\n    \n    calculateFactorExposures(returns.data(), factor_returns.data(), exposures.data(),\n                            n_assets, n_factors, n_periods);\n    calculateFactorRisk(exposures.data(), factor_covariance.data(), asset_risk.data(),\n                       n_assets, n_factors);\n    attributePerformance(portfolio_weights.data(), returns.data(), factor_returns.data(),\n                        exposures.data(), factor_attribution.data(), n_assets, n_factors);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z19calculateFactorRiskPdS_S_ii",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "    }\n}\n\nvoid calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }\n}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,\n                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z19calculateFactorRiskPdS_S_ii",
+      "line": 29,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "void calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }\n}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,\n                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {\n    const int n_assets = 500, n_factors = 10, n_periods = 252;\n    \n    std::vector<double> returns(n_assets * n_periods, 0.001);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z20attributePerformancePdS_S_S_S_ii",
+      "line": 44,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,\n                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {\n    const int n_assets = 500, n_factors = 10, n_periods = 252;\n    \n    std::vector<double> returns(n_assets * n_periods, 0.001);\n    std::vector<double> factor_returns(n_factors * n_periods, 0.0005);\n    std::vector<double> exposures(n_assets * n_factors);\n    std::vector<double> factor_covariance(n_factors * n_factors, 0.0001);\n    std::vector<double> asset_risk(n_assets);\n    std::vector<double> portfolio_weights(n_assets, 1.0/n_assets);\n    std::vector<double> factor_attribution(n_factors);\n    \n    calculateFactorExposures(returns.data(), factor_returns.data(), exposures.data(),\n                            n_assets, n_factors, n_periods);\n    calculateFactorRisk(exposures.data(), factor_covariance.data(), asset_risk.data(),\n                       n_assets, n_factors);\n    attributePerformance(portfolio_weights.data(), returns.data(), factor_returns.data(),\n                        exposures.data(), factor_attribution.data(), n_assets, n_factors);\n    \n    return 0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z20attributePerformancePdS_S_S_S_ii",
+      "line": 44,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,\n                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {\n    const int n_assets = 500, n_factors = 10, n_periods = 252;\n    \n    std::vector<double> returns(n_assets * n_periods, 0.001);\n    std::vector<double> factor_returns(n_factors * n_periods, 0.0005);\n    std::vector<double> exposures(n_assets * n_factors);\n    std::vector<double> factor_covariance(n_factors * n_factors, 0.0001);\n    std::vector<double> asset_risk(n_assets);\n    std::vector<double> portfolio_weights(n_assets, 1.0/n_assets);\n    std::vector<double> factor_attribution(n_factors);\n    \n    calculateFactorExposures(returns.data(), factor_returns.data(), exposures.data(),\n                            n_assets, n_factors, n_periods);\n    calculateFactorRisk(exposures.data(), factor_covariance.data(), asset_risk.data(),\n                       n_assets, n_factors);\n    attributePerformance(portfolio_weights.data(), returns.data(), factor_returns.data(),\n                        exposures.data(), factor_attribution.data(), n_assets, n_factors);\n    \n    return 0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z19calculateFactorRiskPdS_S_ii",
+      "line": 26,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "    }\n}\n\nvoid calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }\n}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,\n                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.7000000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z19calculateFactorRiskPdS_S_ii",
+      "line": 30,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }\n}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,\n                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {\n    const int n_assets = 500, n_factors = 10, n_periods = 252;\n    \n    std::vector<double> returns(n_assets * n_periods, 0.001);\n    std::vector<double> factor_returns(n_factors * n_periods, 0.0005);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.7000000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z24calculateFactorExposuresPdS_S_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "#include <cmath>\n\nvoid calculateFactorExposures(double* returns, double* factor_returns, \n                              double* exposures, int n_assets, int n_factors, \n                              int n_periods) {\n    for (int asset = 0; asset < n_assets; asset++) {\n        for (int factor = 0; factor < n_factors; factor++) {\n            double cov = 0.0, var = 0.0;\n            \n            for (int t = 0; t < n_periods; t++) {\n                cov += returns[asset * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n                var += factor_returns[factor * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n            }\n            \n            exposures[asset * n_factors + factor] = cov / var;\n        }\n    }\n}\n\nvoid calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z24calculateFactorExposuresPdS_S_iii",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "\nvoid calculateFactorExposures(double* returns, double* factor_returns, \n                              double* exposures, int n_assets, int n_factors, \n                              int n_periods) {\n    for (int asset = 0; asset < n_assets; asset++) {\n        for (int factor = 0; factor < n_factors; factor++) {\n            double cov = 0.0, var = 0.0;\n            \n            for (int t = 0; t < n_periods; t++) {\n                cov += returns[asset * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n                var += factor_returns[factor * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n            }\n            \n            exposures[asset * n_factors + factor] = cov / var;\n        }\n    }\n}\n\nvoid calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z24calculateFactorExposuresPdS_S_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "                              int n_periods) {\n    for (int asset = 0; asset < n_assets; asset++) {\n        for (int factor = 0; factor < n_factors; factor++) {\n            double cov = 0.0, var = 0.0;\n            \n            for (int t = 0; t < n_periods; t++) {\n                cov += returns[asset * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n                var += factor_returns[factor * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n            }\n            \n            exposures[asset * n_factors + factor] = cov / var;\n        }\n    }\n}\n\nvoid calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }\n}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z24calculateFactorExposuresPdS_S_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "#include <cmath>\n\nvoid calculateFactorExposures(double* returns, double* factor_returns, \n                              double* exposures, int n_assets, int n_factors, \n                              int n_periods) {\n    for (int asset = 0; asset < n_assets; asset++) {\n        for (int factor = 0; factor < n_factors; factor++) {\n            double cov = 0.0, var = 0.0;\n            \n            for (int t = 0; t < n_periods; t++) {\n                cov += returns[asset * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n                var += factor_returns[factor * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n            }\n            \n            exposures[asset * n_factors + factor] = cov / var;\n        }\n    }\n}\n\nvoid calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z20attributePerformancePdS_S_S_S_ii",
+      "line": 47,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                         double* factor_returns, double* exposures,\n                         double* factor_attribution, int n_assets, int n_factors) {\n    for (int f = 0; f < n_factors; f++) {\n        factor_attribution[f] = 0.0;\n        \n        for (int i = 0; i < n_assets; i++) {\n            factor_attribution[f] += portfolio_weights[i] * \n                                    exposures[i * n_factors + f] *\n                                    factor_returns[f];\n        }\n    }\n}\n\nint main() {\n    const int n_assets = 500, n_factors = 10, n_periods = 252;\n    \n    std::vector<double> returns(n_assets * n_periods, 0.001);\n    std::vector<double> factor_returns(n_factors * n_periods, 0.0005);\n    std::vector<double> exposures(n_assets * n_factors);\n    std::vector<double> factor_covariance(n_factors * n_factors, 0.0001);\n    std::vector<double> asset_risk(n_assets);\n    std::vector<double> portfolio_weights(n_assets, 1.0/n_assets);\n    std::vector<double> factor_attribution(n_factors);\n    \n    calculateFactorExposures(returns.data(), factor_returns.data(), exposures.data(),\n                            n_assets, n_factors, n_periods);\n    calculateFactorRisk(exposures.data(), factor_covariance.data(), asset_risk.data(),\n                       n_assets, n_factors);\n    attributePerformance(portfolio_weights.data(), returns.data(), factor_returns.data(),\n                        exposures.data(), factor_attribution.data(), n_assets, n_factors);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/factor_models.cpp",
+      "function": "_Z24calculateFactorExposuresPdS_S_iii",
+      "line": 12,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "                              int n_periods) {\n    for (int asset = 0; asset < n_assets; asset++) {\n        for (int factor = 0; factor < n_factors; factor++) {\n            double cov = 0.0, var = 0.0;\n            \n            for (int t = 0; t < n_periods; t++) {\n                cov += returns[asset * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n                var += factor_returns[factor * n_periods + t] * \n                       factor_returns[factor * n_periods + t];\n            }\n            \n            exposures[asset * n_factors + factor] = cov / var;\n        }\n    }\n}\n\nvoid calculateFactorRisk(double* exposures, double* factor_covariance,\n                        double* asset_risk, int n_assets, int n_factors) {\n    for (int i = 0; i < n_assets; i++) {\n        asset_risk[i] = 0.0;\n        \n        for (int f1 = 0; f1 < n_factors; f1++) {\n            for (int f2 = 0; f2 < n_factors; f2++) {\n                asset_risk[i] += exposures[i * n_factors + f1] * \n                                exposures[i * n_factors + f2] *\n                                factor_covariance[f1 * n_factors + f2];\n            }\n        }\n        \n        asset_risk[i] = sqrt(asset_risk[i]);\n    }\n}\n\nvoid attributePerformance(double* portfolio_weights, double* returns,",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    }
+  ]
+}

@@ -1,0 +1,465 @@
+{
+  "file": "sample/src/real-world/ml-ai/random_forest.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/ml-ai/random_forest.cpp",
+    "llvm_initial": 44,
+    "llvm_sys_noise": 38,
+    "llvm_project": 6,
+    "after_filter": 4,
+    "ai_batches": 1,
+    "ai_results": 4,
+    "omp_verified": 0,
+    "total_ms": 631.6,
+    "llvm_ms": 435.6
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19train_random_forestRNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEEERKNS0_INS0_IdNS2_IdEEEENS2_IS9_EEEERKNS0_IiNS2_IiEEEE",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19train_random_forestRNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEEERKNS0_INS0_IdNS2_IdEEEENS2_IS9_EEEERKNS0_IiNS2_IiEEEE",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_Z19train_random_forestRNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEEERKNS0_INS0_IdNS2_IdEEEENS2_IS9_EEEERKNS0_IiNS2_IiEEEE",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_Z19train_random_forestRNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEEERKNS0_INS0_IdNS2_IdEEEENS2_IS9_EEEERKNS0_IiNS2_IiEEEE",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/random_forest.cpp",
+      "function": "_Z19train_random_forestRNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEEERKNS0_INS0_IdNS2_IdEEEENS2_IS9_EEEERKNS0_IiNS2_IiEEEE",
+      "line": 21,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                        const std::vector<std::vector<double>>& X,\n                        const std::vector<int>& y) {\n    for (int t = 0; t < NUM_TREES; t++) {\n        std::vector<TreeNode> tree;\n        \n        for (int depth = 0; depth < MAX_DEPTH; depth++) {\n            int feature = rand() % X[0].size();\n            double threshold = static_cast<double>(rand()) / RAND_MAX;\n            \n            tree.push_back({feature, threshold, -1, -1, 0.0});\n        }\n        \n        forest.push_back(tree);\n    }\n}\n\nint predict(const std::vector<std::vector<TreeNode>>& forest,\n           const std::vector<double>& x) {\n    std::vector<int> votes(10, 0);\n    \n    for (const auto& tree : forest) {\n        int node = 0;\n        while (node != -1) {\n            if (tree[node].left_child == -1) {\n                votes[static_cast<int>(tree[node].value)]++;\n                break;\n            }\n            \n            if (x[tree[node].feature] < tree[node].threshold) {\n                node = tree[node].left_child;\n            } else {\n                node = tree[node].right_child;\n            }\n        }\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19train_random_forestRNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEEERKNS0_INS0_IdNS2_IdEEEENS2_IS9_EEEERKNS0_IiNS2_IiEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/random_forest.cpp",
+      "function": "_Z19train_random_forestRNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEEERKNS0_INS0_IdNS2_IdEEEENS2_IS9_EEEERKNS0_IiNS2_IiEEEE",
+      "line": 18,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19train_random_forestRNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEEERKNS0_INS0_IdNS2_IdEEEENS2_IS9_EEEERKNS0_IiNS2_IiEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEE9push_backB8ne210101ERKS4_",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEE9push_backB8ne210101ERKS4_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEE9push_backB8ne210101ERKS4_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEE9push_backB8ne210101ERKS4_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/random_forest.cpp",
+      "function": "_Z7predictRKNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEEERKNS0_IdNS2_IdEEEE",
+      "line": 36,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/max_element.h",
+      "function": "_Z7predictRKNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEEERKNS0_IdNS2_IdEEEE",
+      "line": 31,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/ml-ai/random_forest.cpp",
+      "function": "_Z7predictRKNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEEERKNS0_IdNS2_IdEEEE",
+      "line": 39,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<int> votes(10, 0);\n    \n    for (const auto& tree : forest) {\n        int node = 0;\n        while (node != -1) {\n            if (tree[node].left_child == -1) {\n                votes[static_cast<int>(tree[node].value)]++;\n                break;\n            }\n            \n            if (x[tree[node].feature] < tree[node].threshold) {\n                node = tree[node].left_child;\n            } else {\n                node = tree[node].right_child;\n            }\n        }\n    }\n    \n    return std::max_element(votes.begin(), votes.end()) - votes.begin();\n}\n\nint main() {\n    std::vector<std::vector<TreeNode>> forest;\n    std::vector<std::vector<double>> X;\n    std::vector<int> y;\n    \n    train_random_forest(forest, X, y);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/ml-ai/random_forest.cpp",
+      "function": "_Z7predictRKNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEEERKNS0_IdNS2_IdEEEE",
+      "line": 38,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "           const std::vector<double>& x) {\n    std::vector<int> votes(10, 0);\n    \n    for (const auto& tree : forest) {\n        int node = 0;\n        while (node != -1) {\n            if (tree[node].left_child == -1) {\n                votes[static_cast<int>(tree[node].value)]++;\n                break;\n            }\n            \n            if (x[tree[node].feature] < tree[node].threshold) {\n                node = tree[node].left_child;\n            } else {\n                node = tree[node].right_child;\n            }\n        }\n    }\n    \n    return std::max_element(votes.begin(), votes.end()) - votes.begin();\n}\n\nint main() {\n    std::vector<std::vector<TreeNode>> forest;\n    std::vector<std::vector<double>> X;\n    std::vector<int> y;\n    \n    train_random_forest(forest, X, y);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/ml-ai/random_forest.cpp",
+      "function": "_Z7predictRKNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEEERKNS0_IdNS2_IdEEEE",
+      "line": 36,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\nint predict(const std::vector<std::vector<TreeNode>>& forest,\n           const std::vector<double>& x) {\n    std::vector<int> votes(10, 0);\n    \n    for (const auto& tree : forest) {\n        int node = 0;\n        while (node != -1) {\n            if (tree[node].left_child == -1) {\n                votes[static_cast<int>(tree[node].value)]++;\n                break;\n            }\n            \n            if (x[tree[node].feature] < tree[node].threshold) {\n                node = tree[node].left_child;\n            } else {\n                node = tree[node].right_child;\n            }\n        }\n    }\n    \n    return std::max_element(votes.begin(), votes.end()) - votes.begin();\n}\n\nint main() {\n    std::vector<std::vector<TreeNode>> forest;\n    std::vector<std::vector<double>> X;\n    std::vector<int> y;\n    \n    train_random_forest(forest, X, y);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEE24__emplace_back_slow_pathIJRKS4_EEEPS4_DpOT_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEE24__emplace_back_slow_pathIJRKS4_EEEPS4_DpOT_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEE24__emplace_back_slow_pathIJRKS4_EEEPS4_DpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEE24__emplace_back_slow_pathIJRKS4_EEEPS4_DpOT_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEE24__emplace_back_slow_pathIJRKS4_EEEPS4_DpOT_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEE24__emplace_back_slow_pathIJRKS4_EEEPS4_DpOT_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEE24__emplace_back_slow_pathIJRKS4_EEEPS4_DpOT_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorI8TreeNodeNS_9allocatorIS2_EEEERNS3_IS5_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorI8TreeNodeNS_9allocatorIS2_EEEERNS3_IS5_EEED1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorI8TreeNodeNS_9allocatorIS2_EEEERNS3_IS5_EEED1Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorI8TreeNodeNS_9allocatorIS2_EEEERNS3_IS5_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/ml-ai/random_forest.cpp",
+      "function": "_Z7predictRKNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEEERKNS0_IdNS2_IdEEEE",
+      "line": 39,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<int> votes(10, 0);\n    \n    for (const auto& tree : forest) {\n        int node = 0;\n        while (node != -1) {\n            if (tree[node].left_child == -1) {\n                votes[static_cast<int>(tree[node].value)]++;\n                break;\n            }\n            \n            if (x[tree[node].feature] < tree[node].threshold) {\n                node = tree[node].left_child;\n            } else {\n                node = tree[node].right_child;\n            }\n        }\n    }\n    \n    return std::max_element(votes.begin(), votes.end()) - votes.begin();\n}\n\nint main() {\n    std::vector<std::vector<TreeNode>> forest;\n    std::vector<std::vector<double>> X;\n    std::vector<int> y;\n    \n    train_random_forest(forest, X, y);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/ml-ai/random_forest.cpp",
+      "function": "_Z7predictRKNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEEERKNS0_IdNS2_IdEEEE",
+      "line": 38,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "           const std::vector<double>& x) {\n    std::vector<int> votes(10, 0);\n    \n    for (const auto& tree : forest) {\n        int node = 0;\n        while (node != -1) {\n            if (tree[node].left_child == -1) {\n                votes[static_cast<int>(tree[node].value)]++;\n                break;\n            }\n            \n            if (x[tree[node].feature] < tree[node].threshold) {\n                node = tree[node].left_child;\n            } else {\n                node = tree[node].right_child;\n            }\n        }\n    }\n    \n    return std::max_element(votes.begin(), votes.end()) - votes.begin();\n}\n\nint main() {\n    std::vector<std::vector<TreeNode>> forest;\n    std::vector<std::vector<double>> X;\n    std::vector<int> y;\n    \n    train_random_forest(forest, X, y);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/ml-ai/random_forest.cpp",
+      "function": "_Z7predictRKNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEEERKNS0_IdNS2_IdEEEE",
+      "line": 36,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\nint predict(const std::vector<std::vector<TreeNode>>& forest,\n           const std::vector<double>& x) {\n    std::vector<int> votes(10, 0);\n    \n    for (const auto& tree : forest) {\n        int node = 0;\n        while (node != -1) {\n            if (tree[node].left_child == -1) {\n                votes[static_cast<int>(tree[node].value)]++;\n                break;\n            }\n            \n            if (x[tree[node].feature] < tree[node].threshold) {\n                node = tree[node].left_child;\n            } else {\n                node = tree[node].right_child;\n            }\n        }\n    }\n    \n    return std::max_element(votes.begin(), votes.end()) - votes.begin();\n}\n\nint main() {\n    std::vector<std::vector<TreeNode>> forest;\n    std::vector<std::vector<double>> X;\n    std::vector<int> y;\n    \n    train_random_forest(forest, X, y);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/random_forest.cpp",
+      "function": "_Z19train_random_forestRNSt3__16vectorINS0_I8TreeNodeNS_9allocatorIS1_EEEENS2_IS4_EEEERKNS0_INS0_IdNS2_IdEEEENS2_IS9_EEEERKNS0_IiNS2_IiEEEE",
+      "line": 21,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                        const std::vector<std::vector<double>>& X,\n                        const std::vector<int>& y) {\n    for (int t = 0; t < NUM_TREES; t++) {\n        std::vector<TreeNode> tree;\n        \n        for (int depth = 0; depth < MAX_DEPTH; depth++) {\n            int feature = rand() % X[0].size();\n            double threshold = static_cast<double>(rand()) / RAND_MAX;\n            \n            tree.push_back({feature, threshold, -1, -1, 0.0});\n        }\n        \n        forest.push_back(tree);\n    }\n}\n\nint predict(const std::vector<std::vector<TreeNode>>& forest,\n           const std::vector<double>& x) {\n    std::vector<int> votes(10, 0);\n    \n    for (const auto& tree : forest) {\n        int node = 0;\n        while (node != -1) {\n            if (tree[node].left_child == -1) {\n                votes[static_cast<int>(tree[node].value)]++;\n                break;\n            }\n            \n            if (x[tree[node].feature] < tree[node].threshold) {\n                node = tree[node].left_child;\n            } else {\n                node = tree[node].right_child;\n            }\n        }\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

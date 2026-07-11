@@ -1,0 +1,1140 @@
+{
+  "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+    "llvm_initial": 90,
+    "llvm_sys_noise": 63,
+    "llvm_project": 27,
+    "after_filter": 17,
+    "ai_batches": 2,
+    "ai_results": 17,
+    "omp_verified": 0,
+    "total_ms": 4006.4,
+    "llvm_ms": 526.2
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator14run_simulationEi",
+      "line": 163,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n        }\n    }\n    \n    void run_simulation(int days) {\n        for (int day = 0; day < days; day++) {\n            current_day = day;\n            update_spatial_grid();\n            simulate_transmission();\n            update_disease_progression();\n            simulate_movement();\n        }\n    }\n};\n\nint main() {\n    EpidemicSimulator sim;\n    sim.run_simulation(365);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator14run_simulationEi",
+      "line": 66,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator14run_simulationEi",
+      "line": 73,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator14run_simulationEi",
+      "line": 76,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Count infected in each cell\n        for (const auto& person : population) {\n            int gx = static_cast<int>(person.x);\n            int gy = static_cast<int>(person.y);\n            if (gx >= 0 && gx < GRID_SIZE && gy >= 0 && gy < GRID_SIZE) {\n                if (person.status == INFECTED) {\n                    spatial_grid[gx][gy]++;\n                }\n            }\n        }\n    }\n    \n    void simulate_transmission() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        std::vector<int> new_infections;\n        \n        for (int i = 0; i < POPULATION_SIZE; i++) {\n            if (population[i].status != SUSCEPTIBLE) continue;\n            \n            int gx = static_cast<int>(population[i].x);\n            int gy = static_cast<int>(population[i].y);\n            \n            // Count nearby infected\n            int nearby_infected = 0;\n            for (int dx = -2; dx <= 2; dx++) {\n                for (int dy = -2; dy <= 2; dy++) {\n                    int nx = gx + dx;\n                    int ny = gy + dy;\n                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {\n                        nearby_infected += spatial_grid[nx][ny];\n                    }\n                }\n            }\n            "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator14run_simulationEi",
+      "line": 77,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        // Count infected in each cell\n        for (const auto& person : population) {\n            int gx = static_cast<int>(person.x);\n            int gy = static_cast<int>(person.y);\n            if (gx >= 0 && gx < GRID_SIZE && gy >= 0 && gy < GRID_SIZE) {\n                if (person.status == INFECTED) {\n                    spatial_grid[gx][gy]++;\n                }\n            }\n        }\n    }\n    \n    void simulate_transmission() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        std::vector<int> new_infections;\n        \n        for (int i = 0; i < POPULATION_SIZE; i++) {\n            if (population[i].status != SUSCEPTIBLE) continue;\n            \n            int gx = static_cast<int>(population[i].x);\n            int gy = static_cast<int>(population[i].y);\n            \n            // Count nearby infected\n            int nearby_infected = 0;\n            for (int dx = -2; dx <= 2; dx++) {\n                for (int dy = -2; dy <= 2; dy++) {\n                    int nx = gx + dx;\n                    int ny = gy + dy;\n                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {\n                        nearby_infected += spatial_grid[nx][ny];\n                    }\n                }\n            }\n            \n            // Transmission probability based on exposure"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator14run_simulationEi",
+      "line": 73,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                spatial_grid[i][j] = 0;\n            }\n        }\n        \n        // Count infected in each cell\n        for (const auto& person : population) {\n            int gx = static_cast<int>(person.x);\n            int gy = static_cast<int>(person.y);\n            if (gx >= 0 && gx < GRID_SIZE && gy >= 0 && gy < GRID_SIZE) {\n                if (person.status == INFECTED) {\n                    spatial_grid[gx][gy]++;\n                }\n            }\n        }\n    }\n    \n    void simulate_transmission() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        std::vector<int> new_infections;\n        \n        for (int i = 0; i < POPULATION_SIZE; i++) {\n            if (population[i].status != SUSCEPTIBLE) continue;\n            \n            int gx = static_cast<int>(population[i].x);\n            int gy = static_cast<int>(population[i].y);\n            \n            // Count nearby infected\n            int nearby_infected = 0;\n            for (int dx = -2; dx <= 2; dx++) {\n                for (int dy = -2; dy <= 2; dy++) {\n                    int nx = gx + dx;\n                    int ny = gy + dy;\n                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {\n                        nearby_infected += spatial_grid[nx][ny];\n                    }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator14run_simulationEi",
+      "line": 150,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator14run_simulationEi",
+      "line": 151,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    void simulate_movement() {\n        std::normal_distribution<> move_dis(0.0, 5.0);\n        \n        for (auto& person : population) {\n            if (person.status != DECEASED) {\n                person.x += move_dis(gen);\n                person.y += move_dis(gen);\n                \n                // Boundary conditions\n                person.x = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.x));\n                person.y = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.y));\n            }\n        }\n    }\n    \n    void run_simulation(int days) {\n        for (int day = 0; day < days; day++) {\n            current_day = day;\n            update_spatial_grid();\n            simulate_transmission();\n            update_disease_progression();\n            simulate_movement();\n        }\n    }\n};\n\nint main() {\n    EpidemicSimulator sim;\n    sim.run_simulation(365);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator14run_simulationEi",
+      "line": 150,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    void simulate_movement() {\n        std::normal_distribution<> move_dis(0.0, 5.0);\n        \n        for (auto& person : population) {\n            if (person.status != DECEASED) {\n                person.x += move_dis(gen);\n                person.y += move_dis(gen);\n                \n                // Boundary conditions\n                person.x = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.x));\n                person.y = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.y));\n            }\n        }\n    }\n    \n    void run_simulation(int days) {\n        for (int day = 0; day < days; day++) {\n            current_day = day;\n            update_spatial_grid();\n            simulate_transmission();\n            update_disease_progression();\n            simulate_movement();\n        }\n    }\n};\n\nint main() {\n    EpidemicSimulator sim;\n    sim.run_simulation(365);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator14run_simulationEi",
+      "line": 163,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulatorD1Ev",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulatorD1Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulatorD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulatorD1Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulatorD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 1360,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 1369,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 47,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        \n        // Initialize population\n        std::uniform_real_distribution<> pos_dis(0.0, GRID_SIZE);\n        std::uniform_int_distribution<> age_dis(0, 100);\n        \n        for (int i = 0; i < POPULATION_SIZE; i++) {\n            population[i] = {\n                pos_dis(gen),\n                pos_dis(gen),\n                SUSCEPTIBLE,\n                0,\n                100,\n                age_dis(gen)\n            };\n        }\n        \n        // Initial infections\n        for (int i = 0; i < 100; i++) {\n            population[i].status = INFECTED;\n        }\n    }\n    \n    void update_spatial_grid() {\n        // Clear grid\n        for (int i = 0; i < GRID_SIZE; i++) {\n            for (int j = 0; j < GRID_SIZE; j++) {\n                spatial_grid[i][j] = 0;\n            }\n        }\n        \n        // Count infected in each cell\n        for (const auto& person : population) {\n            int gx = static_cast<int>(person.x);\n            int gy = static_cast<int>(person.y);\n            if (gx >= 0 && gx < GRID_SIZE && gy >= 0 && gy < GRID_SIZE) {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 59,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                age_dis(gen)\n            };\n        }\n        \n        // Initial infections\n        for (int i = 0; i < 100; i++) {\n            population[i].status = INFECTED;\n        }\n    }\n    \n    void update_spatial_grid() {\n        // Clear grid\n        for (int i = 0; i < GRID_SIZE; i++) {\n            for (int j = 0; j < GRID_SIZE; j++) {\n                spatial_grid[i][j] = 0;\n            }\n        }\n        \n        // Count infected in each cell\n        for (const auto& person : population) {\n            int gx = static_cast<int>(person.x);\n            int gy = static_cast<int>(person.y);\n            if (gx >= 0 && gx < GRID_SIZE && gy >= 0 && gy < GRID_SIZE) {\n                if (person.status == INFECTED) {\n                    spatial_grid[gx][gy]++;\n                }\n            }\n        }\n    }\n    \n    void simulate_transmission() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        std::vector<int> new_infections;\n        \n        for (int i = 0; i < POPULATION_SIZE; i++) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI10IndividualNS_9allocatorIS1_EEE8__appendEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI10IndividualNS_9allocatorIS1_EEE8__appendEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI10IndividualNS_9allocatorIS1_EEE8__appendEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorI10IndividualNS_9allocatorIS1_EEE8__appendEm",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorI10IndividualNS_9allocatorIS1_EEE8__appendEm",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorI10IndividualNS_9allocatorIS1_EEE8__appendEm",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 257,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIiNS_9allocatorIiEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIiNS_9allocatorIiEEEERNS2_IS4_EEED1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIiNS_9allocatorIiEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIiNS_9allocatorIiEEEERNS2_IS4_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/uniform_int_distribution.h",
+      "function": "_ZNSt3__124uniform_int_distributionIiEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEiRT_RKNS1_10param_typeE",
+      "line": 215,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/uniform_int_distribution.h",
+      "function": "_ZNSt3__124uniform_int_distributionIiEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEiRT_RKNS1_10param_typeE",
+      "line": 219,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/uniform_int_distribution.h",
+      "function": "_ZNSt3__124uniform_int_distributionIiEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEiRT_RKNS1_10param_typeE",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 119,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.4
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 89,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    void simulate_transmission() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        std::vector<int> new_infections;\n        \n        for (int i = 0; i < POPULATION_SIZE; i++) {\n            if (population[i].status != SUSCEPTIBLE) continue;\n            \n            int gx = static_cast<int>(population[i].x);\n            int gy = static_cast<int>(population[i].y);\n            \n            // Count nearby infected\n            int nearby_infected = 0;\n            for (int dx = -2; dx <= 2; dx++) {\n                for (int dy = -2; dy <= 2; dy++) {\n                    int nx = gx + dx;\n                    int ny = gy + dy;\n                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {\n                        nearby_infected += spatial_grid[nx][ny];\n                    }\n                }\n            }\n            \n            // Transmission probability based on exposure\n            double infection_prob = 1.0 - pow(1.0 - transmission_rate, nearby_infected);\n            \n            // Adjust for age and immunity\n            infection_prob *= (1.0 + population[i].age / 200.0);\n            infection_prob *= (100.0 - population[i].immunity_level) / 100.0;\n            \n            if (prob_dis(gen) < infection_prob) {\n                new_infections.push_back(i);\n            }\n        }\n        \n        // Apply new infections"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 113,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 96,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            int gx = static_cast<int>(population[i].x);\n            int gy = static_cast<int>(population[i].y);\n            \n            // Count nearby infected\n            int nearby_infected = 0;\n            for (int dx = -2; dx <= 2; dx++) {\n                for (int dy = -2; dy <= 2; dy++) {\n                    int nx = gx + dx;\n                    int ny = gy + dy;\n                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {\n                        nearby_infected += spatial_grid[nx][ny];\n                    }\n                }\n            }\n            \n            // Transmission probability based on exposure\n            double infection_prob = 1.0 - pow(1.0 - transmission_rate, nearby_infected);\n            \n            // Adjust for age and immunity\n            infection_prob *= (1.0 + population[i].age / 200.0);\n            infection_prob *= (100.0 - population[i].immunity_level) / 100.0;\n            \n            if (prob_dis(gen) < infection_prob) {\n                new_infections.push_back(i);\n            }\n        }\n        \n        // Apply new infections\n        for (int idx : new_infections) {\n            population[idx].status = INFECTED;\n            population[idx].infection_day = current_day;\n        }\n    }\n    \n    void update_disease_progression() {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            int nearby_infected = 0;\n            for (int dx = -2; dx <= 2; dx++) {\n                for (int dy = -2; dy <= 2; dy++) {\n                    int nx = gx + dx;\n                    int ny = gy + dy;\n                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {\n                        nearby_infected += spatial_grid[nx][ny];\n                    }\n                }\n            }\n            \n            // Transmission probability based on exposure\n            double infection_prob = 1.0 - pow(1.0 - transmission_rate, nearby_infected);\n            \n            // Adjust for age and immunity\n            infection_prob *= (1.0 + population[i].age / 200.0);\n            infection_prob *= (100.0 - population[i].immunity_level) / 100.0;\n            \n            if (prob_dis(gen) < infection_prob) {\n                new_infections.push_back(i);\n            }\n        }\n        \n        // Apply new infections\n        for (int idx : new_infections) {\n            population[idx].status = INFECTED;\n            population[idx].infection_day = current_day;\n        }\n    }\n    \n    void update_disease_progression() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        \n        for (auto& person : population) {\n            if (person.status == INFECTED) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 97,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            int gy = static_cast<int>(population[i].y);\n            \n            // Count nearby infected\n            int nearby_infected = 0;\n            for (int dx = -2; dx <= 2; dx++) {\n                for (int dy = -2; dy <= 2; dy++) {\n                    int nx = gx + dx;\n                    int ny = gy + dy;\n                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {\n                        nearby_infected += spatial_grid[nx][ny];\n                    }\n                }\n            }\n            \n            // Transmission probability based on exposure\n            double infection_prob = 1.0 - pow(1.0 - transmission_rate, nearby_infected);\n            \n            // Adjust for age and immunity\n            infection_prob *= (1.0 + population[i].age / 200.0);\n            infection_prob *= (100.0 - population[i].immunity_level) / 100.0;\n            \n            if (prob_dis(gen) < infection_prob) {\n                new_infections.push_back(i);\n            }\n        }\n        \n        // Apply new infections\n        for (int idx : new_infections) {\n            population[idx].status = INFECTED;\n            population[idx].infection_day = current_day;\n        }\n    }\n    \n    void update_disease_progression() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 88,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    void simulate_transmission() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        std::vector<int> new_infections;\n        \n        for (int i = 0; i < POPULATION_SIZE; i++) {\n            if (population[i].status != SUSCEPTIBLE) continue;\n            \n            int gx = static_cast<int>(population[i].x);\n            int gy = static_cast<int>(population[i].y);\n            \n            // Count nearby infected\n            int nearby_infected = 0;\n            for (int dx = -2; dx <= 2; dx++) {\n                for (int dy = -2; dy <= 2; dy++) {\n                    int nx = gx + dx;\n                    int ny = gy + dy;\n                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {\n                        nearby_infected += spatial_grid[nx][ny];\n                    }\n                }\n            }\n            \n            // Transmission probability based on exposure\n            double infection_prob = 1.0 - pow(1.0 - transmission_rate, nearby_infected);\n            \n            // Adjust for age and immunity\n            infection_prob *= (1.0 + population[i].age / 200.0);\n            infection_prob *= (100.0 - population[i].immunity_level) / 100.0;\n            \n            if (prob_dis(gen) < infection_prob) {\n                new_infections.push_back(i);\n            }\n        }\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 119,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.9800000000000001,
+      "context": "                new_infections.push_back(i);\n            }\n        }\n        \n        // Apply new infections\n        for (int idx : new_infections) {\n            population[idx].status = INFECTED;\n            population[idx].infection_day = current_day;\n        }\n    }\n    \n    void update_disease_progression() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        \n        for (auto& person : population) {\n            if (person.status == INFECTED) {\n                int days_infected = current_day - person.infection_day;\n                \n                // Recovery\n                if (days_infected > 14 && prob_dis(gen) < recovery_rate) {\n                    person.status = RECOVERED;\n                    person.immunity_level = 95;\n                }\n                \n                // Mortality (age-dependent)\n                double death_prob = mortality_rate * (1.0 + person.age / 100.0);\n                if (days_infected > 7 && prob_dis(gen) < death_prob) {\n                    person.status = DECEASED;\n                }\n            }\n        }\n    }\n    \n    void simulate_movement() {\n        std::normal_distribution<> move_dis(0.0, 5.0);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator26update_disease_progressionEv",
+      "line": 128,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator26update_disease_progressionEv",
+      "line": 129,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    void update_disease_progression() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        \n        for (auto& person : population) {\n            if (person.status == INFECTED) {\n                int days_infected = current_day - person.infection_day;\n                \n                // Recovery\n                if (days_infected > 14 && prob_dis(gen) < recovery_rate) {\n                    person.status = RECOVERED;\n                    person.immunity_level = 95;\n                }\n                \n                // Mortality (age-dependent)\n                double death_prob = mortality_rate * (1.0 + person.age / 100.0);\n                if (days_infected > 7 && prob_dis(gen) < death_prob) {\n                    person.status = DECEASED;\n                }\n            }\n        }\n    }\n    \n    void simulate_movement() {\n        std::normal_distribution<> move_dis(0.0, 5.0);\n        \n        for (auto& person : population) {\n            if (person.status != DECEASED) {\n                person.x += move_dis(gen);\n                person.y += move_dis(gen);\n                \n                // Boundary conditions\n                person.x = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.x));\n                person.y = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.y));\n            }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator26update_disease_progressionEv",
+      "line": 133,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        for (auto& person : population) {\n            if (person.status == INFECTED) {\n                int days_infected = current_day - person.infection_day;\n                \n                // Recovery\n                if (days_infected > 14 && prob_dis(gen) < recovery_rate) {\n                    person.status = RECOVERED;\n                    person.immunity_level = 95;\n                }\n                \n                // Mortality (age-dependent)\n                double death_prob = mortality_rate * (1.0 + person.age / 100.0);\n                if (days_infected > 7 && prob_dis(gen) < death_prob) {\n                    person.status = DECEASED;\n                }\n            }\n        }\n    }\n    \n    void simulate_movement() {\n        std::normal_distribution<> move_dis(0.0, 5.0);\n        \n        for (auto& person : population) {\n            if (person.status != DECEASED) {\n                person.x += move_dis(gen);\n                person.y += move_dis(gen);\n                \n                // Boundary conditions\n                person.x = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.x));\n                person.y = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.y));\n            }\n        }\n    }\n    \n    void run_simulation(int days) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator26update_disease_progressionEv",
+      "line": 133,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator26update_disease_progressionEv",
+      "line": 140,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator26update_disease_progressionEv",
+      "line": 140,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator26update_disease_progressionEv",
+      "line": 128,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    void update_disease_progression() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        \n        for (auto& person : population) {\n            if (person.status == INFECTED) {\n                int days_infected = current_day - person.infection_day;\n                \n                // Recovery\n                if (days_infected > 14 && prob_dis(gen) < recovery_rate) {\n                    person.status = RECOVERED;\n                    person.immunity_level = 95;\n                }\n                \n                // Mortality (age-dependent)\n                double death_prob = mortality_rate * (1.0 + person.age / 100.0);\n                if (days_infected > 7 && prob_dis(gen) < death_prob) {\n                    person.status = DECEASED;\n                }\n            }\n        }\n    }\n    \n    void simulate_movement() {\n        std::normal_distribution<> move_dis(0.0, 5.0);\n        \n        for (auto& person : population) {\n            if (person.status != DECEASED) {\n                person.x += move_dis(gen);\n                person.y += move_dis(gen);\n                \n                // Boundary conditions\n                person.x = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.x));\n                person.y = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.y));"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/normal_distribution.h",
+      "function": "_ZNSt3__119normal_distributionIdEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEdRT_RKNS1_10param_typeE",
+      "line": 113,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/normal_distribution.h",
+      "function": "_ZNSt3__119normal_distributionIdEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEdRT_RKNS1_10param_typeE",
+      "line": 125,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator14run_simulationEi",
+      "line": 76,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Count infected in each cell\n        for (const auto& person : population) {\n            int gx = static_cast<int>(person.x);\n            int gy = static_cast<int>(person.y);\n            if (gx >= 0 && gx < GRID_SIZE && gy >= 0 && gy < GRID_SIZE) {\n                if (person.status == INFECTED) {\n                    spatial_grid[gx][gy]++;\n                }\n            }\n        }\n    }\n    \n    void simulate_transmission() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        std::vector<int> new_infections;\n        \n        for (int i = 0; i < POPULATION_SIZE; i++) {\n            if (population[i].status != SUSCEPTIBLE) continue;\n            \n            int gx = static_cast<int>(population[i].x);\n            int gy = static_cast<int>(population[i].y);\n            \n            // Count nearby infected\n            int nearby_infected = 0;\n            for (int dx = -2; dx <= 2; dx++) {\n                for (int dy = -2; dy <= 2; dy++) {\n                    int nx = gx + dx;\n                    int ny = gy + dy;\n                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {\n                        nearby_infected += spatial_grid[nx][ny];\n                    }\n                }\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator14run_simulationEi",
+      "line": 77,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        // Count infected in each cell\n        for (const auto& person : population) {\n            int gx = static_cast<int>(person.x);\n            int gy = static_cast<int>(person.y);\n            if (gx >= 0 && gx < GRID_SIZE && gy >= 0 && gy < GRID_SIZE) {\n                if (person.status == INFECTED) {\n                    spatial_grid[gx][gy]++;\n                }\n            }\n        }\n    }\n    \n    void simulate_transmission() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        std::vector<int> new_infections;\n        \n        for (int i = 0; i < POPULATION_SIZE; i++) {\n            if (population[i].status != SUSCEPTIBLE) continue;\n            \n            int gx = static_cast<int>(population[i].x);\n            int gy = static_cast<int>(population[i].y);\n            \n            // Count nearby infected\n            int nearby_infected = 0;\n            for (int dx = -2; dx <= 2; dx++) {\n                for (int dy = -2; dy <= 2; dy++) {\n                    int nx = gx + dx;\n                    int ny = gy + dy;\n                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {\n                        nearby_infected += spatial_grid[nx][ny];\n                    }\n                }\n            }\n            \n            // Transmission probability based on exposure",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator14run_simulationEi",
+      "line": 73,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                spatial_grid[i][j] = 0;\n            }\n        }\n        \n        // Count infected in each cell\n        for (const auto& person : population) {\n            int gx = static_cast<int>(person.x);\n            int gy = static_cast<int>(person.y);\n            if (gx >= 0 && gx < GRID_SIZE && gy >= 0 && gy < GRID_SIZE) {\n                if (person.status == INFECTED) {\n                    spatial_grid[gx][gy]++;\n                }\n            }\n        }\n    }\n    \n    void simulate_transmission() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        std::vector<int> new_infections;\n        \n        for (int i = 0; i < POPULATION_SIZE; i++) {\n            if (population[i].status != SUSCEPTIBLE) continue;\n            \n            int gx = static_cast<int>(population[i].x);\n            int gy = static_cast<int>(population[i].y);\n            \n            // Count nearby infected\n            int nearby_infected = 0;\n            for (int dx = -2; dx <= 2; dx++) {\n                for (int dy = -2; dy <= 2; dy++) {\n                    int nx = gx + dx;\n                    int ny = gy + dy;\n                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {\n                        nearby_infected += spatial_grid[nx][ny];\n                    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator14run_simulationEi",
+      "line": 151,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    void simulate_movement() {\n        std::normal_distribution<> move_dis(0.0, 5.0);\n        \n        for (auto& person : population) {\n            if (person.status != DECEASED) {\n                person.x += move_dis(gen);\n                person.y += move_dis(gen);\n                \n                // Boundary conditions\n                person.x = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.x));\n                person.y = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.y));\n            }\n        }\n    }\n    \n    void run_simulation(int days) {\n        for (int day = 0; day < days; day++) {\n            current_day = day;\n            update_spatial_grid();\n            simulate_transmission();\n            update_disease_progression();\n            simulate_movement();\n        }\n    }\n};\n\nint main() {\n    EpidemicSimulator sim;\n    sim.run_simulation(365);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator14run_simulationEi",
+      "line": 150,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    void simulate_movement() {\n        std::normal_distribution<> move_dis(0.0, 5.0);\n        \n        for (auto& person : population) {\n            if (person.status != DECEASED) {\n                person.x += move_dis(gen);\n                person.y += move_dis(gen);\n                \n                // Boundary conditions\n                person.x = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.x));\n                person.y = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.y));\n            }\n        }\n    }\n    \n    void run_simulation(int days) {\n        for (int day = 0; day < days; day++) {\n            current_day = day;\n            update_spatial_grid();\n            simulate_transmission();\n            update_disease_progression();\n            simulate_movement();\n        }\n    }\n};\n\nint main() {\n    EpidemicSimulator sim;\n    sim.run_simulation(365);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 59,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                age_dis(gen)\n            };\n        }\n        \n        // Initial infections\n        for (int i = 0; i < 100; i++) {\n            population[i].status = INFECTED;\n        }\n    }\n    \n    void update_spatial_grid() {\n        // Clear grid\n        for (int i = 0; i < GRID_SIZE; i++) {\n            for (int j = 0; j < GRID_SIZE; j++) {\n                spatial_grid[i][j] = 0;\n            }\n        }\n        \n        // Count infected in each cell\n        for (const auto& person : population) {\n            int gx = static_cast<int>(person.x);\n            int gy = static_cast<int>(person.y);\n            if (gx >= 0 && gx < GRID_SIZE && gy >= 0 && gy < GRID_SIZE) {\n                if (person.status == INFECTED) {\n                    spatial_grid[gx][gy]++;\n                }\n            }\n        }\n    }\n    \n    void simulate_transmission() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        std::vector<int> new_infections;\n        \n        for (int i = 0; i < POPULATION_SIZE; i++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 89,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    void simulate_transmission() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        std::vector<int> new_infections;\n        \n        for (int i = 0; i < POPULATION_SIZE; i++) {\n            if (population[i].status != SUSCEPTIBLE) continue;\n            \n            int gx = static_cast<int>(population[i].x);\n            int gy = static_cast<int>(population[i].y);\n            \n            // Count nearby infected\n            int nearby_infected = 0;\n            for (int dx = -2; dx <= 2; dx++) {\n                for (int dy = -2; dy <= 2; dy++) {\n                    int nx = gx + dx;\n                    int ny = gy + dy;\n                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {\n                        nearby_infected += spatial_grid[nx][ny];\n                    }\n                }\n            }\n            \n            // Transmission probability based on exposure\n            double infection_prob = 1.0 - pow(1.0 - transmission_rate, nearby_infected);\n            \n            // Adjust for age and immunity\n            infection_prob *= (1.0 + population[i].age / 200.0);\n            infection_prob *= (100.0 - population[i].immunity_level) / 100.0;\n            \n            if (prob_dis(gen) < infection_prob) {\n                new_infections.push_back(i);\n            }\n        }\n        \n        // Apply new infections",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator26update_disease_progressionEv",
+      "line": 129,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    void update_disease_progression() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        \n        for (auto& person : population) {\n            if (person.status == INFECTED) {\n                int days_infected = current_day - person.infection_day;\n                \n                // Recovery\n                if (days_infected > 14 && prob_dis(gen) < recovery_rate) {\n                    person.status = RECOVERED;\n                    person.immunity_level = 95;\n                }\n                \n                // Mortality (age-dependent)\n                double death_prob = mortality_rate * (1.0 + person.age / 100.0);\n                if (days_infected > 7 && prob_dis(gen) < death_prob) {\n                    person.status = DECEASED;\n                }\n            }\n        }\n    }\n    \n    void simulate_movement() {\n        std::normal_distribution<> move_dis(0.0, 5.0);\n        \n        for (auto& person : population) {\n            if (person.status != DECEASED) {\n                person.x += move_dis(gen);\n                person.y += move_dis(gen);\n                \n                // Boundary conditions\n                person.x = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.x));\n                person.y = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.y));\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator26update_disease_progressionEv",
+      "line": 128,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    void update_disease_progression() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        \n        for (auto& person : population) {\n            if (person.status == INFECTED) {\n                int days_infected = current_day - person.infection_day;\n                \n                // Recovery\n                if (days_infected > 14 && prob_dis(gen) < recovery_rate) {\n                    person.status = RECOVERED;\n                    person.immunity_level = 95;\n                }\n                \n                // Mortality (age-dependent)\n                double death_prob = mortality_rate * (1.0 + person.age / 100.0);\n                if (days_infected > 7 && prob_dis(gen) < death_prob) {\n                    person.status = DECEASED;\n                }\n            }\n        }\n    }\n    \n    void simulate_movement() {\n        std::normal_distribution<> move_dis(0.0, 5.0);\n        \n        for (auto& person : population) {\n            if (person.status != DECEASED) {\n                person.x += move_dis(gen);\n                person.y += move_dis(gen);\n                \n                // Boundary conditions\n                person.x = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.x));\n                person.y = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.y));",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 119,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.9800000000000001,
+      "context": "                new_infections.push_back(i);\n            }\n        }\n        \n        // Apply new infections\n        for (int idx : new_infections) {\n            population[idx].status = INFECTED;\n            population[idx].infection_day = current_day;\n        }\n    }\n    \n    void update_disease_progression() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        \n        for (auto& person : population) {\n            if (person.status == INFECTED) {\n                int days_infected = current_day - person.infection_day;\n                \n                // Recovery\n                if (days_infected > 14 && prob_dis(gen) < recovery_rate) {\n                    person.status = RECOVERED;\n                    person.immunity_level = 95;\n                }\n                \n                // Mortality (age-dependent)\n                double death_prob = mortality_rate * (1.0 + person.age / 100.0);\n                if (days_infected > 7 && prob_dis(gen) < death_prob) {\n                    person.status = DECEASED;\n                }\n            }\n        }\n    }\n    \n    void simulate_movement() {\n        std::normal_distribution<> move_dis(0.0, 5.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.9800000000000001
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator26update_disease_progressionEv",
+      "line": 133,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        for (auto& person : population) {\n            if (person.status == INFECTED) {\n                int days_infected = current_day - person.infection_day;\n                \n                // Recovery\n                if (days_infected > 14 && prob_dis(gen) < recovery_rate) {\n                    person.status = RECOVERED;\n                    person.immunity_level = 95;\n                }\n                \n                // Mortality (age-dependent)\n                double death_prob = mortality_rate * (1.0 + person.age / 100.0);\n                if (days_infected > 7 && prob_dis(gen) < death_prob) {\n                    person.status = DECEASED;\n                }\n            }\n        }\n    }\n    \n    void simulate_movement() {\n        std::normal_distribution<> move_dis(0.0, 5.0);\n        \n        for (auto& person : population) {\n            if (person.status != DECEASED) {\n                person.x += move_dis(gen);\n                person.y += move_dis(gen);\n                \n                // Boundary conditions\n                person.x = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.x));\n                person.y = std::max(0.0, std::min(static_cast<double>(GRID_SIZE - 1), person.y));\n            }\n        }\n    }\n    \n    void run_simulation(int days) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulatorC2Ev",
+      "line": 47,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        \n        // Initialize population\n        std::uniform_real_distribution<> pos_dis(0.0, GRID_SIZE);\n        std::uniform_int_distribution<> age_dis(0, 100);\n        \n        for (int i = 0; i < POPULATION_SIZE; i++) {\n            population[i] = {\n                pos_dis(gen),\n                pos_dis(gen),\n                SUSCEPTIBLE,\n                0,\n                100,\n                age_dis(gen)\n            };\n        }\n        \n        // Initial infections\n        for (int i = 0; i < 100; i++) {\n            population[i].status = INFECTED;\n        }\n    }\n    \n    void update_spatial_grid() {\n        // Clear grid\n        for (int i = 0; i < GRID_SIZE; i++) {\n            for (int j = 0; j < GRID_SIZE; j++) {\n                spatial_grid[i][j] = 0;\n            }\n        }\n        \n        // Count infected in each cell\n        for (const auto& person : population) {\n            int gx = static_cast<int>(person.x);\n            int gy = static_cast<int>(person.y);\n            if (gx >= 0 && gx < GRID_SIZE && gy >= 0 && gy < GRID_SIZE) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator14run_simulationEi",
+      "line": 163,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n        }\n    }\n    \n    void run_simulation(int days) {\n        for (int day = 0; day < days; day++) {\n            current_day = day;\n            update_spatial_grid();\n            simulate_transmission();\n            update_disease_progression();\n            simulate_movement();\n        }\n    }\n};\n\nint main() {\n    EpidemicSimulator sim;\n    sim.run_simulation(365);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 96,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            int gx = static_cast<int>(population[i].x);\n            int gy = static_cast<int>(population[i].y);\n            \n            // Count nearby infected\n            int nearby_infected = 0;\n            for (int dx = -2; dx <= 2; dx++) {\n                for (int dy = -2; dy <= 2; dy++) {\n                    int nx = gx + dx;\n                    int ny = gy + dy;\n                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {\n                        nearby_infected += spatial_grid[nx][ny];\n                    }\n                }\n            }\n            \n            // Transmission probability based on exposure\n            double infection_prob = 1.0 - pow(1.0 - transmission_rate, nearby_infected);\n            \n            // Adjust for age and immunity\n            infection_prob *= (1.0 + population[i].age / 200.0);\n            infection_prob *= (100.0 - population[i].immunity_level) / 100.0;\n            \n            if (prob_dis(gen) < infection_prob) {\n                new_infections.push_back(i);\n            }\n        }\n        \n        // Apply new infections\n        for (int idx : new_infections) {\n            population[idx].status = INFECTED;\n            population[idx].infection_day = current_day;\n        }\n    }\n    \n    void update_disease_progression() {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            int nearby_infected = 0;\n            for (int dx = -2; dx <= 2; dx++) {\n                for (int dy = -2; dy <= 2; dy++) {\n                    int nx = gx + dx;\n                    int ny = gy + dy;\n                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {\n                        nearby_infected += spatial_grid[nx][ny];\n                    }\n                }\n            }\n            \n            // Transmission probability based on exposure\n            double infection_prob = 1.0 - pow(1.0 - transmission_rate, nearby_infected);\n            \n            // Adjust for age and immunity\n            infection_prob *= (1.0 + population[i].age / 200.0);\n            infection_prob *= (100.0 - population[i].immunity_level) / 100.0;\n            \n            if (prob_dis(gen) < infection_prob) {\n                new_infections.push_back(i);\n            }\n        }\n        \n        // Apply new infections\n        for (int idx : new_infections) {\n            population[idx].status = INFECTED;\n            population[idx].infection_day = current_day;\n        }\n    }\n    \n    void update_disease_progression() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        \n        for (auto& person : population) {\n            if (person.status == INFECTED) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 97,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            int gy = static_cast<int>(population[i].y);\n            \n            // Count nearby infected\n            int nearby_infected = 0;\n            for (int dx = -2; dx <= 2; dx++) {\n                for (int dy = -2; dy <= 2; dy++) {\n                    int nx = gx + dx;\n                    int ny = gy + dy;\n                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {\n                        nearby_infected += spatial_grid[nx][ny];\n                    }\n                }\n            }\n            \n            // Transmission probability based on exposure\n            double infection_prob = 1.0 - pow(1.0 - transmission_rate, nearby_infected);\n            \n            // Adjust for age and immunity\n            infection_prob *= (1.0 + population[i].age / 200.0);\n            infection_prob *= (100.0 - population[i].immunity_level) / 100.0;\n            \n            if (prob_dis(gen) < infection_prob) {\n                new_infections.push_back(i);\n            }\n        }\n        \n        // Apply new infections\n        for (int idx : new_infections) {\n            population[idx].status = INFECTED;\n            population[idx].infection_day = current_day;\n        }\n    }\n    \n    void update_disease_progression() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/epidemic_simulation.cpp",
+      "function": "_ZN17EpidemicSimulator21simulate_transmissionEv",
+      "line": 88,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    void simulate_transmission() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        std::vector<int> new_infections;\n        \n        for (int i = 0; i < POPULATION_SIZE; i++) {\n            if (population[i].status != SUSCEPTIBLE) continue;\n            \n            int gx = static_cast<int>(population[i].x);\n            int gy = static_cast<int>(population[i].y);\n            \n            // Count nearby infected\n            int nearby_infected = 0;\n            for (int dx = -2; dx <= 2; dx++) {\n                for (int dy = -2; dy <= 2; dy++) {\n                    int nx = gx + dx;\n                    int ny = gy + dy;\n                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {\n                        nearby_infected += spatial_grid[nx][ny];\n                    }\n                }\n            }\n            \n            // Transmission probability based on exposure\n            double infection_prob = 1.0 - pow(1.0 - transmission_rate, nearby_infected);\n            \n            // Adjust for age and immunity\n            infection_prob *= (1.0 + population[i].age / 200.0);\n            infection_prob *= (100.0 - population[i].immunity_level) / 100.0;\n            \n            if (prob_dis(gen) < infection_prob) {\n                new_infections.push_back(i);\n            }\n        }\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

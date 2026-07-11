@@ -1,0 +1,604 @@
+{
+  "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+    "llvm_initial": 21,
+    "llvm_sys_noise": 0,
+    "llvm_project": 21,
+    "after_filter": 18,
+    "ai_batches": 2,
+    "ai_results": 18,
+    "omp_verified": 0,
+    "total_ms": 3845.9,
+    "llvm_ms": 345.9
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                     double* solar_radiation, double* precipitation,\n                     int nx, int ny, int days) {\n    const double freeze_temp = 273.15;\n    const double melt_factor = 0.005; // m/day per degree C\n    \n    for (int day = 0; day < days; day++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                     int nx, int ny, int days) {\n    const double freeze_temp = 273.15;\n    const double melt_factor = 0.005; // m/day per degree C\n    \n    for (int day = 0; day < days; day++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    const double freeze_temp = 273.15;\n    const double melt_factor = 0.005; // m/day per degree C\n    \n    for (int day = 0; day < days; day++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                     double* solar_radiation, double* precipitation,\n                     int nx, int ny, int days) {\n    const double freeze_temp = 273.15;\n    const double melt_factor = 0.005; // m/day per degree C\n    \n    for (int day = 0; day < days; day++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                     int nx, int ny, int days) {\n    const double freeze_temp = 273.15;\n    const double melt_factor = 0.005; // m/day per degree C\n    \n    for (int day = 0; day < days; day++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 17,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 17,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 24,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100;\n    std::vector<double> snow_depth(nx * ny, 0.0);\n    std::vector<double> snow_density(nx * ny, 0.0);\n    std::vector<double> temperature(nx * ny, 270.0);\n    std::vector<double> solar_radiation(nx * ny, 200.0);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 30,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100;\n    std::vector<double> snow_depth(nx * ny, 0.0);\n    std::vector<double> snow_density(nx * ny, 0.0);\n    std::vector<double> temperature(nx * ny, 270.0);\n    std::vector<double> solar_radiation(nx * ny, 200.0);\n    std::vector<double> precipitation(nx * ny, 10.0);\n    \n    simulateSnowpack(snow_depth.data(), snow_density.data(), temperature.data(),\n                    solar_radiation.data(), precipitation.data(), nx, ny, 90);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 30,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100;\n    std::vector<double> snow_depth(nx * ny, 0.0);\n    std::vector<double> snow_density(nx * ny, 0.0);\n    std::vector<double> temperature(nx * ny, 270.0);\n    std::vector<double> solar_radiation(nx * ny, 200.0);\n    std::vector<double> precipitation(nx * ny, 10.0);\n    \n    simulateSnowpack(snow_depth.data(), snow_density.data(), temperature.data(),\n                    solar_radiation.data(), precipitation.data(), nx, ny, 90);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 39,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100;\n    std::vector<double> snow_depth(nx * ny, 0.0);\n    std::vector<double> snow_density(nx * ny, 0.0);\n    std::vector<double> temperature(nx * ny, 270.0);\n    std::vector<double> solar_radiation(nx * ny, 200.0);\n    std::vector<double> precipitation(nx * ny, 10.0);\n    \n    simulateSnowpack(snow_depth.data(), snow_density.data(), temperature.data(),\n                    solar_radiation.data(), precipitation.data(), nx, ny, 90);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    const double freeze_temp = 273.15;\n    const double melt_factor = 0.005; // m/day per degree C\n    \n    for (int day = 0; day < days; day++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "main",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "main",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "main",
+      "line": 17,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "main",
+      "line": 17,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "main",
+      "line": 24,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100;\n    std::vector<double> snow_depth(nx * ny, 0.0);\n    std::vector<double> snow_density(nx * ny, 0.0);\n    std::vector<double> temperature(nx * ny, 270.0);\n    std::vector<double> solar_radiation(nx * ny, 200.0);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "main",
+      "line": 30,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100;\n    std::vector<double> snow_depth(nx * ny, 0.0);\n    std::vector<double> snow_density(nx * ny, 0.0);\n    std::vector<double> temperature(nx * ny, 270.0);\n    std::vector<double> solar_radiation(nx * ny, 200.0);\n    std::vector<double> precipitation(nx * ny, 10.0);\n    \n    simulateSnowpack(snow_depth.data(), snow_density.data(), temperature.data(),\n                    solar_radiation.data(), precipitation.data(), nx, ny, 90);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "main",
+      "line": 30,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100;\n    std::vector<double> snow_depth(nx * ny, 0.0);\n    std::vector<double> snow_density(nx * ny, 0.0);\n    std::vector<double> temperature(nx * ny, 270.0);\n    std::vector<double> solar_radiation(nx * ny, 200.0);\n    std::vector<double> precipitation(nx * ny, 10.0);\n    \n    simulateSnowpack(snow_depth.data(), snow_density.data(), temperature.data(),\n                    solar_radiation.data(), precipitation.data(), nx, ny, 90);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "main",
+      "line": 39,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100;\n    std::vector<double> snow_depth(nx * ny, 0.0);\n    std::vector<double> snow_density(nx * ny, 0.0);\n    std::vector<double> temperature(nx * ny, 270.0);\n    std::vector<double> solar_radiation(nx * ny, 200.0);\n    std::vector<double> precipitation(nx * ny, 10.0);\n    \n    simulateSnowpack(snow_depth.data(), snow_density.data(), temperature.data(),\n                    solar_radiation.data(), precipitation.data(), nx, ny, 90);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "main",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 17,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 17,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 24,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100;\n    std::vector<double> snow_depth(nx * ny, 0.0);\n    std::vector<double> snow_density(nx * ny, 0.0);\n    std::vector<double> temperature(nx * ny, 270.0);\n    std::vector<double> solar_radiation(nx * ny, 200.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 30,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100;\n    std::vector<double> snow_depth(nx * ny, 0.0);\n    std::vector<double> snow_density(nx * ny, 0.0);\n    std::vector<double> temperature(nx * ny, 270.0);\n    std::vector<double> solar_radiation(nx * ny, 200.0);\n    std::vector<double> precipitation(nx * ny, 10.0);\n    \n    simulateSnowpack(snow_depth.data(), snow_density.data(), temperature.data(),\n                    solar_radiation.data(), precipitation.data(), nx, ny, 90);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 39,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100;\n    std::vector<double> snow_depth(nx * ny, 0.0);\n    std::vector<double> snow_density(nx * ny, 0.0);\n    std::vector<double> temperature(nx * ny, 270.0);\n    std::vector<double> solar_radiation(nx * ny, 200.0);\n    std::vector<double> precipitation(nx * ny, 10.0);\n    \n    simulateSnowpack(snow_depth.data(), snow_density.data(), temperature.data(),\n                    solar_radiation.data(), precipitation.data(), nx, ny, 90);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "main",
+      "line": 17,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "main",
+      "line": 17,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "main",
+      "line": 24,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100;\n    std::vector<double> snow_depth(nx * ny, 0.0);\n    std::vector<double> snow_density(nx * ny, 0.0);\n    std::vector<double> temperature(nx * ny, 270.0);\n    std::vector<double> solar_radiation(nx * ny, 200.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "main",
+      "line": 30,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100;\n    std::vector<double> snow_depth(nx * ny, 0.0);\n    std::vector<double> snow_density(nx * ny, 0.0);\n    std::vector<double> temperature(nx * ny, 270.0);\n    std::vector<double> solar_radiation(nx * ny, 200.0);\n    std::vector<double> precipitation(nx * ny, 10.0);\n    \n    simulateSnowpack(snow_depth.data(), snow_density.data(), temperature.data(),\n                    solar_radiation.data(), precipitation.data(), nx, ny, 90);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "main",
+      "line": 39,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100;\n    std::vector<double> snow_depth(nx * ny, 0.0);\n    std::vector<double> snow_density(nx * ny, 0.0);\n    std::vector<double> temperature(nx * ny, 270.0);\n    std::vector<double> solar_radiation(nx * ny, 200.0);\n    std::vector<double> precipitation(nx * ny, 10.0);\n    \n    simulateSnowpack(snow_depth.data(), snow_density.data(), temperature.data(),\n                    solar_radiation.data(), precipitation.data(), nx, ny, 90);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 30,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100;\n    std::vector<double> snow_depth(nx * ny, 0.0);\n    std::vector<double> snow_density(nx * ny, 0.0);\n    std::vector<double> temperature(nx * ny, 270.0);\n    std::vector<double> solar_radiation(nx * ny, 200.0);\n    std::vector<double> precipitation(nx * ny, 10.0);\n    \n    simulateSnowpack(snow_depth.data(), snow_density.data(), temperature.data(),\n                    solar_radiation.data(), precipitation.data(), nx, ny, 90);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "main",
+      "line": 30,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100;\n    std::vector<double> snow_depth(nx * ny, 0.0);\n    std::vector<double> snow_density(nx * ny, 0.0);\n    std::vector<double> temperature(nx * ny, 270.0);\n    std::vector<double> solar_radiation(nx * ny, 200.0);\n    std::vector<double> precipitation(nx * ny, 10.0);\n    \n    simulateSnowpack(snow_depth.data(), snow_density.data(), temperature.data(),\n                    solar_radiation.data(), precipitation.data(), nx, ny, 90);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                     double* solar_radiation, double* precipitation,\n                     int nx, int ny, int days) {\n    const double freeze_temp = 273.15;\n    const double melt_factor = 0.005; // m/day per degree C\n    \n    for (int day = 0; day < days; day++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                     int nx, int ny, int days) {\n    const double freeze_temp = 273.15;\n    const double melt_factor = 0.005; // m/day per degree C\n    \n    for (int day = 0; day < days; day++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    const double freeze_temp = 273.15;\n    const double melt_factor = 0.005; // m/day per degree C\n    \n    for (int day = 0; day < days; day++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                     double* solar_radiation, double* precipitation,\n                     int nx, int ny, int days) {\n    const double freeze_temp = 273.15;\n    const double melt_factor = 0.005; // m/day per degree C\n    \n    for (int day = 0; day < days; day++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                     int nx, int ny, int days) {\n    const double freeze_temp = 273.15;\n    const double melt_factor = 0.005; // m/day per degree C\n    \n    for (int day = 0; day < days; day++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/snow_accumulation.cpp",
+      "function": "_Z16simulateSnowpackPdS_S_S_S_iii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    const double freeze_temp = 273.15;\n    const double melt_factor = 0.005; // m/day per degree C\n    \n    for (int day = 0; day < days; day++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Snow accumulation\n                if (temperature[idx] < freeze_temp && precipitation[idx] > 0) {\n                    double new_snow = precipitation[idx] / 1000.0; // mm to m\n                    double new_density = 100.0; // kg/m^3 for fresh snow\n                    \n                    // Mix with existing snow\n                    double total_mass = snow_depth[idx] * snow_density[idx] + new_snow * new_density;\n                    snow_depth[idx] += new_snow;\n                    if (snow_depth[idx] > 0) {\n                        snow_density[idx] = total_mass / snow_depth[idx];\n                    }\n                }\n                \n                // Snow melting\n                if (temperature[idx] > freeze_temp && snow_depth[idx] > 0) {\n                    double melt_rate = melt_factor * (temperature[idx] - freeze_temp);\n                    melt_rate += solar_radiation[idx] * 0.001; // Solar contribution\n                    \n                    double melted = std::min(melt_rate, snow_depth[idx]);\n                    snow_depth[idx] -= melted;\n                }\n                \n                // Snow densification\n                if (snow_depth[idx] > 0) {\n                    double compaction = 0.01 * snow_density[idx] * snow_depth[idx];\n                    snow_density[idx] = std::min(snow_density[idx] + compaction, 500.0);\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

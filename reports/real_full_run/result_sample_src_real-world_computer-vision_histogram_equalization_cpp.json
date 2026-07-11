@@ -1,0 +1,1034 @@
+{
+  "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+    "llvm_initial": 51,
+    "after_filter": 46,
+    "cache_hits": 0,
+    "cache_misses": 46,
+    "omp_verified": 0,
+    "omp_similar": 0,
+    "ai_call_made": 1,
+    "total_ms": 5529.4,
+    "llvm_ms": 565.1,
+    "ai_ms": 4567.2
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1360,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.52
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": ""
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": ""
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": ""
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": ""
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer18globalEqualizationEv",
+      "line": 23,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    void globalEqualization() {\n        // Step 1: Compute histogram\n        std::vector<int> histogram(BINS, 0);\n        for (int i = 0; i < width * height; i++) {\n            int bin = static_cast<int>(image[i] * (BINS - 1));\n            histogram[bin]++;\n        }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer18globalEqualizationEv",
+      "line": 23,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    void globalEqualization() {\n        // Step 1: Compute histogram\n        std::vector<int> histogram(BINS, 0);\n        for (int i = 0; i < width * height; i++) {\n            int bin = static_cast<int>(image[i] * (BINS - 1));\n            histogram[bin]++;\n        }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer18globalEqualizationEv",
+      "line": 31,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        // Step 2: Compute cumulative distribution function\n        std::vector<float> cdf(BINS, 0.0f);\n        cdf[0] = histogram[0];\n        for (int i = 1; i < BINS; i++) {\n            cdf[i] = cdf[i-1] + histogram[i];\n        }\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer18globalEqualizationEv",
+      "line": 42,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        }\n        \n        // Step 3: Apply transformation\n        for (int i = 0; i < width * height; i++) {\n            int bin = static_cast<int>(image[i] * (BINS - 1));\n            image[i] = cdf[bin];\n        }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer18globalEqualizationEv",
+      "line": 37,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Normalize CDF\n        float total = width * height;\n        for (int i = 0; i < BINS; i++) {\n            cdf[i] /= total;\n        }\n        "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer18globalEqualizationEv",
+      "line": 42,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        }\n        \n        // Step 3: Apply transformation\n        for (int i = 0; i < width * height; i++) {\n            int bin = static_cast<int>(image[i] * (BINS - 1));\n            image[i] = cdf[bin];\n        }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18HistogramEqualizer17claheEqualizationEf",
+      "line": 149,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.52
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18HistogramEqualizer17claheEqualizationEf",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": ""
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer17claheEqualizationEf",
+      "line": 56,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        std::vector<std::vector<float>> tileCDFs(tilesX * tilesY);\n        \n        // Process each tile\n        for (int ty = 0; ty < tilesY; ty++) {\n            for (int tx = 0; tx < tilesX; tx++) {\n                int tileIdx = ty * tilesX + tx;\n                tileCDFs[tileIdx] = computeTileCDF(tx, ty, clipLimit);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer17claheEqualizationEf",
+      "line": 57,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        \n        // Process each tile\n        for (int ty = 0; ty < tilesY; ty++) {\n            for (int tx = 0; tx < tilesX; tx++) {\n                int tileIdx = ty * tilesX + tx;\n                tileCDFs[tileIdx] = computeTileCDF(tx, ty, clipLimit);\n            }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer17claheEqualizationEf",
+      "line": 64,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n        \n        // Interpolate between tiles\n        for (int y = 0; y < height; y++) {\n            for (int x = 0; x < width; x++) {\n                float tx = (float)x / TILE_SIZE;\n                float ty = (float)y / TILE_SIZE;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer17claheEqualizationEf",
+      "line": 56,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        std::vector<std::vector<float>> tileCDFs(tilesX * tilesY);\n        \n        // Process each tile\n        for (int ty = 0; ty < tilesY; ty++) {\n            for (int tx = 0; tx < tilesX; tx++) {\n                int tileIdx = ty * tilesX + tx;\n                tileCDFs[tileIdx] = computeTileCDF(tx, ty, clipLimit);"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18HistogramEqualizer17claheEqualizationEf",
+      "line": 889,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": ""
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer17claheEqualizationEf",
+      "line": 57,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        \n        // Process each tile\n        for (int ty = 0; ty < tilesY; ty++) {\n            for (int tx = 0; tx < tilesX; tx++) {\n                int tileIdx = ty * tilesX + tx;\n                tileCDFs[tileIdx] = computeTileCDF(tx, ty, clipLimit);\n            }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer17claheEqualizationEf",
+      "line": 65,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        \n        // Interpolate between tiles\n        for (int y = 0; y < height; y++) {\n            for (int x = 0; x < width; x++) {\n                float tx = (float)x / TILE_SIZE;\n                float ty = (float)y / TILE_SIZE;\n                "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18HistogramEqualizer17claheEqualizationEf",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": ""
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18HistogramEqualizer17claheEqualizationEf",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": ""
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18HistogramEqualizer17claheEqualizationEf",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": ""
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18HistogramEqualizer17claheEqualizationEf",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": ""
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer17claheEqualizationEf",
+      "line": 64,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n        \n        // Interpolate between tiles\n        for (int y = 0; y < height; y++) {\n            for (int x = 0; x < width; x++) {\n                float tx = (float)x / TILE_SIZE;\n                float ty = (float)y / TILE_SIZE;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer17claheEqualizationEf",
+      "line": 65,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIfNS_9allocatorIfEEE8__appendEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": ""
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIfNS_9allocatorIfEEE8__appendEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": ""
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIfNS_9allocatorIfEEE8__appendEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": ""
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIfNS_9allocatorIfEEE8__appendEm",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.57
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIfNS_9allocatorIfEEE8__appendEm",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        int x0 = tx * TILE_SIZE;\n        int y0 = ty * TILE_SIZE;\n        int x1 = std::min(x0 + TILE_SIZE, width);\n        int y1 = std::min(y0 + TILE_SIZE, height);\n        \n        // Build histogram for tile\n        for (int y = y0; y < y1; y++) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIfNS_9allocatorIfEEE8__appendEm",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.57
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer14computeTileCDFEiif",
+      "line": 103,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "        int y1 = std::min(y0 + TILE_SIZE, height);\n        \n        // Build histogram for tile\n        for (int y = y0; y < y1; y++) {\n            for (int x = x0; x < x1; x++) {\n                int bin = static_cast<int>(image[y * width + x] * (BINS - 1));\n                histogram[bin]++;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer14computeTileCDFEiif",
+      "line": 104,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "        \n        // Build histogram for tile\n        for (int y = y0; y < y1; y++) {\n            for (int x = x0; x < x1; x++) {\n                int bin = static_cast<int>(image[y * width + x] * (BINS - 1));\n                histogram[bin]++;\n            }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer14computeTileCDFEiif",
+      "line": 103,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "        int y1 = std::min(y0 + TILE_SIZE, height);\n        \n        // Build histogram for tile\n        for (int y = y0; y < y1; y++) {\n            for (int x = x0; x < x1; x++) {\n                int bin = static_cast<int>(image[y * width + x] * (BINS - 1));\n                histogram[bin]++;"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer14computeTileCDFEiif",
+      "line": 104,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Build histogram for tile\n        for (int y = y0; y < y1; y++) {\n            for (int x = x0; x < x1; x++) {\n                int bin = static_cast<int>(image[y * width + x] * (BINS - 1));\n                histogram[bin]++;\n            }"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer14computeTileCDFEiif",
+      "line": 116,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        int excess = 0;\n        \n        for (int i = 0; i < BINS; i++) {\n            if (histogram[i] > clipValue) {\n                excess += histogram[i] - clipValue;\n                histogram[i] = clipValue;\n            }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer14computeTileCDFEiif",
+      "line": 115,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "        int clipValue = static_cast<int>(clipLimit * pixelCount / BINS);\n        int excess = 0;\n        \n        for (int i = 0; i < BINS; i++) {\n            if (histogram[i] > clipValue) {\n                excess += histogram[i] - clipValue;\n                histogram[i] = clipValue;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18HistogramEqualizer14computeTileCDFEiif",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": ""
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer14computeTileCDFEiif",
+      "line": 123,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        }\n        \n        int redistribute = excess / BINS;\n        for (int i = 0; i < BINS; i++) {\n            histogram[i] += redistribute;\n        }\n        "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer14computeTileCDFEiif",
+      "line": 130,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        // Compute CDF\n        std::vector<float> cdf(BINS);\n        cdf[0] = histogram[0];\n        for (int i = 1; i < BINS; i++) {\n            cdf[i] = cdf[i-1] + histogram[i];\n        }\n        "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/computer-vision/histogram_equalization.cpp",
+      "function": "_ZN18HistogramEqualizer14computeTileCDFEiif",
+      "line": 135,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        }\n        \n        // Normalize\n        for (int i = 0; i < BINS; i++) {\n            cdf[i] /= pixelCount;\n        }\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IfNS_9allocatorIfEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": ""
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IfNS_9allocatorIfEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": ""
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IfNS_9allocatorIfEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": ""
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IfNS_9allocatorIfEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": ""
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IfNS_9allocatorIfEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                float v00 = tileCDFs[ty0 * tilesX + tx0][bin];\n                float v01 = tileCDFs[ty0 * tilesX + tx1][bin];\n                float v10 = tileCDFs[ty1 * tilesX + tx0][bin];\n                float v11 = tileCDFs[ty1 * tilesX + tx1][bin];\n                \n                float v0 = v00 * (1 - wx) + v01 * wx;\n                float v1 = v10 * (1 - wx) + v11 * wx;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IfNS_9allocatorIfEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": ""
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IfNS_9allocatorIfEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": ""
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IfNS_9allocatorIfEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": ""
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IfNS_9allocatorIfEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": ""
+    }
+  ],
+  "final_results": [
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "not_parallel",
+      "reasoning": "The provided code snippet is not available, but based on the given information, the function is 'main' and the type is 'simple_loop' which may indicate a potential loop-carried dependency or data race. Additionally, the presence of a conditional branch may introduce complexity that is not suitable for parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "Further code analysis is required to determine the best parallelization strategy"
+      ],
+      "tests_recommended": [
+        "Dependency analysis tests",
+        "Data race detection tests"
+      ],
+      "logic_issue_type": "false_positive",
+      "analysis_source": "ai_llm"
+    }
+  ]
+}

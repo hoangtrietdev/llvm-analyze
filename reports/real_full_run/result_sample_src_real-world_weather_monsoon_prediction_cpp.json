@@ -1,0 +1,246 @@
+{
+  "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+    "llvm_initial": 13,
+    "llvm_sys_noise": 0,
+    "llvm_project": 13,
+    "after_filter": 5,
+    "ai_batches": 1,
+    "ai_results": 5,
+    "omp_verified": 0,
+    "total_ms": 602.0,
+    "llvm_ms": 362.0
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <vector>\n#include <cmath>\n\nvoid predictMonsoon(double* sst_anomaly, double* pressure, double* wind_pattern,\n                   double* rainfall_forecast, int nx, int ny, int months) {\n    for (int month = 0; month < months; month++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // El Ni\u00f1o Southern Oscillation (ENSO) influence\n                double enso_factor = 0.0;\n                for (int k = -2; k <= 2; k++) {\n                    for (int l = -2; l <= 2; l++) {\n                        if (i+k >= 0 && i+k < nx && j+l >= 0 && j+l < ny) {\n                            enso_factor += sst_anomaly[(i+k)*ny + (j+l)] * 0.04;\n                        }\n                    }\n                }\n                \n                // Pressure gradient effect\n                double pressure_effect = 0.0;\n                if (i > 0 && i < nx-1) {\n                    pressure_effect = (pressure[(i-1)*ny+j] - pressure[(i+1)*ny+j]) * 0.1;\n                }\n                \n                // Wind convergence\n                double convergence = 0.0;\n                for (int di = -1; di <= 1; di++) {\n                    for (int dj = -1; dj <= 1; dj++) {\n                        if (i+di >= 0 && i+di < nx && j+dj >= 0 && j+dj < ny) {\n                            convergence += wind_pattern[(i+di)*ny + (j+dj)] / 9.0;\n                        }\n                    }\n                }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid predictMonsoon(double* sst_anomaly, double* pressure, double* wind_pattern,\n                   double* rainfall_forecast, int nx, int ny, int months) {\n    for (int month = 0; month < months; month++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // El Ni\u00f1o Southern Oscillation (ENSO) influence\n                double enso_factor = 0.0;\n                for (int k = -2; k <= 2; k++) {\n                    for (int l = -2; l <= 2; l++) {\n                        if (i+k >= 0 && i+k < nx && j+l >= 0 && j+l < ny) {\n                            enso_factor += sst_anomaly[(i+k)*ny + (j+l)] * 0.04;\n                        }\n                    }\n                }\n                \n                // Pressure gradient effect\n                double pressure_effect = 0.0;\n                if (i > 0 && i < nx-1) {\n                    pressure_effect = (pressure[(i-1)*ny+j] - pressure[(i+1)*ny+j]) * 0.1;\n                }\n                \n                // Wind convergence\n                double convergence = 0.0;\n                for (int di = -1; di <= 1; di++) {\n                    for (int dj = -1; dj <= 1; dj++) {\n                        if (i+di >= 0 && i+di < nx && j+dj >= 0 && j+dj < ny) {\n                            convergence += wind_pattern[(i+di)*ny + (j+dj)] / 9.0;\n                        }\n                    }\n                }\n                "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid predictMonsoon(double* sst_anomaly, double* pressure, double* wind_pattern,\n                   double* rainfall_forecast, int nx, int ny, int months) {\n    for (int month = 0; month < months; month++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // El Ni\u00f1o Southern Oscillation (ENSO) influence\n                double enso_factor = 0.0;\n                for (int k = -2; k <= 2; k++) {\n                    for (int l = -2; l <= 2; l++) {\n                        if (i+k >= 0 && i+k < nx && j+l >= 0 && j+l < ny) {\n                            enso_factor += sst_anomaly[(i+k)*ny + (j+l)] * 0.04;\n                        }\n                    }\n                }\n                \n                // Pressure gradient effect\n                double pressure_effect = 0.0;\n                if (i > 0 && i < nx-1) {\n                    pressure_effect = (pressure[(i-1)*ny+j] - pressure[(i+1)*ny+j]) * 0.1;\n                }\n                \n                // Wind convergence\n                double convergence = 0.0;\n                for (int di = -1; di <= 1; di++) {\n                    for (int dj = -1; dj <= 1; dj++) {\n                        if (i+di >= 0 && i+di < nx && j+dj >= 0 && j+dj < ny) {\n                            convergence += wind_pattern[(i+di)*ny + (j+dj)] / 9.0;\n                        }\n                    }\n                }\n                \n                rainfall_forecast[idx] = 100.0 + enso_factor * 50.0 + "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <vector>\n#include <cmath>\n\nvoid predictMonsoon(double* sst_anomaly, double* pressure, double* wind_pattern,\n                   double* rainfall_forecast, int nx, int ny, int months) {\n    for (int month = 0; month < months; month++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // El Ni\u00f1o Southern Oscillation (ENSO) influence\n                double enso_factor = 0.0;\n                for (int k = -2; k <= 2; k++) {\n                    for (int l = -2; l <= 2; l++) {\n                        if (i+k >= 0 && i+k < nx && j+l >= 0 && j+l < ny) {\n                            enso_factor += sst_anomaly[(i+k)*ny + (j+l)] * 0.04;\n                        }\n                    }\n                }\n                \n                // Pressure gradient effect\n                double pressure_effect = 0.0;\n                if (i > 0 && i < nx-1) {\n                    pressure_effect = (pressure[(i-1)*ny+j] - pressure[(i+1)*ny+j]) * 0.1;\n                }\n                \n                // Wind convergence\n                double convergence = 0.0;\n                for (int di = -1; di <= 1; di++) {\n                    for (int dj = -1; dj <= 1; dj++) {\n                        if (i+di >= 0 && i+di < nx && j+dj >= 0 && j+dj < ny) {\n                            convergence += wind_pattern[(i+di)*ny + (j+dj)] / 9.0;\n                        }\n                    }\n                }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid predictMonsoon(double* sst_anomaly, double* pressure, double* wind_pattern,\n                   double* rainfall_forecast, int nx, int ny, int months) {\n    for (int month = 0; month < months; month++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // El Ni\u00f1o Southern Oscillation (ENSO) influence\n                double enso_factor = 0.0;\n                for (int k = -2; k <= 2; k++) {\n                    for (int l = -2; l <= 2; l++) {\n                        if (i+k >= 0 && i+k < nx && j+l >= 0 && j+l < ny) {\n                            enso_factor += sst_anomaly[(i+k)*ny + (j+l)] * 0.04;\n                        }\n                    }\n                }\n                \n                // Pressure gradient effect\n                double pressure_effect = 0.0;\n                if (i > 0 && i < nx-1) {\n                    pressure_effect = (pressure[(i-1)*ny+j] - pressure[(i+1)*ny+j]) * 0.1;\n                }\n                \n                // Wind convergence\n                double convergence = 0.0;\n                for (int di = -1; di <= 1; di++) {\n                    for (int dj = -1; dj <= 1; dj++) {\n                        if (i+di >= 0 && i+di < nx && j+dj >= 0 && j+dj < ny) {\n                            convergence += wind_pattern[(i+di)*ny + (j+dj)] / 9.0;\n                        }\n                    }\n                }\n                "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 16,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 9,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 30,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 32,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 31,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <vector>\n#include <cmath>\n\nvoid predictMonsoon(double* sst_anomaly, double* pressure, double* wind_pattern,\n                   double* rainfall_forecast, int nx, int ny, int months) {\n    for (int month = 0; month < months; month++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // El Ni\u00f1o Southern Oscillation (ENSO) influence\n                double enso_factor = 0.0;\n                for (int k = -2; k <= 2; k++) {\n                    for (int l = -2; l <= 2; l++) {\n                        if (i+k >= 0 && i+k < nx && j+l >= 0 && j+l < ny) {\n                            enso_factor += sst_anomaly[(i+k)*ny + (j+l)] * 0.04;\n                        }\n                    }\n                }\n                \n                // Pressure gradient effect\n                double pressure_effect = 0.0;\n                if (i > 0 && i < nx-1) {\n                    pressure_effect = (pressure[(i-1)*ny+j] - pressure[(i+1)*ny+j]) * 0.1;\n                }\n                \n                // Wind convergence\n                double convergence = 0.0;\n                for (int di = -1; di <= 1; di++) {\n                    for (int dj = -1; dj <= 1; dj++) {\n                        if (i+di >= 0 && i+di < nx && j+dj >= 0 && j+dj < ny) {\n                            convergence += wind_pattern[(i+di)*ny + (j+dj)] / 9.0;\n                        }\n                    }\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid predictMonsoon(double* sst_anomaly, double* pressure, double* wind_pattern,\n                   double* rainfall_forecast, int nx, int ny, int months) {\n    for (int month = 0; month < months; month++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // El Ni\u00f1o Southern Oscillation (ENSO) influence\n                double enso_factor = 0.0;\n                for (int k = -2; k <= 2; k++) {\n                    for (int l = -2; l <= 2; l++) {\n                        if (i+k >= 0 && i+k < nx && j+l >= 0 && j+l < ny) {\n                            enso_factor += sst_anomaly[(i+k)*ny + (j+l)] * 0.04;\n                        }\n                    }\n                }\n                \n                // Pressure gradient effect\n                double pressure_effect = 0.0;\n                if (i > 0 && i < nx-1) {\n                    pressure_effect = (pressure[(i-1)*ny+j] - pressure[(i+1)*ny+j]) * 0.1;\n                }\n                \n                // Wind convergence\n                double convergence = 0.0;\n                for (int di = -1; di <= 1; di++) {\n                    for (int dj = -1; dj <= 1; dj++) {\n                        if (i+di >= 0 && i+di < nx && j+dj >= 0 && j+dj < ny) {\n                            convergence += wind_pattern[(i+di)*ny + (j+dj)] / 9.0;\n                        }\n                    }\n                }\n                ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid predictMonsoon(double* sst_anomaly, double* pressure, double* wind_pattern,\n                   double* rainfall_forecast, int nx, int ny, int months) {\n    for (int month = 0; month < months; month++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // El Ni\u00f1o Southern Oscillation (ENSO) influence\n                double enso_factor = 0.0;\n                for (int k = -2; k <= 2; k++) {\n                    for (int l = -2; l <= 2; l++) {\n                        if (i+k >= 0 && i+k < nx && j+l >= 0 && j+l < ny) {\n                            enso_factor += sst_anomaly[(i+k)*ny + (j+l)] * 0.04;\n                        }\n                    }\n                }\n                \n                // Pressure gradient effect\n                double pressure_effect = 0.0;\n                if (i > 0 && i < nx-1) {\n                    pressure_effect = (pressure[(i-1)*ny+j] - pressure[(i+1)*ny+j]) * 0.1;\n                }\n                \n                // Wind convergence\n                double convergence = 0.0;\n                for (int di = -1; di <= 1; di++) {\n                    for (int dj = -1; dj <= 1; dj++) {\n                        if (i+di >= 0 && i+di < nx && j+dj >= 0 && j+dj < ny) {\n                            convergence += wind_pattern[(i+di)*ny + (j+dj)] / 9.0;\n                        }\n                    }\n                }\n                \n                rainfall_forecast[idx] = 100.0 + enso_factor * 50.0 + ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <vector>\n#include <cmath>\n\nvoid predictMonsoon(double* sst_anomaly, double* pressure, double* wind_pattern,\n                   double* rainfall_forecast, int nx, int ny, int months) {\n    for (int month = 0; month < months; month++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // El Ni\u00f1o Southern Oscillation (ENSO) influence\n                double enso_factor = 0.0;\n                for (int k = -2; k <= 2; k++) {\n                    for (int l = -2; l <= 2; l++) {\n                        if (i+k >= 0 && i+k < nx && j+l >= 0 && j+l < ny) {\n                            enso_factor += sst_anomaly[(i+k)*ny + (j+l)] * 0.04;\n                        }\n                    }\n                }\n                \n                // Pressure gradient effect\n                double pressure_effect = 0.0;\n                if (i > 0 && i < nx-1) {\n                    pressure_effect = (pressure[(i-1)*ny+j] - pressure[(i+1)*ny+j]) * 0.1;\n                }\n                \n                // Wind convergence\n                double convergence = 0.0;\n                for (int di = -1; di <= 1; di++) {\n                    for (int dj = -1; dj <= 1; dj++) {\n                        if (i+di >= 0 && i+di < nx && j+dj >= 0 && j+dj < ny) {\n                            convergence += wind_pattern[(i+di)*ny + (j+dj)] / 9.0;\n                        }\n                    }\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/monsoon_prediction.cpp",
+      "function": "_Z14predictMonsoonPdS_S_S_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid predictMonsoon(double* sst_anomaly, double* pressure, double* wind_pattern,\n                   double* rainfall_forecast, int nx, int ny, int months) {\n    for (int month = 0; month < months; month++) {\n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // El Ni\u00f1o Southern Oscillation (ENSO) influence\n                double enso_factor = 0.0;\n                for (int k = -2; k <= 2; k++) {\n                    for (int l = -2; l <= 2; l++) {\n                        if (i+k >= 0 && i+k < nx && j+l >= 0 && j+l < ny) {\n                            enso_factor += sst_anomaly[(i+k)*ny + (j+l)] * 0.04;\n                        }\n                    }\n                }\n                \n                // Pressure gradient effect\n                double pressure_effect = 0.0;\n                if (i > 0 && i < nx-1) {\n                    pressure_effect = (pressure[(i-1)*ny+j] - pressure[(i+1)*ny+j]) * 0.1;\n                }\n                \n                // Wind convergence\n                double convergence = 0.0;\n                for (int di = -1; di <= 1; di++) {\n                    for (int dj = -1; dj <= 1; dj++) {\n                        if (i+di >= 0 && i+di < nx && j+dj >= 0 && j+dj < ny) {\n                            convergence += wind_pattern[(i+di)*ny + (j+dj)] / 9.0;\n                        }\n                    }\n                }\n                ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

@@ -1,0 +1,393 @@
+{
+  "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+    "llvm_initial": 22,
+    "llvm_sys_noise": 0,
+    "llvm_project": 22,
+    "after_filter": 8,
+    "ai_batches": 1,
+    "ai_results": 8,
+    "omp_verified": 0,
+    "total_ms": 612.1,
+    "llvm_ms": 343.2
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <vector>\n#include <cmath>\n\nvoid modelOzoneDepletion(double* ozone, double* temperature, double* chlorine,\n                        double* uv_radiation, int nx, int ny, int nz, int days) {\n    for (int day = 0; day < days; day++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    // Chapman reactions - ozone production\n                    double production = uv_radiation[idx] * 0.001;\n                    \n                    // Temperature-dependent destruction\n                    double destruction = 0.0;\n                    if (temperature[idx] < 195.0) {\n                        // Polar stratospheric clouds enhance depletion\n                        destruction = chlorine[idx] * 0.01 * (195.0 - temperature[idx]) / 10.0;\n                    }\n                    \n                    // Transport (simplified)\n                    double transport = 0.0;\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                int nidx = (i+di)*ny*nz + (j+dj)*nz + (k+dk);\n                                transport += (ozone[nidx] - ozone[idx]) * 0.001;\n                            }\n                        }\n                    }\n                    \n                    ozone[idx] += production - destruction + transport;\n                }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <vector>\n#include <cmath>\n\nvoid modelOzoneDepletion(double* ozone, double* temperature, double* chlorine,\n                        double* uv_radiation, int nx, int ny, int nz, int days) {\n    for (int day = 0; day < days; day++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    // Chapman reactions - ozone production\n                    double production = uv_radiation[idx] * 0.001;\n                    \n                    // Temperature-dependent destruction\n                    double destruction = 0.0;\n                    if (temperature[idx] < 195.0) {\n                        // Polar stratospheric clouds enhance depletion\n                        destruction = chlorine[idx] * 0.01 * (195.0 - temperature[idx]) / 10.0;\n                    }\n                    \n                    // Transport (simplified)\n                    double transport = 0.0;\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                int nidx = (i+di)*ny*nz + (j+dj)*nz + (k+dk);\n                                transport += (ozone[nidx] - ozone[idx]) * 0.001;\n                            }\n                        }\n                    }\n                    \n                    ozone[idx] += production - destruction + transport;\n                }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 18,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    // Chapman reactions - ozone production\n                    double production = uv_radiation[idx] * 0.001;\n                    \n                    // Temperature-dependent destruction\n                    double destruction = 0.0;\n                    if (temperature[idx] < 195.0) {\n                        // Polar stratospheric clouds enhance depletion\n                        destruction = chlorine[idx] * 0.01 * (195.0 - temperature[idx]) / 10.0;\n                    }\n                    \n                    // Transport (simplified)\n                    double transport = 0.0;\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                int nidx = (i+di)*ny*nz + (j+dj)*nz + (k+dk);\n                                transport += (ozone[nidx] - ozone[idx]) * 0.001;\n                            }\n                        }\n                    }\n                    \n                    ozone[idx] += production - destruction + transport;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 72, ny = 144, nz = 50, days = 365;\n    std::vector<double> ozone(nx*ny*nz, 300.0);\n    std::vector<double> temperature(nx*ny*nz, 220.0);\n    std::vector<double> chlorine(nx*ny*nz, 2.0);\n    std::vector<double> uv_radiation(nx*ny*nz, 100.0);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 10,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void modelOzoneDepletion(double* ozone, double* temperature, double* chlorine,\n                        double* uv_radiation, int nx, int ny, int nz, int days) {\n    for (int day = 0; day < days; day++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    // Chapman reactions - ozone production\n                    double production = uv_radiation[idx] * 0.001;\n                    \n                    // Temperature-dependent destruction\n                    double destruction = 0.0;\n                    if (temperature[idx] < 195.0) {\n                        // Polar stratospheric clouds enhance depletion\n                        destruction = chlorine[idx] * 0.01 * (195.0 - temperature[idx]) / 10.0;\n                    }\n                    \n                    // Transport (simplified)\n                    double transport = 0.0;\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                int nidx = (i+di)*ny*nz + (j+dj)*nz + (k+dk);\n                                transport += (ozone[nidx] - ozone[idx]) * 0.001;\n                            }\n                        }\n                    }\n                    \n                    ozone[idx] += production - destruction + transport;\n                }\n            }\n        }\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                        destruction = chlorine[idx] * 0.01 * (195.0 - temperature[idx]) / 10.0;\n                    }\n                    \n                    // Transport (simplified)\n                    double transport = 0.0;\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                int nidx = (i+di)*ny*nz + (j+dj)*nz + (k+dk);\n                                transport += (ozone[nidx] - ozone[idx]) * 0.001;\n                            }\n                        }\n                    }\n                    \n                    ozone[idx] += production - destruction + transport;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 72, ny = 144, nz = 50, days = 365;\n    std::vector<double> ozone(nx*ny*nz, 300.0);\n    std::vector<double> temperature(nx*ny*nz, 220.0);\n    std::vector<double> chlorine(nx*ny*nz, 2.0);\n    std::vector<double> uv_radiation(nx*ny*nz, 100.0);\n    \n    modelOzoneDepletion(ozone.data(), temperature.data(), chlorine.data(),\n                       uv_radiation.data(), nx, ny, nz, days);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 28,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    // Transport (simplified)\n                    double transport = 0.0;\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                int nidx = (i+di)*ny*nz + (j+dj)*nz + (k+dk);\n                                transport += (ozone[nidx] - ozone[idx]) * 0.001;\n                            }\n                        }\n                    }\n                    \n                    ozone[idx] += production - destruction + transport;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 72, ny = 144, nz = 50, days = 365;\n    std::vector<double> ozone(nx*ny*nz, 300.0);\n    std::vector<double> temperature(nx*ny*nz, 220.0);\n    std::vector<double> chlorine(nx*ny*nz, 2.0);\n    std::vector<double> uv_radiation(nx*ny*nz, 100.0);\n    \n    modelOzoneDepletion(ozone.data(), temperature.data(), chlorine.data(),\n                       uv_radiation.data(), nx, ny, nz, days);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 27,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    \n                    // Transport (simplified)\n                    double transport = 0.0;\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                int nidx = (i+di)*ny*nz + (j+dj)*nz + (k+dk);\n                                transport += (ozone[nidx] - ozone[idx]) * 0.001;\n                            }\n                        }\n                    }\n                    \n                    ozone[idx] += production - destruction + transport;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 72, ny = 144, nz = 50, days = 365;\n    std::vector<double> ozone(nx*ny*nz, 300.0);\n    std::vector<double> temperature(nx*ny*nz, 220.0);\n    std::vector<double> chlorine(nx*ny*nz, 2.0);\n    std::vector<double> uv_radiation(nx*ny*nz, 100.0);\n    \n    modelOzoneDepletion(ozone.data(), temperature.data(), chlorine.data(),\n                       uv_radiation.data(), nx, ny, nz, days);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "main",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "main",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "main",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "main",
+      "line": 18,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    // Chapman reactions - ozone production\n                    double production = uv_radiation[idx] * 0.001;\n                    \n                    // Temperature-dependent destruction\n                    double destruction = 0.0;\n                    if (temperature[idx] < 195.0) {\n                        // Polar stratospheric clouds enhance depletion\n                        destruction = chlorine[idx] * 0.01 * (195.0 - temperature[idx]) / 10.0;\n                    }\n                    \n                    // Transport (simplified)\n                    double transport = 0.0;\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                int nidx = (i+di)*ny*nz + (j+dj)*nz + (k+dk);\n                                transport += (ozone[nidx] - ozone[idx]) * 0.001;\n                            }\n                        }\n                    }\n                    \n                    ozone[idx] += production - destruction + transport;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 72, ny = 144, nz = 50, days = 365;\n    std::vector<double> ozone(nx*ny*nz, 300.0);\n    std::vector<double> temperature(nx*ny*nz, 220.0);\n    std::vector<double> chlorine(nx*ny*nz, 2.0);\n    std::vector<double> uv_radiation(nx*ny*nz, 100.0);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "main",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "main",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "main",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "main",
+      "line": 28,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "main",
+      "line": 27,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 18,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    // Chapman reactions - ozone production\n                    double production = uv_radiation[idx] * 0.001;\n                    \n                    // Temperature-dependent destruction\n                    double destruction = 0.0;\n                    if (temperature[idx] < 195.0) {\n                        // Polar stratospheric clouds enhance depletion\n                        destruction = chlorine[idx] * 0.01 * (195.0 - temperature[idx]) / 10.0;\n                    }\n                    \n                    // Transport (simplified)\n                    double transport = 0.0;\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                int nidx = (i+di)*ny*nz + (j+dj)*nz + (k+dk);\n                                transport += (ozone[nidx] - ozone[idx]) * 0.001;\n                            }\n                        }\n                    }\n                    \n                    ozone[idx] += production - destruction + transport;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 72, ny = 144, nz = 50, days = 365;\n    std::vector<double> ozone(nx*ny*nz, 300.0);\n    std::vector<double> temperature(nx*ny*nz, 220.0);\n    std::vector<double> chlorine(nx*ny*nz, 2.0);\n    std::vector<double> uv_radiation(nx*ny*nz, 100.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 10,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void modelOzoneDepletion(double* ozone, double* temperature, double* chlorine,\n                        double* uv_radiation, int nx, int ny, int nz, int days) {\n    for (int day = 0; day < days; day++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    // Chapman reactions - ozone production\n                    double production = uv_radiation[idx] * 0.001;\n                    \n                    // Temperature-dependent destruction\n                    double destruction = 0.0;\n                    if (temperature[idx] < 195.0) {\n                        // Polar stratospheric clouds enhance depletion\n                        destruction = chlorine[idx] * 0.01 * (195.0 - temperature[idx]) / 10.0;\n                    }\n                    \n                    // Transport (simplified)\n                    double transport = 0.0;\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                int nidx = (i+di)*ny*nz + (j+dj)*nz + (k+dk);\n                                transport += (ozone[nidx] - ozone[idx]) * 0.001;\n                            }\n                        }\n                    }\n                    \n                    ozone[idx] += production - destruction + transport;\n                }\n            }\n        }\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "main",
+      "line": 18,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    // Chapman reactions - ozone production\n                    double production = uv_radiation[idx] * 0.001;\n                    \n                    // Temperature-dependent destruction\n                    double destruction = 0.0;\n                    if (temperature[idx] < 195.0) {\n                        // Polar stratospheric clouds enhance depletion\n                        destruction = chlorine[idx] * 0.01 * (195.0 - temperature[idx]) / 10.0;\n                    }\n                    \n                    // Transport (simplified)\n                    double transport = 0.0;\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                int nidx = (i+di)*ny*nz + (j+dj)*nz + (k+dk);\n                                transport += (ozone[nidx] - ozone[idx]) * 0.001;\n                            }\n                        }\n                    }\n                    \n                    ozone[idx] += production - destruction + transport;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 72, ny = 144, nz = 50, days = 365;\n    std::vector<double> ozone(nx*ny*nz, 300.0);\n    std::vector<double> temperature(nx*ny*nz, 220.0);\n    std::vector<double> chlorine(nx*ny*nz, 2.0);\n    std::vector<double> uv_radiation(nx*ny*nz, 100.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <vector>\n#include <cmath>\n\nvoid modelOzoneDepletion(double* ozone, double* temperature, double* chlorine,\n                        double* uv_radiation, int nx, int ny, int nz, int days) {\n    for (int day = 0; day < days; day++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    // Chapman reactions - ozone production\n                    double production = uv_radiation[idx] * 0.001;\n                    \n                    // Temperature-dependent destruction\n                    double destruction = 0.0;\n                    if (temperature[idx] < 195.0) {\n                        // Polar stratospheric clouds enhance depletion\n                        destruction = chlorine[idx] * 0.01 * (195.0 - temperature[idx]) / 10.0;\n                    }\n                    \n                    // Transport (simplified)\n                    double transport = 0.0;\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                int nidx = (i+di)*ny*nz + (j+dj)*nz + (k+dk);\n                                transport += (ozone[nidx] - ozone[idx]) * 0.001;\n                            }\n                        }\n                    }\n                    \n                    ozone[idx] += production - destruction + transport;\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <vector>\n#include <cmath>\n\nvoid modelOzoneDepletion(double* ozone, double* temperature, double* chlorine,\n                        double* uv_radiation, int nx, int ny, int nz, int days) {\n    for (int day = 0; day < days; day++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    // Chapman reactions - ozone production\n                    double production = uv_radiation[idx] * 0.001;\n                    \n                    // Temperature-dependent destruction\n                    double destruction = 0.0;\n                    if (temperature[idx] < 195.0) {\n                        // Polar stratospheric clouds enhance depletion\n                        destruction = chlorine[idx] * 0.01 * (195.0 - temperature[idx]) / 10.0;\n                    }\n                    \n                    // Transport (simplified)\n                    double transport = 0.0;\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                int nidx = (i+di)*ny*nz + (j+dj)*nz + (k+dk);\n                                transport += (ozone[nidx] - ozone[idx]) * 0.001;\n                            }\n                        }\n                    }\n                    \n                    ozone[idx] += production - destruction + transport;\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                        destruction = chlorine[idx] * 0.01 * (195.0 - temperature[idx]) / 10.0;\n                    }\n                    \n                    // Transport (simplified)\n                    double transport = 0.0;\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                int nidx = (i+di)*ny*nz + (j+dj)*nz + (k+dk);\n                                transport += (ozone[nidx] - ozone[idx]) * 0.001;\n                            }\n                        }\n                    }\n                    \n                    ozone[idx] += production - destruction + transport;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 72, ny = 144, nz = 50, days = 365;\n    std::vector<double> ozone(nx*ny*nz, 300.0);\n    std::vector<double> temperature(nx*ny*nz, 220.0);\n    std::vector<double> chlorine(nx*ny*nz, 2.0);\n    std::vector<double> uv_radiation(nx*ny*nz, 100.0);\n    \n    modelOzoneDepletion(ozone.data(), temperature.data(), chlorine.data(),\n                       uv_radiation.data(), nx, ny, nz, days);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 28,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    // Transport (simplified)\n                    double transport = 0.0;\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                int nidx = (i+di)*ny*nz + (j+dj)*nz + (k+dk);\n                                transport += (ozone[nidx] - ozone[idx]) * 0.001;\n                            }\n                        }\n                    }\n                    \n                    ozone[idx] += production - destruction + transport;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 72, ny = 144, nz = 50, days = 365;\n    std::vector<double> ozone(nx*ny*nz, 300.0);\n    std::vector<double> temperature(nx*ny*nz, 220.0);\n    std::vector<double> chlorine(nx*ny*nz, 2.0);\n    std::vector<double> uv_radiation(nx*ny*nz, 100.0);\n    \n    modelOzoneDepletion(ozone.data(), temperature.data(), chlorine.data(),\n                       uv_radiation.data(), nx, ny, nz, days);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ozone_depletion.cpp",
+      "function": "_Z19modelOzoneDepletionPdS_S_S_iiii",
+      "line": 27,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    \n                    // Transport (simplified)\n                    double transport = 0.0;\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                int nidx = (i+di)*ny*nz + (j+dj)*nz + (k+dk);\n                                transport += (ozone[nidx] - ozone[idx]) * 0.001;\n                            }\n                        }\n                    }\n                    \n                    ozone[idx] += production - destruction + transport;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 72, ny = 144, nz = 50, days = 365;\n    std::vector<double> ozone(nx*ny*nz, 300.0);\n    std::vector<double> temperature(nx*ny*nz, 220.0);\n    std::vector<double> chlorine(nx*ny*nz, 2.0);\n    std::vector<double> uv_radiation(nx*ny*nz, 100.0);\n    \n    modelOzoneDepletion(ozone.data(), temperature.data(), chlorine.data(),\n                       uv_radiation.data(), nx, ny, nz, days);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

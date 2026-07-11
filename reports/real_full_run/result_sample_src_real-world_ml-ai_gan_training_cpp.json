@@ -1,0 +1,1152 @@
+{
+  "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+    "llvm_initial": 66,
+    "llvm_sys_noise": 33,
+    "llvm_project": 33,
+    "after_filter": 26,
+    "ai_batches": 2,
+    "ai_results": 26,
+    "omp_verified": 0,
+    "total_ms": 3977.6,
+    "llvm_ms": 474.4
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n#include <random>\n\nvoid ganDiscriminatorForward(double* input, double* weights, double* output,\n                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 170,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "void ganDiscriminatorForward(double* input, double* weights, double* output,\n                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 11,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void ganDiscriminatorForward(double* input, double* weights, double* output,\n                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 12,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n#include <random>\n\nvoid ganDiscriminatorForward(double* input, double* weights, double* output,\n                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 20,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 30,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 170,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 33,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "void ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n\nvoid ganTrain(int batch_size, int noise_dim, int data_dim, int iterations) {\n    std::vector<double> gen_weights(noise_dim * 256 + 256 * 256 + 256 * data_dim, 0.01);\n    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 34,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n\nvoid ganTrain(int batch_size, int noise_dim, int data_dim, int iterations) {\n    std::vector<double> gen_weights(noise_dim * 256 + 256 * 256 + 256 * data_dim, 0.01);\n    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 170,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 33,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n\nvoid ganTrain(int batch_size, int noise_dim, int data_dim, int iterations) {\n    std::vector<double> gen_weights(noise_dim * 256 + 256 * 256 + 256 * data_dim, 0.01);\n    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 34,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n\nvoid ganTrain(int batch_size, int noise_dim, int data_dim, int iterations) {\n    std::vector<double> gen_weights(noise_dim * 256 + 256 * 256 + 256 * data_dim, 0.01);\n    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 42,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n\nvoid ganTrain(int batch_size, int noise_dim, int data_dim, int iterations) {\n    std::vector<double> gen_weights(noise_dim * 256 + 256 * 256 + 256 * data_dim, 0.01);\n    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> dist(0.0, 1.0);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        // Generate fake samples\n        std::vector<double> noise(batch_size * noise_dim);\n        for (int i = 0; i < batch_size * noise_dim; i++) {\n            noise[i] = dist(rng);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 50,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n\nvoid ganTrain(int batch_size, int noise_dim, int data_dim, int iterations) {\n    std::vector<double> gen_weights(noise_dim * 256 + 256 * 256 + 256 * data_dim, 0.01);\n    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> dist(0.0, 1.0);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        // Generate fake samples\n        std::vector<double> noise(batch_size * noise_dim);\n        for (int i = 0; i < batch_size * noise_dim; i++) {\n            noise[i] = dist(rng);\n        }\n        \n        std::vector<double> fake_samples(batch_size * data_dim);\n        ganGeneratorForward(noise.data(), gen_weights.data(), fake_samples.data(),\n                           batch_size, noise_dim, 256, data_dim);\n        \n        // Train discriminator\n        std::vector<double> disc_out(batch_size);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 42,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n\nvoid ganTrain(int batch_size, int noise_dim, int data_dim, int iterations) {\n    std::vector<double> gen_weights(noise_dim * 256 + 256 * 256 + 256 * data_dim, 0.01);\n    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> dist(0.0, 1.0);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        // Generate fake samples\n        std::vector<double> noise(batch_size * noise_dim);\n        for (int i = 0; i < batch_size * noise_dim; i++) {\n            noise[i] = dist(rng);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 43,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 52,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n\nvoid ganTrain(int batch_size, int noise_dim, int data_dim, int iterations) {\n    std::vector<double> gen_weights(noise_dim * 256 + 256 * 256 + 256 * data_dim, 0.01);\n    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> dist(0.0, 1.0);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        // Generate fake samples\n        std::vector<double> noise(batch_size * noise_dim);\n        for (int i = 0; i < batch_size * noise_dim; i++) {\n            noise[i] = dist(rng);\n        }\n        \n        std::vector<double> fake_samples(batch_size * data_dim);\n        ganGeneratorForward(noise.data(), gen_weights.data(), fake_samples.data(),\n                           batch_size, noise_dim, 256, data_dim);\n        \n        // Train discriminator\n        std::vector<double> disc_out(batch_size);\n        ganDiscriminatorForward(fake_samples.data(), disc_weights.data(), disc_out.data(),\n                               batch_size, data_dim, 128);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 30,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 50,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 52,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 170,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 170,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 67,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 70,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    std::normal_distribution<> dist(0.0, 1.0);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        // Generate fake samples\n        std::vector<double> noise(batch_size * noise_dim);\n        for (int i = 0; i < batch_size * noise_dim; i++) {\n            noise[i] = dist(rng);\n        }\n        \n        std::vector<double> fake_samples(batch_size * data_dim);\n        ganGeneratorForward(noise.data(), gen_weights.data(), fake_samples.data(),\n                           batch_size, noise_dim, 256, data_dim);\n        \n        // Train discriminator\n        std::vector<double> disc_out(batch_size);\n        ganDiscriminatorForward(fake_samples.data(), disc_weights.data(), disc_out.data(),\n                               batch_size, data_dim, 128);\n        \n        // Update weights (simplified gradient descent)\n        for (int i = 0; i < disc_weights.size(); i++) {\n            disc_weights[i] += 0.0001 * (1.0 - disc_out[i % batch_size]);\n        }\n    }\n}\n\nint main() {\n    ganTrain(64, 100, 784, 1000);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 70,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::normal_distribution<> dist(0.0, 1.0);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        // Generate fake samples\n        std::vector<double> noise(batch_size * noise_dim);\n        for (int i = 0; i < batch_size * noise_dim; i++) {\n            noise[i] = dist(rng);\n        }\n        \n        std::vector<double> fake_samples(batch_size * data_dim);\n        ganGeneratorForward(noise.data(), gen_weights.data(), fake_samples.data(),\n                           batch_size, noise_dim, 256, data_dim);\n        \n        // Train discriminator\n        std::vector<double> disc_out(batch_size);\n        ganDiscriminatorForward(fake_samples.data(), disc_weights.data(), disc_out.data(),\n                               batch_size, data_dim, 128);\n        \n        // Update weights (simplified gradient descent)\n        for (int i = 0; i < disc_weights.size(); i++) {\n            disc_weights[i] += 0.0001 * (1.0 - disc_out[i % batch_size]);\n        }\n    }\n}\n\nint main() {\n    ganTrain(64, 100, 784, 1000);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n#include <random>\n\nvoid ganDiscriminatorForward(double* input, double* weights, double* output,\n                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 11,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void ganDiscriminatorForward(double* input, double* weights, double* output,\n                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 12,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 8,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 20,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 84,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 67,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> dist(0.0, 1.0);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        // Generate fake samples\n        std::vector<double> noise(batch_size * noise_dim);\n        for (int i = 0; i < batch_size * noise_dim; i++) {\n            noise[i] = dist(rng);\n        }\n        \n        std::vector<double> fake_samples(batch_size * data_dim);\n        ganGeneratorForward(noise.data(), gen_weights.data(), fake_samples.data(),\n                           batch_size, noise_dim, 256, data_dim);\n        \n        // Train discriminator\n        std::vector<double> disc_out(batch_size);\n        ganDiscriminatorForward(fake_samples.data(), disc_weights.data(), disc_out.data(),\n                               batch_size, data_dim, 128);\n        \n        // Update weights (simplified gradient descent)\n        for (int i = 0; i < disc_weights.size(); i++) {\n            disc_weights[i] += 0.0001 * (1.0 - disc_out[i % batch_size]);\n        }\n    }\n}\n\nint main() {\n    ganTrain(64, 100, 784, 1000);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 84,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.35
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z8ganTrainiiii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/normal_distribution.h",
+      "function": "_ZNSt3__119normal_distributionIdEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEdRT_RKNS1_10param_typeE",
+      "line": 113,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/normal_distribution.h",
+      "function": "_ZNSt3__119normal_distributionIdEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEdRT_RKNS1_10param_typeE",
+      "line": 125,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 11,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void ganDiscriminatorForward(double* input, double* weights, double* output,\n                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 33,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n\nvoid ganTrain(int batch_size, int noise_dim, int data_dim, int iterations) {\n    std::vector<double> gen_weights(noise_dim * 256 + 256 * 256 + 256 * data_dim, 0.01);\n    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 42,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n\nvoid ganTrain(int batch_size, int noise_dim, int data_dim, int iterations) {\n    std::vector<double> gen_weights(noise_dim * 256 + 256 * 256 + 256 * data_dim, 0.01);\n    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> dist(0.0, 1.0);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        // Generate fake samples\n        std::vector<double> noise(batch_size * noise_dim);\n        for (int i = 0; i < batch_size * noise_dim; i++) {\n            noise[i] = dist(rng);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 70,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::normal_distribution<> dist(0.0, 1.0);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        // Generate fake samples\n        std::vector<double> noise(batch_size * noise_dim);\n        for (int i = 0; i < batch_size * noise_dim; i++) {\n            noise[i] = dist(rng);\n        }\n        \n        std::vector<double> fake_samples(batch_size * data_dim);\n        ganGeneratorForward(noise.data(), gen_weights.data(), fake_samples.data(),\n                           batch_size, noise_dim, 256, data_dim);\n        \n        // Train discriminator\n        std::vector<double> disc_out(batch_size);\n        ganDiscriminatorForward(fake_samples.data(), disc_weights.data(), disc_out.data(),\n                               batch_size, data_dim, 128);\n        \n        // Update weights (simplified gradient descent)\n        for (int i = 0; i < disc_weights.size(); i++) {\n            disc_weights[i] += 0.0001 * (1.0 - disc_out[i % batch_size]);\n        }\n    }\n}\n\nint main() {\n    ganTrain(64, 100, 784, 1000);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 11,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void ganDiscriminatorForward(double* input, double* weights, double* output,\n                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "void ganDiscriminatorForward(double* input, double* weights, double* output,\n                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 33,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "void ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n\nvoid ganTrain(int batch_size, int noise_dim, int data_dim, int iterations) {\n    std::vector<double> gen_weights(noise_dim * 256 + 256 * 256 + 256 * data_dim, 0.01);\n    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 34,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n\nvoid ganTrain(int batch_size, int noise_dim, int data_dim, int iterations) {\n    std::vector<double> gen_weights(noise_dim * 256 + 256 * 256 + 256 * data_dim, 0.01);\n    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 70,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    std::normal_distribution<> dist(0.0, 1.0);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        // Generate fake samples\n        std::vector<double> noise(batch_size * noise_dim);\n        for (int i = 0; i < batch_size * noise_dim; i++) {\n            noise[i] = dist(rng);\n        }\n        \n        std::vector<double> fake_samples(batch_size * data_dim);\n        ganGeneratorForward(noise.data(), gen_weights.data(), fake_samples.data(),\n                           batch_size, noise_dim, 256, data_dim);\n        \n        // Train discriminator\n        std::vector<double> disc_out(batch_size);\n        ganDiscriminatorForward(fake_samples.data(), disc_weights.data(), disc_out.data(),\n                               batch_size, data_dim, 128);\n        \n        // Update weights (simplified gradient descent)\n        for (int i = 0; i < disc_weights.size(); i++) {\n            disc_weights[i] += 0.0001 * (1.0 - disc_out[i % batch_size]);\n        }\n    }\n}\n\nint main() {\n    ganTrain(64, 100, 784, 1000);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 12,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 20,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 34,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n\nvoid ganTrain(int batch_size, int noise_dim, int data_dim, int iterations) {\n    std::vector<double> gen_weights(noise_dim * 256 + 256 * 256 + 256 * data_dim, 0.01);\n    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 12,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 20,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n#include <random>\n\nvoid ganDiscriminatorForward(double* input, double* weights, double* output,\n                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z23ganDiscriminatorForwardPdS_S_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n#include <random>\n\nvoid ganDiscriminatorForward(double* input, double* weights, double* output,\n                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 30,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 42,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n\nvoid ganTrain(int batch_size, int noise_dim, int data_dim, int iterations) {\n    std::vector<double> gen_weights(noise_dim * 256 + 256 * 256 + 256 * data_dim, 0.01);\n    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> dist(0.0, 1.0);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        // Generate fake samples\n        std::vector<double> noise(batch_size * noise_dim);\n        for (int i = 0; i < batch_size * noise_dim; i++) {\n            noise[i] = dist(rng);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 50,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n\nvoid ganTrain(int batch_size, int noise_dim, int data_dim, int iterations) {\n    std::vector<double> gen_weights(noise_dim * 256 + 256 * 256 + 256 * data_dim, 0.01);\n    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> dist(0.0, 1.0);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        // Generate fake samples\n        std::vector<double> noise(batch_size * noise_dim);\n        for (int i = 0; i < batch_size * noise_dim; i++) {\n            noise[i] = dist(rng);\n        }\n        \n        std::vector<double> fake_samples(batch_size * data_dim);\n        ganGeneratorForward(noise.data(), gen_weights.data(), fake_samples.data(),\n                           batch_size, noise_dim, 256, data_dim);\n        \n        // Train discriminator\n        std::vector<double> disc_out(batch_size);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 52,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n\nvoid ganTrain(int batch_size, int noise_dim, int data_dim, int iterations) {\n    std::vector<double> gen_weights(noise_dim * 256 + 256 * 256 + 256 * data_dim, 0.01);\n    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> dist(0.0, 1.0);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        // Generate fake samples\n        std::vector<double> noise(batch_size * noise_dim);\n        for (int i = 0; i < batch_size * noise_dim; i++) {\n            noise[i] = dist(rng);\n        }\n        \n        std::vector<double> fake_samples(batch_size * data_dim);\n        ganGeneratorForward(noise.data(), gen_weights.data(), fake_samples.data(),\n                           batch_size, noise_dim, 256, data_dim);\n        \n        // Train discriminator\n        std::vector<double> disc_out(batch_size);\n        ganDiscriminatorForward(fake_samples.data(), disc_weights.data(), disc_out.data(),\n                               batch_size, data_dim, 128);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z19ganGeneratorForwardPdS_S_iiii",
+      "line": 30,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);\n        }\n        \n        // Hidden layer 2\n        std::vector<double> hidden2(hidden_dim, 0.0);\n        for (int h2 = 0; h2 < hidden_dim; h2++) {\n            for (int h1 = 0; h1 < hidden_dim; h1++) {\n                hidden2[h2] += hidden1[h1] * weights[noise_dim*hidden_dim + h1*hidden_dim + h2];\n            }\n            hidden2[h2] = std::max(0.0, hidden2[h2]);\n        }\n        \n        // Output layer\n        for (int o = 0; o < output_dim; o++) {\n            double sum = 0.0;\n            for (int h = 0; h < hidden_dim; h++) {\n                sum += hidden2[h] * weights[noise_dim*hidden_dim + hidden_dim*hidden_dim + h*output_dim + o];\n            }\n            output[b * output_dim + o] = tanh(sum);\n        }\n    }\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n#include <random>\n\nvoid ganDiscriminatorForward(double* input, double* weights, double* output,\n                             int batch_size, int input_dim, int hidden_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer\n        std::vector<double> hidden(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int i = 0; i < input_dim; i++) {\n                hidden[h] += input[b * input_dim + i] * weights[i * hidden_dim + h];\n            }\n            hidden[h] = std::max(0.0, hidden[h]); // ReLU\n        }\n        \n        // Output layer\n        double logit = 0.0;\n        for (int h = 0; h < hidden_dim; h++) {\n            logit += hidden[h] * weights[input_dim * hidden_dim + h];\n        }\n        \n        output[b] = 1.0 / (1.0 + exp(-logit)); // Sigmoid\n    }\n}\n\nvoid ganGeneratorForward(double* noise, double* weights, double* output,\n                        int batch_size, int noise_dim, int hidden_dim, int output_dim) {\n    for (int b = 0; b < batch_size; b++) {\n        // Hidden layer 1\n        std::vector<double> hidden1(hidden_dim, 0.0);\n        for (int h = 0; h < hidden_dim; h++) {\n            for (int n = 0; n < noise_dim; n++) {\n                hidden1[h] += noise[b * noise_dim + n] * weights[n * hidden_dim + h];\n            }\n            hidden1[h] = std::max(0.0, hidden1[h]);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/gan_training.cpp",
+      "function": "_Z8ganTrainiiii",
+      "line": 67,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::vector<double> disc_weights(data_dim * 128 + 128, 0.01);\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> dist(0.0, 1.0);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        // Generate fake samples\n        std::vector<double> noise(batch_size * noise_dim);\n        for (int i = 0; i < batch_size * noise_dim; i++) {\n            noise[i] = dist(rng);\n        }\n        \n        std::vector<double> fake_samples(batch_size * data_dim);\n        ganGeneratorForward(noise.data(), gen_weights.data(), fake_samples.data(),\n                           batch_size, noise_dim, 256, data_dim);\n        \n        // Train discriminator\n        std::vector<double> disc_out(batch_size);\n        ganDiscriminatorForward(fake_samples.data(), disc_weights.data(), disc_out.data(),\n                               batch_size, data_dim, 128);\n        \n        // Update weights (simplified gradient descent)\n        for (int i = 0; i < disc_weights.size(); i++) {\n            disc_weights[i] += 0.0001 * (1.0 - disc_out[i % batch_size]);\n        }\n    }\n}\n\nint main() {\n    ganTrain(64, 100, 784, 1000);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

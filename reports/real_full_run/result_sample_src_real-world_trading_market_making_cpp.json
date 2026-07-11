@@ -1,0 +1,435 @@
+{
+  "file": "sample/src/real-world/trading/market_making.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/trading/market_making.cpp",
+    "llvm_initial": 31,
+    "llvm_sys_noise": 17,
+    "llvm_project": 14,
+    "after_filter": 7,
+    "ai_batches": 1,
+    "ai_results": 7,
+    "omp_verified": 0,
+    "total_ms": 656.5,
+    "llvm_ms": 397.9
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z24estimateAdverseSelectionRNSt3__16vectorI5OrderNS_9allocatorIS1_EEEEd",
+      "line": 29,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z24estimateAdverseSelectionRNSt3__16vectorI5OrderNS_9allocatorIS1_EEEEd",
+      "line": 29,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z23inventoryRiskAdjustmentddRdS_d",
+      "line": 44,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                            double& bid_size, double& ask_size,\n                            double max_inventory) {\n    double inventory_skew = (inventory - target_inventory) / max_inventory;\n    \n    // Adjust quote sizes based on inventory\n    if (inventory_skew > 0) {\n        // Long inventory - increase ask size, decrease bid size\n        ask_size *= (1.0 + inventory_skew);\n        bid_size *= (1.0 - inventory_skew);\n    } else {\n        // Short inventory - increase bid size, decrease ask size\n        bid_size *= (1.0 - inventory_skew);\n        ask_size *= (1.0 + inventory_skew);\n    }\n}\n\nvoid marketMakingSimulation(double* prices, int n_ticks, double initial_cash,\n                           double initial_inventory, double risk_aversion) {\n    double cash = initial_cash;\n    double inventory = initial_inventory;\n    \n    const double max_inventory = 100.0;\n    const double base_quote_size = 10.0;\n    \n    std::vector<Order> recent_trades;\n    std::vector<double> pnl_history;\n    \n    for (int t = 1; t < n_ticks; t++) {\n        double mid_price = prices[t];\n        \n        // Estimate volatility\n        double volatility = 0.0;\n        int lookback = std::min(t, 20);\n        for (int i = 0; i < lookback - 1; i++) {\n            double ret = log(prices[t-i] / prices[t-i-1]);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 66,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    const double base_quote_size = 10.0;\n    \n    std::vector<Order> recent_trades;\n    std::vector<double> pnl_history;\n    \n    for (int t = 1; t < n_ticks; t++) {\n        double mid_price = prices[t];\n        \n        // Estimate volatility\n        double volatility = 0.0;\n        int lookback = std::min(t, 20);\n        for (int i = 0; i < lookback - 1; i++) {\n            double ret = log(prices[t-i] / prices[t-i-1]);\n            volatility += ret * ret;\n        }\n        volatility = sqrt(volatility / (lookback - 1));\n        \n        // Calculate optimal quotes\n        double bid_offset, ask_offset;\n        calculateOptimalSpread(mid_price, volatility, inventory, risk_aversion,\n                             bid_offset, ask_offset);\n        \n        double bid_price = mid_price + bid_offset;\n        double ask_price = mid_price + ask_offset;\n        \n        // Adjust for adverse selection\n        double adverse_selection = estimateAdverseSelection(recent_trades, mid_price);\n        bid_price -= adverse_selection;\n        ask_price -= adverse_selection;\n        \n        // Adjust quote sizes for inventory risk\n        double bid_size = base_quote_size;\n        double ask_size = base_quote_size;\n        inventoryRiskAdjustment(inventory, 0.0, bid_size, ask_size, max_inventory);\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 72,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 29,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 29,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 99,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        inventoryRiskAdjustment(inventory, 0.0, bid_size, ask_size, max_inventory);\n        \n        // Simulate fills (simplified)\n        double price_move = prices[t] - prices[t-1];\n        \n        if (price_move > 0 && ask_price < prices[t]) {\n            // Ask filled\n            cash += ask_price * ask_size;\n            inventory -= ask_size;\n            recent_trades.push_back({ask_price, ask_size, false, (double)t});\n        }\n        \n        if (price_move < 0 && bid_price > prices[t]) {\n            // Bid filled\n            cash -= bid_price * bid_size;\n            inventory += bid_size;\n            recent_trades.push_back({bid_price, bid_size, true, (double)t});\n        }\n        \n        // Keep only recent trades\n        if (recent_trades.size() > 100) {\n            recent_trades.erase(recent_trades.begin());\n        }\n        \n        // Calculate PnL\n        double mark_to_market = cash + inventory * mid_price;\n        pnl_history.push_back(mark_to_market);\n    }\n}\n\nint main() {\n    const int n_ticks = 10000;\n    std::vector<double> prices(n_ticks);\n    \n    // Generate price series"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 72,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 106,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            cash += ask_price * ask_size;\n            inventory -= ask_size;\n            recent_trades.push_back({ask_price, ask_size, false, (double)t});\n        }\n        \n        if (price_move < 0 && bid_price > prices[t]) {\n            // Bid filled\n            cash -= bid_price * bid_size;\n            inventory += bid_size;\n            recent_trades.push_back({bid_price, bid_size, true, (double)t});\n        }\n        \n        // Keep only recent trades\n        if (recent_trades.size() > 100) {\n            recent_trades.erase(recent_trades.begin());\n        }\n        \n        // Calculate PnL\n        double mark_to_market = cash + inventory * mid_price;\n        pnl_history.push_back(mark_to_market);\n    }\n}\n\nint main() {\n    const int n_ticks = 10000;\n    std::vector<double> prices(n_ticks);\n    \n    // Generate price series\n    prices[0] = 100.0;\n    std::srand(42);\n    for (int i = 1; i < n_ticks; i++) {\n        double ret = 0.0001 * (std::rand() % 200 - 100);\n        prices[i] = prices[i-1] * (1 + ret);\n    }\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 106,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            cash += ask_price * ask_size;\n            inventory -= ask_size;\n            recent_trades.push_back({ask_price, ask_size, false, (double)t});\n        }\n        \n        if (price_move < 0 && bid_price > prices[t]) {\n            // Bid filled\n            cash -= bid_price * bid_size;\n            inventory += bid_size;\n            recent_trades.push_back({bid_price, bid_size, true, (double)t});\n        }\n        \n        // Keep only recent trades\n        if (recent_trades.size() > 100) {\n            recent_trades.erase(recent_trades.begin());\n        }\n        \n        // Calculate PnL\n        double mark_to_market = cash + inventory * mid_price;\n        pnl_history.push_back(mark_to_market);\n    }\n}\n\nint main() {\n    const int n_ticks = 10000;\n    std::vector<double> prices(n_ticks);\n    \n    // Generate price series\n    prices[0] = 100.0;\n    std::srand(42);\n    for (int i = 1; i < n_ticks; i++) {\n        double ret = 0.0001 * (std::rand() % 200 - 100);\n        prices[i] = prices[i-1] * (1 + ret);\n    }\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 114,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 228,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 1146,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 66,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    const double base_quote_size = 10.0;\n    \n    std::vector<Order> recent_trades;\n    std::vector<double> pnl_history;\n    \n    for (int t = 1; t < n_ticks; t++) {\n        double mid_price = prices[t];\n        \n        // Estimate volatility\n        double volatility = 0.0;\n        int lookback = std::min(t, 20);\n        for (int i = 0; i < lookback - 1; i++) {\n            double ret = log(prices[t-i] / prices[t-i-1]);\n            volatility += ret * ret;\n        }\n        volatility = sqrt(volatility / (lookback - 1));\n        \n        // Calculate optimal quotes\n        double bid_offset, ask_offset;\n        calculateOptimalSpread(mid_price, volatility, inventory, risk_aversion,\n                             bid_offset, ask_offset);\n        \n        double bid_price = mid_price + bid_offset;\n        double ask_price = mid_price + ask_offset;\n        \n        // Adjust for adverse selection\n        double adverse_selection = estimateAdverseSelection(recent_trades, mid_price);\n        bid_price -= adverse_selection;\n        ask_price -= adverse_selection;\n        \n        // Adjust quote sizes for inventory risk\n        double bid_size = base_quote_size;\n        double ask_size = base_quote_size;\n        inventoryRiskAdjustment(inventory, 0.0, bid_size, ask_size, max_inventory);\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "main",
+      "line": 131,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<double> prices(n_ticks);\n    \n    // Generate price series\n    prices[0] = 100.0;\n    std::srand(42);\n    for (int i = 1; i < n_ticks; i++) {\n        double ret = 0.0001 * (std::rand() % 200 - 100);\n        prices[i] = prices[i-1] * (1 + ret);\n    }\n    \n    marketMakingSimulation(prices.data(), n_ticks, 10000.0, 0.0, 0.1);\n    \n    return 0;\n}"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 99,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        inventoryRiskAdjustment(inventory, 0.0, bid_size, ask_size, max_inventory);\n        \n        // Simulate fills (simplified)\n        double price_move = prices[t] - prices[t-1];\n        \n        if (price_move > 0 && ask_price < prices[t]) {\n            // Ask filled\n            cash += ask_price * ask_size;\n            inventory -= ask_size;\n            recent_trades.push_back({ask_price, ask_size, false, (double)t});\n        }\n        \n        if (price_move < 0 && bid_price > prices[t]) {\n            // Bid filled\n            cash -= bid_price * bid_size;\n            inventory += bid_size;\n            recent_trades.push_back({bid_price, bid_size, true, (double)t});\n        }\n        \n        // Keep only recent trades\n        if (recent_trades.size() > 100) {\n            recent_trades.erase(recent_trades.begin());\n        }\n        \n        // Calculate PnL\n        double mark_to_market = cash + inventory * mid_price;\n        pnl_history.push_back(mark_to_market);\n    }\n}\n\nint main() {\n    const int n_ticks = 10000;\n    std::vector<double> prices(n_ticks);\n    \n    // Generate price series",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "main",
+      "line": 131,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<double> prices(n_ticks);\n    \n    // Generate price series\n    prices[0] = 100.0;\n    std::srand(42);\n    for (int i = 1; i < n_ticks; i++) {\n        double ret = 0.0001 * (std::rand() % 200 - 100);\n        prices[i] = prices[i-1] * (1 + ret);\n    }\n    \n    marketMakingSimulation(prices.data(), n_ticks, 10000.0, 0.0, 0.1);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z23inventoryRiskAdjustmentddRdS_d",
+      "line": 44,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                            double& bid_size, double& ask_size,\n                            double max_inventory) {\n    double inventory_skew = (inventory - target_inventory) / max_inventory;\n    \n    // Adjust quote sizes based on inventory\n    if (inventory_skew > 0) {\n        // Long inventory - increase ask size, decrease bid size\n        ask_size *= (1.0 + inventory_skew);\n        bid_size *= (1.0 - inventory_skew);\n    } else {\n        // Short inventory - increase bid size, decrease ask size\n        bid_size *= (1.0 - inventory_skew);\n        ask_size *= (1.0 + inventory_skew);\n    }\n}\n\nvoid marketMakingSimulation(double* prices, int n_ticks, double initial_cash,\n                           double initial_inventory, double risk_aversion) {\n    double cash = initial_cash;\n    double inventory = initial_inventory;\n    \n    const double max_inventory = 100.0;\n    const double base_quote_size = 10.0;\n    \n    std::vector<Order> recent_trades;\n    std::vector<double> pnl_history;\n    \n    for (int t = 1; t < n_ticks; t++) {\n        double mid_price = prices[t];\n        \n        // Estimate volatility\n        double volatility = 0.0;\n        int lookback = std::min(t, 20);\n        for (int i = 0; i < lookback - 1; i++) {\n            double ret = log(prices[t-i] / prices[t-i-1]);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 66,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    const double base_quote_size = 10.0;\n    \n    std::vector<Order> recent_trades;\n    std::vector<double> pnl_history;\n    \n    for (int t = 1; t < n_ticks; t++) {\n        double mid_price = prices[t];\n        \n        // Estimate volatility\n        double volatility = 0.0;\n        int lookback = std::min(t, 20);\n        for (int i = 0; i < lookback - 1; i++) {\n            double ret = log(prices[t-i] / prices[t-i-1]);\n            volatility += ret * ret;\n        }\n        volatility = sqrt(volatility / (lookback - 1));\n        \n        // Calculate optimal quotes\n        double bid_offset, ask_offset;\n        calculateOptimalSpread(mid_price, volatility, inventory, risk_aversion,\n                             bid_offset, ask_offset);\n        \n        double bid_price = mid_price + bid_offset;\n        double ask_price = mid_price + ask_offset;\n        \n        // Adjust for adverse selection\n        double adverse_selection = estimateAdverseSelection(recent_trades, mid_price);\n        bid_price -= adverse_selection;\n        ask_price -= adverse_selection;\n        \n        // Adjust quote sizes for inventory risk\n        double bid_size = base_quote_size;\n        double ask_size = base_quote_size;\n        inventoryRiskAdjustment(inventory, 0.0, bid_size, ask_size, max_inventory);\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 106,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            cash += ask_price * ask_size;\n            inventory -= ask_size;\n            recent_trades.push_back({ask_price, ask_size, false, (double)t});\n        }\n        \n        if (price_move < 0 && bid_price > prices[t]) {\n            // Bid filled\n            cash -= bid_price * bid_size;\n            inventory += bid_size;\n            recent_trades.push_back({bid_price, bid_size, true, (double)t});\n        }\n        \n        // Keep only recent trades\n        if (recent_trades.size() > 100) {\n            recent_trades.erase(recent_trades.begin());\n        }\n        \n        // Calculate PnL\n        double mark_to_market = cash + inventory * mid_price;\n        pnl_history.push_back(mark_to_market);\n    }\n}\n\nint main() {\n    const int n_ticks = 10000;\n    std::vector<double> prices(n_ticks);\n    \n    // Generate price series\n    prices[0] = 100.0;\n    std::srand(42);\n    for (int i = 1; i < n_ticks; i++) {\n        double ret = 0.0001 * (std::rand() % 200 - 100);\n        prices[i] = prices[i-1] * (1 + ret);\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 106,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            cash += ask_price * ask_size;\n            inventory -= ask_size;\n            recent_trades.push_back({ask_price, ask_size, false, (double)t});\n        }\n        \n        if (price_move < 0 && bid_price > prices[t]) {\n            // Bid filled\n            cash -= bid_price * bid_size;\n            inventory += bid_size;\n            recent_trades.push_back({bid_price, bid_size, true, (double)t});\n        }\n        \n        // Keep only recent trades\n        if (recent_trades.size() > 100) {\n            recent_trades.erase(recent_trades.begin());\n        }\n        \n        // Calculate PnL\n        double mark_to_market = cash + inventory * mid_price;\n        pnl_history.push_back(mark_to_market);\n    }\n}\n\nint main() {\n    const int n_ticks = 10000;\n    std::vector<double> prices(n_ticks);\n    \n    // Generate price series\n    prices[0] = 100.0;\n    std::srand(42);\n    for (int i = 1; i < n_ticks; i++) {\n        double ret = 0.0001 * (std::rand() % 200 - 100);\n        prices[i] = prices[i-1] * (1 + ret);\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_making.cpp",
+      "function": "_Z22marketMakingSimulationPdiddd",
+      "line": 66,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    const double base_quote_size = 10.0;\n    \n    std::vector<Order> recent_trades;\n    std::vector<double> pnl_history;\n    \n    for (int t = 1; t < n_ticks; t++) {\n        double mid_price = prices[t];\n        \n        // Estimate volatility\n        double volatility = 0.0;\n        int lookback = std::min(t, 20);\n        for (int i = 0; i < lookback - 1; i++) {\n            double ret = log(prices[t-i] / prices[t-i-1]);\n            volatility += ret * ret;\n        }\n        volatility = sqrt(volatility / (lookback - 1));\n        \n        // Calculate optimal quotes\n        double bid_offset, ask_offset;\n        calculateOptimalSpread(mid_price, volatility, inventory, risk_aversion,\n                             bid_offset, ask_offset);\n        \n        double bid_price = mid_price + bid_offset;\n        double ask_price = mid_price + ask_offset;\n        \n        // Adjust for adverse selection\n        double adverse_selection = estimateAdverseSelection(recent_trades, mid_price);\n        bid_price -= adverse_selection;\n        ask_price -= adverse_selection;\n        \n        // Adjust quote sizes for inventory risk\n        double bid_size = base_quote_size;\n        double ask_size = base_quote_size;\n        inventoryRiskAdjustment(inventory, 0.0, bid_size, ask_size, max_inventory);\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

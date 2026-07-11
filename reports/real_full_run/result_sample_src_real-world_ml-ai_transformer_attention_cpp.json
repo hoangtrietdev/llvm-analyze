@@ -1,0 +1,518 @@
+{
+  "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+    "llvm_initial": 19,
+    "llvm_sys_noise": 2,
+    "llvm_project": 17,
+    "after_filter": 15,
+    "ai_batches": 1,
+    "ai_results": 15,
+    "omp_verified": 0,
+    "total_ms": 573.9,
+    "llvm_ms": 348.1
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void multiHeadAttention(double* queries, double* keys, double* values,\n                       double* output, int seq_len, int d_model, int n_heads) {\n    int d_k = d_model / n_heads;\n    std::vector<double> attention_scores(seq_len * seq_len);\n    \n    for (int h = 0; h < n_heads; h++) {\n        // Compute attention scores Q * K^T / sqrt(d_k)\n        for (int i = 0; i < seq_len; i++) {\n            for (int j = 0; j < seq_len; j++) {\n                double score = 0.0;\n                \n                for (int k = 0; k < d_k; k++) {\n                    int q_idx = i * d_model + h * d_k + k;\n                    int k_idx = j * d_model + h * d_k + k;\n                    score += queries[q_idx] * keys[k_idx];\n                }\n                \n                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int d_k = d_model / n_heads;\n    std::vector<double> attention_scores(seq_len * seq_len);\n    \n    for (int h = 0; h < n_heads; h++) {\n        // Compute attention scores Q * K^T / sqrt(d_k)\n        for (int i = 0; i < seq_len; i++) {\n            for (int j = 0; j < seq_len; j++) {\n                double score = 0.0;\n                \n                for (int k = 0; k < d_k; k++) {\n                    int q_idx = i * d_model + h * d_k + k;\n                    int k_idx = j * d_model + h * d_k + k;\n                    score += queries[q_idx] * keys[k_idx];\n                }\n                \n                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 27,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {\n            for (int k = 0; k < d_k; k++) {\n                double weighted_sum = 0.0;\n                \n                for (int j = 0; j < seq_len; j++) {\n                    int v_idx = j * d_model + h * d_k + k;\n                    weighted_sum += attention_scores[i * seq_len + j] * values[v_idx];\n                }\n                \n                output[i * d_model + h * d_k + k] = weighted_sum;\n            }\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 16,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        // Compute attention scores Q * K^T / sqrt(d_k)\n        for (int i = 0; i < seq_len; i++) {\n            for (int j = 0; j < seq_len; j++) {\n                double score = 0.0;\n                \n                for (int k = 0; k < d_k; k++) {\n                    int q_idx = i * d_model + h * d_k + k;\n                    int k_idx = j * d_model + h * d_k + k;\n                    score += queries[q_idx] * keys[k_idx];\n                }\n                \n                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int d_k = d_model / n_heads;\n    std::vector<double> attention_scores(seq_len * seq_len);\n    \n    for (int h = 0; h < n_heads; h++) {\n        // Compute attention scores Q * K^T / sqrt(d_k)\n        for (int i = 0; i < seq_len; i++) {\n            for (int j = 0; j < seq_len; j++) {\n                double score = 0.0;\n                \n                for (int k = 0; k < d_k; k++) {\n                    int q_idx = i * d_model + h * d_k + k;\n                    int k_idx = j * d_model + h * d_k + k;\n                    score += queries[q_idx] * keys[k_idx];\n                }\n                \n                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 13,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<double> attention_scores(seq_len * seq_len);\n    \n    for (int h = 0; h < n_heads; h++) {\n        // Compute attention scores Q * K^T / sqrt(d_k)\n        for (int i = 0; i < seq_len; i++) {\n            for (int j = 0; j < seq_len; j++) {\n                double score = 0.0;\n                \n                for (int k = 0; k < d_k; k++) {\n                    int q_idx = i * d_model + h * d_k + k;\n                    int k_idx = j * d_model + h * d_k + k;\n                    score += queries[q_idx] * keys[k_idx];\n                }\n                \n                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 16,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        // Compute attention scores Q * K^T / sqrt(d_k)\n        for (int i = 0; i < seq_len; i++) {\n            for (int j = 0; j < seq_len; j++) {\n                double score = 0.0;\n                \n                for (int k = 0; k < d_k; k++) {\n                    int q_idx = i * d_model + h * d_k + k;\n                    int k_idx = j * d_model + h * d_k + k;\n                    score += queries[q_idx] * keys[k_idx];\n                }\n                \n                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 45,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {\n            for (int k = 0; k < d_k; k++) {\n                double weighted_sum = 0.0;\n                \n                for (int j = 0; j < seq_len; j++) {\n                    int v_idx = j * d_model + h * d_k + k;\n                    weighted_sum += attention_scores[i * seq_len + j] * values[v_idx];\n                }\n                \n                output[i * d_model + h * d_k + k] = weighted_sum;\n            }\n        }\n    }\n}\n\nint main() {\n    const int seq_len = 128, d_model = 512, n_heads = 8;\n    std::vector<double> queries(seq_len * d_model, 0.1);\n    std::vector<double> keys(seq_len * d_model, 0.1);\n    std::vector<double> values(seq_len * d_model, 0.1);\n    std::vector<double> output(seq_len * d_model);\n    \n    multiHeadAttention(queries.data(), keys.data(), values.data(), output.data(),\n                      seq_len, d_model, n_heads);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 29,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {\n            for (int k = 0; k < d_k; k++) {\n                double weighted_sum = 0.0;\n                \n                for (int j = 0; j < seq_len; j++) {\n                    int v_idx = j * d_model + h * d_k + k;\n                    weighted_sum += attention_scores[i * seq_len + j] * values[v_idx];\n                }\n                \n                output[i * d_model + h * d_k + k] = weighted_sum;\n            }\n        }\n    }\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 34,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 27,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {\n            for (int k = 0; k < d_k; k++) {\n                double weighted_sum = 0.0;\n                \n                for (int j = 0; j < seq_len; j++) {\n                    int v_idx = j * d_model + h * d_k + k;\n                    weighted_sum += attention_scores[i * seq_len + j] * values[v_idx];\n                }\n                \n                output[i * d_model + h * d_k + k] = weighted_sum;\n            }\n        }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 39,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {\n            for (int k = 0; k < d_k; k++) {\n                double weighted_sum = 0.0;\n                \n                for (int j = 0; j < seq_len; j++) {\n                    int v_idx = j * d_model + h * d_k + k;\n                    weighted_sum += attention_scores[i * seq_len + j] * values[v_idx];\n                }\n                \n                output[i * d_model + h * d_k + k] = weighted_sum;\n            }\n        }\n    }\n}\n\nint main() {\n    const int seq_len = 128, d_model = 512, n_heads = 8;\n    std::vector<double> queries(seq_len * d_model, 0.1);\n    std::vector<double> keys(seq_len * d_model, 0.1);\n    std::vector<double> values(seq_len * d_model, 0.1);\n    std::vector<double> output(seq_len * d_model);\n    \n    multiHeadAttention(queries.data(), keys.data(), values.data(), output.data(),\n                      seq_len, d_model, n_heads);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {\n            for (int k = 0; k < d_k; k++) {\n                double weighted_sum = 0.0;\n                \n                for (int j = 0; j < seq_len; j++) {\n                    int v_idx = j * d_model + h * d_k + k;\n                    weighted_sum += attention_scores[i * seq_len + j] * values[v_idx];\n                }\n                \n                output[i * d_model + h * d_k + k] = weighted_sum;\n            }\n        }\n    }\n}\n\nint main() {\n    const int seq_len = 128, d_model = 512, n_heads = 8;\n    std::vector<double> queries(seq_len * d_model, 0.1);\n    std::vector<double> keys(seq_len * d_model, 0.1);\n    std::vector<double> values(seq_len * d_model, 0.1);\n    std::vector<double> output(seq_len * d_model);\n    \n    multiHeadAttention(queries.data(), keys.data(), values.data(), output.data(),\n                      seq_len, d_model, n_heads);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void multiHeadAttention(double* queries, double* keys, double* values,\n                       double* output, int seq_len, int d_model, int n_heads) {\n    int d_k = d_model / n_heads;\n    std::vector<double> attention_scores(seq_len * seq_len);\n    \n    for (int h = 0; h < n_heads; h++) {\n        // Compute attention scores Q * K^T / sqrt(d_k)\n        for (int i = 0; i < seq_len; i++) {\n            for (int j = 0; j < seq_len; j++) {\n                double score = 0.0;\n                \n                for (int k = 0; k < d_k; k++) {\n                    int q_idx = i * d_model + h * d_k + k;\n                    int k_idx = j * d_model + h * d_k + k;\n                    score += queries[q_idx] * keys[k_idx];\n                }\n                \n                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 45,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {\n            for (int k = 0; k < d_k; k++) {\n                double weighted_sum = 0.0;\n                \n                for (int j = 0; j < seq_len; j++) {\n                    int v_idx = j * d_model + h * d_k + k;\n                    weighted_sum += attention_scores[i * seq_len + j] * values[v_idx];\n                }\n                \n                output[i * d_model + h * d_k + k] = weighted_sum;\n            }\n        }\n    }\n}\n\nint main() {\n    const int seq_len = 128, d_model = 512, n_heads = 8;\n    std::vector<double> queries(seq_len * d_model, 0.1);\n    std::vector<double> keys(seq_len * d_model, 0.1);\n    std::vector<double> values(seq_len * d_model, 0.1);\n    std::vector<double> output(seq_len * d_model);\n    \n    multiHeadAttention(queries.data(), keys.data(), values.data(), output.data(),\n                      seq_len, d_model, n_heads);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 46,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {\n            for (int k = 0; k < d_k; k++) {\n                double weighted_sum = 0.0;\n                \n                for (int j = 0; j < seq_len; j++) {\n                    int v_idx = j * d_model + h * d_k + k;\n                    weighted_sum += attention_scores[i * seq_len + j] * values[v_idx];\n                }\n                \n                output[i * d_model + h * d_k + k] = weighted_sum;\n            }\n        }\n    }\n}\n\nint main() {\n    const int seq_len = 128, d_model = 512, n_heads = 8;\n    std::vector<double> queries(seq_len * d_model, 0.1);\n    std::vector<double> keys(seq_len * d_model, 0.1);\n    std::vector<double> values(seq_len * d_model, 0.1);\n    std::vector<double> output(seq_len * d_model);\n    \n    multiHeadAttention(queries.data(), keys.data(), values.data(), output.data(),\n                      seq_len, d_model, n_heads);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 49,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 13,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<double> attention_scores(seq_len * seq_len);\n    \n    for (int h = 0; h < n_heads; h++) {\n        // Compute attention scores Q * K^T / sqrt(d_k)\n        for (int i = 0; i < seq_len; i++) {\n            for (int j = 0; j < seq_len; j++) {\n                double score = 0.0;\n                \n                for (int k = 0; k < d_k; k++) {\n                    int q_idx = i * d_model + h * d_k + k;\n                    int k_idx = j * d_model + h * d_k + k;\n                    score += queries[q_idx] * keys[k_idx];\n                }\n                \n                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 29,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {\n            for (int k = 0; k < d_k; k++) {\n                double weighted_sum = 0.0;\n                \n                for (int j = 0; j < seq_len; j++) {\n                    int v_idx = j * d_model + h * d_k + k;\n                    weighted_sum += attention_scores[i * seq_len + j] * values[v_idx];\n                }\n                \n                output[i * d_model + h * d_k + k] = weighted_sum;\n            }\n        }\n    }\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 39,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {\n            for (int k = 0; k < d_k; k++) {\n                double weighted_sum = 0.0;\n                \n                for (int j = 0; j < seq_len; j++) {\n                    int v_idx = j * d_model + h * d_k + k;\n                    weighted_sum += attention_scores[i * seq_len + j] * values[v_idx];\n                }\n                \n                output[i * d_model + h * d_k + k] = weighted_sum;\n            }\n        }\n    }\n}\n\nint main() {\n    const int seq_len = 128, d_model = 512, n_heads = 8;\n    std::vector<double> queries(seq_len * d_model, 0.1);\n    std::vector<double> keys(seq_len * d_model, 0.1);\n    std::vector<double> values(seq_len * d_model, 0.1);\n    std::vector<double> output(seq_len * d_model);\n    \n    multiHeadAttention(queries.data(), keys.data(), values.data(), output.data(),\n                      seq_len, d_model, n_heads);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 46,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {\n            for (int k = 0; k < d_k; k++) {\n                double weighted_sum = 0.0;\n                \n                for (int j = 0; j < seq_len; j++) {\n                    int v_idx = j * d_model + h * d_k + k;\n                    weighted_sum += attention_scores[i * seq_len + j] * values[v_idx];\n                }\n                \n                output[i * d_model + h * d_k + k] = weighted_sum;\n            }\n        }\n    }\n}\n\nint main() {\n    const int seq_len = 128, d_model = 512, n_heads = 8;\n    std::vector<double> queries(seq_len * d_model, 0.1);\n    std::vector<double> keys(seq_len * d_model, 0.1);\n    std::vector<double> values(seq_len * d_model, 0.1);\n    std::vector<double> output(seq_len * d_model);\n    \n    multiHeadAttention(queries.data(), keys.data(), values.data(), output.data(),\n                      seq_len, d_model, n_heads);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 16,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        // Compute attention scores Q * K^T / sqrt(d_k)\n        for (int i = 0; i < seq_len; i++) {\n            for (int j = 0; j < seq_len; j++) {\n                double score = 0.0;\n                \n                for (int k = 0; k < d_k; k++) {\n                    int q_idx = i * d_model + h * d_k + k;\n                    int k_idx = j * d_model + h * d_k + k;\n                    score += queries[q_idx] * keys[k_idx];\n                }\n                \n                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 16,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        // Compute attention scores Q * K^T / sqrt(d_k)\n        for (int i = 0; i < seq_len; i++) {\n            for (int j = 0; j < seq_len; j++) {\n                double score = 0.0;\n                \n                for (int k = 0; k < d_k; k++) {\n                    int q_idx = i * d_model + h * d_k + k;\n                    int k_idx = j * d_model + h * d_k + k;\n                    score += queries[q_idx] * keys[k_idx];\n                }\n                \n                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void multiHeadAttention(double* queries, double* keys, double* values,\n                       double* output, int seq_len, int d_model, int n_heads) {\n    int d_k = d_model / n_heads;\n    std::vector<double> attention_scores(seq_len * seq_len);\n    \n    for (int h = 0; h < n_heads; h++) {\n        // Compute attention scores Q * K^T / sqrt(d_k)\n        for (int i = 0; i < seq_len; i++) {\n            for (int j = 0; j < seq_len; j++) {\n                double score = 0.0;\n                \n                for (int k = 0; k < d_k; k++) {\n                    int q_idx = i * d_model + h * d_k + k;\n                    int k_idx = j * d_model + h * d_k + k;\n                    score += queries[q_idx] * keys[k_idx];\n                }\n                \n                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int d_k = d_model / n_heads;\n    std::vector<double> attention_scores(seq_len * seq_len);\n    \n    for (int h = 0; h < n_heads; h++) {\n        // Compute attention scores Q * K^T / sqrt(d_k)\n        for (int i = 0; i < seq_len; i++) {\n            for (int j = 0; j < seq_len; j++) {\n                double score = 0.0;\n                \n                for (int k = 0; k < d_k; k++) {\n                    int q_idx = i * d_model + h * d_k + k;\n                    int k_idx = j * d_model + h * d_k + k;\n                    score += queries[q_idx] * keys[k_idx];\n                }\n                \n                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 27,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {\n            for (int k = 0; k < d_k; k++) {\n                double weighted_sum = 0.0;\n                \n                for (int j = 0; j < seq_len; j++) {\n                    int v_idx = j * d_model + h * d_k + k;\n                    weighted_sum += attention_scores[i * seq_len + j] * values[v_idx];\n                }\n                \n                output[i * d_model + h * d_k + k] = weighted_sum;\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int d_k = d_model / n_heads;\n    std::vector<double> attention_scores(seq_len * seq_len);\n    \n    for (int h = 0; h < n_heads; h++) {\n        // Compute attention scores Q * K^T / sqrt(d_k)\n        for (int i = 0; i < seq_len; i++) {\n            for (int j = 0; j < seq_len; j++) {\n                double score = 0.0;\n                \n                for (int k = 0; k < d_k; k++) {\n                    int q_idx = i * d_model + h * d_k + k;\n                    int k_idx = j * d_model + h * d_k + k;\n                    score += queries[q_idx] * keys[k_idx];\n                }\n                \n                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 45,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {\n            for (int k = 0; k < d_k; k++) {\n                double weighted_sum = 0.0;\n                \n                for (int j = 0; j < seq_len; j++) {\n                    int v_idx = j * d_model + h * d_k + k;\n                    weighted_sum += attention_scores[i * seq_len + j] * values[v_idx];\n                }\n                \n                output[i * d_model + h * d_k + k] = weighted_sum;\n            }\n        }\n    }\n}\n\nint main() {\n    const int seq_len = 128, d_model = 512, n_heads = 8;\n    std::vector<double> queries(seq_len * d_model, 0.1);\n    std::vector<double> keys(seq_len * d_model, 0.1);\n    std::vector<double> values(seq_len * d_model, 0.1);\n    std::vector<double> output(seq_len * d_model);\n    \n    multiHeadAttention(queries.data(), keys.data(), values.data(), output.data(),\n                      seq_len, d_model, n_heads);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 27,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {\n            for (int k = 0; k < d_k; k++) {\n                double weighted_sum = 0.0;\n                \n                for (int j = 0; j < seq_len; j++) {\n                    int v_idx = j * d_model + h * d_k + k;\n                    weighted_sum += attention_scores[i * seq_len + j] * values[v_idx];\n                }\n                \n                output[i * d_model + h * d_k + k] = weighted_sum;\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {\n            for (int k = 0; k < d_k; k++) {\n                double weighted_sum = 0.0;\n                \n                for (int j = 0; j < seq_len; j++) {\n                    int v_idx = j * d_model + h * d_k + k;\n                    weighted_sum += attention_scores[i * seq_len + j] * values[v_idx];\n                }\n                \n                output[i * d_model + h * d_k + k] = weighted_sum;\n            }\n        }\n    }\n}\n\nint main() {\n    const int seq_len = 128, d_model = 512, n_heads = 8;\n    std::vector<double> queries(seq_len * d_model, 0.1);\n    std::vector<double> keys(seq_len * d_model, 0.1);\n    std::vector<double> values(seq_len * d_model, 0.1);\n    std::vector<double> output(seq_len * d_model);\n    \n    multiHeadAttention(queries.data(), keys.data(), values.data(), output.data(),\n                      seq_len, d_model, n_heads);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void multiHeadAttention(double* queries, double* keys, double* values,\n                       double* output, int seq_len, int d_model, int n_heads) {\n    int d_k = d_model / n_heads;\n    std::vector<double> attention_scores(seq_len * seq_len);\n    \n    for (int h = 0; h < n_heads; h++) {\n        // Compute attention scores Q * K^T / sqrt(d_k)\n        for (int i = 0; i < seq_len; i++) {\n            for (int j = 0; j < seq_len; j++) {\n                double score = 0.0;\n                \n                for (int k = 0; k < d_k; k++) {\n                    int q_idx = i * d_model + h * d_k + k;\n                    int k_idx = j * d_model + h * d_k + k;\n                    score += queries[q_idx] * keys[k_idx];\n                }\n                \n                attention_scores[i * seq_len + j] = score / sqrt((double)d_k);\n            }\n        }\n        \n        // Softmax over attention scores\n        for (int i = 0; i < seq_len; i++) {\n            double max_score = -1e9;\n            for (int j = 0; j < seq_len; j++) {\n                max_score = std::max(max_score, attention_scores[i * seq_len + j]);\n            }\n            \n            double sum_exp = 0.0;\n            for (int j = 0; j < seq_len; j++) {\n                attention_scores[i * seq_len + j] = exp(attention_scores[i * seq_len + j] - max_score);\n                sum_exp += attention_scores[i * seq_len + j];\n            }\n            \n            for (int j = 0; j < seq_len; j++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/transformer_attention.cpp",
+      "function": "_Z18multiHeadAttentionPdS_S_S_iii",
+      "line": 45,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                attention_scores[i * seq_len + j] /= sum_exp;\n            }\n        }\n        \n        // Compute attention * values\n        for (int i = 0; i < seq_len; i++) {\n            for (int k = 0; k < d_k; k++) {\n                double weighted_sum = 0.0;\n                \n                for (int j = 0; j < seq_len; j++) {\n                    int v_idx = j * d_model + h * d_k + k;\n                    weighted_sum += attention_scores[i * seq_len + j] * values[v_idx];\n                }\n                \n                output[i * d_model + h * d_k + k] = weighted_sum;\n            }\n        }\n    }\n}\n\nint main() {\n    const int seq_len = 128, d_model = 512, n_heads = 8;\n    std::vector<double> queries(seq_len * d_model, 0.1);\n    std::vector<double> keys(seq_len * d_model, 0.1);\n    std::vector<double> values(seq_len * d_model, 0.1);\n    std::vector<double> output(seq_len * d_model);\n    \n    multiHeadAttention(queries.data(), keys.data(), values.data(), output.data(),\n                      seq_len, d_model, n_heads);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

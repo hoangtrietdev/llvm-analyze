@@ -1,0 +1,184 @@
+{
+  "file": "sample/src/real-world/healthcare/retina_analysis.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/healthcare/retina_analysis.cpp",
+    "llvm_initial": 11,
+    "llvm_sys_noise": 0,
+    "llvm_project": 11,
+    "after_filter": 3,
+    "ai_batches": 1,
+    "ai_results": 3,
+    "omp_verified": 0,
+    "total_ms": 645.2,
+    "llvm_ms": 377.1
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/retina_analysis.cpp",
+      "function": "_Z20detectMicroaneurysmsPdPiiid",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/retina_analysis.cpp",
+      "function": "_Z20detectMicroaneurysmsPdPiiid",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/retina_analysis.cpp",
+      "function": "_Z20detectMicroaneurysmsPdPiiid",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/retina_analysis.cpp",
+      "function": "_Z20detectMicroaneurysmsPdPiiid",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/retina_analysis.cpp",
+      "function": "_Z20detectMicroaneurysmsPdPiiid",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            double center = retina_image[y*width + x];\n            double ring_avg = 0.0;\n            int ring_count = 0;\n            \n            // Check for dark spots (microaneurysms)\n            for (int r = 3; r <= 5; r++) {\n                for (int theta = 0; theta < 360; theta += 10) {\n                    int dx = (int)(r * cos(theta * M_PI / 180.0));\n                    int dy = (int)(r * sin(theta * M_PI / 180.0));\n                    ring_avg += retina_image[(y+dy)*width + (x+dx)];\n                    ring_count++;\n                }\n            }\n            ring_avg /= ring_count;\n            \n            double contrast = ring_avg - center;\n            \n            if (contrast > threshold) {\n                lesion_map[y*width + x] = 1;\n            }\n        }\n    }\n}\n\nvoid classifyRetinopathy(int* lesion_map, int width, int height, int& severity_level) {\n    int lesion_count = 0;\n    \n    for (int i = 0; i < width * height; i++) {\n        lesion_count += lesion_map[i];\n    }\n    \n    if (lesion_count < 5) severity_level = 0; // No DR\n    else if (lesion_count < 20) severity_level = 1; // Mild\n    else if (lesion_count < 50) severity_level = 2; // Moderate\n    else severity_level = 3; // Severe"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/retina_analysis.cpp",
+      "function": "_Z20detectMicroaneurysmsPdPiiid",
+      "line": 15,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.44999999999999996
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/retina_analysis.cpp",
+      "function": "_Z20detectMicroaneurysmsPdPiiid",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/retina_analysis.cpp",
+      "function": "_Z19classifyRetinopathyPiiiRi",
+      "line": 36,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "}\n\nvoid classifyRetinopathy(int* lesion_map, int width, int height, int& severity_level) {\n    int lesion_count = 0;\n    \n    for (int i = 0; i < width * height; i++) {\n        lesion_count += lesion_map[i];\n    }\n    \n    if (lesion_count < 5) severity_level = 0; // No DR\n    else if (lesion_count < 20) severity_level = 1; // Mild\n    else if (lesion_count < 50) severity_level = 2; // Moderate\n    else severity_level = 3; // Severe\n}\n\nint main() {\n    const int width = 2048, height = 1536;\n    std::vector<double> retina_image(width * height, 128.0);\n    std::vector<int> lesion_map(width * height, 0);\n    \n    detectMicroaneurysms(retina_image.data(), lesion_map.data(), width, height, 30.0);\n    \n    int severity;\n    classifyRetinopathy(lesion_map.data(), width, height, severity);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/retina_analysis.cpp",
+      "function": "_Z19classifyRetinopathyPiiiRi",
+      "line": 40,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/retina_analysis.cpp",
+      "function": "_Z19classifyRetinopathyPiiiRi",
+      "line": 36,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "}\n\nvoid classifyRetinopathy(int* lesion_map, int width, int height, int& severity_level) {\n    int lesion_count = 0;\n    \n    for (int i = 0; i < width * height; i++) {\n        lesion_count += lesion_map[i];\n    }\n    \n    if (lesion_count < 5) severity_level = 0; // No DR\n    else if (lesion_count < 20) severity_level = 1; // Mild\n    else if (lesion_count < 50) severity_level = 2; // Moderate\n    else severity_level = 3; // Severe\n}\n\nint main() {\n    const int width = 2048, height = 1536;\n    std::vector<double> retina_image(width * height, 128.0);\n    std::vector<int> lesion_map(width * height, 0);\n    \n    detectMicroaneurysms(retina_image.data(), lesion_map.data(), width, height, 30.0);\n    \n    int severity;\n    classifyRetinopathy(lesion_map.data(), width, height, severity);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/retina_analysis.cpp",
+      "function": "_Z19classifyRetinopathyPiiiRi",
+      "line": 41,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/retina_analysis.cpp",
+      "function": "_Z19classifyRetinopathyPiiiRi",
+      "line": 36,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "}\n\nvoid classifyRetinopathy(int* lesion_map, int width, int height, int& severity_level) {\n    int lesion_count = 0;\n    \n    for (int i = 0; i < width * height; i++) {\n        lesion_count += lesion_map[i];\n    }\n    \n    if (lesion_count < 5) severity_level = 0; // No DR\n    else if (lesion_count < 20) severity_level = 1; // Mild\n    else if (lesion_count < 50) severity_level = 2; // Moderate\n    else severity_level = 3; // Severe\n}\n\nint main() {\n    const int width = 2048, height = 1536;\n    std::vector<double> retina_image(width * height, 128.0);\n    std::vector<int> lesion_map(width * height, 0);\n    \n    detectMicroaneurysms(retina_image.data(), lesion_map.data(), width, height, 30.0);\n    \n    int severity;\n    classifyRetinopathy(lesion_map.data(), width, height, severity);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/retina_analysis.cpp",
+      "function": "_Z20detectMicroaneurysmsPdPiiid",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            double center = retina_image[y*width + x];\n            double ring_avg = 0.0;\n            int ring_count = 0;\n            \n            // Check for dark spots (microaneurysms)\n            for (int r = 3; r <= 5; r++) {\n                for (int theta = 0; theta < 360; theta += 10) {\n                    int dx = (int)(r * cos(theta * M_PI / 180.0));\n                    int dy = (int)(r * sin(theta * M_PI / 180.0));\n                    ring_avg += retina_image[(y+dy)*width + (x+dx)];\n                    ring_count++;\n                }\n            }\n            ring_avg /= ring_count;\n            \n            double contrast = ring_avg - center;\n            \n            if (contrast > threshold) {\n                lesion_map[y*width + x] = 1;\n            }\n        }\n    }\n}\n\nvoid classifyRetinopathy(int* lesion_map, int width, int height, int& severity_level) {\n    int lesion_count = 0;\n    \n    for (int i = 0; i < width * height; i++) {\n        lesion_count += lesion_map[i];\n    }\n    \n    if (lesion_count < 5) severity_level = 0; // No DR\n    else if (lesion_count < 20) severity_level = 1; // Mild\n    else if (lesion_count < 50) severity_level = 2; // Moderate\n    else severity_level = 3; // Severe",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/retina_analysis.cpp",
+      "function": "_Z19classifyRetinopathyPiiiRi",
+      "line": 36,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "}\n\nvoid classifyRetinopathy(int* lesion_map, int width, int height, int& severity_level) {\n    int lesion_count = 0;\n    \n    for (int i = 0; i < width * height; i++) {\n        lesion_count += lesion_map[i];\n    }\n    \n    if (lesion_count < 5) severity_level = 0; // No DR\n    else if (lesion_count < 20) severity_level = 1; // Mild\n    else if (lesion_count < 50) severity_level = 2; // Moderate\n    else severity_level = 3; // Severe\n}\n\nint main() {\n    const int width = 2048, height = 1536;\n    std::vector<double> retina_image(width * height, 128.0);\n    std::vector<int> lesion_map(width * height, 0);\n    \n    detectMicroaneurysms(retina_image.data(), lesion_map.data(), width, height, 30.0);\n    \n    int severity;\n    classifyRetinopathy(lesion_map.data(), width, height, severity);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

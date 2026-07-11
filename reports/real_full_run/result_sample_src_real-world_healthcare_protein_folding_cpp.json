@@ -1,0 +1,523 @@
+{
+  "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+    "llvm_initial": 32,
+    "llvm_sys_noise": 4,
+    "llvm_project": 28,
+    "after_filter": 10,
+    "ai_batches": 1,
+    "ai_results": 10,
+    "omp_verified": 0,
+    "total_ms": 777.5,
+    "llvm_ms": 408.5
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "main",
+      "line": 66,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "main",
+      "line": 67,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "main",
+      "line": 66,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n        }\n    }\n    \n    void integrate_motion(double dt) {\n        for (auto& residue : protein_chain) {\n            for (auto& atom : residue.atoms) {\n                // Velocity Verlet integration\n                atom.vx += 0.5 * atom.fx / atom.mass * dt;\n                atom.vy += 0.5 * atom.fy / atom.mass * dt;\n                atom.vz += 0.5 * atom.fz / atom.mass * dt;\n                \n                atom.x += atom.vx * dt;\n                atom.y += atom.vy * dt;\n                atom.z += atom.vz * dt;\n            }\n        }\n    }\n    \n    double calculate_energy() {\n        double potential = 0.0, kinetic = 0.0;\n        \n        for (size_t i = 0; i < protein_chain.size(); i++) {\n            for (size_t j = i + 1; j < protein_chain.size(); j++) {\n                for (const auto& atom1 : protein_chain[i].atoms) {\n                    for (const auto& atom2 : protein_chain[j].atoms) {\n                        double dx = atom2.x - atom1.x;\n                        double dy = atom2.y - atom1.y;\n                        double dz = atom2.z - atom1.z;\n                        double r = sqrt(dx*dx + dy*dy + dz*dz);\n                        \n                        double sigma = 3.5, epsilon = 0.1;\n                        double sr6 = pow(sigma/r, 6);\n                        potential += 4.0 * epsilon * (sr6*sr6 - sr6);\n                    }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "main",
+      "line": 67,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "main",
+      "line": 115,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "main",
+      "line": 111,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_forcesEv",
+      "line": 30,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    double total_energy;\n    \npublic:\n    void calculate_forces() {\n        // Reset forces\n        for (auto& residue : protein_chain) {\n            for (auto& atom : residue.atoms) {\n                atom.fx = atom.fy = atom.fz = 0.0;\n            }\n        }\n        \n        // Calculate pairwise interactions\n        for (size_t i = 0; i < protein_chain.size(); i++) {\n            for (size_t j = i + 1; j < protein_chain.size(); j++) {\n                for (auto& atom1 : protein_chain[i].atoms) {\n                    for (auto& atom2 : protein_chain[j].atoms) {\n                        double dx = atom2.x - atom1.x;\n                        double dy = atom2.y - atom1.y;\n                        double dz = atom2.z - atom1.z;\n                        double r2 = dx*dx + dy*dy + dz*dz;\n                        double r = sqrt(r2);\n                        \n                        // Lennard-Jones potential\n                        double sigma = 3.5;\n                        double epsilon = 0.1;\n                        double sr6 = pow(sigma/r, 6);\n                        double force_magnitude = 24.0 * epsilon * (2.0*sr6*sr6 - sr6) / r2;\n                        \n                        atom1.fx -= force_magnitude * dx;\n                        atom1.fy -= force_magnitude * dy;\n                        atom1.fz -= force_magnitude * dz;\n                        atom2.fx += force_magnitude * dx;\n                        atom2.fy += force_magnitude * dy;\n                        atom2.fz += force_magnitude * dz;\n                    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_forcesEv",
+      "line": 37,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_forcesEv",
+      "line": 31,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    \npublic:\n    void calculate_forces() {\n        // Reset forces\n        for (auto& residue : protein_chain) {\n            for (auto& atom : residue.atoms) {\n                atom.fx = atom.fy = atom.fz = 0.0;\n            }\n        }\n        \n        // Calculate pairwise interactions\n        for (size_t i = 0; i < protein_chain.size(); i++) {\n            for (size_t j = i + 1; j < protein_chain.size(); j++) {\n                for (auto& atom1 : protein_chain[i].atoms) {\n                    for (auto& atom2 : protein_chain[j].atoms) {\n                        double dx = atom2.x - atom1.x;\n                        double dy = atom2.y - atom1.y;\n                        double dz = atom2.z - atom1.z;\n                        double r2 = dx*dx + dy*dy + dz*dz;\n                        double r = sqrt(r2);\n                        \n                        // Lennard-Jones potential\n                        double sigma = 3.5;\n                        double epsilon = 0.1;\n                        double sr6 = pow(sigma/r, 6);\n                        double force_magnitude = 24.0 * epsilon * (2.0*sr6*sr6 - sr6) / r2;\n                        \n                        atom1.fx -= force_magnitude * dx;\n                        atom1.fy -= force_magnitude * dy;\n                        atom1.fz -= force_magnitude * dz;\n                        atom2.fx += force_magnitude * dx;\n                        atom2.fy += force_magnitude * dy;\n                        atom2.fz += force_magnitude * dz;\n                    }\n                }"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_forcesEv",
+      "line": 30,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    double total_energy;\n    \npublic:\n    void calculate_forces() {\n        // Reset forces\n        for (auto& residue : protein_chain) {\n            for (auto& atom : residue.atoms) {\n                atom.fx = atom.fy = atom.fz = 0.0;\n            }\n        }\n        \n        // Calculate pairwise interactions\n        for (size_t i = 0; i < protein_chain.size(); i++) {\n            for (size_t j = i + 1; j < protein_chain.size(); j++) {\n                for (auto& atom1 : protein_chain[i].atoms) {\n                    for (auto& atom2 : protein_chain[j].atoms) {\n                        double dx = atom2.x - atom1.x;\n                        double dy = atom2.y - atom1.y;\n                        double dz = atom2.z - atom1.z;\n                        double r2 = dx*dx + dy*dy + dz*dz;\n                        double r = sqrt(r2);\n                        \n                        // Lennard-Jones potential\n                        double sigma = 3.5;\n                        double epsilon = 0.1;\n                        double sr6 = pow(sigma/r, 6);\n                        double force_magnitude = 24.0 * epsilon * (2.0*sr6*sr6 - sr6) / r2;\n                        \n                        atom1.fx -= force_magnitude * dx;\n                        atom1.fy -= force_magnitude * dy;\n                        atom1.fz -= force_magnitude * dz;\n                        atom2.fx += force_magnitude * dx;\n                        atom2.fy += force_magnitude * dy;\n                        atom2.fz += force_magnitude * dz;\n                    }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_forcesEv",
+      "line": 31,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    \npublic:\n    void calculate_forces() {\n        // Reset forces\n        for (auto& residue : protein_chain) {\n            for (auto& atom : residue.atoms) {\n                atom.fx = atom.fy = atom.fz = 0.0;\n            }\n        }\n        \n        // Calculate pairwise interactions\n        for (size_t i = 0; i < protein_chain.size(); i++) {\n            for (size_t j = i + 1; j < protein_chain.size(); j++) {\n                for (auto& atom1 : protein_chain[i].atoms) {\n                    for (auto& atom2 : protein_chain[j].atoms) {\n                        double dx = atom2.x - atom1.x;\n                        double dy = atom2.y - atom1.y;\n                        double dz = atom2.z - atom1.z;\n                        double r2 = dx*dx + dy*dy + dz*dz;\n                        double r = sqrt(r2);\n                        \n                        // Lennard-Jones potential\n                        double sigma = 3.5;\n                        double epsilon = 0.1;\n                        double sr6 = pow(sigma/r, 6);\n                        double force_magnitude = 24.0 * epsilon * (2.0*sr6*sr6 - sr6) / r2;\n                        \n                        atom1.fx -= force_magnitude * dx;\n                        atom1.fy -= force_magnitude * dy;\n                        atom1.fz -= force_magnitude * dz;\n                        atom2.fx += force_magnitude * dx;\n                        atom2.fy += force_magnitude * dy;\n                        atom2.fz += force_magnitude * dz;\n                    }\n                }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_forcesEv",
+      "line": 37,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_forcesEv",
+      "line": 38,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_forcesEv",
+      "line": 39,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_forcesEv",
+      "line": 38,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_forcesEv",
+      "line": 40,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_forcesEv",
+      "line": 39,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.88,
+      "context": "        }\n        \n        // Calculate pairwise interactions\n        for (size_t i = 0; i < protein_chain.size(); i++) {\n            for (size_t j = i + 1; j < protein_chain.size(); j++) {\n                for (auto& atom1 : protein_chain[i].atoms) {\n                    for (auto& atom2 : protein_chain[j].atoms) {\n                        double dx = atom2.x - atom1.x;\n                        double dy = atom2.y - atom1.y;\n                        double dz = atom2.z - atom1.z;\n                        double r2 = dx*dx + dy*dy + dz*dz;\n                        double r = sqrt(r2);\n                        \n                        // Lennard-Jones potential\n                        double sigma = 3.5;\n                        double epsilon = 0.1;\n                        double sr6 = pow(sigma/r, 6);\n                        double force_magnitude = 24.0 * epsilon * (2.0*sr6*sr6 - sr6) / r2;\n                        \n                        atom1.fx -= force_magnitude * dx;\n                        atom1.fy -= force_magnitude * dy;\n                        atom1.fz -= force_magnitude * dz;\n                        atom2.fx += force_magnitude * dx;\n                        atom2.fy += force_magnitude * dy;\n                        atom2.fz += force_magnitude * dz;\n                    }\n                }\n            }\n        }\n    }\n    \n    void integrate_motion(double dt) {\n        for (auto& residue : protein_chain) {\n            for (auto& atom : residue.atoms) {\n                // Velocity Verlet integration"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_forcesEv",
+      "line": 40,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.30000000000000004
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_energyEv",
+      "line": 83,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8800000000000001,
+      "context": "    }\n    \n    double calculate_energy() {\n        double potential = 0.0, kinetic = 0.0;\n        \n        for (size_t i = 0; i < protein_chain.size(); i++) {\n            for (size_t j = i + 1; j < protein_chain.size(); j++) {\n                for (const auto& atom1 : protein_chain[i].atoms) {\n                    for (const auto& atom2 : protein_chain[j].atoms) {\n                        double dx = atom2.x - atom1.x;\n                        double dy = atom2.y - atom1.y;\n                        double dz = atom2.z - atom1.z;\n                        double r = sqrt(dx*dx + dy*dy + dz*dz);\n                        \n                        double sigma = 3.5, epsilon = 0.1;\n                        double sr6 = pow(sigma/r, 6);\n                        potential += 4.0 * epsilon * (sr6*sr6 - sr6);\n                    }\n                }\n            }\n            \n            for (const auto& atom : protein_chain[i].atoms) {\n                kinetic += 0.5 * atom.mass * (atom.vx*atom.vx + atom.vy*atom.vy + atom.vz*atom.vz);\n            }\n        }\n        \n        return potential + kinetic;\n    }\n};\n\nint main() {\n    ProteinFolder folder;\n    \n    for (int step = 0; step < SIMULATION_STEPS; step++) {\n        folder.calculate_forces();"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_energyEv",
+      "line": 83,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_energyEv",
+      "line": 84,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_energyEv",
+      "line": 99,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "                        potential += 4.0 * epsilon * (sr6*sr6 - sr6);\n                    }\n                }\n            }\n            \n            for (const auto& atom : protein_chain[i].atoms) {\n                kinetic += 0.5 * atom.mass * (atom.vx*atom.vx + atom.vy*atom.vy + atom.vz*atom.vz);\n            }\n        }\n        \n        return potential + kinetic;\n    }\n};\n\nint main() {\n    ProteinFolder folder;\n    \n    for (int step = 0; step < SIMULATION_STEPS; step++) {\n        folder.calculate_forces();\n        folder.integrate_motion(0.001);\n        \n        if (step % 1000 == 0) {\n            double energy = folder.calculate_energy();\n        }\n    }\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_energyEv",
+      "line": 85,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_energyEv",
+      "line": 84,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_energyEv",
+      "line": 86,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_energyEv",
+      "line": 85,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.88,
+      "context": "    double calculate_energy() {\n        double potential = 0.0, kinetic = 0.0;\n        \n        for (size_t i = 0; i < protein_chain.size(); i++) {\n            for (size_t j = i + 1; j < protein_chain.size(); j++) {\n                for (const auto& atom1 : protein_chain[i].atoms) {\n                    for (const auto& atom2 : protein_chain[j].atoms) {\n                        double dx = atom2.x - atom1.x;\n                        double dy = atom2.y - atom1.y;\n                        double dz = atom2.z - atom1.z;\n                        double r = sqrt(dx*dx + dy*dy + dz*dz);\n                        \n                        double sigma = 3.5, epsilon = 0.1;\n                        double sr6 = pow(sigma/r, 6);\n                        potential += 4.0 * epsilon * (sr6*sr6 - sr6);\n                    }\n                }\n            }\n            \n            for (const auto& atom : protein_chain[i].atoms) {\n                kinetic += 0.5 * atom.mass * (atom.vx*atom.vx + atom.vy*atom.vy + atom.vz*atom.vz);\n            }\n        }\n        \n        return potential + kinetic;\n    }\n};\n\nint main() {\n    ProteinFolder folder;\n    \n    for (int step = 0; step < SIMULATION_STEPS; step++) {\n        folder.calculate_forces();\n        folder.integrate_motion(0.001);\n        "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_energyEv",
+      "line": 86,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.30000000000000004
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_energyEv",
+      "line": 99,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "                        potential += 4.0 * epsilon * (sr6*sr6 - sr6);\n                    }\n                }\n            }\n            \n            for (const auto& atom : protein_chain[i].atoms) {\n                kinetic += 0.5 * atom.mass * (atom.vx*atom.vx + atom.vy*atom.vy + atom.vz*atom.vz);\n            }\n        }\n        \n        return potential + kinetic;\n    }\n};\n\nint main() {\n    ProteinFolder folder;\n    \n    for (int step = 0; step < SIMULATION_STEPS; step++) {\n        folder.calculate_forces();\n        folder.integrate_motion(0.001);\n        \n        if (step % 1000 == 0) {\n            double energy = folder.calculate_energy();\n        }\n    }\n    \n    return 0;\n}"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "main",
+      "line": 66,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n        }\n    }\n    \n    void integrate_motion(double dt) {\n        for (auto& residue : protein_chain) {\n            for (auto& atom : residue.atoms) {\n                // Velocity Verlet integration\n                atom.vx += 0.5 * atom.fx / atom.mass * dt;\n                atom.vy += 0.5 * atom.fy / atom.mass * dt;\n                atom.vz += 0.5 * atom.fz / atom.mass * dt;\n                \n                atom.x += atom.vx * dt;\n                atom.y += atom.vy * dt;\n                atom.z += atom.vz * dt;\n            }\n        }\n    }\n    \n    double calculate_energy() {\n        double potential = 0.0, kinetic = 0.0;\n        \n        for (size_t i = 0; i < protein_chain.size(); i++) {\n            for (size_t j = i + 1; j < protein_chain.size(); j++) {\n                for (const auto& atom1 : protein_chain[i].atoms) {\n                    for (const auto& atom2 : protein_chain[j].atoms) {\n                        double dx = atom2.x - atom1.x;\n                        double dy = atom2.y - atom1.y;\n                        double dz = atom2.z - atom1.z;\n                        double r = sqrt(dx*dx + dy*dy + dz*dz);\n                        \n                        double sigma = 3.5, epsilon = 0.1;\n                        double sr6 = pow(sigma/r, 6);\n                        potential += 4.0 * epsilon * (sr6*sr6 - sr6);\n                    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_forcesEv",
+      "line": 30,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    double total_energy;\n    \npublic:\n    void calculate_forces() {\n        // Reset forces\n        for (auto& residue : protein_chain) {\n            for (auto& atom : residue.atoms) {\n                atom.fx = atom.fy = atom.fz = 0.0;\n            }\n        }\n        \n        // Calculate pairwise interactions\n        for (size_t i = 0; i < protein_chain.size(); i++) {\n            for (size_t j = i + 1; j < protein_chain.size(); j++) {\n                for (auto& atom1 : protein_chain[i].atoms) {\n                    for (auto& atom2 : protein_chain[j].atoms) {\n                        double dx = atom2.x - atom1.x;\n                        double dy = atom2.y - atom1.y;\n                        double dz = atom2.z - atom1.z;\n                        double r2 = dx*dx + dy*dy + dz*dz;\n                        double r = sqrt(r2);\n                        \n                        // Lennard-Jones potential\n                        double sigma = 3.5;\n                        double epsilon = 0.1;\n                        double sr6 = pow(sigma/r, 6);\n                        double force_magnitude = 24.0 * epsilon * (2.0*sr6*sr6 - sr6) / r2;\n                        \n                        atom1.fx -= force_magnitude * dx;\n                        atom1.fy -= force_magnitude * dy;\n                        atom1.fz -= force_magnitude * dz;\n                        atom2.fx += force_magnitude * dx;\n                        atom2.fy += force_magnitude * dy;\n                        atom2.fz += force_magnitude * dz;\n                    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_energyEv",
+      "line": 83,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8800000000000001,
+      "context": "    }\n    \n    double calculate_energy() {\n        double potential = 0.0, kinetic = 0.0;\n        \n        for (size_t i = 0; i < protein_chain.size(); i++) {\n            for (size_t j = i + 1; j < protein_chain.size(); j++) {\n                for (const auto& atom1 : protein_chain[i].atoms) {\n                    for (const auto& atom2 : protein_chain[j].atoms) {\n                        double dx = atom2.x - atom1.x;\n                        double dy = atom2.y - atom1.y;\n                        double dz = atom2.z - atom1.z;\n                        double r = sqrt(dx*dx + dy*dy + dz*dz);\n                        \n                        double sigma = 3.5, epsilon = 0.1;\n                        double sr6 = pow(sigma/r, 6);\n                        potential += 4.0 * epsilon * (sr6*sr6 - sr6);\n                    }\n                }\n            }\n            \n            for (const auto& atom : protein_chain[i].atoms) {\n                kinetic += 0.5 * atom.mass * (atom.vx*atom.vx + atom.vy*atom.vy + atom.vz*atom.vz);\n            }\n        }\n        \n        return potential + kinetic;\n    }\n};\n\nint main() {\n    ProteinFolder folder;\n    \n    for (int step = 0; step < SIMULATION_STEPS; step++) {\n        folder.calculate_forces();",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8800000000000001
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_forcesEv",
+      "line": 39,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.88,
+      "context": "        }\n        \n        // Calculate pairwise interactions\n        for (size_t i = 0; i < protein_chain.size(); i++) {\n            for (size_t j = i + 1; j < protein_chain.size(); j++) {\n                for (auto& atom1 : protein_chain[i].atoms) {\n                    for (auto& atom2 : protein_chain[j].atoms) {\n                        double dx = atom2.x - atom1.x;\n                        double dy = atom2.y - atom1.y;\n                        double dz = atom2.z - atom1.z;\n                        double r2 = dx*dx + dy*dy + dz*dz;\n                        double r = sqrt(r2);\n                        \n                        // Lennard-Jones potential\n                        double sigma = 3.5;\n                        double epsilon = 0.1;\n                        double sr6 = pow(sigma/r, 6);\n                        double force_magnitude = 24.0 * epsilon * (2.0*sr6*sr6 - sr6) / r2;\n                        \n                        atom1.fx -= force_magnitude * dx;\n                        atom1.fy -= force_magnitude * dy;\n                        atom1.fz -= force_magnitude * dz;\n                        atom2.fx += force_magnitude * dx;\n                        atom2.fy += force_magnitude * dy;\n                        atom2.fz += force_magnitude * dz;\n                    }\n                }\n            }\n        }\n    }\n    \n    void integrate_motion(double dt) {\n        for (auto& residue : protein_chain) {\n            for (auto& atom : residue.atoms) {\n                // Velocity Verlet integration",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.88
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_energyEv",
+      "line": 85,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.88,
+      "context": "    double calculate_energy() {\n        double potential = 0.0, kinetic = 0.0;\n        \n        for (size_t i = 0; i < protein_chain.size(); i++) {\n            for (size_t j = i + 1; j < protein_chain.size(); j++) {\n                for (const auto& atom1 : protein_chain[i].atoms) {\n                    for (const auto& atom2 : protein_chain[j].atoms) {\n                        double dx = atom2.x - atom1.x;\n                        double dy = atom2.y - atom1.y;\n                        double dz = atom2.z - atom1.z;\n                        double r = sqrt(dx*dx + dy*dy + dz*dz);\n                        \n                        double sigma = 3.5, epsilon = 0.1;\n                        double sr6 = pow(sigma/r, 6);\n                        potential += 4.0 * epsilon * (sr6*sr6 - sr6);\n                    }\n                }\n            }\n            \n            for (const auto& atom : protein_chain[i].atoms) {\n                kinetic += 0.5 * atom.mass * (atom.vx*atom.vx + atom.vy*atom.vy + atom.vz*atom.vz);\n            }\n        }\n        \n        return potential + kinetic;\n    }\n};\n\nint main() {\n    ProteinFolder folder;\n    \n    for (int step = 0; step < SIMULATION_STEPS; step++) {\n        folder.calculate_forces();\n        folder.integrate_motion(0.001);\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.88
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_forcesEv",
+      "line": 30,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    double total_energy;\n    \npublic:\n    void calculate_forces() {\n        // Reset forces\n        for (auto& residue : protein_chain) {\n            for (auto& atom : residue.atoms) {\n                atom.fx = atom.fy = atom.fz = 0.0;\n            }\n        }\n        \n        // Calculate pairwise interactions\n        for (size_t i = 0; i < protein_chain.size(); i++) {\n            for (size_t j = i + 1; j < protein_chain.size(); j++) {\n                for (auto& atom1 : protein_chain[i].atoms) {\n                    for (auto& atom2 : protein_chain[j].atoms) {\n                        double dx = atom2.x - atom1.x;\n                        double dy = atom2.y - atom1.y;\n                        double dz = atom2.z - atom1.z;\n                        double r2 = dx*dx + dy*dy + dz*dz;\n                        double r = sqrt(r2);\n                        \n                        // Lennard-Jones potential\n                        double sigma = 3.5;\n                        double epsilon = 0.1;\n                        double sr6 = pow(sigma/r, 6);\n                        double force_magnitude = 24.0 * epsilon * (2.0*sr6*sr6 - sr6) / r2;\n                        \n                        atom1.fx -= force_magnitude * dx;\n                        atom1.fy -= force_magnitude * dy;\n                        atom1.fz -= force_magnitude * dz;\n                        atom2.fx += force_magnitude * dx;\n                        atom2.fy += force_magnitude * dy;\n                        atom2.fz += force_magnitude * dz;\n                    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_forcesEv",
+      "line": 31,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    \npublic:\n    void calculate_forces() {\n        // Reset forces\n        for (auto& residue : protein_chain) {\n            for (auto& atom : residue.atoms) {\n                atom.fx = atom.fy = atom.fz = 0.0;\n            }\n        }\n        \n        // Calculate pairwise interactions\n        for (size_t i = 0; i < protein_chain.size(); i++) {\n            for (size_t j = i + 1; j < protein_chain.size(); j++) {\n                for (auto& atom1 : protein_chain[i].atoms) {\n                    for (auto& atom2 : protein_chain[j].atoms) {\n                        double dx = atom2.x - atom1.x;\n                        double dy = atom2.y - atom1.y;\n                        double dz = atom2.z - atom1.z;\n                        double r2 = dx*dx + dy*dy + dz*dz;\n                        double r = sqrt(r2);\n                        \n                        // Lennard-Jones potential\n                        double sigma = 3.5;\n                        double epsilon = 0.1;\n                        double sr6 = pow(sigma/r, 6);\n                        double force_magnitude = 24.0 * epsilon * (2.0*sr6*sr6 - sr6) / r2;\n                        \n                        atom1.fx -= force_magnitude * dx;\n                        atom1.fy -= force_magnitude * dy;\n                        atom1.fz -= force_magnitude * dz;\n                        atom2.fx += force_magnitude * dx;\n                        atom2.fy += force_magnitude * dy;\n                        atom2.fz += force_magnitude * dz;\n                    }\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_forcesEv",
+      "line": 31,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    \npublic:\n    void calculate_forces() {\n        // Reset forces\n        for (auto& residue : protein_chain) {\n            for (auto& atom : residue.atoms) {\n                atom.fx = atom.fy = atom.fz = 0.0;\n            }\n        }\n        \n        // Calculate pairwise interactions\n        for (size_t i = 0; i < protein_chain.size(); i++) {\n            for (size_t j = i + 1; j < protein_chain.size(); j++) {\n                for (auto& atom1 : protein_chain[i].atoms) {\n                    for (auto& atom2 : protein_chain[j].atoms) {\n                        double dx = atom2.x - atom1.x;\n                        double dy = atom2.y - atom1.y;\n                        double dz = atom2.z - atom1.z;\n                        double r2 = dx*dx + dy*dy + dz*dz;\n                        double r = sqrt(r2);\n                        \n                        // Lennard-Jones potential\n                        double sigma = 3.5;\n                        double epsilon = 0.1;\n                        double sr6 = pow(sigma/r, 6);\n                        double force_magnitude = 24.0 * epsilon * (2.0*sr6*sr6 - sr6) / r2;\n                        \n                        atom1.fx -= force_magnitude * dx;\n                        atom1.fy -= force_magnitude * dy;\n                        atom1.fz -= force_magnitude * dz;\n                        atom2.fx += force_magnitude * dx;\n                        atom2.fy += force_magnitude * dy;\n                        atom2.fz += force_magnitude * dz;\n                    }\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_energyEv",
+      "line": 99,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "                        potential += 4.0 * epsilon * (sr6*sr6 - sr6);\n                    }\n                }\n            }\n            \n            for (const auto& atom : protein_chain[i].atoms) {\n                kinetic += 0.5 * atom.mass * (atom.vx*atom.vx + atom.vy*atom.vy + atom.vz*atom.vz);\n            }\n        }\n        \n        return potential + kinetic;\n    }\n};\n\nint main() {\n    ProteinFolder folder;\n    \n    for (int step = 0; step < SIMULATION_STEPS; step++) {\n        folder.calculate_forces();\n        folder.integrate_motion(0.001);\n        \n        if (step % 1000 == 0) {\n            double energy = folder.calculate_energy();\n        }\n    }\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/protein_folding.cpp",
+      "function": "_ZN13ProteinFolder16calculate_energyEv",
+      "line": 99,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "                        potential += 4.0 * epsilon * (sr6*sr6 - sr6);\n                    }\n                }\n            }\n            \n            for (const auto& atom : protein_chain[i].atoms) {\n                kinetic += 0.5 * atom.mass * (atom.vx*atom.vx + atom.vy*atom.vy + atom.vz*atom.vz);\n            }\n        }\n        \n        return potential + kinetic;\n    }\n};\n\nint main() {\n    ProteinFolder folder;\n    \n    for (int step = 0; step < SIMULATION_STEPS; step++) {\n        folder.calculate_forces();\n        folder.integrate_motion(0.001);\n        \n        if (step % 1000 == 0) {\n            double energy = folder.calculate_energy();\n        }\n    }\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    }
+  ]
+}

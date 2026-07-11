@@ -1,0 +1,472 @@
+{
+  "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+    "llvm_initial": 13,
+    "llvm_sys_noise": 0,
+    "llvm_project": 13,
+    "after_filter": 13,
+    "ai_batches": 1,
+    "ai_results": 13,
+    "omp_verified": 4,
+    "total_ms": 3287.3,
+    "llvm_ms": 381.4
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z7mod_powxxx",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nlong long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z7mod_powxxx",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "long long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);\n    std::vector<long long> ciphertext(SIZE);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z7mod_powxxx",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nlong long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_encryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 22,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);\n    std::vector<long long> ciphertext(SIZE);\n    std::vector<long long> decrypted(SIZE);\n    \n    long long e = 65537, d = 123456789, n = 987654321;\n    \n    rsa_encrypt(message, ciphertext, e, n);\n    rsa_decrypt(ciphertext, decrypted, d, n);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_encryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nlong long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_encryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "long long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);\n    std::vector<long long> ciphertext(SIZE);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_encryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nlong long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_encryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 22,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.9299999999999999,
+      "context": "}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);\n    std::vector<long long> ciphertext(SIZE);\n    std::vector<long long> decrypted(SIZE);\n    \n    long long e = 65537, d = 123456789, n = 987654321;\n    \n    rsa_encrypt(message, ciphertext, e, n);\n    rsa_decrypt(ciphertext, decrypted, d, n);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_decryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 30,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);\n    std::vector<long long> ciphertext(SIZE);\n    std::vector<long long> decrypted(SIZE);\n    \n    long long e = 65537, d = 123456789, n = 987654321;\n    \n    rsa_encrypt(message, ciphertext, e, n);\n    rsa_decrypt(ciphertext, decrypted, d, n);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_decryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nlong long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_decryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "long long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);\n    std::vector<long long> ciphertext(SIZE);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_decryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nlong long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_decryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 30,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.9299999999999999,
+      "context": "}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);\n    std::vector<long long> ciphertext(SIZE);\n    std::vector<long long> decrypted(SIZE);\n    \n    long long e = 65537, d = 123456789, n = 987654321;\n    \n    rsa_encrypt(message, ciphertext, e, n);\n    rsa_decrypt(ciphertext, decrypted, d, n);\n    \n    return 0;\n}"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_encryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 22,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);\n    std::vector<long long> ciphertext(SIZE);\n    std::vector<long long> decrypted(SIZE);\n    \n    long long e = 65537, d = 123456789, n = 987654321;\n    \n    rsa_encrypt(message, ciphertext, e, n);\n    rsa_decrypt(ciphertext, decrypted, d, n);\n    \n    return 0;\n}",
+      "classification": "safe_parallel",
+      "reasoning": "The code exhibits embarrassingly parallel pattern with independent array access and simple indexing, making it suitable for parallelization.",
+      "confidence": 0.9,
+      "transformations": [
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Parallelization scalability test",
+        "Correctness test"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.93
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_decryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 30,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);\n    std::vector<long long> ciphertext(SIZE);\n    std::vector<long long> decrypted(SIZE);\n    \n    long long e = 65537, d = 123456789, n = 987654321;\n    \n    rsa_encrypt(message, ciphertext, e, n);\n    rsa_decrypt(ciphertext, decrypted, d, n);\n    \n    return 0;\n}",
+      "classification": "safe_parallel",
+      "reasoning": "Similar to candidate 1, the code shows embarrassingly parallel pattern with independent array access, making it suitable for parallelization.",
+      "confidence": 0.9,
+      "transformations": [
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Parallelization scalability test",
+        "Correctness test"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.93
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_encryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 22,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.9299999999999999,
+      "context": "}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);\n    std::vector<long long> ciphertext(SIZE);\n    std::vector<long long> decrypted(SIZE);\n    \n    long long e = 65537, d = 123456789, n = 987654321;\n    \n    rsa_encrypt(message, ciphertext, e, n);\n    rsa_decrypt(ciphertext, decrypted, d, n);\n    \n    return 0;\n}",
+      "classification": "safe_parallel",
+      "reasoning": "The code is vectorizable with array access and arithmetic operations, making it suitable for SIMD parallelization.",
+      "confidence": 0.8,
+      "transformations": [
+        "SIMD instructions",
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Parallelization scalability test",
+        "Correctness test"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.9299999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_decryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 30,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.9299999999999999,
+      "context": "}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);\n    std::vector<long long> ciphertext(SIZE);\n    std::vector<long long> decrypted(SIZE);\n    \n    long long e = 65537, d = 123456789, n = 987654321;\n    \n    rsa_encrypt(message, ciphertext, e, n);\n    rsa_decrypt(ciphertext, decrypted, d, n);\n    \n    return 0;\n}",
+      "classification": "safe_parallel",
+      "reasoning": "Similar to candidate 3, the code is vectorizable with array access and arithmetic operations, making it suitable for SIMD parallelization.",
+      "confidence": 0.8,
+      "transformations": [
+        "SIMD instructions",
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Parallelization scalability test",
+        "Correctness test"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.9299999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z7mod_powxxx",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nlong long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);",
+      "classification": "requires_runtime_check",
+      "reasoning": "The code contains a conditional branch within a loop, which may introduce dependencies and require runtime checking for parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop with runtime dependency checking"
+      ],
+      "tests_recommended": [
+        "Parallelization scalability test",
+        "Correctness test",
+        "Dependency test"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z7mod_powxxx",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "long long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);\n    std::vector<long long> ciphertext(SIZE);",
+      "classification": "requires_runtime_check",
+      "reasoning": "Similar to candidate 5, the code contains a conditional branch within a loop, which may introduce dependencies and require runtime checking for parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop with runtime dependency checking"
+      ],
+      "tests_recommended": [
+        "Parallelization scalability test",
+        "Correctness test",
+        "Dependency test"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z7mod_powxxx",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nlong long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);",
+      "classification": "requires_runtime_check",
+      "reasoning": "The code contains a conditional branch within a loop, which may introduce dependencies and require runtime checking for parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop with runtime dependency checking"
+      ],
+      "tests_recommended": [
+        "Parallelization scalability test",
+        "Correctness test",
+        "Dependency test"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_encryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nlong long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);",
+      "classification": "requires_runtime_check",
+      "reasoning": "The code contains a conditional branch within a loop, which may introduce dependencies and require runtime checking for parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop with runtime dependency checking"
+      ],
+      "tests_recommended": [
+        "Parallelization scalability test",
+        "Correctness test",
+        "Dependency test"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_encryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "long long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);\n    std::vector<long long> ciphertext(SIZE);",
+      "classification": "requires_runtime_check",
+      "reasoning": "Similar to candidate 8, the code contains a conditional branch within a loop, which may introduce dependencies and require runtime checking for parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop with runtime dependency checking"
+      ],
+      "tests_recommended": [
+        "Parallelization scalability test",
+        "Correctness test",
+        "Dependency test"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_encryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nlong long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);",
+      "classification": "requires_runtime_check",
+      "reasoning": "The code contains a conditional branch within a loop, which may introduce dependencies and require runtime checking for parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop with runtime dependency checking"
+      ],
+      "tests_recommended": [
+        "Parallelization scalability test",
+        "Correctness test",
+        "Dependency test"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_decryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nlong long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);",
+      "classification": "requires_runtime_check",
+      "reasoning": "The code contains a conditional branch within a loop, which may introduce dependencies and require runtime checking for parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop with runtime dependency checking"
+      ],
+      "tests_recommended": [
+        "Parallelization scalability test",
+        "Correctness test",
+        "Dependency test"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_decryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "long long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);\n    std::vector<long long> ciphertext(SIZE);",
+      "classification": "requires_runtime_check",
+      "reasoning": "Similar to candidate 11, the code contains a conditional branch within a loop, which may introduce dependencies and require runtime checking for parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop with runtime dependency checking"
+      ],
+      "tests_recommended": [
+        "Parallelization scalability test",
+        "Correctness test",
+        "Dependency test"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/rsa_cryptosystem.cpp",
+      "function": "_Z11rsa_decryptRKNSt3__16vectorIxNS_9allocatorIxEEEERS3_xx",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nlong long mod_pow(long long base, long long exp, long long mod) {\n    long long result = 1;\n    base %= mod;\n    \n    while (exp > 0) {\n        if (exp % 2 == 1) {\n            result = (result * base) % mod;\n        }\n        base = (base * base) % mod;\n        exp /= 2;\n    }\n    \n    return result;\n}\n\nvoid rsa_encrypt(const std::vector<long long>& message,\n                std::vector<long long>& ciphertext,\n                long long e, long long n) {\n    for (size_t i = 0; i < message.size(); i++) {\n        ciphertext[i] = mod_pow(message[i], e, n);\n    }\n}\n\nvoid rsa_decrypt(const std::vector<long long>& ciphertext,\n                std::vector<long long>& message,\n                long long d, long long n) {\n    for (size_t i = 0; i < ciphertext.size(); i++) {\n        message[i] = mod_pow(ciphertext[i], d, n);\n    }\n}\n\nint main() {\n    const int SIZE = 100000;\n    std::vector<long long> message(SIZE, 42);",
+      "classification": "requires_runtime_check",
+      "reasoning": "The code contains a conditional branch within a loop, which may introduce dependencies and require runtime checking for parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop with runtime dependency checking"
+      ],
+      "tests_recommended": [
+        "Parallelization scalability test",
+        "Correctness test",
+        "Dependency test"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

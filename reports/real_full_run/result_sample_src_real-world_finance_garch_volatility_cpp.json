@@ -1,0 +1,174 @@
+{
+  "file": "sample/src/real-world/finance/garch_volatility.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/finance/garch_volatility.cpp",
+    "llvm_initial": 5,
+    "llvm_sys_noise": 0,
+    "llvm_project": 5,
+    "after_filter": 5,
+    "ai_batches": 1,
+    "ai_results": 5,
+    "omp_verified": 0,
+    "total_ms": 629.0,
+    "llvm_ms": 413.9
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/garch_volatility.cpp",
+      "function": "_Z13estimateGARCHPdS_iddd",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid estimateGARCH(double* returns, double* volatility, int n, \n                  double omega, double alpha, double beta) {\n    volatility[0] = 0.01; // Initial volatility\n    \n    for (int t = 1; t < n; t++) {\n        // GARCH(1,1): \u03c3\u00b2_t = \u03c9 + \u03b1\u00b7\u03b5\u00b2_{t-1} + \u03b2\u00b7\u03c3\u00b2_{t-1}\n        double epsilon_sq = returns[t-1] * returns[t-1];\n        double sigma_sq = omega + alpha * epsilon_sq + beta * volatility[t-1] * volatility[t-1];\n        volatility[t] = sqrt(sigma_sq);\n    }\n}\n\nvoid forecastVolatility(double* historical_vol, int n, double* forecast, int horizon,\n                       double omega, double alpha, double beta) {\n    double long_term_var = omega / (1.0 - alpha - beta);\n    \n    double last_var = historical_vol[n-1] * historical_vol[n-1];\n    \n    for (int h = 0; h < horizon; h++) {\n        double weight = pow(alpha + beta, h);\n        double forecast_var = long_term_var * (1.0 - weight) + last_var * weight;\n        forecast[h] = sqrt(forecast_var);\n    }\n}\n\nint main() {\n    const int n = 1000;\n    const int horizon = 30;\n    \n    std::vector<double> returns(n, 0.01);\n    std::vector<double> volatility(n);\n    std::vector<double> forecast(horizon);\n    \n    estimateGARCH(returns.data(), volatility.data(), n, 0.00001, 0.1, 0.85);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/garch_volatility.cpp",
+      "function": "_Z13estimateGARCHPdS_iddd",
+      "line": 9,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "\nvoid estimateGARCH(double* returns, double* volatility, int n, \n                  double omega, double alpha, double beta) {\n    volatility[0] = 0.01; // Initial volatility\n    \n    for (int t = 1; t < n; t++) {\n        // GARCH(1,1): \u03c3\u00b2_t = \u03c9 + \u03b1\u00b7\u03b5\u00b2_{t-1} + \u03b2\u00b7\u03c3\u00b2_{t-1}\n        double epsilon_sq = returns[t-1] * returns[t-1];\n        double sigma_sq = omega + alpha * epsilon_sq + beta * volatility[t-1] * volatility[t-1];\n        volatility[t] = sqrt(sigma_sq);\n    }\n}\n\nvoid forecastVolatility(double* historical_vol, int n, double* forecast, int horizon,\n                       double omega, double alpha, double beta) {\n    double long_term_var = omega / (1.0 - alpha - beta);\n    \n    double last_var = historical_vol[n-1] * historical_vol[n-1];\n    \n    for (int h = 0; h < horizon; h++) {\n        double weight = pow(alpha + beta, h);\n        double forecast_var = long_term_var * (1.0 - weight) + last_var * weight;\n        forecast[h] = sqrt(forecast_var);\n    }\n}\n\nint main() {\n    const int n = 1000;\n    const int horizon = 30;\n    \n    std::vector<double> returns(n, 0.01);\n    std::vector<double> volatility(n);\n    std::vector<double> forecast(horizon);\n    \n    estimateGARCH(returns.data(), volatility.data(), n, 0.00001, 0.1, 0.85);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/garch_volatility.cpp",
+      "function": "_Z18forecastVolatilityPdiS_iddd",
+      "line": 23,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                       double omega, double alpha, double beta) {\n    double long_term_var = omega / (1.0 - alpha - beta);\n    \n    double last_var = historical_vol[n-1] * historical_vol[n-1];\n    \n    for (int h = 0; h < horizon; h++) {\n        double weight = pow(alpha + beta, h);\n        double forecast_var = long_term_var * (1.0 - weight) + last_var * weight;\n        forecast[h] = sqrt(forecast_var);\n    }\n}\n\nint main() {\n    const int n = 1000;\n    const int horizon = 30;\n    \n    std::vector<double> returns(n, 0.01);\n    std::vector<double> volatility(n);\n    std::vector<double> forecast(horizon);\n    \n    estimateGARCH(returns.data(), volatility.data(), n, 0.00001, 0.1, 0.85);\n    forecastVolatility(volatility.data(), n, forecast.data(), horizon, 0.00001, 0.1, 0.85);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/garch_volatility.cpp",
+      "function": "_Z18forecastVolatilityPdiS_iddd",
+      "line": 23,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                       double omega, double alpha, double beta) {\n    double long_term_var = omega / (1.0 - alpha - beta);\n    \n    double last_var = historical_vol[n-1] * historical_vol[n-1];\n    \n    for (int h = 0; h < horizon; h++) {\n        double weight = pow(alpha + beta, h);\n        double forecast_var = long_term_var * (1.0 - weight) + last_var * weight;\n        forecast[h] = sqrt(forecast_var);\n    }\n}\n\nint main() {\n    const int n = 1000;\n    const int horizon = 30;\n    \n    std::vector<double> returns(n, 0.01);\n    std::vector<double> volatility(n);\n    std::vector<double> forecast(horizon);\n    \n    estimateGARCH(returns.data(), volatility.data(), n, 0.00001, 0.1, 0.85);\n    forecastVolatility(volatility.data(), n, forecast.data(), horizon, 0.00001, 0.1, 0.85);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/garch_volatility.cpp",
+      "function": "main",
+      "line": 9,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "\nvoid estimateGARCH(double* returns, double* volatility, int n, \n                  double omega, double alpha, double beta) {\n    volatility[0] = 0.01; // Initial volatility\n    \n    for (int t = 1; t < n; t++) {\n        // GARCH(1,1): \u03c3\u00b2_t = \u03c9 + \u03b1\u00b7\u03b5\u00b2_{t-1} + \u03b2\u00b7\u03c3\u00b2_{t-1}\n        double epsilon_sq = returns[t-1] * returns[t-1];\n        double sigma_sq = omega + alpha * epsilon_sq + beta * volatility[t-1] * volatility[t-1];\n        volatility[t] = sqrt(sigma_sq);\n    }\n}\n\nvoid forecastVolatility(double* historical_vol, int n, double* forecast, int horizon,\n                       double omega, double alpha, double beta) {\n    double long_term_var = omega / (1.0 - alpha - beta);\n    \n    double last_var = historical_vol[n-1] * historical_vol[n-1];\n    \n    for (int h = 0; h < horizon; h++) {\n        double weight = pow(alpha + beta, h);\n        double forecast_var = long_term_var * (1.0 - weight) + last_var * weight;\n        forecast[h] = sqrt(forecast_var);\n    }\n}\n\nint main() {\n    const int n = 1000;\n    const int horizon = 30;\n    \n    std::vector<double> returns(n, 0.01);\n    std::vector<double> volatility(n);\n    std::vector<double> forecast(horizon);\n    \n    estimateGARCH(returns.data(), volatility.data(), n, 0.00001, 0.1, 0.85);"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/garch_volatility.cpp",
+      "function": "_Z18forecastVolatilityPdiS_iddd",
+      "line": 23,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                       double omega, double alpha, double beta) {\n    double long_term_var = omega / (1.0 - alpha - beta);\n    \n    double last_var = historical_vol[n-1] * historical_vol[n-1];\n    \n    for (int h = 0; h < horizon; h++) {\n        double weight = pow(alpha + beta, h);\n        double forecast_var = long_term_var * (1.0 - weight) + last_var * weight;\n        forecast[h] = sqrt(forecast_var);\n    }\n}\n\nint main() {\n    const int n = 1000;\n    const int horizon = 30;\n    \n    std::vector<double> returns(n, 0.01);\n    std::vector<double> volatility(n);\n    std::vector<double> forecast(horizon);\n    \n    estimateGARCH(returns.data(), volatility.data(), n, 0.00001, 0.1, 0.85);\n    forecastVolatility(volatility.data(), n, forecast.data(), horizon, 0.00001, 0.1, 0.85);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/garch_volatility.cpp",
+      "function": "_Z13estimateGARCHPdS_iddd",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid estimateGARCH(double* returns, double* volatility, int n, \n                  double omega, double alpha, double beta) {\n    volatility[0] = 0.01; // Initial volatility\n    \n    for (int t = 1; t < n; t++) {\n        // GARCH(1,1): \u03c3\u00b2_t = \u03c9 + \u03b1\u00b7\u03b5\u00b2_{t-1} + \u03b2\u00b7\u03c3\u00b2_{t-1}\n        double epsilon_sq = returns[t-1] * returns[t-1];\n        double sigma_sq = omega + alpha * epsilon_sq + beta * volatility[t-1] * volatility[t-1];\n        volatility[t] = sqrt(sigma_sq);\n    }\n}\n\nvoid forecastVolatility(double* historical_vol, int n, double* forecast, int horizon,\n                       double omega, double alpha, double beta) {\n    double long_term_var = omega / (1.0 - alpha - beta);\n    \n    double last_var = historical_vol[n-1] * historical_vol[n-1];\n    \n    for (int h = 0; h < horizon; h++) {\n        double weight = pow(alpha + beta, h);\n        double forecast_var = long_term_var * (1.0 - weight) + last_var * weight;\n        forecast[h] = sqrt(forecast_var);\n    }\n}\n\nint main() {\n    const int n = 1000;\n    const int horizon = 30;\n    \n    std::vector<double> returns(n, 0.01);\n    std::vector<double> volatility(n);\n    std::vector<double> forecast(horizon);\n    \n    estimateGARCH(returns.data(), volatility.data(), n, 0.00001, 0.1, 0.85);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/garch_volatility.cpp",
+      "function": "_Z13estimateGARCHPdS_iddd",
+      "line": 9,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "\nvoid estimateGARCH(double* returns, double* volatility, int n, \n                  double omega, double alpha, double beta) {\n    volatility[0] = 0.01; // Initial volatility\n    \n    for (int t = 1; t < n; t++) {\n        // GARCH(1,1): \u03c3\u00b2_t = \u03c9 + \u03b1\u00b7\u03b5\u00b2_{t-1} + \u03b2\u00b7\u03c3\u00b2_{t-1}\n        double epsilon_sq = returns[t-1] * returns[t-1];\n        double sigma_sq = omega + alpha * epsilon_sq + beta * volatility[t-1] * volatility[t-1];\n        volatility[t] = sqrt(sigma_sq);\n    }\n}\n\nvoid forecastVolatility(double* historical_vol, int n, double* forecast, int horizon,\n                       double omega, double alpha, double beta) {\n    double long_term_var = omega / (1.0 - alpha - beta);\n    \n    double last_var = historical_vol[n-1] * historical_vol[n-1];\n    \n    for (int h = 0; h < horizon; h++) {\n        double weight = pow(alpha + beta, h);\n        double forecast_var = long_term_var * (1.0 - weight) + last_var * weight;\n        forecast[h] = sqrt(forecast_var);\n    }\n}\n\nint main() {\n    const int n = 1000;\n    const int horizon = 30;\n    \n    std::vector<double> returns(n, 0.01);\n    std::vector<double> volatility(n);\n    std::vector<double> forecast(horizon);\n    \n    estimateGARCH(returns.data(), volatility.data(), n, 0.00001, 0.1, 0.85);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/garch_volatility.cpp",
+      "function": "_Z18forecastVolatilityPdiS_iddd",
+      "line": 23,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                       double omega, double alpha, double beta) {\n    double long_term_var = omega / (1.0 - alpha - beta);\n    \n    double last_var = historical_vol[n-1] * historical_vol[n-1];\n    \n    for (int h = 0; h < horizon; h++) {\n        double weight = pow(alpha + beta, h);\n        double forecast_var = long_term_var * (1.0 - weight) + last_var * weight;\n        forecast[h] = sqrt(forecast_var);\n    }\n}\n\nint main() {\n    const int n = 1000;\n    const int horizon = 30;\n    \n    std::vector<double> returns(n, 0.01);\n    std::vector<double> volatility(n);\n    std::vector<double> forecast(horizon);\n    \n    estimateGARCH(returns.data(), volatility.data(), n, 0.00001, 0.1, 0.85);\n    forecastVolatility(volatility.data(), n, forecast.data(), horizon, 0.00001, 0.1, 0.85);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/garch_volatility.cpp",
+      "function": "main",
+      "line": 9,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "\nvoid estimateGARCH(double* returns, double* volatility, int n, \n                  double omega, double alpha, double beta) {\n    volatility[0] = 0.01; // Initial volatility\n    \n    for (int t = 1; t < n; t++) {\n        // GARCH(1,1): \u03c3\u00b2_t = \u03c9 + \u03b1\u00b7\u03b5\u00b2_{t-1} + \u03b2\u00b7\u03c3\u00b2_{t-1}\n        double epsilon_sq = returns[t-1] * returns[t-1];\n        double sigma_sq = omega + alpha * epsilon_sq + beta * volatility[t-1] * volatility[t-1];\n        volatility[t] = sqrt(sigma_sq);\n    }\n}\n\nvoid forecastVolatility(double* historical_vol, int n, double* forecast, int horizon,\n                       double omega, double alpha, double beta) {\n    double long_term_var = omega / (1.0 - alpha - beta);\n    \n    double last_var = historical_vol[n-1] * historical_vol[n-1];\n    \n    for (int h = 0; h < horizon; h++) {\n        double weight = pow(alpha + beta, h);\n        double forecast_var = long_term_var * (1.0 - weight) + last_var * weight;\n        forecast[h] = sqrt(forecast_var);\n    }\n}\n\nint main() {\n    const int n = 1000;\n    const int horizon = 30;\n    \n    std::vector<double> returns(n, 0.01);\n    std::vector<double> volatility(n);\n    std::vector<double> forecast(horizon);\n    \n    estimateGARCH(returns.data(), volatility.data(), n, 0.00001, 0.1, 0.85);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6000000000000001
+    }
+  ]
+}

@@ -1,0 +1,387 @@
+{
+  "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+    "llvm_initial": 22,
+    "llvm_sys_noise": 6,
+    "llvm_project": 16,
+    "after_filter": 8,
+    "ai_batches": 1,
+    "ai_results": 8,
+    "omp_verified": 0,
+    "total_ms": 627.8,
+    "llvm_ms": 380.6
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 20,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            for (int x = 5; x < width-5; x++) {\n                int idx = z*width*height + y*width + x;\n                double center_density = ct_scan[idx];\n                \n                // Look for spherical high-density regions\n                if (center_density > 50.0) {\n                    double radial_profile[10] = {0};\n                    int radial_counts[10] = {0};\n                    \n                    for (int dz = -5; dz <= 5; dz++) {\n                        for (int dy = -5; dy <= 5; dy++) {\n                            for (int dx = -5; dx <= 5; dx++) {\n                                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                                int r_idx = (int)r;\n                                if (r_idx < 10) {\n                                    int nidx = (z+dz)*width*height + (y+dy)*width + (x+dx);\n                                    radial_profile[r_idx] += ct_scan[nidx];\n                                    radial_counts[r_idx]++;\n                                }\n                            }\n                        }\n                    }\n                    \n                    // Check for spherical symmetry\n                    bool is_spherical = true;\n                    for (int r = 0; r < 5; r++) {\n                        if (radial_counts[r] > 0) {\n                            radial_profile[r] /= radial_counts[r];\n                            if (r > 0 && radial_profile[r] > radial_profile[0] * 0.5) {\n                                is_spherical = false;\n                            }\n                        }\n                    }\n                    \n                    if (is_spherical) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                // Look for spherical high-density regions\n                if (center_density > 50.0) {\n                    double radial_profile[10] = {0};\n                    int radial_counts[10] = {0};\n                    \n                    for (int dz = -5; dz <= 5; dz++) {\n                        for (int dy = -5; dy <= 5; dy++) {\n                            for (int dx = -5; dx <= 5; dx++) {\n                                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                                int r_idx = (int)r;\n                                if (r_idx < 10) {\n                                    int nidx = (z+dz)*width*height + (y+dy)*width + (x+dx);\n                                    radial_profile[r_idx] += ct_scan[nidx];\n                                    radial_counts[r_idx]++;\n                                }\n                            }\n                        }\n                    }\n                    \n                    // Check for spherical symmetry\n                    bool is_spherical = true;\n                    for (int r = 0; r < 5; r++) {\n                        if (radial_counts[r] > 0) {\n                            radial_profile[r] /= radial_counts[r];\n                            if (r > 0 && radial_profile[r] > radial_profile[0] * 0.5) {\n                                is_spherical = false;\n                            }\n                        }\n                    }\n                    \n                    if (is_spherical) {\n                        Nodule n;\n                        n.x = x; n.y = y; n.z = z;\n                        n.diameter = 2.0 * 3.0; // Approximate 3mm radius\n                        n.density = center_density;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                if (center_density > 50.0) {\n                    double radial_profile[10] = {0};\n                    int radial_counts[10] = {0};\n                    \n                    for (int dz = -5; dz <= 5; dz++) {\n                        for (int dy = -5; dy <= 5; dy++) {\n                            for (int dx = -5; dx <= 5; dx++) {\n                                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                                int r_idx = (int)r;\n                                if (r_idx < 10) {\n                                    int nidx = (z+dz)*width*height + (y+dy)*width + (x+dx);\n                                    radial_profile[r_idx] += ct_scan[nidx];\n                                    radial_counts[r_idx]++;\n                                }\n                            }\n                        }\n                    }\n                    \n                    // Check for spherical symmetry\n                    bool is_spherical = true;\n                    for (int r = 0; r < 5; r++) {\n                        if (radial_counts[r] > 0) {\n                            radial_profile[r] /= radial_counts[r];\n                            if (r > 0 && radial_profile[r] > radial_profile[0] * 0.5) {\n                                is_spherical = false;\n                            }\n                        }\n                    }\n                    \n                    if (is_spherical) {\n                        Nodule n;\n                        n.x = x; n.y = y; n.z = z;\n                        n.diameter = 2.0 * 3.0; // Approximate 3mm radius\n                        n.density = center_density;\n                        nodules.push_back(n);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 29,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                                is_spherical = false;\n                            }\n                        }\n                    }\n                    \n                    if (is_spherical) {\n                        Nodule n;\n                        n.x = x; n.y = y; n.z = z;\n                        n.diameter = 2.0 * 3.0; // Approximate 3mm radius\n                        n.density = center_density;\n                        nodules.push_back(n);\n                    }\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, depth = 300;\n    std::vector<double> ct_scan(width*height*depth, 20.0);\n    std::vector<Nodule> nodules;\n    \n    detectLungNodules(ct_scan.data(), nodules, width, height, depth);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 41,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    }\n                    \n                    // Check for spherical symmetry\n                    bool is_spherical = true;\n                    for (int r = 0; r < 5; r++) {\n                        if (radial_counts[r] > 0) {\n                            radial_profile[r] /= radial_counts[r];\n                            if (r > 0 && radial_profile[r] > radial_profile[0] * 0.5) {\n                                is_spherical = false;\n                            }\n                        }\n                    }\n                    \n                    if (is_spherical) {\n                        Nodule n;\n                        n.x = x; n.y = y; n.z = z;\n                        n.diameter = 2.0 * 3.0; // Approximate 3mm radius\n                        n.density = center_density;\n                        nodules.push_back(n);\n                    }\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, depth = 300;\n    std::vector<double> ct_scan(width*height*depth, 20.0);\n    std::vector<Nodule> nodules;\n    \n    detectLungNodules(ct_scan.data(), nodules, width, height, depth);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 43,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    // Check for spherical symmetry\n                    bool is_spherical = true;\n                    for (int r = 0; r < 5; r++) {\n                        if (radial_counts[r] > 0) {\n                            radial_profile[r] /= radial_counts[r];\n                            if (r > 0 && radial_profile[r] > radial_profile[0] * 0.5) {\n                                is_spherical = false;\n                            }\n                        }\n                    }\n                    \n                    if (is_spherical) {\n                        Nodule n;\n                        n.x = x; n.y = y; n.z = z;\n                        n.diameter = 2.0 * 3.0; // Approximate 3mm radius\n                        n.density = center_density;\n                        nodules.push_back(n);\n                    }\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, depth = 300;\n    std::vector<double> ct_scan(width*height*depth, 20.0);\n    std::vector<Nodule> nodules;\n    \n    detectLungNodules(ct_scan.data(), nodules, width, height, depth);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 43,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                    // Check for spherical symmetry\n                    bool is_spherical = true;\n                    for (int r = 0; r < 5; r++) {\n                        if (radial_counts[r] > 0) {\n                            radial_profile[r] /= radial_counts[r];\n                            if (r > 0 && radial_profile[r] > radial_profile[0] * 0.5) {\n                                is_spherical = false;\n                            }\n                        }\n                    }\n                    \n                    if (is_spherical) {\n                        Nodule n;\n                        n.x = x; n.y = y; n.z = z;\n                        n.diameter = 2.0 * 3.0; // Approximate 3mm radius\n                        n.density = center_density;\n                        nodules.push_back(n);\n                    }\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, depth = 300;\n    std::vector<double> ct_scan(width*height*depth, 20.0);\n    std::vector<Nodule> nodules;\n    \n    detectLungNodules(ct_scan.data(), nodules, width, height, depth);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 40,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                        }\n                    }\n                    \n                    // Check for spherical symmetry\n                    bool is_spherical = true;\n                    for (int r = 0; r < 5; r++) {\n                        if (radial_counts[r] > 0) {\n                            radial_profile[r] /= radial_counts[r];\n                            if (r > 0 && radial_profile[r] > radial_profile[0] * 0.5) {\n                                is_spherical = false;\n                            }\n                        }\n                    }\n                    \n                    if (is_spherical) {\n                        Nodule n;\n                        n.x = x; n.y = y; n.z = z;\n                        n.diameter = 2.0 * 3.0; // Approximate 3mm radius\n                        n.density = center_density;\n                        nodules.push_back(n);\n                    }\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, depth = 300;\n    std::vector<double> ct_scan(width*height*depth, 20.0);\n    std::vector<Nodule> nodules;\n    \n    detectLungNodules(ct_scan.data(), nodules, width, height, depth);\n    \n    return 0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI6NoduleNS_9allocatorIS1_EEE9push_backB8ne210101ERKS1_",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI6NoduleNS_9allocatorIS1_EEE9push_backB8ne210101ERKS1_",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorI6NoduleNS_9allocatorIS1_EEE9push_backB8ne210101ERKS1_",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorI6NoduleNS_9allocatorIS1_EEE9push_backB8ne210101ERKS1_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 20,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            for (int x = 5; x < width-5; x++) {\n                int idx = z*width*height + y*width + x;\n                double center_density = ct_scan[idx];\n                \n                // Look for spherical high-density regions\n                if (center_density > 50.0) {\n                    double radial_profile[10] = {0};\n                    int radial_counts[10] = {0};\n                    \n                    for (int dz = -5; dz <= 5; dz++) {\n                        for (int dy = -5; dy <= 5; dy++) {\n                            for (int dx = -5; dx <= 5; dx++) {\n                                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                                int r_idx = (int)r;\n                                if (r_idx < 10) {\n                                    int nidx = (z+dz)*width*height + (y+dy)*width + (x+dx);\n                                    radial_profile[r_idx] += ct_scan[nidx];\n                                    radial_counts[r_idx]++;\n                                }\n                            }\n                        }\n                    }\n                    \n                    // Check for spherical symmetry\n                    bool is_spherical = true;\n                    for (int r = 0; r < 5; r++) {\n                        if (radial_counts[r] > 0) {\n                            radial_profile[r] /= radial_counts[r];\n                            if (r > 0 && radial_profile[r] > radial_profile[0] * 0.5) {\n                                is_spherical = false;\n                            }\n                        }\n                    }\n                    \n                    if (is_spherical) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 41,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    }\n                    \n                    // Check for spherical symmetry\n                    bool is_spherical = true;\n                    for (int r = 0; r < 5; r++) {\n                        if (radial_counts[r] > 0) {\n                            radial_profile[r] /= radial_counts[r];\n                            if (r > 0 && radial_profile[r] > radial_profile[0] * 0.5) {\n                                is_spherical = false;\n                            }\n                        }\n                    }\n                    \n                    if (is_spherical) {\n                        Nodule n;\n                        n.x = x; n.y = y; n.z = z;\n                        n.diameter = 2.0 * 3.0; // Approximate 3mm radius\n                        n.density = center_density;\n                        nodules.push_back(n);\n                    }\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, depth = 300;\n    std::vector<double> ct_scan(width*height*depth, 20.0);\n    std::vector<Nodule> nodules;\n    \n    detectLungNodules(ct_scan.data(), nodules, width, height, depth);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 43,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    // Check for spherical symmetry\n                    bool is_spherical = true;\n                    for (int r = 0; r < 5; r++) {\n                        if (radial_counts[r] > 0) {\n                            radial_profile[r] /= radial_counts[r];\n                            if (r > 0 && radial_profile[r] > radial_profile[0] * 0.5) {\n                                is_spherical = false;\n                            }\n                        }\n                    }\n                    \n                    if (is_spherical) {\n                        Nodule n;\n                        n.x = x; n.y = y; n.z = z;\n                        n.diameter = 2.0 * 3.0; // Approximate 3mm radius\n                        n.density = center_density;\n                        nodules.push_back(n);\n                    }\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, depth = 300;\n    std::vector<double> ct_scan(width*height*depth, 20.0);\n    std::vector<Nodule> nodules;\n    \n    detectLungNodules(ct_scan.data(), nodules, width, height, depth);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 43,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                    // Check for spherical symmetry\n                    bool is_spherical = true;\n                    for (int r = 0; r < 5; r++) {\n                        if (radial_counts[r] > 0) {\n                            radial_profile[r] /= radial_counts[r];\n                            if (r > 0 && radial_profile[r] > radial_profile[0] * 0.5) {\n                                is_spherical = false;\n                            }\n                        }\n                    }\n                    \n                    if (is_spherical) {\n                        Nodule n;\n                        n.x = x; n.y = y; n.z = z;\n                        n.diameter = 2.0 * 3.0; // Approximate 3mm radius\n                        n.density = center_density;\n                        nodules.push_back(n);\n                    }\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, depth = 300;\n    std::vector<double> ct_scan(width*height*depth, 20.0);\n    std::vector<Nodule> nodules;\n    \n    detectLungNodules(ct_scan.data(), nodules, width, height, depth);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 40,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                        }\n                    }\n                    \n                    // Check for spherical symmetry\n                    bool is_spherical = true;\n                    for (int r = 0; r < 5; r++) {\n                        if (radial_counts[r] > 0) {\n                            radial_profile[r] /= radial_counts[r];\n                            if (r > 0 && radial_profile[r] > radial_profile[0] * 0.5) {\n                                is_spherical = false;\n                            }\n                        }\n                    }\n                    \n                    if (is_spherical) {\n                        Nodule n;\n                        n.x = x; n.y = y; n.z = z;\n                        n.diameter = 2.0 * 3.0; // Approximate 3mm radius\n                        n.density = center_density;\n                        nodules.push_back(n);\n                    }\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, depth = 300;\n    std::vector<double> ct_scan(width*height*depth, 20.0);\n    std::vector<Nodule> nodules;\n    \n    detectLungNodules(ct_scan.data(), nodules, width, height, depth);\n    \n    return 0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                // Look for spherical high-density regions\n                if (center_density > 50.0) {\n                    double radial_profile[10] = {0};\n                    int radial_counts[10] = {0};\n                    \n                    for (int dz = -5; dz <= 5; dz++) {\n                        for (int dy = -5; dy <= 5; dy++) {\n                            for (int dx = -5; dx <= 5; dx++) {\n                                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                                int r_idx = (int)r;\n                                if (r_idx < 10) {\n                                    int nidx = (z+dz)*width*height + (y+dy)*width + (x+dx);\n                                    radial_profile[r_idx] += ct_scan[nidx];\n                                    radial_counts[r_idx]++;\n                                }\n                            }\n                        }\n                    }\n                    \n                    // Check for spherical symmetry\n                    bool is_spherical = true;\n                    for (int r = 0; r < 5; r++) {\n                        if (radial_counts[r] > 0) {\n                            radial_profile[r] /= radial_counts[r];\n                            if (r > 0 && radial_profile[r] > radial_profile[0] * 0.5) {\n                                is_spherical = false;\n                            }\n                        }\n                    }\n                    \n                    if (is_spherical) {\n                        Nodule n;\n                        n.x = x; n.y = y; n.z = z;\n                        n.diameter = 2.0 * 3.0; // Approximate 3mm radius\n                        n.density = center_density;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                if (center_density > 50.0) {\n                    double radial_profile[10] = {0};\n                    int radial_counts[10] = {0};\n                    \n                    for (int dz = -5; dz <= 5; dz++) {\n                        for (int dy = -5; dy <= 5; dy++) {\n                            for (int dx = -5; dx <= 5; dx++) {\n                                double r = sqrt(dx*dx + dy*dy + dz*dz);\n                                int r_idx = (int)r;\n                                if (r_idx < 10) {\n                                    int nidx = (z+dz)*width*height + (y+dy)*width + (x+dx);\n                                    radial_profile[r_idx] += ct_scan[nidx];\n                                    radial_counts[r_idx]++;\n                                }\n                            }\n                        }\n                    }\n                    \n                    // Check for spherical symmetry\n                    bool is_spherical = true;\n                    for (int r = 0; r < 5; r++) {\n                        if (radial_counts[r] > 0) {\n                            radial_profile[r] /= radial_counts[r];\n                            if (r > 0 && radial_profile[r] > radial_profile[0] * 0.5) {\n                                is_spherical = false;\n                            }\n                        }\n                    }\n                    \n                    if (is_spherical) {\n                        Nodule n;\n                        n.x = x; n.y = y; n.z = z;\n                        n.diameter = 2.0 * 3.0; // Approximate 3mm radius\n                        n.density = center_density;\n                        nodules.push_back(n);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/lung_nodule_detection.cpp",
+      "function": "_Z17detectLungNodulesPdRNSt3__16vectorI6NoduleNS0_9allocatorIS2_EEEEiii",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                                is_spherical = false;\n                            }\n                        }\n                    }\n                    \n                    if (is_spherical) {\n                        Nodule n;\n                        n.x = x; n.y = y; n.z = z;\n                        n.diameter = 2.0 * 3.0; // Approximate 3mm radius\n                        n.density = center_density;\n                        nodules.push_back(n);\n                    }\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, depth = 300;\n    std::vector<double> ct_scan(width*height*depth, 20.0);\n    std::vector<Nodule> nodules;\n    \n    detectLungNodules(ct_scan.data(), nodules, width, height, depth);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

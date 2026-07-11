@@ -1,0 +1,2560 @@
+{
+  "file": "sample/src/real-world/finance/order_matching_engine.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/finance/order_matching_engine.cpp",
+    "llvm_initial": 289,
+    "llvm_sys_noise": 276,
+    "llvm_project": 13,
+    "after_filter": 9,
+    "ai_batches": 1,
+    "ai_results": 9,
+    "omp_verified": 3,
+    "total_ms": 2840.4,
+    "llvm_ms": 529.8
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/order_matching_engine.cpp",
+      "function": "main",
+      "line": 32,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.42000000000000004
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/order_matching_engine.cpp",
+      "function": "main",
+      "line": 33,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<Match> matches;\n    \npublic:\n    void add_orders(const std::vector<Order>& new_orders) {\n        for (const auto& order : new_orders) {\n            if (order.side == 'B') {\n                buy_orders.push_back(order);\n            } else {\n                sell_orders.push_back(order);\n            }\n        }\n    }\n    \n    void match_orders() {\n        // Sort buy orders by price (descending) and time (ascending)\n        std::sort(buy_orders.begin(), buy_orders.end(),\n            [](const Order& a, const Order& b) {\n                if (a.price != b.price) return a.price > b.price;\n                return a.timestamp < b.timestamp;\n            });\n        \n        // Sort sell orders by price (ascending) and time (ascending)\n        std::sort(sell_orders.begin(), sell_orders.end(),\n            [](const Order& a, const Order& b) {\n                if (a.price != b.price) return a.price < b.price;\n                return a.timestamp < b.timestamp;\n            });\n        \n        // Match orders\n        size_t buy_idx = 0, sell_idx = 0;\n        \n        while (buy_idx < buy_orders.size() && sell_idx < sell_orders.size()) {\n            Order& buy_order = buy_orders[buy_idx];\n            Order& sell_order = sell_orders[sell_idx];\n            "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "main",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "main",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "main",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "main",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/order_matching_engine.cpp",
+      "function": "main",
+      "line": 32,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<Order> sell_orders;\n    std::vector<Match> matches;\n    \npublic:\n    void add_orders(const std::vector<Order>& new_orders) {\n        for (const auto& order : new_orders) {\n            if (order.side == 'B') {\n                buy_orders.push_back(order);\n            } else {\n                sell_orders.push_back(order);\n            }\n        }\n    }\n    \n    void match_orders() {\n        // Sort buy orders by price (descending) and time (ascending)\n        std::sort(buy_orders.begin(), buy_orders.end(),\n            [](const Order& a, const Order& b) {\n                if (a.price != b.price) return a.price > b.price;\n                return a.timestamp < b.timestamp;\n            });\n        \n        // Sort sell orders by price (ascending) and time (ascending)\n        std::sort(sell_orders.begin(), sell_orders.end(),\n            [](const Order& a, const Order& b) {\n                if (a.price != b.price) return a.price < b.price;\n                return a.timestamp < b.timestamp;\n            });\n        \n        // Match orders\n        size_t buy_idx = 0, sell_idx = 0;\n        \n        while (buy_idx < buy_orders.size() && sell_idx < sell_orders.size()) {\n            Order& buy_order = buy_orders[buy_idx];\n            Order& sell_order = sell_orders[sell_idx];"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "main",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "main",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/order_matching_engine.cpp",
+      "function": "main",
+      "line": 116,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/order_matching_engine.cpp",
+      "function": "main",
+      "line": 88,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.7000000000000001,
+      "context": "            }\n        }\n    }\n    \n    void calculate_market_statistics(double& vwap, double& volatility) {\n        if (matches.empty()) return;\n        \n        // Volume Weighted Average Price\n        double total_value = 0.0;\n        int total_volume = 0;\n        \n        for (const auto& match : matches) {\n            total_value += match.price * match.quantity;\n            total_volume += match.quantity;\n        }\n        \n        vwap = total_value / total_volume;\n        \n        // Price volatility\n        double sum_squared_diff = 0.0;\n        for (const auto& match : matches) {\n            double diff = match.price - vwap;\n            sum_squared_diff += diff * diff * match.quantity;\n        }\n        \n        volatility = sqrt(sum_squared_diff / total_volume);\n    }\n};\n\nint main() {\n    OrderMatchingEngine engine;\n    \n    std::vector<Order> orders;\n    for (int i = 0; i < NUM_ORDERS; i++) {\n        orders.push_back({"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZN19OrderMatchingEngine12match_ordersEv",
+      "line": 863,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZN19OrderMatchingEngine12match_ordersEv",
+      "line": 863,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/order_matching_engine.cpp",
+      "function": "_ZN19OrderMatchingEngine12match_ordersEv",
+      "line": 59,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/order_matching_engine.cpp",
+      "function": "_ZN19OrderMatchingEngine12match_ordersEv",
+      "line": 59,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/order_matching_engine.cpp",
+      "function": "_ZN19OrderMatchingEngine12match_ordersEv",
+      "line": 64,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        while (buy_idx < buy_orders.size() && sell_idx < sell_orders.size()) {\n            Order& buy_order = buy_orders[buy_idx];\n            Order& sell_order = sell_orders[sell_idx];\n            \n            // Check if prices match\n            if (buy_order.price >= sell_order.price) {\n                int match_quantity = std::min(buy_order.quantity, sell_order.quantity);\n                double match_price = (buy_order.timestamp < sell_order.timestamp) ?\n                                    sell_order.price : buy_order.price;\n                \n                matches.push_back({\n                    buy_order.order_id,\n                    sell_order.order_id,\n                    match_price,\n                    match_quantity\n                });\n                \n                buy_order.quantity -= match_quantity;\n                sell_order.quantity -= match_quantity;\n                \n                if (buy_order.quantity == 0) buy_idx++;\n                if (sell_order.quantity == 0) sell_idx++;\n            } else {\n                break;  // No more matches possible\n            }\n        }\n    }\n    \n    void calculate_market_statistics(double& vwap, double& volatility) {\n        if (matches.empty()) return;\n        \n        // Volume Weighted Average Price\n        double total_value = 0.0;\n        int total_volume = 0;\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZN19OrderMatchingEngine12match_ordersEv",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// High-frequency trading order matching engine\n#include <vector>\n#include <queue>\n#include <algorithm>\n#include <chrono>\n\nconst int NUM_ORDERS = 1000000;\n\nstruct Order {\n    int order_id;\n    char side;  // 'B' for buy, 'S' for sell\n    double price;\n    int quantity;\n    long long timestamp;\n};\n\nstruct Match {\n    int buy_order_id;\n    int sell_order_id;\n    double price;\n    int quantity;\n};\n\nclass OrderMatchingEngine {\nprivate:\n    std::vector<Order> buy_orders;\n    std::vector<Order> sell_orders;\n    std::vector<Match> matches;\n    "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19OrderMatchingEngineD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19OrderMatchingEngineD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19OrderMatchingEngineD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI5MatchNS_9allocatorIS1_EEE9push_backB8ne210101EOS1_",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI5MatchNS_9allocatorIS1_EEE9push_backB8ne210101EOS1_",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorI5MatchNS_9allocatorIS1_EEE9push_backB8ne210101EOS1_",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorI5MatchNS_9allocatorIS1_EEE9push_backB8ne210101EOS1_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 736,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 115,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 214,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 216,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 218,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 220,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 757,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 758,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 248,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 254,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 261,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 261,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 251,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 278,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 284,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 294,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 282,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 765,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/partial_sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 59,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 775,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 115,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 115,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 115,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 115,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 115,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 796,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 796,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 809,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 811,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 817,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// High-frequency trading order matching engine\n#include <vector>\n#include <queue>\n#include <algorithm>\n#include <chrono>\n\nconst int NUM_ORDERS = 1000000;\n\nstruct Order {\n    int order_id;\n    char side;  // 'B' for buy, 'S' for sell\n    double price;\n    int quantity;\n    long long timestamp;\n};\n\nstruct Match {\n    int buy_order_id;\n    int sell_order_id;\n    double price;\n    int quantity;\n};\n\nclass OrderMatchingEngine {\nprivate:\n    std::vector<Order> buy_orders;\n    std::vector<Order> sell_orders;\n    std::vector<Match> matches;\n    "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__17__sort4B8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_TnNS_9enable_ifIXnt21__use_branchless_sortIT0_T1_EEiE4typeELi0EEEvSB_SB_SB_SB_SA_",
+      "line": 115,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__17__sort4B8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_TnNS_9enable_ifIXnt21__use_branchless_sortIT0_T1_EEiE4typeELi0EEEvSB_SB_SB_SB_SA_",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__17__sort4B8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_TnNS_9enable_ifIXnt21__use_branchless_sortIT0_T1_EEiE4typeELi0EEEvSB_SB_SB_SB_SA_",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__17__sort4B8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_TnNS_9enable_ifIXnt21__use_branchless_sortIT0_T1_EEiE4typeELi0EEEvSB_SB_SB_SB_SA_",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__17__sort4B8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_TnNS_9enable_ifIXnt21__use_branchless_sortIT0_T1_EEiE4typeELi0EEEvSB_SB_SB_SB_SA_",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__17__sort4B8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_TnNS_9enable_ifIXnt21__use_branchless_sortIT0_T1_EEiE4typeELi0EEEvSB_SB_SB_SB_SA_",
+      "line": 168,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__17__sort4B8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_TnNS_9enable_ifIXnt21__use_branchless_sortIT0_T1_EEiE4typeELi0EEEvSB_SB_SB_SB_SA_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__17__sort4B8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_TnNS_9enable_ifIXnt21__use_branchless_sortIT0_T1_EEiE4typeELi0EEEvSB_SB_SB_SB_SA_",
+      "line": 172,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EET0_S9_S9_T1_",
+      "line": 663,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EET0_S9_S9_T1_",
+      "line": 670,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EET0_S9_S9_T1_",
+      "line": 672,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EET0_S9_S9_T1_",
+      "line": 672,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EET0_S9_S9_T1_",
+      "line": 676,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EET0_S9_S9_T1_",
+      "line": 684,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EET0_S9_S9_T1_",
+      "line": 686,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EET0_S9_S9_T1_",
+      "line": 693,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EET0_S9_S9_T1_",
+      "line": 699,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EET0_S9_S9_T1_",
+      "line": 686,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EET0_S9_S9_T1_",
+      "line": 702,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 604,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 607,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 608,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 608,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 617,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 627,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 634,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 640,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 627,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 644,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 311,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 115,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 214,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 216,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 218,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 220,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 115,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 336,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 337,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 344,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 344,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "unknown",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 0,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "// High-frequency trading order matching engine\n#include <vector>\n#include <queue>\n#include <algorithm>\n#include <chrono>\n\nconst int NUM_ORDERS = 1000000;\n\nstruct Order {\n    int order_id;\n    char side;  // 'B' for buy, 'S' for sell\n    double price;\n    int quantity;\n    long long timestamp;\n};\n\nstruct Match {\n    int buy_order_id;\n    int sell_order_id;\n    double price;\n    int quantity;\n};\n\nclass OrderMatchingEngine {\nprivate:\n    std::vector<Order> buy_orders;\n    std::vector<Order> sell_orders;\n    std::vector<Match> matches;\n    "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 336,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/partial_sort.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 37,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/make_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 36,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/make_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 38,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/partial_sort.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 45,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/partial_sort.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 46,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/partial_sort.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 45,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 39,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 98,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 109,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/pop_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 50,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/push_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 38,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/push_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 42,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/push_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 47,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/push_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 51,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 39,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__111__sift_downB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEvT1_OT0_NS_15iterator_traitsIS9_E15difference_typeES9_",
+      "line": 41,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__111__sift_downB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEvT1_OT0_NS_15iterator_traitsIS9_E15difference_typeES9_",
+      "line": 41,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__111__sift_downB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEvT1_OT0_NS_15iterator_traitsIS9_E15difference_typeES9_",
+      "line": 47,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__111__sift_downB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEvT1_OT0_NS_15iterator_traitsIS9_E15difference_typeES9_",
+      "line": 54,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__111__sift_downB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEvT1_OT0_NS_15iterator_traitsIS9_E15difference_typeES9_",
+      "line": 64,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__111__sift_downB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEvT1_OT0_NS_15iterator_traitsIS9_E15difference_typeES9_",
+      "line": 71,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__111__sift_downB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEvT1_OT0_NS_15iterator_traitsIS9_E15difference_typeES9_",
+      "line": 78,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 736,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 115,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 214,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 216,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 218,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 220,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 757,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 758,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 248,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 254,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 261,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 261,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 251,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 278,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 284,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 294,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 282,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 765,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/partial_sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 59,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 775,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 115,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 115,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 115,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 115,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 115,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 796,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 796,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 809,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 811,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 817,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// High-frequency trading order matching engine\n#include <vector>\n#include <queue>\n#include <algorithm>\n#include <chrono>\n\nconst int NUM_ORDERS = 1000000;\n\nstruct Order {\n    int order_id;\n    char side;  // 'B' for buy, 'S' for sell\n    double price;\n    int quantity;\n    long long timestamp;\n};\n\nstruct Match {\n    int buy_order_id;\n    int sell_order_id;\n    double price;\n    int quantity;\n};\n\nclass OrderMatchingEngine {\nprivate:\n    std::vector<Order> buy_orders;\n    std::vector<Order> sell_orders;\n    std::vector<Match> matches;\n    "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__17__sort4B8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_TnNS_9enable_ifIXnt21__use_branchless_sortIT0_T1_EEiE4typeELi0EEEvSB_SB_SB_SB_SA_",
+      "line": 115,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__17__sort4B8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_TnNS_9enable_ifIXnt21__use_branchless_sortIT0_T1_EEiE4typeELi0EEEvSB_SB_SB_SB_SA_",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__17__sort4B8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_TnNS_9enable_ifIXnt21__use_branchless_sortIT0_T1_EEiE4typeELi0EEEvSB_SB_SB_SB_SA_",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__17__sort4B8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_TnNS_9enable_ifIXnt21__use_branchless_sortIT0_T1_EEiE4typeELi0EEEvSB_SB_SB_SB_SA_",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__17__sort4B8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_TnNS_9enable_ifIXnt21__use_branchless_sortIT0_T1_EEiE4typeELi0EEEvSB_SB_SB_SB_SA_",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__17__sort4B8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_TnNS_9enable_ifIXnt21__use_branchless_sortIT0_T1_EEiE4typeELi0EEEvSB_SB_SB_SB_SA_",
+      "line": 168,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__17__sort4B8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_TnNS_9enable_ifIXnt21__use_branchless_sortIT0_T1_EEiE4typeELi0EEEvSB_SB_SB_SB_SA_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__17__sort4B8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_TnNS_9enable_ifIXnt21__use_branchless_sortIT0_T1_EEiE4typeELi0EEEvSB_SB_SB_SB_SA_",
+      "line": 172,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EET0_S9_S9_T1_",
+      "line": 663,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EET0_S9_S9_T1_",
+      "line": 670,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EET0_S9_S9_T1_",
+      "line": 672,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EET0_S9_S9_T1_",
+      "line": 672,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EET0_S9_S9_T1_",
+      "line": 676,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EET0_S9_S9_T1_",
+      "line": 684,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EET0_S9_S9_T1_",
+      "line": 686,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EET0_S9_S9_T1_",
+      "line": 693,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EET0_S9_S9_T1_",
+      "line": 699,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EET0_S9_S9_T1_",
+      "line": 686,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__131__partition_with_equals_on_leftB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EET0_S9_S9_T1_",
+      "line": 702,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 604,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 607,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 608,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 608,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 617,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 627,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 634,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 640,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 627,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__132__partition_with_equals_on_rightB8ne210101INS_17_ClassicAlgPolicyEP5OrderRZN19OrderMatchingEngine12match_ordersEvEUlRKS2_S6_E0_EENS_4pairIT0_bEESA_SA_T1_",
+      "line": 644,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 311,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 115,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 214,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 216,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 218,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 220,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 115,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 121,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 125,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 336,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 337,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 344,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 344,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "unknown",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 0,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "// High-frequency trading order matching engine\n#include <vector>\n#include <queue>\n#include <algorithm>\n#include <chrono>\n\nconst int NUM_ORDERS = 1000000;\n\nstruct Order {\n    int order_id;\n    char side;  // 'B' for buy, 'S' for sell\n    double price;\n    int quantity;\n    long long timestamp;\n};\n\nstruct Match {\n    int buy_order_id;\n    int sell_order_id;\n    double price;\n    int quantity;\n};\n\nclass OrderMatchingEngine {\nprivate:\n    std::vector<Order> buy_orders;\n    std::vector<Order> sell_orders;\n    std::vector<Match> matches;\n    "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort.h",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 336,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/partial_sort.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 37,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/make_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 36,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/make_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 38,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/partial_sort.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 45,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/partial_sort.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 46,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/partial_sort.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 45,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 39,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 98,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 109,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/pop_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 50,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/push_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 38,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/push_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 42,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/push_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 47,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/push_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 51,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sort_heap.h",
+      "function": "_ZNSt3__119__partial_sort_implB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_S8_EET1_S9_S9_T2_OT0_",
+      "line": 39,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__111__sift_downB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEvT1_OT0_NS_15iterator_traitsIS9_E15difference_typeES9_",
+      "line": 41,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__111__sift_downB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEvT1_OT0_NS_15iterator_traitsIS9_E15difference_typeES9_",
+      "line": 41,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__111__sift_downB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEvT1_OT0_NS_15iterator_traitsIS9_E15difference_typeES9_",
+      "line": 47,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__111__sift_downB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEvT1_OT0_NS_15iterator_traitsIS9_E15difference_typeES9_",
+      "line": 54,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__111__sift_downB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEvT1_OT0_NS_15iterator_traitsIS9_E15difference_typeES9_",
+      "line": 64,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__111__sift_downB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEvT1_OT0_NS_15iterator_traitsIS9_E15difference_typeES9_",
+      "line": 71,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/sift_down.h",
+      "function": "_ZNSt3__111__sift_downB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEvT1_OT0_NS_15iterator_traitsIS9_E15difference_typeES9_",
+      "line": 78,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/order_matching_engine.cpp",
+      "function": "main",
+      "line": 33,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<Match> matches;\n    \npublic:\n    void add_orders(const std::vector<Order>& new_orders) {\n        for (const auto& order : new_orders) {\n            if (order.side == 'B') {\n                buy_orders.push_back(order);\n            } else {\n                sell_orders.push_back(order);\n            }\n        }\n    }\n    \n    void match_orders() {\n        // Sort buy orders by price (descending) and time (ascending)\n        std::sort(buy_orders.begin(), buy_orders.end(),\n            [](const Order& a, const Order& b) {\n                if (a.price != b.price) return a.price > b.price;\n                return a.timestamp < b.timestamp;\n            });\n        \n        // Sort sell orders by price (ascending) and time (ascending)\n        std::sort(sell_orders.begin(), sell_orders.end(),\n            [](const Order& a, const Order& b) {\n                if (a.price != b.price) return a.price < b.price;\n                return a.timestamp < b.timestamp;\n            });\n        \n        // Match orders\n        size_t buy_idx = 0, sell_idx = 0;\n        \n        while (buy_idx < buy_orders.size() && sell_idx < sell_orders.size()) {\n            Order& buy_order = buy_orders[buy_idx];\n            Order& sell_order = sell_orders[sell_idx];\n            ",
+      "classification": "safe_parallel",
+      "reasoning": "The code has an embarrassingly parallel pattern with array access using simple indexing, which is suitable for parallelization.",
+      "confidence": 0.9,
+      "transformations": [
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Validate parallel results against sequential results"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/order_matching_engine.cpp",
+      "function": "main",
+      "line": 32,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<Order> sell_orders;\n    std::vector<Match> matches;\n    \npublic:\n    void add_orders(const std::vector<Order>& new_orders) {\n        for (const auto& order : new_orders) {\n            if (order.side == 'B') {\n                buy_orders.push_back(order);\n            } else {\n                sell_orders.push_back(order);\n            }\n        }\n    }\n    \n    void match_orders() {\n        // Sort buy orders by price (descending) and time (ascending)\n        std::sort(buy_orders.begin(), buy_orders.end(),\n            [](const Order& a, const Order& b) {\n                if (a.price != b.price) return a.price > b.price;\n                return a.timestamp < b.timestamp;\n            });\n        \n        // Sort sell orders by price (ascending) and time (ascending)\n        std::sort(sell_orders.begin(), sell_orders.end(),\n            [](const Order& a, const Order& b) {\n                if (a.price != b.price) return a.price < b.price;\n                return a.timestamp < b.timestamp;\n            });\n        \n        // Match orders\n        size_t buy_idx = 0, sell_idx = 0;\n        \n        while (buy_idx < buy_orders.size() && sell_idx < sell_orders.size()) {\n            Order& buy_order = buy_orders[buy_idx];\n            Order& sell_order = sell_orders[sell_idx];",
+      "classification": "safe_parallel",
+      "reasoning": "The code has an embarrassingly parallel pattern with array access using simple indexing, which is suitable for parallelization.",
+      "confidence": 0.9,
+      "transformations": [
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Validate parallel results against sequential results"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/order_matching_engine.cpp",
+      "function": "_ZN19OrderMatchingEngine12match_ordersEv",
+      "line": 64,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        while (buy_idx < buy_orders.size() && sell_idx < sell_orders.size()) {\n            Order& buy_order = buy_orders[buy_idx];\n            Order& sell_order = sell_orders[sell_idx];\n            \n            // Check if prices match\n            if (buy_order.price >= sell_order.price) {\n                int match_quantity = std::min(buy_order.quantity, sell_order.quantity);\n                double match_price = (buy_order.timestamp < sell_order.timestamp) ?\n                                    sell_order.price : buy_order.price;\n                \n                matches.push_back({\n                    buy_order.order_id,\n                    sell_order.order_id,\n                    match_price,\n                    match_quantity\n                });\n                \n                buy_order.quantity -= match_quantity;\n                sell_order.quantity -= match_quantity;\n                \n                if (buy_order.quantity == 0) buy_idx++;\n                if (sell_order.quantity == 0) sell_idx++;\n            } else {\n                break;  // No more matches possible\n            }\n        }\n    }\n    \n    void calculate_market_statistics(double& vwap, double& volatility) {\n        if (matches.empty()) return;\n        \n        // Volume Weighted Average Price\n        double total_value = 0.0;\n        int total_volume = 0;\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "The code has a while loop with dependencies between iterations, which may require runtime dependency checking for safe parallelization.",
+      "confidence": 0.8,
+      "transformations": [
+        "OpenMP parallel for loop with dependency checking"
+      ],
+      "tests_recommended": [
+        "Validate parallel results against sequential results, test for data races"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "unknown",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_EEbT1_S9_T0_",
+      "line": 0,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "// High-frequency trading order matching engine\n#include <vector>\n#include <queue>\n#include <algorithm>\n#include <chrono>\n\nconst int NUM_ORDERS = 1000000;\n\nstruct Order {\n    int order_id;\n    char side;  // 'B' for buy, 'S' for sell\n    double price;\n    int quantity;\n    long long timestamp;\n};\n\nstruct Match {\n    int buy_order_id;\n    int sell_order_id;\n    double price;\n    int quantity;\n};\n\nclass OrderMatchingEngine {\nprivate:\n    std::vector<Order> buy_orders;\n    std::vector<Order> sell_orders;\n    std::vector<Match> matches;\n    ",
+      "classification": "not_parallel",
+      "reasoning": "The code is incomplete and lacks sufficient information for parallelization analysis.",
+      "confidence": 0.5,
+      "transformations": [
+        "None"
+      ],
+      "tests_recommended": [
+        "None"
+      ],
+      "logic_issue_type": "false_positive",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "unknown",
+      "function": "_ZNSt3__127__insertion_sort_incompleteB8ne210101INS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_EEbT1_S9_T0_",
+      "line": 0,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "// High-frequency trading order matching engine\n#include <vector>\n#include <queue>\n#include <algorithm>\n#include <chrono>\n\nconst int NUM_ORDERS = 1000000;\n\nstruct Order {\n    int order_id;\n    char side;  // 'B' for buy, 'S' for sell\n    double price;\n    int quantity;\n    long long timestamp;\n};\n\nstruct Match {\n    int buy_order_id;\n    int sell_order_id;\n    double price;\n    int quantity;\n};\n\nclass OrderMatchingEngine {\nprivate:\n    std::vector<Order> buy_orders;\n    std::vector<Order> sell_orders;\n    std::vector<Match> matches;\n    ",
+      "classification": "not_parallel",
+      "reasoning": "The code is incomplete and lacks sufficient information for parallelization analysis.",
+      "confidence": 0.5,
+      "transformations": [
+        "None"
+      ],
+      "tests_recommended": [
+        "None"
+      ],
+      "logic_issue_type": "false_positive",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/order_matching_engine.cpp",
+      "function": "main",
+      "line": 88,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.7000000000000001,
+      "context": "            }\n        }\n    }\n    \n    void calculate_market_statistics(double& vwap, double& volatility) {\n        if (matches.empty()) return;\n        \n        // Volume Weighted Average Price\n        double total_value = 0.0;\n        int total_volume = 0;\n        \n        for (const auto& match : matches) {\n            total_value += match.price * match.quantity;\n            total_volume += match.quantity;\n        }\n        \n        vwap = total_value / total_volume;\n        \n        // Price volatility\n        double sum_squared_diff = 0.0;\n        for (const auto& match : matches) {\n            double diff = match.price - vwap;\n            sum_squared_diff += diff * diff * match.quantity;\n        }\n        \n        volatility = sqrt(sum_squared_diff / total_volume);\n    }\n};\n\nint main() {\n    OrderMatchingEngine engine;\n    \n    std::vector<Order> orders;\n    for (int i = 0; i < NUM_ORDERS; i++) {\n        orders.push_back({",
+      "classification": "safe_parallel",
+      "reasoning": "The code has an embarrassingly parallel pattern with array access using simple indexing, which is suitable for parallelization.",
+      "confidence": 0.9,
+      "transformations": [
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Validate parallel results against sequential results"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.7000000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZN19OrderMatchingEngine12match_ordersEv",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// High-frequency trading order matching engine\n#include <vector>\n#include <queue>\n#include <algorithm>\n#include <chrono>\n\nconst int NUM_ORDERS = 1000000;\n\nstruct Order {\n    int order_id;\n    char side;  // 'B' for buy, 'S' for sell\n    double price;\n    int quantity;\n    long long timestamp;\n};\n\nstruct Match {\n    int buy_order_id;\n    int sell_order_id;\n    double price;\n    int quantity;\n};\n\nclass OrderMatchingEngine {\nprivate:\n    std::vector<Order> buy_orders;\n    std::vector<Order> sell_orders;\n    std::vector<Match> matches;\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "The code has a conditional branch that may be a loop, which may require runtime dependency checking for safe parallelization.",
+      "confidence": 0.8,
+      "transformations": [
+        "OpenMP parallel for loop with dependency checking"
+      ],
+      "tests_recommended": [
+        "Validate parallel results against sequential results, test for data races"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.65
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// High-frequency trading order matching engine\n#include <vector>\n#include <queue>\n#include <algorithm>\n#include <chrono>\n\nconst int NUM_ORDERS = 1000000;\n\nstruct Order {\n    int order_id;\n    char side;  // 'B' for buy, 'S' for sell\n    double price;\n    int quantity;\n    long long timestamp;\n};\n\nstruct Match {\n    int buy_order_id;\n    int sell_order_id;\n    double price;\n    int quantity;\n};\n\nclass OrderMatchingEngine {\nprivate:\n    std::vector<Order> buy_orders;\n    std::vector<Order> sell_orders;\n    std::vector<Match> matches;\n    ",
+      "classification": "not_parallel",
+      "reasoning": "The code appears to be a sequential algorithm (introsort) that is not suitable for parallelization.",
+      "confidence": 0.9,
+      "transformations": [
+        "None"
+      ],
+      "tests_recommended": [
+        "None"
+      ],
+      "logic_issue_type": "non_parallel_algorithm",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.65
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZNSt3__111__introsortINS_17_ClassicAlgPolicyERZN19OrderMatchingEngine12match_ordersEvEUlRK5OrderS5_E0_PS3_Lb0EEEvT1_S9_T0_NS_15iterator_traitsIS9_E15difference_typeEb",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// High-frequency trading order matching engine\n#include <vector>\n#include <queue>\n#include <algorithm>\n#include <chrono>\n\nconst int NUM_ORDERS = 1000000;\n\nstruct Order {\n    int order_id;\n    char side;  // 'B' for buy, 'S' for sell\n    double price;\n    int quantity;\n    long long timestamp;\n};\n\nstruct Match {\n    int buy_order_id;\n    int sell_order_id;\n    double price;\n    int quantity;\n};\n\nclass OrderMatchingEngine {\nprivate:\n    std::vector<Order> buy_orders;\n    std::vector<Order> sell_orders;\n    std::vector<Match> matches;\n    ",
+      "classification": "not_parallel",
+      "reasoning": "The code appears to be a sequential algorithm (introsort) that is not suitable for parallelization.",
+      "confidence": 0.9,
+      "transformations": [
+        "None"
+      ],
+      "tests_recommended": [
+        "None"
+      ],
+      "logic_issue_type": "non_parallel_algorithm",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.65
+    }
+  ]
+}

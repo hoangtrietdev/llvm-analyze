@@ -1,0 +1,477 @@
+{
+  "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+    "llvm_initial": 17,
+    "llvm_sys_noise": 3,
+    "llvm_project": 14,
+    "after_filter": 14,
+    "ai_batches": 1,
+    "ai_results": 14,
+    "omp_verified": 0,
+    "total_ms": 668.6,
+    "llvm_ms": 367.5
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid simulateWildfireSpread(CellState* grid, double* fuel_load, double* wind_speed, \n                           double* terrain_slope, int width, int height, int iterations) {\n    std::vector<CellState> next_grid(width * height);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < height-1; i++) {\n            for (int j = 1; j < width-1; j++) {\n                int idx = i * width + j;\n                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "void simulateWildfireSpread(CellState* grid, double* fuel_load, double* wind_speed, \n                           double* terrain_slope, int width, int height, int iterations) {\n    std::vector<CellState> next_grid(width * height);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < height-1; i++) {\n            for (int j = 1; j < width-1; j++) {\n                int idx = i * width + j;\n                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                           double* terrain_slope, int width, int height, int iterations) {\n    std::vector<CellState> next_grid(width * height);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < height-1; i++) {\n            for (int j = 1; j < width-1; j++) {\n                int idx = i * width + j;\n                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid simulateWildfireSpread(CellState* grid, double* fuel_load, double* wind_speed, \n                           double* terrain_slope, int width, int height, int iterations) {\n    std::vector<CellState> next_grid(width * height);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < height-1; i++) {\n            for (int j = 1; j < width-1; j++) {\n                int idx = i * width + j;\n                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "void simulateWildfireSpread(CellState* grid, double* fuel_load, double* wind_speed, \n                           double* terrain_slope, int width, int height, int iterations) {\n    std::vector<CellState> next_grid(width * height);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < height-1; i++) {\n            for (int j = 1; j < width-1; j++) {\n                int idx = i * width + j;\n                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 17,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (int i = 1; i < height-1; i++) {\n            for (int j = 1; j < width-1; j++) {\n                int idx = i * width + j;\n                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }\n                }\n            }\n        }\n        grid = next_grid.data();"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 40,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }\n                }\n            }\n        }\n        grid = next_grid.data();\n    }\n}\n\nint main() {\n    const int width = 500, height = 500;\n    std::vector<CellState> grid(width * height, UNBURNED);\n    std::vector<double> fuel_load(width * height, 1.0);\n    std::vector<double> wind_speed(width * height, 5.0);\n    std::vector<double> terrain_slope(width * height, 0.2);\n    \n    grid[width * height / 2] = BURNING;\n    \n    simulateWildfireSpread(grid.data(), fuel_load.data(), wind_speed.data(),\n                          terrain_slope.data(), width, height, 200);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 19,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                int idx = i * width + j;\n                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }\n                }\n            }\n        }\n        grid = next_grid.data();\n    }\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 21,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }\n                }\n            }\n        }\n        grid = next_grid.data();\n    }\n}\n\nint main() {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 27,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }\n                }\n            }\n        }\n        grid = next_grid.data();\n    }\n}\n\nint main() {\n    const int width = 500, height = 500;\n    std::vector<CellState> grid(width * height, UNBURNED);\n    std::vector<double> fuel_load(width * height, 1.0);\n    std::vector<double> wind_speed(width * height, 5.0);\n    std::vector<double> terrain_slope(width * height, 0.2);\n    "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 27,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }\n                }\n            }\n        }\n        grid = next_grid.data();\n    }\n}\n\nint main() {\n    const int width = 500, height = 500;\n    std::vector<CellState> grid(width * height, UNBURNED);\n    std::vector<double> fuel_load(width * height, 1.0);\n    std::vector<double> wind_speed(width * height, 5.0);\n    std::vector<double> terrain_slope(width * height, 0.2);\n    "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 32,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }\n                }\n            }\n        }\n        grid = next_grid.data();\n    }\n}\n\nint main() {\n    const int width = 500, height = 500;\n    std::vector<CellState> grid(width * height, UNBURNED);\n    std::vector<double> fuel_load(width * height, 1.0);\n    std::vector<double> wind_speed(width * height, 5.0);\n    std::vector<double> terrain_slope(width * height, 0.2);\n    \n    grid[width * height / 2] = BURNING;\n    \n    simulateWildfireSpread(grid.data(), fuel_load.data(), wind_speed.data(),\n                          terrain_slope.data(), width, height, 200);\n    return 0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }\n                }\n            }\n        }\n        grid = next_grid.data();\n    }\n}\n"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                           double* terrain_slope, int width, int height, int iterations) {\n    std::vector<CellState> next_grid(width * height);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < height-1; i++) {\n            for (int j = 1; j < width-1; j++) {\n                int idx = i * width + j;\n                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 17,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (int i = 1; i < height-1; i++) {\n            for (int j = 1; j < width-1; j++) {\n                int idx = i * width + j;\n                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }\n                }\n            }\n        }\n        grid = next_grid.data();",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 40,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }\n                }\n            }\n        }\n        grid = next_grid.data();\n    }\n}\n\nint main() {\n    const int width = 500, height = 500;\n    std::vector<CellState> grid(width * height, UNBURNED);\n    std::vector<double> fuel_load(width * height, 1.0);\n    std::vector<double> wind_speed(width * height, 5.0);\n    std::vector<double> terrain_slope(width * height, 0.2);\n    \n    grid[width * height / 2] = BURNING;\n    \n    simulateWildfireSpread(grid.data(), fuel_load.data(), wind_speed.data(),\n                          terrain_slope.data(), width, height, 200);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 27,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }\n                }\n            }\n        }\n        grid = next_grid.data();\n    }\n}\n\nint main() {\n    const int width = 500, height = 500;\n    std::vector<CellState> grid(width * height, UNBURNED);\n    std::vector<double> fuel_load(width * height, 1.0);\n    std::vector<double> wind_speed(width * height, 5.0);\n    std::vector<double> terrain_slope(width * height, 0.2);\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 27,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }\n                }\n            }\n        }\n        grid = next_grid.data();\n    }\n}\n\nint main() {\n    const int width = 500, height = 500;\n    std::vector<CellState> grid(width * height, UNBURNED);\n    std::vector<double> fuel_load(width * height, 1.0);\n    std::vector<double> wind_speed(width * height, 5.0);\n    std::vector<double> terrain_slope(width * height, 0.2);\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "void simulateWildfireSpread(CellState* grid, double* fuel_load, double* wind_speed, \n                           double* terrain_slope, int width, int height, int iterations) {\n    std::vector<CellState> next_grid(width * height);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < height-1; i++) {\n            for (int j = 1; j < width-1; j++) {\n                int idx = i * width + j;\n                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                           double* terrain_slope, int width, int height, int iterations) {\n    std::vector<CellState> next_grid(width * height);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < height-1; i++) {\n            for (int j = 1; j < width-1; j++) {\n                int idx = i * width + j;\n                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "void simulateWildfireSpread(CellState* grid, double* fuel_load, double* wind_speed, \n                           double* terrain_slope, int width, int height, int iterations) {\n    std::vector<CellState> next_grid(width * height);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < height-1; i++) {\n            for (int j = 1; j < width-1; j++) {\n                int idx = i * width + j;\n                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 19,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                int idx = i * width + j;\n                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }\n                }\n            }\n        }\n        grid = next_grid.data();\n    }\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }\n                }\n            }\n        }\n        grid = next_grid.data();\n    }\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                           double* terrain_slope, int width, int height, int iterations) {\n    std::vector<CellState> next_grid(width * height);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < height-1; i++) {\n            for (int j = 1; j < width-1; j++) {\n                int idx = i * width + j;\n                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 32,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }\n                }\n            }\n        }\n        grid = next_grid.data();\n    }\n}\n\nint main() {\n    const int width = 500, height = 500;\n    std::vector<CellState> grid(width * height, UNBURNED);\n    std::vector<double> fuel_load(width * height, 1.0);\n    std::vector<double> wind_speed(width * height, 5.0);\n    std::vector<double> terrain_slope(width * height, 0.2);\n    \n    grid[width * height / 2] = BURNING;\n    \n    simulateWildfireSpread(grid.data(), fuel_load.data(), wind_speed.data(),\n                          terrain_slope.data(), width, height, 200);\n    return 0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid simulateWildfireSpread(CellState* grid, double* fuel_load, double* wind_speed, \n                           double* terrain_slope, int width, int height, int iterations) {\n    std::vector<CellState> next_grid(width * height);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < height-1; i++) {\n            for (int j = 1; j < width-1; j++) {\n                int idx = i * width + j;\n                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid simulateWildfireSpread(CellState* grid, double* fuel_load, double* wind_speed, \n                           double* terrain_slope, int width, int height, int iterations) {\n    std::vector<CellState> next_grid(width * height);\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < height-1; i++) {\n            for (int j = 1; j < width-1; j++) {\n                int idx = i * width + j;\n                next_grid[idx] = grid[idx];\n                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/wildfire_spread.cpp",
+      "function": "_Z22simulateWildfireSpreadP9CellStatePdS1_S1_iii",
+      "line": 21,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                \n                if (grid[idx] == BURNING) {\n                    // Check if fire spreads to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            if (di == 0 && dj == 0) continue;\n                            \n                            int ni = i + di;\n                            int nj = j + dj;\n                            int nidx = ni * width + nj;\n                            \n                            if (grid[nidx] == UNBURNED && fuel_load[nidx] > 0) {\n                                double spread_prob = 0.1 * fuel_load[nidx];\n                                spread_prob *= (1.0 + wind_speed[nidx] * 0.5);\n                                spread_prob *= (1.0 + terrain_slope[nidx] * 0.3);\n                                \n                                if (spread_prob > 0.5) {\n                                    next_grid[nidx] = BURNING;\n                                }\n                            }\n                        }\n                    }\n                    \n                    fuel_load[idx] -= 0.1;\n                    if (fuel_load[idx] <= 0) {\n                        next_grid[idx] = BURNED;\n                    }\n                }\n            }\n        }\n        grid = next_grid.data();\n    }\n}\n\nint main() {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

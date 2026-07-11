@@ -1,0 +1,369 @@
+{
+  "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+    "llvm_initial": 12,
+    "llvm_sys_noise": 0,
+    "llvm_project": 12,
+    "after_filter": 11,
+    "ai_batches": 1,
+    "ai_results": 11,
+    "omp_verified": 0,
+    "total_ms": 548.9,
+    "llvm_ms": 363.8
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "_Z13adamOptimizerPdS_S_S_iddddi",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                  int n_params, double learning_rate, double beta1, double beta2,\n                  double epsilon, int iteration) {\n    double beta1_t = pow(beta1, iteration);\n    double beta2_t = pow(beta2, iteration);\n    \n    for (int i = 0; i < n_params; i++) {\n        // Update biased first moment estimate\n        m[i] = beta1 * m[i] + (1.0 - beta1) * gradients[i];\n        \n        // Update biased second raw moment estimate\n        v[i] = beta2 * v[i] + (1.0 - beta2) * gradients[i] * gradients[i];\n        \n        // Compute bias-corrected first moment estimate\n        double m_hat = m[i] / (1.0 - beta1_t);\n        \n        // Compute bias-corrected second raw moment estimate\n        double v_hat = v[i] / (1.0 - beta2_t);\n        \n        // Update parameters\n        weights[i] -= learning_rate * m_hat / (sqrt(v_hat) + epsilon);\n    }\n}\n\nvoid computeGradients(double* weights, double* data, double* targets, double* gradients,\n                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "_Z13adamOptimizerPdS_S_S_iddddi",
+      "line": 11,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                  int n_params, double learning_rate, double beta1, double beta2,\n                  double epsilon, int iteration) {\n    double beta1_t = pow(beta1, iteration);\n    double beta2_t = pow(beta2, iteration);\n    \n    for (int i = 0; i < n_params; i++) {\n        // Update biased first moment estimate\n        m[i] = beta1 * m[i] + (1.0 - beta1) * gradients[i];\n        \n        // Update biased second raw moment estimate\n        v[i] = beta2 * v[i] + (1.0 - beta2) * gradients[i] * gradients[i];\n        \n        // Compute bias-corrected first moment estimate\n        double m_hat = m[i] / (1.0 - beta1_t);\n        \n        // Compute bias-corrected second raw moment estimate\n        double v_hat = v[i] / (1.0 - beta2_t);\n        \n        // Update parameters\n        weights[i] -= learning_rate * m_hat / (sqrt(v_hat) + epsilon);\n    }\n}\n\nvoid computeGradients(double* weights, double* data, double* targets, double* gradients,\n                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "_Z16computeGradientsPdS_S_S_ii",
+      "line": 32,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "}\n\nvoid computeGradients(double* weights, double* data, double* targets, double* gradients,\n                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            \n            double error = prediction - targets[b];\n            gradients[i] += 2.0 * error * data[b * n_params + i] / batch_size;\n        }\n    }\n}\n\nint main() {\n    const int n_params = 1000;\n    const int batch_size = 32;\n    const int n_iterations = 1000;\n    \n    std::vector<double> weights(n_params, 0.1);\n    std::vector<double> gradients(n_params);\n    std::vector<double> m(n_params, 0.0);\n    std::vector<double> v(n_params, 0.0);\n    std::vector<double> data(batch_size * n_params, 1.0);\n    std::vector<double> targets(batch_size, 0.5);\n    \n    for (int iter = 1; iter <= n_iterations; iter++) {\n        computeGradients(weights.data(), data.data(), targets.data(), \n                        gradients.data(), n_params, batch_size);"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "_Z16computeGradientsPdS_S_S_ii",
+      "line": 35,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            \n            double error = prediction - targets[b];\n            gradients[i] += 2.0 * error * data[b * n_params + i] / batch_size;\n        }\n    }\n}\n\nint main() {\n    const int n_params = 1000;\n    const int batch_size = 32;\n    const int n_iterations = 1000;\n    \n    std::vector<double> weights(n_params, 0.1);\n    std::vector<double> gradients(n_params);\n    std::vector<double> m(n_params, 0.0);\n    std::vector<double> v(n_params, 0.0);\n    std::vector<double> data(batch_size * n_params, 1.0);\n    std::vector<double> targets(batch_size, 0.5);\n    \n    for (int iter = 1; iter <= n_iterations; iter++) {\n        computeGradients(weights.data(), data.data(), targets.data(), \n                        gradients.data(), n_params, batch_size);\n        adamOptimizer(weights.data(), gradients.data(), m.data(), v.data(),\n                     n_params, 0.001, 0.9, 0.999, 1e-8, iter);\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "_Z16computeGradientsPdS_S_S_ii",
+      "line": 32,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "}\n\nvoid computeGradients(double* weights, double* data, double* targets, double* gradients,\n                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            \n            double error = prediction - targets[b];\n            gradients[i] += 2.0 * error * data[b * n_params + i] / batch_size;\n        }\n    }\n}\n\nint main() {\n    const int n_params = 1000;\n    const int batch_size = 32;\n    const int n_iterations = 1000;\n    \n    std::vector<double> weights(n_params, 0.1);\n    std::vector<double> gradients(n_params);\n    std::vector<double> m(n_params, 0.0);\n    std::vector<double> v(n_params, 0.0);\n    std::vector<double> data(batch_size * n_params, 1.0);\n    std::vector<double> targets(batch_size, 0.5);\n    \n    for (int iter = 1; iter <= n_iterations; iter++) {\n        computeGradients(weights.data(), data.data(), targets.data(), \n                        gradients.data(), n_params, batch_size);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "_Z16computeGradientsPdS_S_S_ii",
+      "line": 35,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            \n            double error = prediction - targets[b];\n            gradients[i] += 2.0 * error * data[b * n_params + i] / batch_size;\n        }\n    }\n}\n\nint main() {\n    const int n_params = 1000;\n    const int batch_size = 32;\n    const int n_iterations = 1000;\n    \n    std::vector<double> weights(n_params, 0.1);\n    std::vector<double> gradients(n_params);\n    std::vector<double> m(n_params, 0.0);\n    std::vector<double> v(n_params, 0.0);\n    std::vector<double> data(batch_size * n_params, 1.0);\n    std::vector<double> targets(batch_size, 0.5);\n    \n    for (int iter = 1; iter <= n_iterations; iter++) {\n        computeGradients(weights.data(), data.data(), targets.data(), \n                        gradients.data(), n_params, batch_size);\n        adamOptimizer(weights.data(), gradients.data(), m.data(), v.data(),\n                     n_params, 0.001, 0.9, 0.999, 1e-8, iter);\n    }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "_Z16computeGradientsPdS_S_S_ii",
+      "line": 37,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            \n            double error = prediction - targets[b];\n            gradients[i] += 2.0 * error * data[b * n_params + i] / batch_size;\n        }\n    }\n}\n\nint main() {\n    const int n_params = 1000;\n    const int batch_size = 32;\n    const int n_iterations = 1000;\n    \n    std::vector<double> weights(n_params, 0.1);\n    std::vector<double> gradients(n_params);\n    std::vector<double> m(n_params, 0.0);\n    std::vector<double> v(n_params, 0.0);\n    std::vector<double> data(batch_size * n_params, 1.0);\n    std::vector<double> targets(batch_size, 0.5);\n    \n    for (int iter = 1; iter <= n_iterations; iter++) {\n        computeGradients(weights.data(), data.data(), targets.data(), \n                        gradients.data(), n_params, batch_size);\n        adamOptimizer(weights.data(), gradients.data(), m.data(), v.data(),\n                     n_params, 0.001, 0.9, 0.999, 1e-8, iter);\n    }\n    \n    return 0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "main",
+      "line": 32,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "}\n\nvoid computeGradients(double* weights, double* data, double* targets, double* gradients,\n                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            \n            double error = prediction - targets[b];\n            gradients[i] += 2.0 * error * data[b * n_params + i] / batch_size;\n        }\n    }\n}\n\nint main() {\n    const int n_params = 1000;\n    const int batch_size = 32;\n    const int n_iterations = 1000;\n    \n    std::vector<double> weights(n_params, 0.1);\n    std::vector<double> gradients(n_params);\n    std::vector<double> m(n_params, 0.0);\n    std::vector<double> v(n_params, 0.0);\n    std::vector<double> data(batch_size * n_params, 1.0);\n    std::vector<double> targets(batch_size, 0.5);\n    \n    for (int iter = 1; iter <= n_iterations; iter++) {\n        computeGradients(weights.data(), data.data(), targets.data(), \n                        gradients.data(), n_params, batch_size);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "main",
+      "line": 35,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            \n            double error = prediction - targets[b];\n            gradients[i] += 2.0 * error * data[b * n_params + i] / batch_size;\n        }\n    }\n}\n\nint main() {\n    const int n_params = 1000;\n    const int batch_size = 32;\n    const int n_iterations = 1000;\n    \n    std::vector<double> weights(n_params, 0.1);\n    std::vector<double> gradients(n_params);\n    std::vector<double> m(n_params, 0.0);\n    std::vector<double> v(n_params, 0.0);\n    std::vector<double> data(batch_size * n_params, 1.0);\n    std::vector<double> targets(batch_size, 0.5);\n    \n    for (int iter = 1; iter <= n_iterations; iter++) {\n        computeGradients(weights.data(), data.data(), targets.data(), \n                        gradients.data(), n_params, batch_size);\n        adamOptimizer(weights.data(), gradients.data(), m.data(), v.data(),\n                     n_params, 0.001, 0.9, 0.999, 1e-8, iter);\n    }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "main",
+      "line": 37,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            \n            double error = prediction - targets[b];\n            gradients[i] += 2.0 * error * data[b * n_params + i] / batch_size;\n        }\n    }\n}\n\nint main() {\n    const int n_params = 1000;\n    const int batch_size = 32;\n    const int n_iterations = 1000;\n    \n    std::vector<double> weights(n_params, 0.1);\n    std::vector<double> gradients(n_params);\n    std::vector<double> m(n_params, 0.0);\n    std::vector<double> v(n_params, 0.0);\n    std::vector<double> data(batch_size * n_params, 1.0);\n    std::vector<double> targets(batch_size, 0.5);\n    \n    for (int iter = 1; iter <= n_iterations; iter++) {\n        computeGradients(weights.data(), data.data(), targets.data(), \n                        gradients.data(), n_params, batch_size);\n        adamOptimizer(weights.data(), gradients.data(), m.data(), v.data(),\n                     n_params, 0.001, 0.9, 0.999, 1e-8, iter);\n    }\n    \n    return 0;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "main",
+      "line": 11,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "                  int n_params, double learning_rate, double beta1, double beta2,\n                  double epsilon, int iteration) {\n    double beta1_t = pow(beta1, iteration);\n    double beta2_t = pow(beta2, iteration);\n    \n    for (int i = 0; i < n_params; i++) {\n        // Update biased first moment estimate\n        m[i] = beta1 * m[i] + (1.0 - beta1) * gradients[i];\n        \n        // Update biased second raw moment estimate\n        v[i] = beta2 * v[i] + (1.0 - beta2) * gradients[i] * gradients[i];\n        \n        // Compute bias-corrected first moment estimate\n        double m_hat = m[i] / (1.0 - beta1_t);\n        \n        // Compute bias-corrected second raw moment estimate\n        double v_hat = v[i] / (1.0 - beta2_t);\n        \n        // Update parameters\n        weights[i] -= learning_rate * m_hat / (sqrt(v_hat) + epsilon);\n    }\n}\n\nvoid computeGradients(double* weights, double* data, double* targets, double* gradients,\n                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "main",
+      "line": 59,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "_Z16computeGradientsPdS_S_S_ii",
+      "line": 35,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            \n            double error = prediction - targets[b];\n            gradients[i] += 2.0 * error * data[b * n_params + i] / batch_size;\n        }\n    }\n}\n\nint main() {\n    const int n_params = 1000;\n    const int batch_size = 32;\n    const int n_iterations = 1000;\n    \n    std::vector<double> weights(n_params, 0.1);\n    std::vector<double> gradients(n_params);\n    std::vector<double> m(n_params, 0.0);\n    std::vector<double> v(n_params, 0.0);\n    std::vector<double> data(batch_size * n_params, 1.0);\n    std::vector<double> targets(batch_size, 0.5);\n    \n    for (int iter = 1; iter <= n_iterations; iter++) {\n        computeGradients(weights.data(), data.data(), targets.data(), \n                        gradients.data(), n_params, batch_size);\n        adamOptimizer(weights.data(), gradients.data(), m.data(), v.data(),\n                     n_params, 0.001, 0.9, 0.999, 1e-8, iter);\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "_Z16computeGradientsPdS_S_S_ii",
+      "line": 35,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            \n            double error = prediction - targets[b];\n            gradients[i] += 2.0 * error * data[b * n_params + i] / batch_size;\n        }\n    }\n}\n\nint main() {\n    const int n_params = 1000;\n    const int batch_size = 32;\n    const int n_iterations = 1000;\n    \n    std::vector<double> weights(n_params, 0.1);\n    std::vector<double> gradients(n_params);\n    std::vector<double> m(n_params, 0.0);\n    std::vector<double> v(n_params, 0.0);\n    std::vector<double> data(batch_size * n_params, 1.0);\n    std::vector<double> targets(batch_size, 0.5);\n    \n    for (int iter = 1; iter <= n_iterations; iter++) {\n        computeGradients(weights.data(), data.data(), targets.data(), \n                        gradients.data(), n_params, batch_size);\n        adamOptimizer(weights.data(), gradients.data(), m.data(), v.data(),\n                     n_params, 0.001, 0.9, 0.999, 1e-8, iter);\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "main",
+      "line": 35,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            \n            double error = prediction - targets[b];\n            gradients[i] += 2.0 * error * data[b * n_params + i] / batch_size;\n        }\n    }\n}\n\nint main() {\n    const int n_params = 1000;\n    const int batch_size = 32;\n    const int n_iterations = 1000;\n    \n    std::vector<double> weights(n_params, 0.1);\n    std::vector<double> gradients(n_params);\n    std::vector<double> m(n_params, 0.0);\n    std::vector<double> v(n_params, 0.0);\n    std::vector<double> data(batch_size * n_params, 1.0);\n    std::vector<double> targets(batch_size, 0.5);\n    \n    for (int iter = 1; iter <= n_iterations; iter++) {\n        computeGradients(weights.data(), data.data(), targets.data(), \n                        gradients.data(), n_params, batch_size);\n        adamOptimizer(weights.data(), gradients.data(), m.data(), v.data(),\n                     n_params, 0.001, 0.9, 0.999, 1e-8, iter);\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "_Z16computeGradientsPdS_S_S_ii",
+      "line": 32,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "}\n\nvoid computeGradients(double* weights, double* data, double* targets, double* gradients,\n                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            \n            double error = prediction - targets[b];\n            gradients[i] += 2.0 * error * data[b * n_params + i] / batch_size;\n        }\n    }\n}\n\nint main() {\n    const int n_params = 1000;\n    const int batch_size = 32;\n    const int n_iterations = 1000;\n    \n    std::vector<double> weights(n_params, 0.1);\n    std::vector<double> gradients(n_params);\n    std::vector<double> m(n_params, 0.0);\n    std::vector<double> v(n_params, 0.0);\n    std::vector<double> data(batch_size * n_params, 1.0);\n    std::vector<double> targets(batch_size, 0.5);\n    \n    for (int iter = 1; iter <= n_iterations; iter++) {\n        computeGradients(weights.data(), data.data(), targets.data(), \n                        gradients.data(), n_params, batch_size);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "_Z16computeGradientsPdS_S_S_ii",
+      "line": 32,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "}\n\nvoid computeGradients(double* weights, double* data, double* targets, double* gradients,\n                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            \n            double error = prediction - targets[b];\n            gradients[i] += 2.0 * error * data[b * n_params + i] / batch_size;\n        }\n    }\n}\n\nint main() {\n    const int n_params = 1000;\n    const int batch_size = 32;\n    const int n_iterations = 1000;\n    \n    std::vector<double> weights(n_params, 0.1);\n    std::vector<double> gradients(n_params);\n    std::vector<double> m(n_params, 0.0);\n    std::vector<double> v(n_params, 0.0);\n    std::vector<double> data(batch_size * n_params, 1.0);\n    std::vector<double> targets(batch_size, 0.5);\n    \n    for (int iter = 1; iter <= n_iterations; iter++) {\n        computeGradients(weights.data(), data.data(), targets.data(), \n                        gradients.data(), n_params, batch_size);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "_Z13adamOptimizerPdS_S_S_iddddi",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                  int n_params, double learning_rate, double beta1, double beta2,\n                  double epsilon, int iteration) {\n    double beta1_t = pow(beta1, iteration);\n    double beta2_t = pow(beta2, iteration);\n    \n    for (int i = 0; i < n_params; i++) {\n        // Update biased first moment estimate\n        m[i] = beta1 * m[i] + (1.0 - beta1) * gradients[i];\n        \n        // Update biased second raw moment estimate\n        v[i] = beta2 * v[i] + (1.0 - beta2) * gradients[i] * gradients[i];\n        \n        // Compute bias-corrected first moment estimate\n        double m_hat = m[i] / (1.0 - beta1_t);\n        \n        // Compute bias-corrected second raw moment estimate\n        double v_hat = v[i] / (1.0 - beta2_t);\n        \n        // Update parameters\n        weights[i] -= learning_rate * m_hat / (sqrt(v_hat) + epsilon);\n    }\n}\n\nvoid computeGradients(double* weights, double* data, double* targets, double* gradients,\n                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "_Z16computeGradientsPdS_S_S_ii",
+      "line": 37,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            \n            double error = prediction - targets[b];\n            gradients[i] += 2.0 * error * data[b * n_params + i] / batch_size;\n        }\n    }\n}\n\nint main() {\n    const int n_params = 1000;\n    const int batch_size = 32;\n    const int n_iterations = 1000;\n    \n    std::vector<double> weights(n_params, 0.1);\n    std::vector<double> gradients(n_params);\n    std::vector<double> m(n_params, 0.0);\n    std::vector<double> v(n_params, 0.0);\n    std::vector<double> data(batch_size * n_params, 1.0);\n    std::vector<double> targets(batch_size, 0.5);\n    \n    for (int iter = 1; iter <= n_iterations; iter++) {\n        computeGradients(weights.data(), data.data(), targets.data(), \n                        gradients.data(), n_params, batch_size);\n        adamOptimizer(weights.data(), gradients.data(), m.data(), v.data(),\n                     n_params, 0.001, 0.9, 0.999, 1e-8, iter);\n    }\n    \n    return 0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.7000000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "main",
+      "line": 32,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "}\n\nvoid computeGradients(double* weights, double* data, double* targets, double* gradients,\n                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            \n            double error = prediction - targets[b];\n            gradients[i] += 2.0 * error * data[b * n_params + i] / batch_size;\n        }\n    }\n}\n\nint main() {\n    const int n_params = 1000;\n    const int batch_size = 32;\n    const int n_iterations = 1000;\n    \n    std::vector<double> weights(n_params, 0.1);\n    std::vector<double> gradients(n_params);\n    std::vector<double> m(n_params, 0.0);\n    std::vector<double> v(n_params, 0.0);\n    std::vector<double> data(batch_size * n_params, 1.0);\n    std::vector<double> targets(batch_size, 0.5);\n    \n    for (int iter = 1; iter <= n_iterations; iter++) {\n        computeGradients(weights.data(), data.data(), targets.data(), \n                        gradients.data(), n_params, batch_size);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "_Z13adamOptimizerPdS_S_S_iddddi",
+      "line": 11,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                  int n_params, double learning_rate, double beta1, double beta2,\n                  double epsilon, int iteration) {\n    double beta1_t = pow(beta1, iteration);\n    double beta2_t = pow(beta2, iteration);\n    \n    for (int i = 0; i < n_params; i++) {\n        // Update biased first moment estimate\n        m[i] = beta1 * m[i] + (1.0 - beta1) * gradients[i];\n        \n        // Update biased second raw moment estimate\n        v[i] = beta2 * v[i] + (1.0 - beta2) * gradients[i] * gradients[i];\n        \n        // Compute bias-corrected first moment estimate\n        double m_hat = m[i] / (1.0 - beta1_t);\n        \n        // Compute bias-corrected second raw moment estimate\n        double v_hat = v[i] / (1.0 - beta2_t);\n        \n        // Update parameters\n        weights[i] -= learning_rate * m_hat / (sqrt(v_hat) + epsilon);\n    }\n}\n\nvoid computeGradients(double* weights, double* data, double* targets, double* gradients,\n                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "main",
+      "line": 37,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            \n            double error = prediction - targets[b];\n            gradients[i] += 2.0 * error * data[b * n_params + i] / batch_size;\n        }\n    }\n}\n\nint main() {\n    const int n_params = 1000;\n    const int batch_size = 32;\n    const int n_iterations = 1000;\n    \n    std::vector<double> weights(n_params, 0.1);\n    std::vector<double> gradients(n_params);\n    std::vector<double> m(n_params, 0.0);\n    std::vector<double> v(n_params, 0.0);\n    std::vector<double> data(batch_size * n_params, 1.0);\n    std::vector<double> targets(batch_size, 0.5);\n    \n    for (int iter = 1; iter <= n_iterations; iter++) {\n        computeGradients(weights.data(), data.data(), targets.data(), \n                        gradients.data(), n_params, batch_size);\n        adamOptimizer(weights.data(), gradients.data(), m.data(), v.data(),\n                     n_params, 0.001, 0.9, 0.999, 1e-8, iter);\n    }\n    \n    return 0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6000000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/adam_optimizer.cpp",
+      "function": "main",
+      "line": 11,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "                  int n_params, double learning_rate, double beta1, double beta2,\n                  double epsilon, int iteration) {\n    double beta1_t = pow(beta1, iteration);\n    double beta2_t = pow(beta2, iteration);\n    \n    for (int i = 0; i < n_params; i++) {\n        // Update biased first moment estimate\n        m[i] = beta1 * m[i] + (1.0 - beta1) * gradients[i];\n        \n        // Update biased second raw moment estimate\n        v[i] = beta2 * v[i] + (1.0 - beta2) * gradients[i] * gradients[i];\n        \n        // Compute bias-corrected first moment estimate\n        double m_hat = m[i] / (1.0 - beta1_t);\n        \n        // Compute bias-corrected second raw moment estimate\n        double v_hat = v[i] / (1.0 - beta2_t);\n        \n        // Update parameters\n        weights[i] -= learning_rate * m_hat / (sqrt(v_hat) + epsilon);\n    }\n}\n\nvoid computeGradients(double* weights, double* data, double* targets, double* gradients,\n                     int n_params, int batch_size) {\n    // Simplified gradient computation\n    for (int i = 0; i < n_params; i++) {\n        gradients[i] = 0.0;\n        \n        for (int b = 0; b < batch_size; b++) {\n            double prediction = 0.0;\n            for (int j = 0; j < n_params; j++) {\n                prediction += weights[j] * data[b * n_params + j];\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6000000000000001
+    }
+  ]
+}

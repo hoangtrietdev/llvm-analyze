@@ -1,0 +1,2023 @@
+{
+  "file": "sample/src/real-world/trading/order_book.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/trading/order_book.cpp",
+    "llvm_initial": 217,
+    "llvm_sys_noise": 191,
+    "llvm_project": 26,
+    "after_filter": 11,
+    "ai_batches": 1,
+    "ai_results": 11,
+    "omp_verified": 0,
+    "total_ms": 965.8,
+    "llvm_ms": 575.3
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN18OrderBookSimulator17simulateOrderFlowEi",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN18OrderBookSimulator17simulateOrderFlowEi",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "_ZN18OrderBookSimulator17simulateOrderFlowEi",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator17simulateOrderFlowEi",
+      "line": 183,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator17simulateOrderFlowEi",
+      "line": 183,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        std::mt19937 gen(rd());\n        std::uniform_real_distribution<double> priceDis(99.0, 101.0);\n        std::uniform_int_distribution<int> qtyDis(1, 100);\n        std::uniform_int_distribution<int> sideDis(0, 1);\n        \n        for (int i = 0; i < nOrders; i++) {\n            Order order;\n            order.side = static_cast<OrderSide>(sideDis(gen));\n            order.type = LIMIT;\n            order.price = priceDis(gen);\n            order.quantity = qtyDis(gen);\n            order.timestamp = i;\n            \n            addOrder(order);\n        }\n    }\n};\n\nint main() {\n    OrderBookSimulator orderBook;\n    orderBook.simulateOrderFlow(10000);\n    \n    double imbalance = orderBook.calculateImbalance();\n    double microprice = orderBook.calculateMicroprice();\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18OrderBookSimulatorD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator8addOrderENS_5OrderE",
+      "line": 44,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.06999999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator8addOrderENS_5OrderE",
+      "line": 129,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.17000000000000004
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator8addOrderENS_5OrderE",
+      "line": 130,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.17000000000000004
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator8addOrderENS_5OrderE",
+      "line": 135,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            if (!tryMatchOrder(order)) {\n                addToBook(order);\n                break;\n            }\n            \n            if (hiddenQty > 0) {\n                int refill = std::min(hiddenQty, order.displayQuantity);\n                order.quantity = refill;\n                hiddenQty -= refill;\n            }\n        }\n    }\n    \n    // Calculate order book imbalance\n    double calculateImbalance() {\n        double bidVolume = 0.0, askVolume = 0.0;\n        \n        int levels = 0;\n        for (const auto& [price, level] : bids) {\n            bidVolume += level.totalQuantity * price;\n            if (++levels >= 10) break;\n        }\n        \n        levels = 0;\n        for (const auto& [price, level] : asks) {\n            askVolume += level.totalQuantity * price;\n            if (++levels >= 10) break;\n        }\n        \n        return (bidVolume - askVolume) / (bidVolume + askVolume);\n    }\n    \n    // Compute microprice\n    double calculateMicroprice() {\n        if (bids.empty() || asks.empty()) return 0.0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator8addOrderENS_5OrderE",
+      "line": 129,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/uniform_int_distribution.h",
+      "function": "_ZNSt3__124uniform_int_distributionIiEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEiRT_RKNS1_10param_typeE",
+      "line": 215,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/uniform_int_distribution.h",
+      "function": "_ZNSt3__124uniform_int_distributionIiEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEiRT_RKNS1_10param_typeE",
+      "line": 219,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/uniform_int_distribution.h",
+      "function": "_ZNSt3__124uniform_int_distributionIiEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEiRT_RKNS1_10param_typeE",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 56,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "    \n    // Match order against book\n    bool tryMatchOrder(Order& order) {\n        auto& oppositeBook = (order.side == BUY) ? asks : bids;\n        \n        while (order.quantity > 0 && !oppositeBook.empty()) {\n            double bestPrice;\n            if (order.side == BUY) {\n                bestPrice = oppositeBook.begin()->first;\n            } else {\n                bestPrice = oppositeBook.rbegin()->first;\n            }\n            \n            // Check price condition\n            if ((order.side == BUY && order.price < bestPrice) ||\n                (order.side == SELL && order.price > bestPrice)) {\n                break;\n            }\n            \n            // Match quantities\n            auto& level = (order.side == BUY) ? oppositeBook.begin()->second : oppositeBook.rbegin()->second;\n            while (order.quantity > 0 && !level.orders.empty()) {\n                Order& restingOrder = level.orders.front();\n                \n                int matchQty = std::min(order.quantity, restingOrder.quantity);\n                \n                // Record trade\n                trades.push_back({0, order.side, MARKET, \n                                 bestPrice, matchQty, 0, order.timestamp});\n                \n                order.quantity -= matchQty;\n                restingOrder.quantity -= matchQty;\n                level.totalQuantity -= matchQty;\n                \n                if (restingOrder.quantity == 0) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 56,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 58,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 203,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 172,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 65,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            } else {\n                bestPrice = oppositeBook.rbegin()->first;\n            }\n            \n            // Check price condition\n            if ((order.side == BUY && order.price < bestPrice) ||\n                (order.side == SELL && order.price > bestPrice)) {\n                break;\n            }\n            \n            // Match quantities\n            auto& level = (order.side == BUY) ? oppositeBook.begin()->second : oppositeBook.rbegin()->second;\n            while (order.quantity > 0 && !level.orders.empty()) {\n                Order& restingOrder = level.orders.front();\n                \n                int matchQty = std::min(order.quantity, restingOrder.quantity);\n                \n                // Record trade\n                trades.push_back({0, order.side, MARKET, \n                                 bestPrice, matchQty, 0, order.timestamp});\n                \n                order.quantity -= matchQty;\n                restingOrder.quantity -= matchQty;\n                level.totalQuantity -= matchQty;\n                \n                if (restingOrder.quantity == 0) {\n                    level.orders.pop();\n                }\n            }\n            \n            // Remove empty price level\n            if (level.orders.empty()) {\n                if (order.side == BUY) {\n                    oppositeBook.erase(bestPrice);\n                } else {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 65,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            } else {\n                bestPrice = oppositeBook.rbegin()->first;\n            }\n            \n            // Check price condition\n            if ((order.side == BUY && order.price < bestPrice) ||\n                (order.side == SELL && order.price > bestPrice)) {\n                break;\n            }\n            \n            // Match quantities\n            auto& level = (order.side == BUY) ? oppositeBook.begin()->second : oppositeBook.rbegin()->second;\n            while (order.quantity > 0 && !level.orders.empty()) {\n                Order& restingOrder = level.orders.front();\n                \n                int matchQty = std::min(order.quantity, restingOrder.quantity);\n                \n                // Record trade\n                trades.push_back({0, order.side, MARKET, \n                                 bestPrice, matchQty, 0, order.timestamp});\n                \n                order.quantity -= matchQty;\n                restingOrder.quantity -= matchQty;\n                level.totalQuantity -= matchQty;\n                \n                if (restingOrder.quantity == 0) {\n                    level.orders.pop();\n                }\n            }\n            \n            // Remove empty price level\n            if (level.orders.empty()) {\n                if (order.side == BUY) {\n                    oppositeBook.erase(bestPrice);\n                } else {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 66,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                bestPrice = oppositeBook.rbegin()->first;\n            }\n            \n            // Check price condition\n            if ((order.side == BUY && order.price < bestPrice) ||\n                (order.side == SELL && order.price > bestPrice)) {\n                break;\n            }\n            \n            // Match quantities\n            auto& level = (order.side == BUY) ? oppositeBook.begin()->second : oppositeBook.rbegin()->second;\n            while (order.quantity > 0 && !level.orders.empty()) {\n                Order& restingOrder = level.orders.front();\n                \n                int matchQty = std::min(order.quantity, restingOrder.quantity);\n                \n                // Record trade\n                trades.push_back({0, order.side, MARKET, \n                                 bestPrice, matchQty, 0, order.timestamp});\n                \n                order.quantity -= matchQty;\n                restingOrder.quantity -= matchQty;\n                level.totalQuantity -= matchQty;\n                \n                if (restingOrder.quantity == 0) {\n                    level.orders.pop();\n                }\n            }\n            \n            // Remove empty price level\n            if (level.orders.empty()) {\n                if (order.side == BUY) {\n                    oppositeBook.erase(bestPrice);\n                } else {\n                    // For rbegin, need to convert to regular iterator"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 65,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            } else {\n                bestPrice = oppositeBook.rbegin()->first;\n            }\n            \n            // Check price condition\n            if ((order.side == BUY && order.price < bestPrice) ||\n                (order.side == SELL && order.price > bestPrice)) {\n                break;\n            }\n            \n            // Match quantities\n            auto& level = (order.side == BUY) ? oppositeBook.begin()->second : oppositeBook.rbegin()->second;\n            while (order.quantity > 0 && !level.orders.empty()) {\n                Order& restingOrder = level.orders.front();\n                \n                int matchQty = std::min(order.quantity, restingOrder.quantity);\n                \n                // Record trade\n                trades.push_back({0, order.side, MARKET, \n                                 bestPrice, matchQty, 0, order.timestamp});\n                \n                order.quantity -= matchQty;\n                restingOrder.quantity -= matchQty;\n                level.totalQuantity -= matchQty;\n                \n                if (restingOrder.quantity == 0) {\n                    level.orders.pop();\n                }\n            }\n            \n            // Remove empty price level\n            if (level.orders.empty()) {\n                if (order.side == BUY) {\n                    oppositeBook.erase(bestPrice);\n                } else {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 71,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 203,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 172,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 72,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "                break;\n            }\n            \n            // Match quantities\n            auto& level = (order.side == BUY) ? oppositeBook.begin()->second : oppositeBook.rbegin()->second;\n            while (order.quantity > 0 && !level.orders.empty()) {\n                Order& restingOrder = level.orders.front();\n                \n                int matchQty = std::min(order.quantity, restingOrder.quantity);\n                \n                // Record trade\n                trades.push_back({0, order.side, MARKET, \n                                 bestPrice, matchQty, 0, order.timestamp});\n                \n                order.quantity -= matchQty;\n                restingOrder.quantity -= matchQty;\n                level.totalQuantity -= matchQty;\n                \n                if (restingOrder.quantity == 0) {\n                    level.orders.pop();\n                }\n            }\n            \n            // Remove empty price level\n            if (level.orders.empty()) {\n                if (order.side == BUY) {\n                    oppositeBook.erase(bestPrice);\n                } else {\n                    // For rbegin, need to convert to regular iterator\n                    auto it_to_erase = oppositeBook.find(bestPrice);\n                    if (it_to_erase != oppositeBook.end()) {\n                        oppositeBook.erase(it_to_erase);\n                    }\n                }\n            }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 72,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 85,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 1169,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 72,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 91,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "                    level.orders.pop();\n                }\n            }\n            \n            // Remove empty price level\n            if (level.orders.empty()) {\n                if (order.side == BUY) {\n                    oppositeBook.erase(bestPrice);\n                } else {\n                    // For rbegin, need to convert to regular iterator\n                    auto it_to_erase = oppositeBook.find(bestPrice);\n                    if (it_to_erase != oppositeBook.end()) {\n                        oppositeBook.erase(it_to_erase);\n                    }\n                }\n            }\n        }\n        \n        return order.quantity == 0;\n    }\n    \n    // Execute market order\n    void executeMarketOrder(Order order) {\n        tryMatchOrder(order);\n    }\n    \n    // Add order to book\n    void addToBook(const Order& order) {\n        auto& book = (order.side == BUY) ? bids : asks;\n        \n        if (book.find(order.price) == book.end()) {\n            book[order.price] = {order.price, 0, {}};\n        }\n        \n        book[order.price].orders.push(order);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 92,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 2049,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 2049,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 1994,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 1994,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 97,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 191,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 163,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 193,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 1824,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 56,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 2049,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 2049,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1994,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1994,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 116,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1593,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1594,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1601,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1602,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1691,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1677,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 2535,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 2535,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 623,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 623,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1591,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1593,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1594,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1601,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1602,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1691,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1677,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1580,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1593,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1594,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1601,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1602,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1691,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN18OrderBookSimulator9addToBookERKNS_5OrderE",
+      "line": 1677,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE9push_backB8ne210101EOS2_",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE9push_backB8ne210101EOS2_",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE9push_backB8ne210101EOS2_",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE9push_backB8ne210101EOS2_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeINS_12__value_typeIdN18OrderBookSimulator10PriceLevelEEENS_19__map_value_compareIdNS_4pairIKdS3_EENS_4lessIdEELb1EEENS_9allocatorIS8_EEE14__erase_uniqueIdEEmRKT_",
+      "line": 2049,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeINS_12__value_typeIdN18OrderBookSimulator10PriceLevelEEENS_19__map_value_compareIdNS_4pairIKdS3_EENS_4lessIdEELb1EEENS_9allocatorIS8_EEE14__erase_uniqueIdEEmRKT_",
+      "line": 2049,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeINS_12__value_typeIdN18OrderBookSimulator10PriceLevelEEENS_19__map_value_compareIdNS_4pairIKdS3_EENS_4lessIdEELb1EEENS_9allocatorIS8_EEE14__erase_uniqueIdEEmRKT_",
+      "line": 1994,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeINS_12__value_typeIdN18OrderBookSimulator10PriceLevelEEENS_19__map_value_compareIdNS_4pairIKdS3_EENS_4lessIdEELb1EEENS_9allocatorIS8_EEE14__erase_uniqueIdEEmRKT_",
+      "line": 1994,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeINS_12__value_typeIdN18OrderBookSimulator10PriceLevelEEENS_19__map_value_compareIdNS_4pairIKdS3_EENS_4lessIdEELb1EEENS_9allocatorIS8_EEE14__erase_uniqueIdEEmRKT_",
+      "line": 1973,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeINS_12__value_typeIdN18OrderBookSimulator10PriceLevelEEENS_19__map_value_compareIdNS_4pairIKdS3_EENS_4lessIdEELb1EEENS_9allocatorIS8_EEE14__erase_uniqueIdEEmRKT_",
+      "line": 191,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeINS_12__value_typeIdN18OrderBookSimulator10PriceLevelEEENS_19__map_value_compareIdNS_4pairIKdS3_EENS_4lessIdEELb1EEENS_9allocatorIS8_EEE14__erase_uniqueIdEEmRKT_",
+      "line": 163,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeINS_12__value_typeIdN18OrderBookSimulator10PriceLevelEEENS_19__map_value_compareIdNS_4pairIKdS3_EENS_4lessIdEELb1EEENS_9allocatorIS8_EEE14__erase_uniqueIdEEmRKT_",
+      "line": 193,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeINS_12__value_typeIdN18OrderBookSimulator10PriceLevelEEENS_19__map_value_compareIdNS_4pairIKdS3_EENS_4lessIdEELb1EEENS_9allocatorIS8_EEE14__erase_uniqueIdEEmRKT_",
+      "line": 1824,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 339,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 339,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 163,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 345,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 347,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 349,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 361,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 364,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 371,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 379,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 392,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 401,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 403,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 237,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 240,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 415,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 415,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 416,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 415,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 420,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 420,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 429,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 429,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 256,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 259,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 237,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 240,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 446,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 256,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 259,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 458,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 458,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 459,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 458,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 463,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 472,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 472,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 237,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 240,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 256,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__113__tree_removeB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 259,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 2535,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 2535,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 623,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 623,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 279,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 279,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 281,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 283,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 283,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 290,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 237,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 240,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 256,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 259,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// High-Frequency Trading Order Book Simulator\n#include <vector>\n#include <map>\n#include <queue>\n#include <cmath>\n#include <random>\n\nclass OrderBookSimulator {\npublic:\n    enum OrderSide { BUY, SELL };\n    enum OrderType { MARKET, LIMIT, ICEBERG, STOP };\n    \n    struct Order {\n        int id;\n        OrderSide side;\n        OrderType type;\n        double price;\n        int quantity;\n        int displayQuantity;\n        long timestamp;\n    };\n    \n    struct PriceLevel {\n        double price;\n        int totalQuantity;\n        std::queue<Order> orders;\n    };\n    \n    std::map<double, PriceLevel> bids;  // Buy orders (descending)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 303,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 303,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 310,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 256,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 259,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 237,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 240,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// High-Frequency Trading Order Book Simulator\n#include <vector>\n#include <map>\n#include <queue>\n#include <cmath>\n#include <random>\n\nclass OrderBookSimulator {\npublic:\n    enum OrderSide { BUY, SELL };\n    enum OrderType { MARKET, LIMIT, ICEBERG, STOP };\n    \n    struct Order {\n        int id;\n        OrderSide side;\n        OrderType type;\n        double price;\n        int quantity;\n        int displayQuantity;\n        long timestamp;\n    };\n    \n    struct PriceLevel {\n        double price;\n        int totalQuantity;\n        std::queue<Order> orders;\n    };\n    \n    std::map<double, PriceLevel> bids;  // Buy orders (descending)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 279,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE13__move_assignERS5_NS_17integral_constantIbLb1EEE",
+      "line": 2535,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE13__move_assignERS5_NS_17integral_constantIbLb1EEE",
+      "line": 2535,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE13__move_assignERS5_NS_17integral_constantIbLb1EEE",
+      "line": 313,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE13shrink_to_fitEv",
+      "line": 1506,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE13shrink_to_fitEv",
+      "line": 1508,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE13shrink_to_fitEv",
+      "line": 1508,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE13shrink_to_fitEv",
+      "line": 1169,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE13shrink_to_fitEv",
+      "line": 1180,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE13shrink_to_fitEv",
+      "line": 411,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE13shrink_to_fitEv",
+      "line": 327,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE13shrink_to_fitEv",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE13shrink_to_fitEv",
+      "line": 416,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE13shrink_to_fitEv",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE13shrink_to_fitEv",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE13shrink_to_fitEv",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderERNS_9allocatorIS3_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderERNS_9allocatorIS3_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 2174,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 2181,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 2184,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 457,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 458,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 2205,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/unique_ptr.h",
+      "function": "_ZNSt3__15dequeIN18OrderBookSimulator5OrderENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 289,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 457,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 458,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 457,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 458,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 434,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 435,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 434,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 435,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN18OrderBookSimulator5OrderERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeINS_12__value_typeIdN18OrderBookSimulator10PriceLevelEEENS_19__map_value_compareIdNS_4pairIKdS3_EENS_4lessIdEELb1EEENS_9allocatorIS8_EEE7destroyEPNS_11__tree_nodeIS4_PvEE",
+      "line": 1449,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 65,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            } else {\n                bestPrice = oppositeBook.rbegin()->first;\n            }\n            \n            // Check price condition\n            if ((order.side == BUY && order.price < bestPrice) ||\n                (order.side == SELL && order.price > bestPrice)) {\n                break;\n            }\n            \n            // Match quantities\n            auto& level = (order.side == BUY) ? oppositeBook.begin()->second : oppositeBook.rbegin()->second;\n            while (order.quantity > 0 && !level.orders.empty()) {\n                Order& restingOrder = level.orders.front();\n                \n                int matchQty = std::min(order.quantity, restingOrder.quantity);\n                \n                // Record trade\n                trades.push_back({0, order.side, MARKET, \n                                 bestPrice, matchQty, 0, order.timestamp});\n                \n                order.quantity -= matchQty;\n                restingOrder.quantity -= matchQty;\n                level.totalQuantity -= matchQty;\n                \n                if (restingOrder.quantity == 0) {\n                    level.orders.pop();\n                }\n            }\n            \n            // Remove empty price level\n            if (level.orders.empty()) {\n                if (order.side == BUY) {\n                    oppositeBook.erase(bestPrice);\n                } else {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 56,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "    \n    // Match order against book\n    bool tryMatchOrder(Order& order) {\n        auto& oppositeBook = (order.side == BUY) ? asks : bids;\n        \n        while (order.quantity > 0 && !oppositeBook.empty()) {\n            double bestPrice;\n            if (order.side == BUY) {\n                bestPrice = oppositeBook.begin()->first;\n            } else {\n                bestPrice = oppositeBook.rbegin()->first;\n            }\n            \n            // Check price condition\n            if ((order.side == BUY && order.price < bestPrice) ||\n                (order.side == SELL && order.price > bestPrice)) {\n                break;\n            }\n            \n            // Match quantities\n            auto& level = (order.side == BUY) ? oppositeBook.begin()->second : oppositeBook.rbegin()->second;\n            while (order.quantity > 0 && !level.orders.empty()) {\n                Order& restingOrder = level.orders.front();\n                \n                int matchQty = std::min(order.quantity, restingOrder.quantity);\n                \n                // Record trade\n                trades.push_back({0, order.side, MARKET, \n                                 bestPrice, matchQty, 0, order.timestamp});\n                \n                order.quantity -= matchQty;\n                restingOrder.quantity -= matchQty;\n                level.totalQuantity -= matchQty;\n                \n                if (restingOrder.quantity == 0) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 72,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "                break;\n            }\n            \n            // Match quantities\n            auto& level = (order.side == BUY) ? oppositeBook.begin()->second : oppositeBook.rbegin()->second;\n            while (order.quantity > 0 && !level.orders.empty()) {\n                Order& restingOrder = level.orders.front();\n                \n                int matchQty = std::min(order.quantity, restingOrder.quantity);\n                \n                // Record trade\n                trades.push_back({0, order.side, MARKET, \n                                 bestPrice, matchQty, 0, order.timestamp});\n                \n                order.quantity -= matchQty;\n                restingOrder.quantity -= matchQty;\n                level.totalQuantity -= matchQty;\n                \n                if (restingOrder.quantity == 0) {\n                    level.orders.pop();\n                }\n            }\n            \n            // Remove empty price level\n            if (level.orders.empty()) {\n                if (order.side == BUY) {\n                    oppositeBook.erase(bestPrice);\n                } else {\n                    // For rbegin, need to convert to regular iterator\n                    auto it_to_erase = oppositeBook.find(bestPrice);\n                    if (it_to_erase != oppositeBook.end()) {\n                        oppositeBook.erase(it_to_erase);\n                    }\n                }\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 91,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "                    level.orders.pop();\n                }\n            }\n            \n            // Remove empty price level\n            if (level.orders.empty()) {\n                if (order.side == BUY) {\n                    oppositeBook.erase(bestPrice);\n                } else {\n                    // For rbegin, need to convert to regular iterator\n                    auto it_to_erase = oppositeBook.find(bestPrice);\n                    if (it_to_erase != oppositeBook.end()) {\n                        oppositeBook.erase(it_to_erase);\n                    }\n                }\n            }\n        }\n        \n        return order.quantity == 0;\n    }\n    \n    // Execute market order\n    void executeMarketOrder(Order order) {\n        tryMatchOrder(order);\n    }\n    \n    // Add order to book\n    void addToBook(const Order& order) {\n        auto& book = (order.side == BUY) ? bids : asks;\n        \n        if (book.find(order.price) == book.end()) {\n            book[order.price] = {order.price, 0, {}};\n        }\n        \n        book[order.price].orders.push(order);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// High-Frequency Trading Order Book Simulator\n#include <vector>\n#include <map>\n#include <queue>\n#include <cmath>\n#include <random>\n\nclass OrderBookSimulator {\npublic:\n    enum OrderSide { BUY, SELL };\n    enum OrderType { MARKET, LIMIT, ICEBERG, STOP };\n    \n    struct Order {\n        int id;\n        OrderSide side;\n        OrderType type;\n        double price;\n        int quantity;\n        int displayQuantity;\n        long timestamp;\n    };\n    \n    struct PriceLevel {\n        double price;\n        int totalQuantity;\n        std::queue<Order> orders;\n    };\n    \n    std::map<double, PriceLevel> bids;  // Buy orders (descending)",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.65
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// High-Frequency Trading Order Book Simulator\n#include <vector>\n#include <map>\n#include <queue>\n#include <cmath>\n#include <random>\n\nclass OrderBookSimulator {\npublic:\n    enum OrderSide { BUY, SELL };\n    enum OrderType { MARKET, LIMIT, ICEBERG, STOP };\n    \n    struct Order {\n        int id;\n        OrderSide side;\n        OrderType type;\n        double price;\n        int quantity;\n        int displayQuantity;\n        long timestamp;\n    };\n    \n    struct PriceLevel {\n        double price;\n        int totalQuantity;\n        std::queue<Order> orders;\n    };\n    \n    std::map<double, PriceLevel> bids;  // Buy orders (descending)",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.65
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator17simulateOrderFlowEi",
+      "line": 183,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        std::mt19937 gen(rd());\n        std::uniform_real_distribution<double> priceDis(99.0, 101.0);\n        std::uniform_int_distribution<int> qtyDis(1, 100);\n        std::uniform_int_distribution<int> sideDis(0, 1);\n        \n        for (int i = 0; i < nOrders; i++) {\n            Order order;\n            order.side = static_cast<OrderSide>(sideDis(gen));\n            order.type = LIMIT;\n            order.price = priceDis(gen);\n            order.quantity = qtyDis(gen);\n            order.timestamp = i;\n            \n            addOrder(order);\n        }\n    }\n};\n\nint main() {\n    OrderBookSimulator orderBook;\n    orderBook.simulateOrderFlow(10000);\n    \n    double imbalance = orderBook.calculateImbalance();\n    double microprice = orderBook.calculateMicroprice();\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator8addOrderENS_5OrderE",
+      "line": 135,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            if (!tryMatchOrder(order)) {\n                addToBook(order);\n                break;\n            }\n            \n            if (hiddenQty > 0) {\n                int refill = std::min(hiddenQty, order.displayQuantity);\n                order.quantity = refill;\n                hiddenQty -= refill;\n            }\n        }\n    }\n    \n    // Calculate order book imbalance\n    double calculateImbalance() {\n        double bidVolume = 0.0, askVolume = 0.0;\n        \n        int levels = 0;\n        for (const auto& [price, level] : bids) {\n            bidVolume += level.totalQuantity * price;\n            if (++levels >= 10) break;\n        }\n        \n        levels = 0;\n        for (const auto& [price, level] : asks) {\n            askVolume += level.totalQuantity * price;\n            if (++levels >= 10) break;\n        }\n        \n        return (bidVolume - askVolume) / (bidVolume + askVolume);\n    }\n    \n    // Compute microprice\n    double calculateMicroprice() {\n        if (bids.empty() || asks.empty()) return 0.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 65,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            } else {\n                bestPrice = oppositeBook.rbegin()->first;\n            }\n            \n            // Check price condition\n            if ((order.side == BUY && order.price < bestPrice) ||\n                (order.side == SELL && order.price > bestPrice)) {\n                break;\n            }\n            \n            // Match quantities\n            auto& level = (order.side == BUY) ? oppositeBook.begin()->second : oppositeBook.rbegin()->second;\n            while (order.quantity > 0 && !level.orders.empty()) {\n                Order& restingOrder = level.orders.front();\n                \n                int matchQty = std::min(order.quantity, restingOrder.quantity);\n                \n                // Record trade\n                trades.push_back({0, order.side, MARKET, \n                                 bestPrice, matchQty, 0, order.timestamp});\n                \n                order.quantity -= matchQty;\n                restingOrder.quantity -= matchQty;\n                level.totalQuantity -= matchQty;\n                \n                if (restingOrder.quantity == 0) {\n                    level.orders.pop();\n                }\n            }\n            \n            // Remove empty price level\n            if (level.orders.empty()) {\n                if (order.side == BUY) {\n                    oppositeBook.erase(bestPrice);\n                } else {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 66,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                bestPrice = oppositeBook.rbegin()->first;\n            }\n            \n            // Check price condition\n            if ((order.side == BUY && order.price < bestPrice) ||\n                (order.side == SELL && order.price > bestPrice)) {\n                break;\n            }\n            \n            // Match quantities\n            auto& level = (order.side == BUY) ? oppositeBook.begin()->second : oppositeBook.rbegin()->second;\n            while (order.quantity > 0 && !level.orders.empty()) {\n                Order& restingOrder = level.orders.front();\n                \n                int matchQty = std::min(order.quantity, restingOrder.quantity);\n                \n                // Record trade\n                trades.push_back({0, order.side, MARKET, \n                                 bestPrice, matchQty, 0, order.timestamp});\n                \n                order.quantity -= matchQty;\n                restingOrder.quantity -= matchQty;\n                level.totalQuantity -= matchQty;\n                \n                if (restingOrder.quantity == 0) {\n                    level.orders.pop();\n                }\n            }\n            \n            // Remove empty price level\n            if (level.orders.empty()) {\n                if (order.side == BUY) {\n                    oppositeBook.erase(bestPrice);\n                } else {\n                    // For rbegin, need to convert to regular iterator",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/order_book.cpp",
+      "function": "_ZN18OrderBookSimulator13tryMatchOrderERNS_5OrderE",
+      "line": 65,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            } else {\n                bestPrice = oppositeBook.rbegin()->first;\n            }\n            \n            // Check price condition\n            if ((order.side == BUY && order.price < bestPrice) ||\n                (order.side == SELL && order.price > bestPrice)) {\n                break;\n            }\n            \n            // Match quantities\n            auto& level = (order.side == BUY) ? oppositeBook.begin()->second : oppositeBook.rbegin()->second;\n            while (order.quantity > 0 && !level.orders.empty()) {\n                Order& restingOrder = level.orders.front();\n                \n                int matchQty = std::min(order.quantity, restingOrder.quantity);\n                \n                // Record trade\n                trades.push_back({0, order.side, MARKET, \n                                 bestPrice, matchQty, 0, order.timestamp});\n                \n                order.quantity -= matchQty;\n                restingOrder.quantity -= matchQty;\n                level.totalQuantity -= matchQty;\n                \n                if (restingOrder.quantity == 0) {\n                    level.orders.pop();\n                }\n            }\n            \n            // Remove empty price level\n            if (level.orders.empty()) {\n                if (order.side == BUY) {\n                    oppositeBook.erase(bestPrice);\n                } else {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

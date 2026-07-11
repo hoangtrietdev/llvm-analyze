@@ -1,0 +1,442 @@
+{
+  "file": "sample/src/real-world/finance/cva_calculation.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/finance/cva_calculation.cpp",
+    "llvm_initial": 15,
+    "llvm_sys_noise": 0,
+    "llvm_project": 15,
+    "after_filter": 12,
+    "ai_batches": 1,
+    "ai_results": 12,
+    "omp_verified": 4,
+    "total_ms": 3365.1,
+    "llvm_ms": 347.9
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "_Z12calculateCVAPdS_S_S_S_ii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "#include <vector>\n#include <cmath>\n\nvoid calculateCVA(double* exposure, double* default_prob, double* recovery_rate,\n                 double* discount_factors, double* cva, int n_timesteps, int n_scenarios) {\n    for (int t = 0; t < n_timesteps; t++) {\n        cva[t] = 0.0;\n        \n        for (int s = 0; s < n_scenarios; s++) {\n            // Expected Positive Exposure for this scenario and timestep\n            double epe = 0.0;\n            if (exposure[s * n_timesteps + t] > 0) {\n                epe = exposure[s * n_timesteps + t];\n            }\n            \n            // Loss Given Default\n            double lgd = (1.0 - recovery_rate[t]) * epe;\n            \n            // Marginal probability of default\n            double pd_marginal = 0.0;\n            if (t == 0) {\n                pd_marginal = default_prob[t];\n            } else {\n                pd_marginal = default_prob[t] - default_prob[t-1];\n            }\n            \n            // Discounted expected loss\n            cva[t] += lgd * pd_marginal * discount_factors[t] / n_scenarios;\n        }\n    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "_Z12calculateCVAPdS_S_S_S_ii",
+      "line": 10,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void calculateCVA(double* exposure, double* default_prob, double* recovery_rate,\n                 double* discount_factors, double* cva, int n_timesteps, int n_scenarios) {\n    for (int t = 0; t < n_timesteps; t++) {\n        cva[t] = 0.0;\n        \n        for (int s = 0; s < n_scenarios; s++) {\n            // Expected Positive Exposure for this scenario and timestep\n            double epe = 0.0;\n            if (exposure[s * n_timesteps + t] > 0) {\n                epe = exposure[s * n_timesteps + t];\n            }\n            \n            // Loss Given Default\n            double lgd = (1.0 - recovery_rate[t]) * epe;\n            \n            // Marginal probability of default\n            double pd_marginal = 0.0;\n            if (t == 0) {\n                pd_marginal = default_prob[t];\n            } else {\n                pd_marginal = default_prob[t] - default_prob[t-1];\n            }\n            \n            // Discounted expected loss\n            cva[t] += lgd * pd_marginal * discount_factors[t] / n_scenarios;\n        }\n    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {\n        exposure[s * n_timesteps] = spot[0];\n        \n        for (int t = 1; t < n_timesteps; t++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "_Z12calculateCVAPdS_S_S_S_ii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "#include <vector>\n#include <cmath>\n\nvoid calculateCVA(double* exposure, double* default_prob, double* recovery_rate,\n                 double* discount_factors, double* cva, int n_timesteps, int n_scenarios) {\n    for (int t = 0; t < n_timesteps; t++) {\n        cva[t] = 0.0;\n        \n        for (int s = 0; s < n_scenarios; s++) {\n            // Expected Positive Exposure for this scenario and timestep\n            double epe = 0.0;\n            if (exposure[s * n_timesteps + t] > 0) {\n                epe = exposure[s * n_timesteps + t];\n            }\n            \n            // Loss Given Default\n            double lgd = (1.0 - recovery_rate[t]) * epe;\n            \n            // Marginal probability of default\n            double pd_marginal = 0.0;\n            if (t == 0) {\n                pd_marginal = default_prob[t];\n            } else {\n                pd_marginal = default_prob[t] - default_prob[t-1];\n            }\n            \n            // Discounted expected loss\n            cva[t] += lgd * pd_marginal * discount_factors[t] / n_scenarios;\n        }\n    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "_Z12calculateCVAPdS_S_S_S_ii",
+      "line": 22,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            // Loss Given Default\n            double lgd = (1.0 - recovery_rate[t]) * epe;\n            \n            // Marginal probability of default\n            double pd_marginal = 0.0;\n            if (t == 0) {\n                pd_marginal = default_prob[t];\n            } else {\n                pd_marginal = default_prob[t] - default_prob[t-1];\n            }\n            \n            // Discounted expected loss\n            cva[t] += lgd * pd_marginal * discount_factors[t] / n_scenarios;\n        }\n    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {\n        exposure[s * n_timesteps] = spot[0];\n        \n        for (int t = 1; t < n_timesteps; t++) {\n            // Geometric Brownian Motion\n            double dW = (double)rand() / RAND_MAX - 0.5;\n            double drift = -0.5 * volatility * volatility * dt;\n            double diffusion = volatility * sqrt(dt) * dW * 2.0;\n            \n            exposure[s * n_timesteps + t] = exposure[s * n_timesteps + t-1] * \n                                           exp(drift + diffusion);\n        }\n    }\n}\n\nint main() {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "_Z12calculateCVAPdS_S_S_S_ii",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "void calculateCVA(double* exposure, double* default_prob, double* recovery_rate,\n                 double* discount_factors, double* cva, int n_timesteps, int n_scenarios) {\n    for (int t = 0; t < n_timesteps; t++) {\n        cva[t] = 0.0;\n        \n        for (int s = 0; s < n_scenarios; s++) {\n            // Expected Positive Exposure for this scenario and timestep\n            double epe = 0.0;\n            if (exposure[s * n_timesteps + t] > 0) {\n                epe = exposure[s * n_timesteps + t];\n            }\n            \n            // Loss Given Default\n            double lgd = (1.0 - recovery_rate[t]) * epe;\n            \n            // Marginal probability of default\n            double pd_marginal = 0.0;\n            if (t == 0) {\n                pd_marginal = default_prob[t];\n            } else {\n                pd_marginal = default_prob[t] - default_prob[t-1];\n            }\n            \n            // Discounted expected loss\n            cva[t] += lgd * pd_marginal * discount_factors[t] / n_scenarios;\n        }\n    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {\n        exposure[s * n_timesteps] = spot[0];\n        \n        for (int t = 1; t < n_timesteps; t++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "_Z16simulateExposurePdS_iidd",
+      "line": 36,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {\n        exposure[s * n_timesteps] = spot[0];\n        \n        for (int t = 1; t < n_timesteps; t++) {\n            // Geometric Brownian Motion\n            double dW = (double)rand() / RAND_MAX - 0.5;\n            double drift = -0.5 * volatility * volatility * dt;\n            double diffusion = volatility * sqrt(dt) * dW * 2.0;\n            \n            exposure[s * n_timesteps + t] = exposure[s * n_timesteps + t-1] * \n                                           exp(drift + diffusion);\n        }\n    }\n}\n\nint main() {\n    const int n_timesteps = 100;\n    const int n_scenarios = 1000;\n    \n    std::vector<double> spot(1, 100.0);\n    std::vector<double> exposure(n_scenarios * n_timesteps);\n    std::vector<double> default_prob(n_timesteps);\n    std::vector<double> recovery_rate(n_timesteps, 0.4);\n    std::vector<double> discount_factors(n_timesteps);\n    std::vector<double> cva(n_timesteps);\n    \n    // Initialize default probabilities and discount factors\n    for (int t = 0; t < n_timesteps; t++) {\n        default_prob[t] = 1.0 - exp(-0.01 * t);\n        discount_factors[t] = exp(-0.05 * t / 12.0);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "_Z16simulateExposurePdS_iidd",
+      "line": 39,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {\n        exposure[s * n_timesteps] = spot[0];\n        \n        for (int t = 1; t < n_timesteps; t++) {\n            // Geometric Brownian Motion\n            double dW = (double)rand() / RAND_MAX - 0.5;\n            double drift = -0.5 * volatility * volatility * dt;\n            double diffusion = volatility * sqrt(dt) * dW * 2.0;\n            \n            exposure[s * n_timesteps + t] = exposure[s * n_timesteps + t-1] * \n                                           exp(drift + diffusion);\n        }\n    }\n}\n\nint main() {\n    const int n_timesteps = 100;\n    const int n_scenarios = 1000;\n    \n    std::vector<double> spot(1, 100.0);\n    std::vector<double> exposure(n_scenarios * n_timesteps);\n    std::vector<double> default_prob(n_timesteps);\n    std::vector<double> recovery_rate(n_timesteps, 0.4);\n    std::vector<double> discount_factors(n_timesteps);\n    std::vector<double> cva(n_timesteps);\n    \n    // Initialize default probabilities and discount factors\n    for (int t = 0; t < n_timesteps; t++) {\n        default_prob[t] = 1.0 - exp(-0.01 * t);\n        discount_factors[t] = exp(-0.05 * t / 12.0);\n    }\n    \n    simulateExposure(spot.data(), exposure.data(), n_timesteps, n_scenarios, 0.2, 1.0/12.0);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "_Z16simulateExposurePdS_iidd",
+      "line": 36,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {\n        exposure[s * n_timesteps] = spot[0];\n        \n        for (int t = 1; t < n_timesteps; t++) {\n            // Geometric Brownian Motion\n            double dW = (double)rand() / RAND_MAX - 0.5;\n            double drift = -0.5 * volatility * volatility * dt;\n            double diffusion = volatility * sqrt(dt) * dW * 2.0;\n            \n            exposure[s * n_timesteps + t] = exposure[s * n_timesteps + t-1] * \n                                           exp(drift + diffusion);\n        }\n    }\n}\n\nint main() {\n    const int n_timesteps = 100;\n    const int n_scenarios = 1000;\n    \n    std::vector<double> spot(1, 100.0);\n    std::vector<double> exposure(n_scenarios * n_timesteps);\n    std::vector<double> default_prob(n_timesteps);\n    std::vector<double> recovery_rate(n_timesteps, 0.4);\n    std::vector<double> discount_factors(n_timesteps);\n    std::vector<double> cva(n_timesteps);\n    \n    // Initialize default probabilities and discount factors\n    for (int t = 0; t < n_timesteps; t++) {\n        default_prob[t] = 1.0 - exp(-0.01 * t);\n        discount_factors[t] = exp(-0.05 * t / 12.0);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "_Z16simulateExposurePdS_iidd",
+      "line": 39,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "main",
+      "line": 36,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "main",
+      "line": 39,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "main",
+      "line": 63,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "    std::vector<double> recovery_rate(n_timesteps, 0.4);\n    std::vector<double> discount_factors(n_timesteps);\n    std::vector<double> cva(n_timesteps);\n    \n    // Initialize default probabilities and discount factors\n    for (int t = 0; t < n_timesteps; t++) {\n        default_prob[t] = 1.0 - exp(-0.01 * t);\n        discount_factors[t] = exp(-0.05 * t / 12.0);\n    }\n    \n    simulateExposure(spot.data(), exposure.data(), n_timesteps, n_scenarios, 0.2, 1.0/12.0);\n    calculateCVA(exposure.data(), default_prob.data(), recovery_rate.data(),\n                discount_factors.data(), cva.data(), n_timesteps, n_scenarios);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "main",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "#include <vector>\n#include <cmath>\n\nvoid calculateCVA(double* exposure, double* default_prob, double* recovery_rate,\n                 double* discount_factors, double* cva, int n_timesteps, int n_scenarios) {\n    for (int t = 0; t < n_timesteps; t++) {\n        cva[t] = 0.0;\n        \n        for (int s = 0; s < n_scenarios; s++) {\n            // Expected Positive Exposure for this scenario and timestep\n            double epe = 0.0;\n            if (exposure[s * n_timesteps + t] > 0) {\n                epe = exposure[s * n_timesteps + t];\n            }\n            \n            // Loss Given Default\n            double lgd = (1.0 - recovery_rate[t]) * epe;\n            \n            // Marginal probability of default\n            double pd_marginal = 0.0;\n            if (t == 0) {\n                pd_marginal = default_prob[t];\n            } else {\n                pd_marginal = default_prob[t] - default_prob[t-1];\n            }\n            \n            // Discounted expected loss\n            cva[t] += lgd * pd_marginal * discount_factors[t] / n_scenarios;\n        }\n    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "main",
+      "line": 22,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            // Loss Given Default\n            double lgd = (1.0 - recovery_rate[t]) * epe;\n            \n            // Marginal probability of default\n            double pd_marginal = 0.0;\n            if (t == 0) {\n                pd_marginal = default_prob[t];\n            } else {\n                pd_marginal = default_prob[t] - default_prob[t-1];\n            }\n            \n            // Discounted expected loss\n            cva[t] += lgd * pd_marginal * discount_factors[t] / n_scenarios;\n        }\n    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {\n        exposure[s * n_timesteps] = spot[0];\n        \n        for (int t = 1; t < n_timesteps; t++) {\n            // Geometric Brownian Motion\n            double dW = (double)rand() / RAND_MAX - 0.5;\n            double drift = -0.5 * volatility * volatility * dt;\n            double diffusion = volatility * sqrt(dt) * dW * 2.0;\n            \n            exposure[s * n_timesteps + t] = exposure[s * n_timesteps + t-1] * \n                                           exp(drift + diffusion);\n        }\n    }\n}\n\nint main() {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "main",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "void calculateCVA(double* exposure, double* default_prob, double* recovery_rate,\n                 double* discount_factors, double* cva, int n_timesteps, int n_scenarios) {\n    for (int t = 0; t < n_timesteps; t++) {\n        cva[t] = 0.0;\n        \n        for (int s = 0; s < n_scenarios; s++) {\n            // Expected Positive Exposure for this scenario and timestep\n            double epe = 0.0;\n            if (exposure[s * n_timesteps + t] > 0) {\n                epe = exposure[s * n_timesteps + t];\n            }\n            \n            // Loss Given Default\n            double lgd = (1.0 - recovery_rate[t]) * epe;\n            \n            // Marginal probability of default\n            double pd_marginal = 0.0;\n            if (t == 0) {\n                pd_marginal = default_prob[t];\n            } else {\n                pd_marginal = default_prob[t] - default_prob[t-1];\n            }\n            \n            // Discounted expected loss\n            cva[t] += lgd * pd_marginal * discount_factors[t] / n_scenarios;\n        }\n    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {\n        exposure[s * n_timesteps] = spot[0];\n        \n        for (int t = 1; t < n_timesteps; t++) {"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "_Z12calculateCVAPdS_S_S_S_ii",
+      "line": 10,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void calculateCVA(double* exposure, double* default_prob, double* recovery_rate,\n                 double* discount_factors, double* cva, int n_timesteps, int n_scenarios) {\n    for (int t = 0; t < n_timesteps; t++) {\n        cva[t] = 0.0;\n        \n        for (int s = 0; s < n_scenarios; s++) {\n            // Expected Positive Exposure for this scenario and timestep\n            double epe = 0.0;\n            if (exposure[s * n_timesteps + t] > 0) {\n                epe = exposure[s * n_timesteps + t];\n            }\n            \n            // Loss Given Default\n            double lgd = (1.0 - recovery_rate[t]) * epe;\n            \n            // Marginal probability of default\n            double pd_marginal = 0.0;\n            if (t == 0) {\n                pd_marginal = default_prob[t];\n            } else {\n                pd_marginal = default_prob[t] - default_prob[t-1];\n            }\n            \n            // Discounted expected loss\n            cva[t] += lgd * pd_marginal * discount_factors[t] / n_scenarios;\n        }\n    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {\n        exposure[s * n_timesteps] = spot[0];\n        \n        for (int t = 1; t < n_timesteps; t++) {",
+      "classification": "safe_parallel",
+      "reasoning": "The code exhibits embarrassingly parallel pattern with array access using simple indexing, indicating independent operations that can be safely parallelized.",
+      "confidence": 0.9,
+      "transformations": [
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Validation of parallel results against sequential execution"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "_Z12calculateCVAPdS_S_S_S_ii",
+      "line": 22,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            // Loss Given Default\n            double lgd = (1.0 - recovery_rate[t]) * epe;\n            \n            // Marginal probability of default\n            double pd_marginal = 0.0;\n            if (t == 0) {\n                pd_marginal = default_prob[t];\n            } else {\n                pd_marginal = default_prob[t] - default_prob[t-1];\n            }\n            \n            // Discounted expected loss\n            cva[t] += lgd * pd_marginal * discount_factors[t] / n_scenarios;\n        }\n    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {\n        exposure[s * n_timesteps] = spot[0];\n        \n        for (int t = 1; t < n_timesteps; t++) {\n            // Geometric Brownian Motion\n            double dW = (double)rand() / RAND_MAX - 0.5;\n            double drift = -0.5 * volatility * volatility * dt;\n            double diffusion = volatility * sqrt(dt) * dW * 2.0;\n            \n            exposure[s * n_timesteps + t] = exposure[s * n_timesteps + t-1] * \n                                           exp(drift + diffusion);\n        }\n    }\n}\n\nint main() {",
+      "classification": "safe_parallel",
+      "reasoning": "The code involves vectorizable operations with array access and arithmetic, suitable for SIMD parallelization.",
+      "confidence": 0.8,
+      "transformations": [
+        "SIMD instructions or OpenMP simd directive"
+      ],
+      "tests_recommended": [
+        "Verification of SIMD results against non-SIMD execution"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "_Z16simulateExposurePdS_iidd",
+      "line": 39,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {\n        exposure[s * n_timesteps] = spot[0];\n        \n        for (int t = 1; t < n_timesteps; t++) {\n            // Geometric Brownian Motion\n            double dW = (double)rand() / RAND_MAX - 0.5;\n            double drift = -0.5 * volatility * volatility * dt;\n            double diffusion = volatility * sqrt(dt) * dW * 2.0;\n            \n            exposure[s * n_timesteps + t] = exposure[s * n_timesteps + t-1] * \n                                           exp(drift + diffusion);\n        }\n    }\n}\n\nint main() {\n    const int n_timesteps = 100;\n    const int n_scenarios = 1000;\n    \n    std::vector<double> spot(1, 100.0);\n    std::vector<double> exposure(n_scenarios * n_timesteps);\n    std::vector<double> default_prob(n_timesteps);\n    std::vector<double> recovery_rate(n_timesteps, 0.4);\n    std::vector<double> discount_factors(n_timesteps);\n    std::vector<double> cva(n_timesteps);\n    \n    // Initialize default probabilities and discount factors\n    for (int t = 0; t < n_timesteps; t++) {\n        default_prob[t] = 1.0 - exp(-0.01 * t);\n        discount_factors[t] = exp(-0.05 * t / 12.0);\n    }\n    \n    simulateExposure(spot.data(), exposure.data(), n_timesteps, n_scenarios, 0.2, 1.0/12.0);",
+      "classification": "safe_parallel",
+      "reasoning": "Similar to candidate 2, this code is vectorizable and can be parallelized using SIMD instructions or OpenMP.",
+      "confidence": 0.8,
+      "transformations": [
+        "SIMD instructions or OpenMP simd directive"
+      ],
+      "tests_recommended": [
+        "Verification of SIMD results against non-SIMD execution"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "main",
+      "line": 22,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            // Loss Given Default\n            double lgd = (1.0 - recovery_rate[t]) * epe;\n            \n            // Marginal probability of default\n            double pd_marginal = 0.0;\n            if (t == 0) {\n                pd_marginal = default_prob[t];\n            } else {\n                pd_marginal = default_prob[t] - default_prob[t-1];\n            }\n            \n            // Discounted expected loss\n            cva[t] += lgd * pd_marginal * discount_factors[t] / n_scenarios;\n        }\n    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {\n        exposure[s * n_timesteps] = spot[0];\n        \n        for (int t = 1; t < n_timesteps; t++) {\n            // Geometric Brownian Motion\n            double dW = (double)rand() / RAND_MAX - 0.5;\n            double drift = -0.5 * volatility * volatility * dt;\n            double diffusion = volatility * sqrt(dt) * dW * 2.0;\n            \n            exposure[s * n_timesteps + t] = exposure[s * n_timesteps + t-1] * \n                                           exp(drift + diffusion);\n        }\n    }\n}\n\nint main() {",
+      "classification": "safe_parallel",
+      "reasoning": "This candidate is similar to candidate 2, involving vectorizable operations that can be parallelized.",
+      "confidence": 0.8,
+      "transformations": [
+        "SIMD instructions or OpenMP simd directive"
+      ],
+      "tests_recommended": [
+        "Verification of SIMD results against non-SIMD execution"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "_Z12calculateCVAPdS_S_S_S_ii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "#include <vector>\n#include <cmath>\n\nvoid calculateCVA(double* exposure, double* default_prob, double* recovery_rate,\n                 double* discount_factors, double* cva, int n_timesteps, int n_scenarios) {\n    for (int t = 0; t < n_timesteps; t++) {\n        cva[t] = 0.0;\n        \n        for (int s = 0; s < n_scenarios; s++) {\n            // Expected Positive Exposure for this scenario and timestep\n            double epe = 0.0;\n            if (exposure[s * n_timesteps + t] > 0) {\n                epe = exposure[s * n_timesteps + t];\n            }\n            \n            // Loss Given Default\n            double lgd = (1.0 - recovery_rate[t]) * epe;\n            \n            // Marginal probability of default\n            double pd_marginal = 0.0;\n            if (t == 0) {\n                pd_marginal = default_prob[t];\n            } else {\n                pd_marginal = default_prob[t] - default_prob[t-1];\n            }\n            \n            // Discounted expected loss\n            cva[t] += lgd * pd_marginal * discount_factors[t] / n_scenarios;\n        }\n    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "The presence of a conditional branch that may be a loop indicates potential dependencies that need runtime checking for safe parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop with runtime dependency checking"
+      ],
+      "tests_recommended": [
+        "Runtime dependency checks and validation of parallel results"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "_Z12calculateCVAPdS_S_S_S_ii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "#include <vector>\n#include <cmath>\n\nvoid calculateCVA(double* exposure, double* default_prob, double* recovery_rate,\n                 double* discount_factors, double* cva, int n_timesteps, int n_scenarios) {\n    for (int t = 0; t < n_timesteps; t++) {\n        cva[t] = 0.0;\n        \n        for (int s = 0; s < n_scenarios; s++) {\n            // Expected Positive Exposure for this scenario and timestep\n            double epe = 0.0;\n            if (exposure[s * n_timesteps + t] > 0) {\n                epe = exposure[s * n_timesteps + t];\n            }\n            \n            // Loss Given Default\n            double lgd = (1.0 - recovery_rate[t]) * epe;\n            \n            // Marginal probability of default\n            double pd_marginal = 0.0;\n            if (t == 0) {\n                pd_marginal = default_prob[t];\n            } else {\n                pd_marginal = default_prob[t] - default_prob[t-1];\n            }\n            \n            // Discounted expected loss\n            cva[t] += lgd * pd_marginal * discount_factors[t] / n_scenarios;\n        }\n    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "Similar to candidate 5, this code may contain dependencies due to conditional branches, requiring runtime checks for parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop with runtime dependency checking"
+      ],
+      "tests_recommended": [
+        "Runtime dependency checks and validation of parallel results"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "_Z12calculateCVAPdS_S_S_S_ii",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "void calculateCVA(double* exposure, double* default_prob, double* recovery_rate,\n                 double* discount_factors, double* cva, int n_timesteps, int n_scenarios) {\n    for (int t = 0; t < n_timesteps; t++) {\n        cva[t] = 0.0;\n        \n        for (int s = 0; s < n_scenarios; s++) {\n            // Expected Positive Exposure for this scenario and timestep\n            double epe = 0.0;\n            if (exposure[s * n_timesteps + t] > 0) {\n                epe = exposure[s * n_timesteps + t];\n            }\n            \n            // Loss Given Default\n            double lgd = (1.0 - recovery_rate[t]) * epe;\n            \n            // Marginal probability of default\n            double pd_marginal = 0.0;\n            if (t == 0) {\n                pd_marginal = default_prob[t];\n            } else {\n                pd_marginal = default_prob[t] - default_prob[t-1];\n            }\n            \n            // Discounted expected loss\n            cva[t] += lgd * pd_marginal * discount_factors[t] / n_scenarios;\n        }\n    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {\n        exposure[s * n_timesteps] = spot[0];\n        \n        for (int t = 1; t < n_timesteps; t++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "This candidate, like candidates 5 and 6, may have dependencies due to conditional branches, necessitating runtime checks for safe parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop with runtime dependency checking"
+      ],
+      "tests_recommended": [
+        "Runtime dependency checks and validation of parallel results"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "main",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "#include <vector>\n#include <cmath>\n\nvoid calculateCVA(double* exposure, double* default_prob, double* recovery_rate,\n                 double* discount_factors, double* cva, int n_timesteps, int n_scenarios) {\n    for (int t = 0; t < n_timesteps; t++) {\n        cva[t] = 0.0;\n        \n        for (int s = 0; s < n_scenarios; s++) {\n            // Expected Positive Exposure for this scenario and timestep\n            double epe = 0.0;\n            if (exposure[s * n_timesteps + t] > 0) {\n                epe = exposure[s * n_timesteps + t];\n            }\n            \n            // Loss Given Default\n            double lgd = (1.0 - recovery_rate[t]) * epe;\n            \n            // Marginal probability of default\n            double pd_marginal = 0.0;\n            if (t == 0) {\n                pd_marginal = default_prob[t];\n            } else {\n                pd_marginal = default_prob[t] - default_prob[t-1];\n            }\n            \n            // Discounted expected loss\n            cva[t] += lgd * pd_marginal * discount_factors[t] / n_scenarios;\n        }\n    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {",
+      "classification": "not_parallel",
+      "reasoning": "The code appears to be part of a main function or sequential algorithm, which may not be suitable for parallelization due to potential dependencies or I/O operations.",
+      "confidence": 0.6,
+      "transformations": [
+        "None recommended"
+      ],
+      "tests_recommended": [
+        "None"
+      ],
+      "logic_issue_type": "non_parallel_algorithm",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "main",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "void calculateCVA(double* exposure, double* default_prob, double* recovery_rate,\n                 double* discount_factors, double* cva, int n_timesteps, int n_scenarios) {\n    for (int t = 0; t < n_timesteps; t++) {\n        cva[t] = 0.0;\n        \n        for (int s = 0; s < n_scenarios; s++) {\n            // Expected Positive Exposure for this scenario and timestep\n            double epe = 0.0;\n            if (exposure[s * n_timesteps + t] > 0) {\n                epe = exposure[s * n_timesteps + t];\n            }\n            \n            // Loss Given Default\n            double lgd = (1.0 - recovery_rate[t]) * epe;\n            \n            // Marginal probability of default\n            double pd_marginal = 0.0;\n            if (t == 0) {\n                pd_marginal = default_prob[t];\n            } else {\n                pd_marginal = default_prob[t] - default_prob[t-1];\n            }\n            \n            // Discounted expected loss\n            cva[t] += lgd * pd_marginal * discount_factors[t] / n_scenarios;\n        }\n    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {\n        exposure[s * n_timesteps] = spot[0];\n        \n        for (int t = 1; t < n_timesteps; t++) {",
+      "classification": "not_parallel",
+      "reasoning": "Similar to candidate 8, this code seems to be part of a sequential algorithm or main function, which may not be parallelizable.",
+      "confidence": 0.6,
+      "transformations": [
+        "None recommended"
+      ],
+      "tests_recommended": [
+        "None"
+      ],
+      "logic_issue_type": "non_parallel_algorithm",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "_Z16simulateExposurePdS_iidd",
+      "line": 36,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {\n        exposure[s * n_timesteps] = spot[0];\n        \n        for (int t = 1; t < n_timesteps; t++) {\n            // Geometric Brownian Motion\n            double dW = (double)rand() / RAND_MAX - 0.5;\n            double drift = -0.5 * volatility * volatility * dt;\n            double diffusion = volatility * sqrt(dt) * dW * 2.0;\n            \n            exposure[s * n_timesteps + t] = exposure[s * n_timesteps + t-1] * \n                                           exp(drift + diffusion);\n        }\n    }\n}\n\nint main() {\n    const int n_timesteps = 100;\n    const int n_scenarios = 1000;\n    \n    std::vector<double> spot(1, 100.0);\n    std::vector<double> exposure(n_scenarios * n_timesteps);\n    std::vector<double> default_prob(n_timesteps);\n    std::vector<double> recovery_rate(n_timesteps, 0.4);\n    std::vector<double> discount_factors(n_timesteps);\n    std::vector<double> cva(n_timesteps);\n    \n    // Initialize default probabilities and discount factors\n    for (int t = 0; t < n_timesteps; t++) {\n        default_prob[t] = 1.0 - exp(-0.01 * t);\n        discount_factors[t] = exp(-0.05 * t / 12.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "The presence of a loop and potential dependencies indicates that runtime checks may be necessary to ensure safe parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop with runtime dependency checking"
+      ],
+      "tests_recommended": [
+        "Runtime dependency checks and validation of parallel results"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "_Z16simulateExposurePdS_iidd",
+      "line": 36,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n}\n\nvoid simulateExposure(double* spot, double* exposure, int n_timesteps, int n_scenarios,\n                     double volatility, double dt) {\n    for (int s = 0; s < n_scenarios; s++) {\n        exposure[s * n_timesteps] = spot[0];\n        \n        for (int t = 1; t < n_timesteps; t++) {\n            // Geometric Brownian Motion\n            double dW = (double)rand() / RAND_MAX - 0.5;\n            double drift = -0.5 * volatility * volatility * dt;\n            double diffusion = volatility * sqrt(dt) * dW * 2.0;\n            \n            exposure[s * n_timesteps + t] = exposure[s * n_timesteps + t-1] * \n                                           exp(drift + diffusion);\n        }\n    }\n}\n\nint main() {\n    const int n_timesteps = 100;\n    const int n_scenarios = 1000;\n    \n    std::vector<double> spot(1, 100.0);\n    std::vector<double> exposure(n_scenarios * n_timesteps);\n    std::vector<double> default_prob(n_timesteps);\n    std::vector<double> recovery_rate(n_timesteps, 0.4);\n    std::vector<double> discount_factors(n_timesteps);\n    std::vector<double> cva(n_timesteps);\n    \n    // Initialize default probabilities and discount factors\n    for (int t = 0; t < n_timesteps; t++) {\n        default_prob[t] = 1.0 - exp(-0.01 * t);\n        discount_factors[t] = exp(-0.05 * t / 12.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "Similar to candidate 10, this code may contain dependencies that require runtime checks for parallelization.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP parallel for loop with runtime dependency checking"
+      ],
+      "tests_recommended": [
+        "Runtime dependency checks and validation of parallel results"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/cva_calculation.cpp",
+      "function": "main",
+      "line": 63,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "    std::vector<double> recovery_rate(n_timesteps, 0.4);\n    std::vector<double> discount_factors(n_timesteps);\n    std::vector<double> cva(n_timesteps);\n    \n    // Initialize default probabilities and discount factors\n    for (int t = 0; t < n_timesteps; t++) {\n        default_prob[t] = 1.0 - exp(-0.01 * t);\n        discount_factors[t] = exp(-0.05 * t / 12.0);\n    }\n    \n    simulateExposure(spot.data(), exposure.data(), n_timesteps, n_scenarios, 0.2, 1.0/12.0);\n    calculateCVA(exposure.data(), default_prob.data(), recovery_rate.data(),\n                discount_factors.data(), cva.data(), n_timesteps, n_scenarios);\n    \n    return 0;\n}",
+      "classification": "not_parallel",
+      "reasoning": "The code involves function calls and complex operations that may not be suitable for parallelization due to potential dependencies or sequential nature.",
+      "confidence": 0.6,
+      "transformations": [
+        "None recommended"
+      ],
+      "tests_recommended": [
+        "None"
+      ],
+      "logic_issue_type": "non_parallel_algorithm",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6000000000000001
+    }
+  ]
+}

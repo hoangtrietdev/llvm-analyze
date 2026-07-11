@@ -1,0 +1,153 @@
+{
+  "file": "sample/src/real-world/healthcare/vessel_segmentation.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/healthcare/vessel_segmentation.cpp",
+    "llvm_initial": 10,
+    "llvm_sys_noise": 0,
+    "llvm_project": 10,
+    "after_filter": 2,
+    "ai_batches": 1,
+    "ai_results": 2,
+    "omp_verified": 0,
+    "total_ms": 583.5,
+    "llvm_ms": 364.8
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/vessel_segmentation.cpp",
+      "function": "_Z20segmentVesselNetworkPdPiS_iii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/vessel_segmentation.cpp",
+      "function": "_Z20segmentVesselNetworkPdPiS_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/vessel_segmentation.cpp",
+      "function": "_Z20segmentVesselNetworkPdPiS_iii",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/vessel_segmentation.cpp",
+      "function": "_Z20segmentVesselNetworkPdPiS_iii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/vessel_segmentation.cpp",
+      "function": "_Z20segmentVesselNetworkPdPiS_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/vessel_segmentation.cpp",
+      "function": "_Z20segmentVesselNetworkPdPiS_iii",
+      "line": 39,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                double vesselness = exp(-lambda1*lambda1 / 0.5) * \n                                   (1 - exp(-lambda2*lambda2 / 0.5));\n                \n                vessel_mask[idx] = (vesselness > 0.5) ? 1 : 0;\n                \n                if (vessel_mask[idx]) {\n                    diameter[idx] = 2.0 * sqrt(-lambda2);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int width = 256, height = 256, depth = 128;\n    std::vector<double> angiogram(width*height*depth, 50.0);\n    std::vector<int> vessel_mask(width*height*depth);\n    std::vector<double> diameter(width*height*depth);\n    \n    segmentVesselNetwork(angiogram.data(), vessel_mask.data(), diameter.data(),\n                        width, height, depth);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/vessel_segmentation.cpp",
+      "function": "_Z20segmentVesselNetworkPdPiS_iii",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/vessel_segmentation.cpp",
+      "function": "_Z20segmentVesselNetworkPdPiS_iii",
+      "line": 16,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/vessel_segmentation.cpp",
+      "function": "_Z20segmentVesselNetworkPdPiS_iii",
+      "line": 17,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                // Compute Hessian matrix eigenvalues for vessel detection\n                double Ixx = 0, Iyy = 0, Izz = 0, Ixy = 0, Ixz = 0, Iyz = 0;\n                \n                for (int dz = -1; dz <= 1; dz++) {\n                    for (int dy = -1; dy <= 1; dy++) {\n                        for (int dx = -1; dx <= 1; dx++) {\n                            int nidx = (z+dz)*width*height + (y+dy)*width + (x+dx);\n                            double val = angiogram[nidx];\n                            \n                            Ixx += val * dx * dx / 9.0;\n                            Iyy += val * dy * dy / 9.0;\n                            Izz += val * dz * dz / 9.0;\n                            Ixy += val * dx * dy / 9.0;\n                            Ixz += val * dx * dz / 9.0;\n                            Iyz += val * dy * dz / 9.0;\n                        }\n                    }\n                }\n                \n                // Vesselness measure (Frangi filter)\n                double lambda1 = Ixx;\n                double lambda2 = Iyy;\n                double vesselness = exp(-lambda1*lambda1 / 0.5) * \n                                   (1 - exp(-lambda2*lambda2 / 0.5));\n                \n                vessel_mask[idx] = (vesselness > 0.5) ? 1 : 0;\n                \n                if (vessel_mask[idx]) {\n                    diameter[idx] = 2.0 * sqrt(-lambda2);\n                }\n            }\n        }\n    }\n}\n"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/vessel_segmentation.cpp",
+      "function": "_Z20segmentVesselNetworkPdPiS_iii",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/vessel_segmentation.cpp",
+      "function": "_Z20segmentVesselNetworkPdPiS_iii",
+      "line": 17,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                // Compute Hessian matrix eigenvalues for vessel detection\n                double Ixx = 0, Iyy = 0, Izz = 0, Ixy = 0, Ixz = 0, Iyz = 0;\n                \n                for (int dz = -1; dz <= 1; dz++) {\n                    for (int dy = -1; dy <= 1; dy++) {\n                        for (int dx = -1; dx <= 1; dx++) {\n                            int nidx = (z+dz)*width*height + (y+dy)*width + (x+dx);\n                            double val = angiogram[nidx];\n                            \n                            Ixx += val * dx * dx / 9.0;\n                            Iyy += val * dy * dy / 9.0;\n                            Izz += val * dz * dz / 9.0;\n                            Ixy += val * dx * dy / 9.0;\n                            Ixz += val * dx * dz / 9.0;\n                            Iyz += val * dy * dz / 9.0;\n                        }\n                    }\n                }\n                \n                // Vesselness measure (Frangi filter)\n                double lambda1 = Ixx;\n                double lambda2 = Iyy;\n                double vesselness = exp(-lambda1*lambda1 / 0.5) * \n                                   (1 - exp(-lambda2*lambda2 / 0.5));\n                \n                vessel_mask[idx] = (vesselness > 0.5) ? 1 : 0;\n                \n                if (vessel_mask[idx]) {\n                    diameter[idx] = 2.0 * sqrt(-lambda2);\n                }\n            }\n        }\n    }\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/vessel_segmentation.cpp",
+      "function": "_Z20segmentVesselNetworkPdPiS_iii",
+      "line": 39,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                double vesselness = exp(-lambda1*lambda1 / 0.5) * \n                                   (1 - exp(-lambda2*lambda2 / 0.5));\n                \n                vessel_mask[idx] = (vesselness > 0.5) ? 1 : 0;\n                \n                if (vessel_mask[idx]) {\n                    diameter[idx] = 2.0 * sqrt(-lambda2);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int width = 256, height = 256, depth = 128;\n    std::vector<double> angiogram(width*height*depth, 50.0);\n    std::vector<int> vessel_mask(width*height*depth);\n    std::vector<double> diameter(width*height*depth);\n    \n    segmentVesselNetwork(angiogram.data(), vessel_mask.data(), diameter.data(),\n                        width, height, depth);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    }
+  ]
+}

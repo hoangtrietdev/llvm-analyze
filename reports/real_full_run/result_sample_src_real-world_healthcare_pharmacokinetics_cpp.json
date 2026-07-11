@@ -1,0 +1,508 @@
+{
+  "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+    "llvm_initial": 18,
+    "llvm_sys_noise": 3,
+    "llvm_project": 15,
+    "after_filter": 15,
+    "ai_batches": 1,
+    "ai_results": 15,
+    "omp_verified": 0,
+    "total_ms": 596.1,
+    "llvm_ms": 358.9
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 17,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                              double* transfer_rates, double dose, \n                              int n_timesteps, double dt) {\n    // Initial dose in first compartment (GI tract or blood)\n    compartments[0].concentration = dose / compartments[0].volume;\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        std::vector<double> dC_dt(n_compartments, 0.0);\n        \n        for (int i = 0; i < n_compartments; i++) {\n            // Elimination from compartment\n            dC_dt[i] -= compartments[i].clearance * compartments[i].concentration;\n            \n            // Transfer between compartments\n            for (int j = 0; j < n_compartments; j++) {\n                if (i != j) {\n                    double k_ij = transfer_rates[i * n_compartments + j];\n                    double k_ji = transfer_rates[j * n_compartments + i];\n                    \n                    dC_dt[i] += k_ji * compartments[j].concentration * compartments[j].volume / compartments[i].volume;\n                    dC_dt[i] -= k_ij * compartments[i].concentration;\n                }\n            }\n        }\n        \n        // Update concentrations\n        for (int i = 0; i < n_compartments; i++) {\n            compartments[i].concentration += dC_dt[i] * dt;\n        }\n    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 170,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    compartments[0].concentration = dose / compartments[0].volume;\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        std::vector<double> dC_dt(n_compartments, 0.0);\n        \n        for (int i = 0; i < n_compartments; i++) {\n            // Elimination from compartment\n            dC_dt[i] -= compartments[i].clearance * compartments[i].concentration;\n            \n            // Transfer between compartments\n            for (int j = 0; j < n_compartments; j++) {\n                if (i != j) {\n                    double k_ij = transfer_rates[i * n_compartments + j];\n                    double k_ji = transfer_rates[j * n_compartments + i];\n                    \n                    dC_dt[i] += k_ji * compartments[j].concentration * compartments[j].volume / compartments[i].volume;\n                    dC_dt[i] -= k_ij * compartments[i].concentration;\n                }\n            }\n        }\n        \n        // Update concentrations\n        for (int i = 0; i < n_compartments; i++) {\n            compartments[i].concentration += dC_dt[i] * dt;\n        }\n    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 37,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                }\n            }\n        }\n        \n        // Update concentrations\n        for (int i = 0; i < n_compartments; i++) {\n            compartments[i].concentration += dC_dt[i] * dt;\n        }\n    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    compartments[0].concentration = dose / compartments[0].volume;\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        std::vector<double> dC_dt(n_compartments, 0.0);\n        \n        for (int i = 0; i < n_compartments; i++) {\n            // Elimination from compartment\n            dC_dt[i] -= compartments[i].clearance * compartments[i].concentration;\n            \n            // Transfer between compartments\n            for (int j = 0; j < n_compartments; j++) {\n                if (i != j) {\n                    double k_ij = transfer_rates[i * n_compartments + j];\n                    double k_ji = transfer_rates[j * n_compartments + i];\n                    \n                    dC_dt[i] += k_ji * compartments[j].concentration * compartments[j].volume / compartments[i].volume;\n                    dC_dt[i] -= k_ij * compartments[i].concentration;\n                }\n            }\n        }\n        \n        // Update concentrations\n        for (int i = 0; i < n_compartments; i++) {\n            compartments[i].concentration += dC_dt[i] * dt;\n        }\n    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            // Elimination from compartment\n            dC_dt[i] -= compartments[i].clearance * compartments[i].concentration;\n            \n            // Transfer between compartments\n            for (int j = 0; j < n_compartments; j++) {\n                if (i != j) {\n                    double k_ij = transfer_rates[i * n_compartments + j];\n                    double k_ji = transfer_rates[j * n_compartments + i];\n                    \n                    dC_dt[i] += k_ji * compartments[j].concentration * compartments[j].volume / compartments[i].volume;\n                    dC_dt[i] -= k_ij * compartments[i].concentration;\n                }\n            }\n        }\n        \n        // Update concentrations\n        for (int i = 0; i < n_compartments; i++) {\n            compartments[i].concentration += dC_dt[i] * dt;\n        }\n    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        for (int i = 0; i < n_compartments; i++) {\n            // Elimination from compartment\n            dC_dt[i] -= compartments[i].clearance * compartments[i].concentration;\n            \n            // Transfer between compartments\n            for (int j = 0; j < n_compartments; j++) {\n                if (i != j) {\n                    double k_ij = transfer_rates[i * n_compartments + j];\n                    double k_ji = transfer_rates[j * n_compartments + i];\n                    \n                    dC_dt[i] += k_ji * compartments[j].concentration * compartments[j].volume / compartments[i].volume;\n                    dC_dt[i] -= k_ij * compartments[i].concentration;\n                }\n            }\n        }\n        \n        // Update concentrations\n        for (int i = 0; i < n_compartments; i++) {\n            compartments[i].concentration += dC_dt[i] * dt;\n        }\n    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 17,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                              double* transfer_rates, double dose, \n                              int n_timesteps, double dt) {\n    // Initial dose in first compartment (GI tract or blood)\n    compartments[0].concentration = dose / compartments[0].volume;\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        std::vector<double> dC_dt(n_compartments, 0.0);\n        \n        for (int i = 0; i < n_compartments; i++) {\n            // Elimination from compartment\n            dC_dt[i] -= compartments[i].clearance * compartments[i].concentration;\n            \n            // Transfer between compartments\n            for (int j = 0; j < n_compartments; j++) {\n                if (i != j) {\n                    double k_ij = transfer_rates[i * n_compartments + j];\n                    double k_ji = transfer_rates[j * n_compartments + i];\n                    \n                    dC_dt[i] += k_ji * compartments[j].concentration * compartments[j].volume / compartments[i].volume;\n                    dC_dt[i] -= k_ij * compartments[i].concentration;\n                }\n            }\n        }\n        \n        // Update concentrations\n        for (int i = 0; i < n_compartments; i++) {\n            compartments[i].concentration += dC_dt[i] * dt;\n        }\n    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 37,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                }\n            }\n        }\n        \n        // Update concentrations\n        for (int i = 0; i < n_compartments; i++) {\n            compartments[i].concentration += dC_dt[i] * dt;\n        }\n    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z10computeAUCP11CompartmentiidPd",
+      "line": 45,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    \n    simulatePharmacokinetics(compartments.data(), n_compartments,\n                            transfer_rates.data(), 500.0, 1000, 0.1);\n    \n    computeAUC(compartments.data(), n_compartments, 1000, 0.1, auc.data());\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z10computeAUCP11CompartmentiidPd",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    \n    simulatePharmacokinetics(compartments.data(), n_compartments,\n                            transfer_rates.data(), 500.0, 1000, 0.1);\n    \n    computeAUC(compartments.data(), n_compartments, 1000, 0.1, auc.data());\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z10computeAUCP11CompartmentiidPd",
+      "line": 50,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    \n    simulatePharmacokinetics(compartments.data(), n_compartments,\n                            transfer_rates.data(), 500.0, 1000, 0.1);\n    \n    computeAUC(compartments.data(), n_compartments, 1000, 0.1, auc.data());\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z10computeAUCP11CompartmentiidPd",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    \n    simulatePharmacokinetics(compartments.data(), n_compartments,\n                            transfer_rates.data(), 500.0, 1000, 0.1);\n    \n    computeAUC(compartments.data(), n_compartments, 1000, 0.1, auc.data());\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z10computeAUCP11CompartmentiidPd",
+      "line": 50,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    \n    simulatePharmacokinetics(compartments.data(), n_compartments,\n                            transfer_rates.data(), 500.0, 1000, 0.1);\n    \n    computeAUC(compartments.data(), n_compartments, 1000, 0.1, auc.data());\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "main",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    \n    simulatePharmacokinetics(compartments.data(), n_compartments,\n                            transfer_rates.data(), 500.0, 1000, 0.1);\n    \n    computeAUC(compartments.data(), n_compartments, 1000, 0.1, auc.data());\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "main",
+      "line": 50,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    \n    simulatePharmacokinetics(compartments.data(), n_compartments,\n                            transfer_rates.data(), 500.0, 1000, 0.1);\n    \n    computeAUC(compartments.data(), n_compartments, 1000, 0.1, auc.data());\n    \n    return 0;\n}"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 17,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                              double* transfer_rates, double dose, \n                              int n_timesteps, double dt) {\n    // Initial dose in first compartment (GI tract or blood)\n    compartments[0].concentration = dose / compartments[0].volume;\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        std::vector<double> dC_dt(n_compartments, 0.0);\n        \n        for (int i = 0; i < n_compartments; i++) {\n            // Elimination from compartment\n            dC_dt[i] -= compartments[i].clearance * compartments[i].concentration;\n            \n            // Transfer between compartments\n            for (int j = 0; j < n_compartments; j++) {\n                if (i != j) {\n                    double k_ij = transfer_rates[i * n_compartments + j];\n                    double k_ji = transfer_rates[j * n_compartments + i];\n                    \n                    dC_dt[i] += k_ji * compartments[j].concentration * compartments[j].volume / compartments[i].volume;\n                    dC_dt[i] -= k_ij * compartments[i].concentration;\n                }\n            }\n        }\n        \n        // Update concentrations\n        for (int i = 0; i < n_compartments; i++) {\n            compartments[i].concentration += dC_dt[i] * dt;\n        }\n    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z10computeAUCP11CompartmentiidPd",
+      "line": 45,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    \n    simulatePharmacokinetics(compartments.data(), n_compartments,\n                            transfer_rates.data(), 500.0, 1000, 0.1);\n    \n    computeAUC(compartments.data(), n_compartments, 1000, 0.1, auc.data());\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z10computeAUCP11CompartmentiidPd",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    \n    simulatePharmacokinetics(compartments.data(), n_compartments,\n                            transfer_rates.data(), 500.0, 1000, 0.1);\n    \n    computeAUC(compartments.data(), n_compartments, 1000, 0.1, auc.data());\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z10computeAUCP11CompartmentiidPd",
+      "line": 50,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    \n    simulatePharmacokinetics(compartments.data(), n_compartments,\n                            transfer_rates.data(), 500.0, 1000, 0.1);\n    \n    computeAUC(compartments.data(), n_compartments, 1000, 0.1, auc.data());\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z10computeAUCP11CompartmentiidPd",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    \n    simulatePharmacokinetics(compartments.data(), n_compartments,\n                            transfer_rates.data(), 500.0, 1000, 0.1);\n    \n    computeAUC(compartments.data(), n_compartments, 1000, 0.1, auc.data());\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    compartments[0].concentration = dose / compartments[0].volume;\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        std::vector<double> dC_dt(n_compartments, 0.0);\n        \n        for (int i = 0; i < n_compartments; i++) {\n            // Elimination from compartment\n            dC_dt[i] -= compartments[i].clearance * compartments[i].concentration;\n            \n            // Transfer between compartments\n            for (int j = 0; j < n_compartments; j++) {\n                if (i != j) {\n                    double k_ij = transfer_rates[i * n_compartments + j];\n                    double k_ji = transfer_rates[j * n_compartments + i];\n                    \n                    dC_dt[i] += k_ji * compartments[j].concentration * compartments[j].volume / compartments[i].volume;\n                    dC_dt[i] -= k_ij * compartments[i].concentration;\n                }\n            }\n        }\n        \n        // Update concentrations\n        for (int i = 0; i < n_compartments; i++) {\n            compartments[i].concentration += dC_dt[i] * dt;\n        }\n    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 37,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                }\n            }\n        }\n        \n        // Update concentrations\n        for (int i = 0; i < n_compartments; i++) {\n            compartments[i].concentration += dC_dt[i] * dt;\n        }\n    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    compartments[0].concentration = dose / compartments[0].volume;\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        std::vector<double> dC_dt(n_compartments, 0.0);\n        \n        for (int i = 0; i < n_compartments; i++) {\n            // Elimination from compartment\n            dC_dt[i] -= compartments[i].clearance * compartments[i].concentration;\n            \n            // Transfer between compartments\n            for (int j = 0; j < n_compartments; j++) {\n                if (i != j) {\n                    double k_ij = transfer_rates[i * n_compartments + j];\n                    double k_ji = transfer_rates[j * n_compartments + i];\n                    \n                    dC_dt[i] += k_ji * compartments[j].concentration * compartments[j].volume / compartments[i].volume;\n                    dC_dt[i] -= k_ij * compartments[i].concentration;\n                }\n            }\n        }\n        \n        // Update concentrations\n        for (int i = 0; i < n_compartments; i++) {\n            compartments[i].concentration += dC_dt[i] * dt;\n        }\n    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        for (int i = 0; i < n_compartments; i++) {\n            // Elimination from compartment\n            dC_dt[i] -= compartments[i].clearance * compartments[i].concentration;\n            \n            // Transfer between compartments\n            for (int j = 0; j < n_compartments; j++) {\n                if (i != j) {\n                    double k_ij = transfer_rates[i * n_compartments + j];\n                    double k_ji = transfer_rates[j * n_compartments + i];\n                    \n                    dC_dt[i] += k_ji * compartments[j].concentration * compartments[j].volume / compartments[i].volume;\n                    dC_dt[i] -= k_ij * compartments[i].concentration;\n                }\n            }\n        }\n        \n        // Update concentrations\n        for (int i = 0; i < n_compartments; i++) {\n            compartments[i].concentration += dC_dt[i] * dt;\n        }\n    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z10computeAUCP11CompartmentiidPd",
+      "line": 50,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    \n    simulatePharmacokinetics(compartments.data(), n_compartments,\n                            transfer_rates.data(), 500.0, 1000, 0.1);\n    \n    computeAUC(compartments.data(), n_compartments, 1000, 0.1, auc.data());\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.7000000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "main",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    \n    simulatePharmacokinetics(compartments.data(), n_compartments,\n                            transfer_rates.data(), 500.0, 1000, 0.1);\n    \n    computeAUC(compartments.data(), n_compartments, 1000, 0.1, auc.data());\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 37,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                }\n            }\n        }\n        \n        // Update concentrations\n        for (int i = 0; i < n_compartments; i++) {\n            compartments[i].concentration += dC_dt[i] * dt;\n        }\n    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            // Elimination from compartment\n            dC_dt[i] -= compartments[i].clearance * compartments[i].concentration;\n            \n            // Transfer between compartments\n            for (int j = 0; j < n_compartments; j++) {\n                if (i != j) {\n                    double k_ij = transfer_rates[i * n_compartments + j];\n                    double k_ji = transfer_rates[j * n_compartments + i];\n                    \n                    dC_dt[i] += k_ji * compartments[j].concentration * compartments[j].volume / compartments[i].volume;\n                    dC_dt[i] -= k_ij * compartments[i].concentration;\n                }\n            }\n        }\n        \n        // Update concentrations\n        for (int i = 0; i < n_compartments; i++) {\n            compartments[i].concentration += dC_dt[i] * dt;\n        }\n    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "_Z24simulatePharmacokineticsP11CompartmentiPddid",
+      "line": 17,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                              double* transfer_rates, double dose, \n                              int n_timesteps, double dt) {\n    // Initial dose in first compartment (GI tract or blood)\n    compartments[0].concentration = dose / compartments[0].volume;\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        std::vector<double> dC_dt(n_compartments, 0.0);\n        \n        for (int i = 0; i < n_compartments; i++) {\n            // Elimination from compartment\n            dC_dt[i] -= compartments[i].clearance * compartments[i].concentration;\n            \n            // Transfer between compartments\n            for (int j = 0; j < n_compartments; j++) {\n                if (i != j) {\n                    double k_ij = transfer_rates[i * n_compartments + j];\n                    double k_ji = transfer_rates[j * n_compartments + i];\n                    \n                    dC_dt[i] += k_ji * compartments[j].concentration * compartments[j].volume / compartments[i].volume;\n                    dC_dt[i] -= k_ij * compartments[i].concentration;\n                }\n            }\n        }\n        \n        // Update concentrations\n        for (int i = 0; i < n_compartments; i++) {\n            compartments[i].concentration += dC_dt[i] * dt;\n        }\n    }\n}\n\nvoid computeAUC(Compartment* compartments, int n_compartments, \n               int n_timesteps, double dt, double* auc) {\n    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/pharmacokinetics.cpp",
+      "function": "main",
+      "line": 50,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "    for (int i = 0; i < n_compartments; i++) {\n        auc[i] = 0.0;\n    }\n    \n    for (int t = 0; t < n_timesteps; t++) {\n        for (int i = 0; i < n_compartments; i++) {\n            auc[i] += compartments[i].concentration * dt;\n        }\n    }\n}\n\nint main() {\n    const int n_compartments = 3;\n    std::vector<Compartment> compartments(n_compartments);\n    \n    compartments[0] = {0.0, 1.0, 0.1};  // GI tract\n    compartments[1] = {0.0, 5.0, 0.05}; // Central (blood)\n    compartments[2] = {0.0, 10.0, 0.02}; // Peripheral (tissue)\n    \n    std::vector<double> transfer_rates(n_compartments * n_compartments, 0.1);\n    std::vector<double> auc(n_compartments);\n    \n    simulatePharmacokinetics(compartments.data(), n_compartments,\n                            transfer_rates.data(), 500.0, 1000, 0.1);\n    \n    computeAUC(compartments.data(), n_compartments, 1000, 0.1, auc.data());\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6000000000000001
+    }
+  ]
+}

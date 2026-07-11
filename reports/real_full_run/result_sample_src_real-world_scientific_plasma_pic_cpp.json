@@ -1,0 +1,741 @@
+{
+  "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+    "llvm_initial": 42,
+    "llvm_sys_noise": 8,
+    "llvm_project": 34,
+    "after_filter": 16,
+    "ai_batches": 2,
+    "ai_results": 16,
+    "omp_verified": 0,
+    "total_ms": 3948.4,
+    "llvm_ms": 466.6
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13depositChargeRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdiiid",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "};\n\nvoid depositCharge(std::vector<Particle>& particles, double* rho,\n                  int nx, int ny, int nz, double dx) {\n    // Cloud-in-cell (CIC) interpolation\n    for (int i = 0; i < nx*ny*nz; i++) {\n        rho[i] = 0.0;\n    }\n    \n    for (const auto& p : particles) {\n        int ix = (int)(p.x / dx);\n        int iy = (int)(p.y / dx);\n        int iz = (int)(p.z / dx);\n        \n        if (ix < 0 || ix >= nx-1 || iy < 0 || iy >= ny-1 || iz < 0 || iz >= nz-1) continue;\n        \n        double wx = (p.x - ix * dx) / dx;\n        double wy = (p.y - iy * dx) / dx;\n        double wz = (p.z - iz * dx) / dx;\n        \n        // Distribute charge to 8 nearest grid points\n        rho[ix*ny*nz + iy*nz + iz] += p.charge * (1-wx)*(1-wy)*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + iz] += p.charge * wx*(1-wy)*(1-wz);\n        rho[ix*ny*nz + (iy+1)*nz + iz] += p.charge * (1-wx)*wy*(1-wz);\n        rho[ix*ny*nz + iy*nz + (iz+1)] += p.charge * (1-wx)*(1-wy)*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + iz] += p.charge * wx*wy*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + (iz+1)] += p.charge * wx*(1-wy)*wz;\n        rho[ix*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * (1-wx)*wy*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * wx*wy*wz;\n    }\n}\n\nvoid solveFieldEquations(double* rho, double* Ex, double* Ey, double* Ez,\n                        double* Bx, double* By, double* Bz,\n                        int nx, int ny, int nz, double dx, double dt) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13depositChargeRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdiiid",
+      "line": 19,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    // Cloud-in-cell (CIC) interpolation\n    for (int i = 0; i < nx*ny*nz; i++) {\n        rho[i] = 0.0;\n    }\n    \n    for (const auto& p : particles) {\n        int ix = (int)(p.x / dx);\n        int iy = (int)(p.y / dx);\n        int iz = (int)(p.z / dx);\n        \n        if (ix < 0 || ix >= nx-1 || iy < 0 || iy >= ny-1 || iz < 0 || iz >= nz-1) continue;\n        \n        double wx = (p.x - ix * dx) / dx;\n        double wy = (p.y - iy * dx) / dx;\n        double wz = (p.z - iz * dx) / dx;\n        \n        // Distribute charge to 8 nearest grid points\n        rho[ix*ny*nz + iy*nz + iz] += p.charge * (1-wx)*(1-wy)*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + iz] += p.charge * wx*(1-wy)*(1-wz);\n        rho[ix*ny*nz + (iy+1)*nz + iz] += p.charge * (1-wx)*wy*(1-wz);\n        rho[ix*ny*nz + iy*nz + (iz+1)] += p.charge * (1-wx)*(1-wy)*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + iz] += p.charge * wx*wy*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + (iz+1)] += p.charge * wx*(1-wy)*wz;\n        rho[ix*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * (1-wx)*wy*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * wx*wy*wz;\n    }\n}\n\nvoid solveFieldEquations(double* rho, double* Ex, double* Ey, double* Ez,\n                        double* Bx, double* By, double* Bz,\n                        int nx, int ny, int nz, double dx, double dt) {\n    const double epsilon_0 = 8.854e-12;\n    const double c = 3e8;\n    \n    // Solve Poisson equation for electric field: \u2207\u00b2\u03c6 = -\u03c1/\u03b5\u2080"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13depositChargeRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdiiid",
+      "line": 24,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    for (const auto& p : particles) {\n        int ix = (int)(p.x / dx);\n        int iy = (int)(p.y / dx);\n        int iz = (int)(p.z / dx);\n        \n        if (ix < 0 || ix >= nx-1 || iy < 0 || iy >= ny-1 || iz < 0 || iz >= nz-1) continue;\n        \n        double wx = (p.x - ix * dx) / dx;\n        double wy = (p.y - iy * dx) / dx;\n        double wz = (p.z - iz * dx) / dx;\n        \n        // Distribute charge to 8 nearest grid points\n        rho[ix*ny*nz + iy*nz + iz] += p.charge * (1-wx)*(1-wy)*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + iz] += p.charge * wx*(1-wy)*(1-wz);\n        rho[ix*ny*nz + (iy+1)*nz + iz] += p.charge * (1-wx)*wy*(1-wz);\n        rho[ix*ny*nz + iy*nz + (iz+1)] += p.charge * (1-wx)*(1-wy)*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + iz] += p.charge * wx*wy*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + (iz+1)] += p.charge * wx*(1-wy)*wz;\n        rho[ix*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * (1-wx)*wy*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * wx*wy*wz;\n    }\n}\n\nvoid solveFieldEquations(double* rho, double* Ex, double* Ey, double* Ez,\n                        double* Bx, double* By, double* Bz,\n                        int nx, int ny, int nz, double dx, double dt) {\n    const double epsilon_0 = 8.854e-12;\n    const double c = 3e8;\n    \n    // Solve Poisson equation for electric field: \u2207\u00b2\u03c6 = -\u03c1/\u03b5\u2080\n    std::vector<double> phi(nx*ny*nz, 0.0);\n    \n    for (int iter = 0; iter < 10; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13depositChargeRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdiiid",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    for (const auto& p : particles) {\n        int ix = (int)(p.x / dx);\n        int iy = (int)(p.y / dx);\n        int iz = (int)(p.z / dx);\n        \n        if (ix < 0 || ix >= nx-1 || iy < 0 || iy >= ny-1 || iz < 0 || iz >= nz-1) continue;\n        \n        double wx = (p.x - ix * dx) / dx;\n        double wy = (p.y - iy * dx) / dx;\n        double wz = (p.z - iz * dx) / dx;\n        \n        // Distribute charge to 8 nearest grid points\n        rho[ix*ny*nz + iy*nz + iz] += p.charge * (1-wx)*(1-wy)*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + iz] += p.charge * wx*(1-wy)*(1-wz);\n        rho[ix*ny*nz + (iy+1)*nz + iz] += p.charge * (1-wx)*wy*(1-wz);\n        rho[ix*ny*nz + iy*nz + (iz+1)] += p.charge * (1-wx)*(1-wy)*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + iz] += p.charge * wx*wy*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + (iz+1)] += p.charge * wx*(1-wy)*wz;\n        rho[ix*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * (1-wx)*wy*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * wx*wy*wz;\n    }\n}\n\nvoid solveFieldEquations(double* rho, double* Ex, double* Ey, double* Ez,\n                        double* Bx, double* By, double* Bz,\n                        int nx, int ny, int nz, double dx, double dt) {\n    const double epsilon_0 = 8.854e-12;\n    const double c = 3e8;\n    \n    // Solve Poisson equation for electric field: \u2207\u00b2\u03c6 = -\u03c1/\u03b5\u2080\n    std::vector<double> phi(nx*ny*nz, 0.0);\n    \n    for (int iter = 0; iter < 10; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13depositChargeRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdiiid",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    for (const auto& p : particles) {\n        int ix = (int)(p.x / dx);\n        int iy = (int)(p.y / dx);\n        int iz = (int)(p.z / dx);\n        \n        if (ix < 0 || ix >= nx-1 || iy < 0 || iy >= ny-1 || iz < 0 || iz >= nz-1) continue;\n        \n        double wx = (p.x - ix * dx) / dx;\n        double wy = (p.y - iy * dx) / dx;\n        double wz = (p.z - iz * dx) / dx;\n        \n        // Distribute charge to 8 nearest grid points\n        rho[ix*ny*nz + iy*nz + iz] += p.charge * (1-wx)*(1-wy)*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + iz] += p.charge * wx*(1-wy)*(1-wz);\n        rho[ix*ny*nz + (iy+1)*nz + iz] += p.charge * (1-wx)*wy*(1-wz);\n        rho[ix*ny*nz + iy*nz + (iz+1)] += p.charge * (1-wx)*(1-wy)*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + iz] += p.charge * wx*wy*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + (iz+1)] += p.charge * wx*(1-wy)*wz;\n        rho[ix*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * (1-wx)*wy*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * wx*wy*wz;\n    }\n}\n\nvoid solveFieldEquations(double* rho, double* Ex, double* Ey, double* Ez,\n                        double* Bx, double* By, double* Bz,\n                        int nx, int ny, int nz, double dx, double dt) {\n    const double epsilon_0 = 8.854e-12;\n    const double c = 3e8;\n    \n    // Solve Poisson equation for electric field: \u2207\u00b2\u03c6 = -\u03c1/\u03b5\u2080\n    std::vector<double> phi(nx*ny*nz, 0.0);\n    \n    for (int iter = 0; iter < 10; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13depositChargeRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdiiid",
+      "line": 19,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    // Cloud-in-cell (CIC) interpolation\n    for (int i = 0; i < nx*ny*nz; i++) {\n        rho[i] = 0.0;\n    }\n    \n    for (const auto& p : particles) {\n        int ix = (int)(p.x / dx);\n        int iy = (int)(p.y / dx);\n        int iz = (int)(p.z / dx);\n        \n        if (ix < 0 || ix >= nx-1 || iy < 0 || iy >= ny-1 || iz < 0 || iz >= nz-1) continue;\n        \n        double wx = (p.x - ix * dx) / dx;\n        double wy = (p.y - iy * dx) / dx;\n        double wz = (p.z - iz * dx) / dx;\n        \n        // Distribute charge to 8 nearest grid points\n        rho[ix*ny*nz + iy*nz + iz] += p.charge * (1-wx)*(1-wy)*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + iz] += p.charge * wx*(1-wy)*(1-wz);\n        rho[ix*ny*nz + (iy+1)*nz + iz] += p.charge * (1-wx)*wy*(1-wz);\n        rho[ix*ny*nz + iy*nz + (iz+1)] += p.charge * (1-wx)*(1-wy)*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + iz] += p.charge * wx*wy*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + (iz+1)] += p.charge * wx*(1-wy)*wz;\n        rho[ix*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * (1-wx)*wy*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * wx*wy*wz;\n    }\n}\n\nvoid solveFieldEquations(double* rho, double* Ex, double* Ey, double* Ez,\n                        double* Bx, double* By, double* Bz,\n                        int nx, int ny, int nz, double dx, double dt) {\n    const double epsilon_0 = 8.854e-12;\n    const double c = 3e8;\n    \n    // Solve Poisson equation for electric field: \u2207\u00b2\u03c6 = -\u03c1/\u03b5\u2080"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 170,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 52,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 67,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 53,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 51,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    const double c = 3e8;\n    \n    // Solve Poisson equation for electric field: \u2207\u00b2\u03c6 = -\u03c1/\u03b5\u2080\n    std::vector<double> phi(nx*ny*nz, 0.0);\n    \n    for (int iter = 0; iter < 10; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    phi[idx] = ((phi[(i+1)*ny*nz+j*nz+k] + phi[(i-1)*ny*nz+j*nz+k] +\n                                phi[i*ny*nz+(j+1)*nz+k] + phi[i*ny*nz+(j-1)*nz+k] +\n                                phi[i*ny*nz+j*nz+(k+1)] + phi[i*ny*nz+j*nz+(k-1)]) +\n                               rho[idx] * dx * dx / epsilon_0) / 6.0;\n                }\n            }\n        }\n    }\n    \n    // Calculate E = -\u2207\u03c6\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                Ex[idx] = -(phi[(i+1)*ny*nz+j*nz+k] - phi[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                Ey[idx] = -(phi[i*ny*nz+(j+1)*nz+k] - phi[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                Ez[idx] = -(phi[i*ny*nz+j*nz+(k+1)] - phi[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n            }\n        }\n    }\n    \n    // Update magnetic field: \u2202B/\u2202t = -\u2207\u00d7E\n    for (int i = 1; i < nx-1; i++) {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 54,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<double> phi(nx*ny*nz, 0.0);\n    \n    for (int iter = 0; iter < 10; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    phi[idx] = ((phi[(i+1)*ny*nz+j*nz+k] + phi[(i-1)*ny*nz+j*nz+k] +\n                                phi[i*ny*nz+(j+1)*nz+k] + phi[i*ny*nz+(j-1)*nz+k] +\n                                phi[i*ny*nz+j*nz+(k+1)] + phi[i*ny*nz+j*nz+(k-1)]) +\n                               rho[idx] * dx * dx / epsilon_0) / 6.0;\n                }\n            }\n        }\n    }\n    \n    // Calculate E = -\u2207\u03c6\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                Ex[idx] = -(phi[(i+1)*ny*nz+j*nz+k] - phi[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                Ey[idx] = -(phi[i*ny*nz+(j+1)*nz+k] - phi[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                Ez[idx] = -(phi[i*ny*nz+j*nz+(k+1)] - phi[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n            }\n        }\n    }\n    \n    // Update magnetic field: \u2202B/\u2202t = -\u2207\u00d7E\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 54,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::vector<double> phi(nx*ny*nz, 0.0);\n    \n    for (int iter = 0; iter < 10; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    phi[idx] = ((phi[(i+1)*ny*nz+j*nz+k] + phi[(i-1)*ny*nz+j*nz+k] +\n                                phi[i*ny*nz+(j+1)*nz+k] + phi[i*ny*nz+(j-1)*nz+k] +\n                                phi[i*ny*nz+j*nz+(k+1)] + phi[i*ny*nz+j*nz+(k-1)]) +\n                               rho[idx] * dx * dx / epsilon_0) / 6.0;\n                }\n            }\n        }\n    }\n    \n    // Calculate E = -\u2207\u03c6\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                Ex[idx] = -(phi[(i+1)*ny*nz+j*nz+k] - phi[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                Ey[idx] = -(phi[i*ny*nz+(j+1)*nz+k] - phi[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                Ez[idx] = -(phi[i*ny*nz+j*nz+(k+1)] - phi[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n            }\n        }\n    }\n    \n    // Update magnetic field: \u2202B/\u2202t = -\u2207\u00d7E\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 54,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<double> phi(nx*ny*nz, 0.0);\n    \n    for (int iter = 0; iter < 10; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    phi[idx] = ((phi[(i+1)*ny*nz+j*nz+k] + phi[(i-1)*ny*nz+j*nz+k] +\n                                phi[i*ny*nz+(j+1)*nz+k] + phi[i*ny*nz+(j-1)*nz+k] +\n                                phi[i*ny*nz+j*nz+(k+1)] + phi[i*ny*nz+j*nz+(k-1)]) +\n                               rho[idx] * dx * dx / epsilon_0) / 6.0;\n                }\n            }\n        }\n    }\n    \n    // Calculate E = -\u2207\u03c6\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                Ex[idx] = -(phi[(i+1)*ny*nz+j*nz+k] - phi[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                Ey[idx] = -(phi[i*ny*nz+(j+1)*nz+k] - phi[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                Ez[idx] = -(phi[i*ny*nz+j*nz+(k+1)] - phi[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n            }\n        }\n    }\n    \n    // Update magnetic field: \u2202B/\u2202t = -\u2207\u00d7E\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 52,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 53,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 54,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<double> phi(nx*ny*nz, 0.0);\n    \n    for (int iter = 0; iter < 10; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    phi[idx] = ((phi[(i+1)*ny*nz+j*nz+k] + phi[(i-1)*ny*nz+j*nz+k] +\n                                phi[i*ny*nz+(j+1)*nz+k] + phi[i*ny*nz+(j-1)*nz+k] +\n                                phi[i*ny*nz+j*nz+(k+1)] + phi[i*ny*nz+j*nz+(k-1)]) +\n                               rho[idx] * dx * dx / epsilon_0) / 6.0;\n                }\n            }\n        }\n    }\n    \n    // Calculate E = -\u2207\u03c6\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                Ex[idx] = -(phi[(i+1)*ny*nz+j*nz+k] - phi[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                Ey[idx] = -(phi[i*ny*nz+(j+1)*nz+k] - phi[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                Ez[idx] = -(phi[i*ny*nz+j*nz+(k+1)] - phi[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n            }\n        }\n    }\n    \n    // Update magnetic field: \u2202B/\u2202t = -\u2207\u00d7E\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 68,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 80,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 69,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    // Calculate E = -\u2207\u03c6\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                Ex[idx] = -(phi[(i+1)*ny*nz+j*nz+k] - phi[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                Ey[idx] = -(phi[i*ny*nz+(j+1)*nz+k] - phi[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                Ez[idx] = -(phi[i*ny*nz+j*nz+(k+1)] - phi[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n            }\n        }\n    }\n    \n    // Update magnetic field: \u2202B/\u2202t = -\u2207\u00d7E\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                double curl_Ex = (Ez[i*ny*nz+(j+1)*nz+k] - Ez[i*ny*nz+(j-1)*nz+k]) / (2*dx) -\n                                (Ey[i*ny*nz+j*nz+(k+1)] - Ey[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n                double curl_Ey = (Ex[i*ny*nz+j*nz+(k+1)] - Ex[i*ny*nz+j*nz+(k-1)]) / (2*dx) -\n                                (Ez[(i+1)*ny*nz+j*nz+k] - Ez[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                double curl_Ez = (Ey[(i+1)*ny*nz+j*nz+k] - Ey[(i-1)*ny*nz+j*nz+k]) / (2*dx) -\n                                (Ex[i*ny*nz+(j+1)*nz+k] - Ex[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                \n                Bx[idx] -= dt * curl_Ex;\n                By[idx] -= dt * curl_Ey;\n                Bz[idx] -= dt * curl_Ez;\n            }\n        }\n    }\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 67,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 68,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 69,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    // Calculate E = -\u2207\u03c6\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                Ex[idx] = -(phi[(i+1)*ny*nz+j*nz+k] - phi[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                Ey[idx] = -(phi[i*ny*nz+(j+1)*nz+k] - phi[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                Ez[idx] = -(phi[i*ny*nz+j*nz+(k+1)] - phi[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n            }\n        }\n    }\n    \n    // Update magnetic field: \u2202B/\u2202t = -\u2207\u00d7E\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                double curl_Ex = (Ez[i*ny*nz+(j+1)*nz+k] - Ez[i*ny*nz+(j-1)*nz+k]) / (2*dx) -\n                                (Ey[i*ny*nz+j*nz+(k+1)] - Ey[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n                double curl_Ey = (Ex[i*ny*nz+j*nz+(k+1)] - Ex[i*ny*nz+j*nz+(k-1)]) / (2*dx) -\n                                (Ez[(i+1)*ny*nz+j*nz+k] - Ez[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                double curl_Ez = (Ey[(i+1)*ny*nz+j*nz+k] - Ey[(i-1)*ny*nz+j*nz+k]) / (2*dx) -\n                                (Ex[i*ny*nz+(j+1)*nz+k] - Ex[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                \n                Bx[idx] -= dt * curl_Ex;\n                By[idx] -= dt * curl_Ey;\n                Bz[idx] -= dt * curl_Ez;\n            }\n        }\n    }\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 81,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 82,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 80,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 81,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 82,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.44999999999999996
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13pushParticlesRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdS6_S6_S6_S6_S6_iiidd",
+      "line": 104,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13pushParticlesRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdS6_S6_S6_S6_S6_iiidd",
+      "line": 109,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    for (auto& p : particles) {\n        int ix = (int)(p.x / dx);\n        int iy = (int)(p.y / dx);\n        int iz = (int)(p.z / dx);\n        \n        if (ix < 0 || ix >= nx-1 || iy < 0 || iy >= ny-1 || iz < 0 || iz >= nz-1) continue;\n        \n        int idx = ix*ny*nz + iy*nz + iz;\n        \n        // Half electric field push\n        double qm_dt = p.charge / p.mass * dt / 2.0;\n        p.vx += qm_dt * Ex[idx];\n        p.vy += qm_dt * Ey[idx];\n        p.vz += qm_dt * Ez[idx];\n        \n        // Magnetic rotation\n        double t_x = qm_dt * Bx[idx];\n        double t_y = qm_dt * By[idx];\n        double t_z = qm_dt * Bz[idx];\n        double t_mag = sqrt(t_x*t_x + t_y*t_y + t_z*t_z);\n        \n        double s_x = 2*t_x / (1 + t_mag*t_mag);\n        double s_y = 2*t_y / (1 + t_mag*t_mag);\n        double s_z = 2*t_z / (1 + t_mag*t_mag);\n        \n        double vprime_x = p.vx + p.vy*t_z - p.vz*t_y;\n        double vprime_y = p.vy + p.vz*t_x - p.vx*t_z;\n        double vprime_z = p.vz + p.vx*t_y - p.vy*t_x;\n        \n        p.vx += vprime_y*s_z - vprime_z*s_y;\n        p.vy += vprime_z*s_x - vprime_x*s_z;\n        p.vz += vprime_x*s_y - vprime_y*s_x;\n        \n        // Half electric field push\n        p.vx += qm_dt * Ex[idx];"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13pushParticlesRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdS6_S6_S6_S6_S6_iiidd",
+      "line": 109,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13pushParticlesRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdS6_S6_S6_S6_S6_iiidd",
+      "line": 109,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13pushParticlesRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdS6_S6_S6_S6_S6_iiidd",
+      "line": 104,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\nvoid pushParticles(std::vector<Particle>& particles, double* Ex, double* Ey, double* Ez,\n                  double* Bx, double* By, double* Bz, int nx, int ny, int nz,\n                  double dx, double dt) {\n    // Boris pusher\n    for (auto& p : particles) {\n        int ix = (int)(p.x / dx);\n        int iy = (int)(p.y / dx);\n        int iz = (int)(p.z / dx);\n        \n        if (ix < 0 || ix >= nx-1 || iy < 0 || iy >= ny-1 || iz < 0 || iz >= nz-1) continue;\n        \n        int idx = ix*ny*nz + iy*nz + iz;\n        \n        // Half electric field push\n        double qm_dt = p.charge / p.mass * dt / 2.0;\n        p.vx += qm_dt * Ex[idx];\n        p.vy += qm_dt * Ey[idx];\n        p.vz += qm_dt * Ez[idx];\n        \n        // Magnetic rotation\n        double t_x = qm_dt * Bx[idx];\n        double t_y = qm_dt * By[idx];\n        double t_z = qm_dt * Bz[idx];\n        double t_mag = sqrt(t_x*t_x + t_y*t_y + t_z*t_z);\n        \n        double s_x = 2*t_x / (1 + t_mag*t_mag);\n        double s_y = 2*t_y / (1 + t_mag*t_mag);\n        double s_z = 2*t_z / (1 + t_mag*t_mag);\n        \n        double vprime_x = p.vx + p.vy*t_z - p.vz*t_y;\n        double vprime_y = p.vy + p.vz*t_x - p.vx*t_z;\n        double vprime_z = p.vz + p.vx*t_y - p.vy*t_x;\n        \n        p.vx += vprime_y*s_z - vprime_z*s_y;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "main",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "main",
+      "line": 165,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::mt19937 rng(42);\n    std::uniform_real_distribution<> pos_dist(0.0, nx*dx);\n    std::normal_distribution<> vel_dist(0.0, 1e6);\n    \n    // Initialize particles\n    for (auto& p : particles) {\n        p.x = pos_dist(rng);\n        p.y = pos_dist(rng);\n        p.z = pos_dist(rng);\n        p.vx = vel_dist(rng);\n        p.vy = vel_dist(rng);\n        p.vz = vel_dist(rng);\n        p.charge = -1.6e-19; // Electron\n        p.mass = 9.11e-31;\n    }\n    \n    // PIC loop\n    for (int step = 0; step < 1000; step++) {\n        depositCharge(particles, rho.data(), nx, ny, nz, dx);\n        solveFieldEquations(rho.data(), Ex.data(), Ey.data(), Ez.data(),\n                          Bx.data(), By.data(), Bz.data(), nx, ny, nz, dx, dt);\n        pushParticles(particles, Ex.data(), Ey.data(), Ez.data(),\n                     Bx.data(), By.data(), Bz.data(), nx, ny, nz, dx, dt);\n    }\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "main",
+      "line": 177,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.20000000000000004
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/normal_distribution.h",
+      "function": "_ZNSt3__119normal_distributionIdEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEdRT_RKNS1_10param_typeE",
+      "line": 113,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/normal_distribution.h",
+      "function": "_ZNSt3__119normal_distributionIdEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEdRT_RKNS1_10param_typeE",
+      "line": 125,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13depositChargeRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdiiid",
+      "line": 24,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    for (const auto& p : particles) {\n        int ix = (int)(p.x / dx);\n        int iy = (int)(p.y / dx);\n        int iz = (int)(p.z / dx);\n        \n        if (ix < 0 || ix >= nx-1 || iy < 0 || iy >= ny-1 || iz < 0 || iz >= nz-1) continue;\n        \n        double wx = (p.x - ix * dx) / dx;\n        double wy = (p.y - iy * dx) / dx;\n        double wz = (p.z - iz * dx) / dx;\n        \n        // Distribute charge to 8 nearest grid points\n        rho[ix*ny*nz + iy*nz + iz] += p.charge * (1-wx)*(1-wy)*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + iz] += p.charge * wx*(1-wy)*(1-wz);\n        rho[ix*ny*nz + (iy+1)*nz + iz] += p.charge * (1-wx)*wy*(1-wz);\n        rho[ix*ny*nz + iy*nz + (iz+1)] += p.charge * (1-wx)*(1-wy)*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + iz] += p.charge * wx*wy*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + (iz+1)] += p.charge * wx*(1-wy)*wz;\n        rho[ix*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * (1-wx)*wy*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * wx*wy*wz;\n    }\n}\n\nvoid solveFieldEquations(double* rho, double* Ex, double* Ey, double* Ez,\n                        double* Bx, double* By, double* Bz,\n                        int nx, int ny, int nz, double dx, double dt) {\n    const double epsilon_0 = 8.854e-12;\n    const double c = 3e8;\n    \n    // Solve Poisson equation for electric field: \u2207\u00b2\u03c6 = -\u03c1/\u03b5\u2080\n    std::vector<double> phi(nx*ny*nz, 0.0);\n    \n    for (int iter = 0; iter < 10; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13depositChargeRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdiiid",
+      "line": 19,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    // Cloud-in-cell (CIC) interpolation\n    for (int i = 0; i < nx*ny*nz; i++) {\n        rho[i] = 0.0;\n    }\n    \n    for (const auto& p : particles) {\n        int ix = (int)(p.x / dx);\n        int iy = (int)(p.y / dx);\n        int iz = (int)(p.z / dx);\n        \n        if (ix < 0 || ix >= nx-1 || iy < 0 || iy >= ny-1 || iz < 0 || iz >= nz-1) continue;\n        \n        double wx = (p.x - ix * dx) / dx;\n        double wy = (p.y - iy * dx) / dx;\n        double wz = (p.z - iz * dx) / dx;\n        \n        // Distribute charge to 8 nearest grid points\n        rho[ix*ny*nz + iy*nz + iz] += p.charge * (1-wx)*(1-wy)*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + iz] += p.charge * wx*(1-wy)*(1-wz);\n        rho[ix*ny*nz + (iy+1)*nz + iz] += p.charge * (1-wx)*wy*(1-wz);\n        rho[ix*ny*nz + iy*nz + (iz+1)] += p.charge * (1-wx)*(1-wy)*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + iz] += p.charge * wx*wy*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + (iz+1)] += p.charge * wx*(1-wy)*wz;\n        rho[ix*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * (1-wx)*wy*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * wx*wy*wz;\n    }\n}\n\nvoid solveFieldEquations(double* rho, double* Ex, double* Ey, double* Ez,\n                        double* Bx, double* By, double* Bz,\n                        int nx, int ny, int nz, double dx, double dt) {\n    const double epsilon_0 = 8.854e-12;\n    const double c = 3e8;\n    \n    // Solve Poisson equation for electric field: \u2207\u00b2\u03c6 = -\u03c1/\u03b5\u2080",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 54,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<double> phi(nx*ny*nz, 0.0);\n    \n    for (int iter = 0; iter < 10; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    phi[idx] = ((phi[(i+1)*ny*nz+j*nz+k] + phi[(i-1)*ny*nz+j*nz+k] +\n                                phi[i*ny*nz+(j+1)*nz+k] + phi[i*ny*nz+(j-1)*nz+k] +\n                                phi[i*ny*nz+j*nz+(k+1)] + phi[i*ny*nz+j*nz+(k-1)]) +\n                               rho[idx] * dx * dx / epsilon_0) / 6.0;\n                }\n            }\n        }\n    }\n    \n    // Calculate E = -\u2207\u03c6\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                Ex[idx] = -(phi[(i+1)*ny*nz+j*nz+k] - phi[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                Ey[idx] = -(phi[i*ny*nz+(j+1)*nz+k] - phi[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                Ez[idx] = -(phi[i*ny*nz+j*nz+(k+1)] - phi[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n            }\n        }\n    }\n    \n    // Update magnetic field: \u2202B/\u2202t = -\u2207\u00d7E\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 54,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<double> phi(nx*ny*nz, 0.0);\n    \n    for (int iter = 0; iter < 10; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    phi[idx] = ((phi[(i+1)*ny*nz+j*nz+k] + phi[(i-1)*ny*nz+j*nz+k] +\n                                phi[i*ny*nz+(j+1)*nz+k] + phi[i*ny*nz+(j-1)*nz+k] +\n                                phi[i*ny*nz+j*nz+(k+1)] + phi[i*ny*nz+j*nz+(k-1)]) +\n                               rho[idx] * dx * dx / epsilon_0) / 6.0;\n                }\n            }\n        }\n    }\n    \n    // Calculate E = -\u2207\u03c6\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                Ex[idx] = -(phi[(i+1)*ny*nz+j*nz+k] - phi[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                Ey[idx] = -(phi[i*ny*nz+(j+1)*nz+k] - phi[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                Ez[idx] = -(phi[i*ny*nz+j*nz+(k+1)] - phi[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n            }\n        }\n    }\n    \n    // Update magnetic field: \u2202B/\u2202t = -\u2207\u00d7E\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 54,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<double> phi(nx*ny*nz, 0.0);\n    \n    for (int iter = 0; iter < 10; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    phi[idx] = ((phi[(i+1)*ny*nz+j*nz+k] + phi[(i-1)*ny*nz+j*nz+k] +\n                                phi[i*ny*nz+(j+1)*nz+k] + phi[i*ny*nz+(j-1)*nz+k] +\n                                phi[i*ny*nz+j*nz+(k+1)] + phi[i*ny*nz+j*nz+(k-1)]) +\n                               rho[idx] * dx * dx / epsilon_0) / 6.0;\n                }\n            }\n        }\n    }\n    \n    // Calculate E = -\u2207\u03c6\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                Ex[idx] = -(phi[(i+1)*ny*nz+j*nz+k] - phi[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                Ey[idx] = -(phi[i*ny*nz+(j+1)*nz+k] - phi[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                Ez[idx] = -(phi[i*ny*nz+j*nz+(k+1)] - phi[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n            }\n        }\n    }\n    \n    // Update magnetic field: \u2202B/\u2202t = -\u2207\u00d7E\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 69,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    // Calculate E = -\u2207\u03c6\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                Ex[idx] = -(phi[(i+1)*ny*nz+j*nz+k] - phi[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                Ey[idx] = -(phi[i*ny*nz+(j+1)*nz+k] - phi[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                Ez[idx] = -(phi[i*ny*nz+j*nz+(k+1)] - phi[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n            }\n        }\n    }\n    \n    // Update magnetic field: \u2202B/\u2202t = -\u2207\u00d7E\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                double curl_Ex = (Ez[i*ny*nz+(j+1)*nz+k] - Ez[i*ny*nz+(j-1)*nz+k]) / (2*dx) -\n                                (Ey[i*ny*nz+j*nz+(k+1)] - Ey[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n                double curl_Ey = (Ex[i*ny*nz+j*nz+(k+1)] - Ex[i*ny*nz+j*nz+(k-1)]) / (2*dx) -\n                                (Ez[(i+1)*ny*nz+j*nz+k] - Ez[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                double curl_Ez = (Ey[(i+1)*ny*nz+j*nz+k] - Ey[(i-1)*ny*nz+j*nz+k]) / (2*dx) -\n                                (Ex[i*ny*nz+(j+1)*nz+k] - Ex[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                \n                Bx[idx] -= dt * curl_Ex;\n                By[idx] -= dt * curl_Ey;\n                Bz[idx] -= dt * curl_Ez;\n            }\n        }\n    }\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13pushParticlesRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdS6_S6_S6_S6_S6_iiidd",
+      "line": 109,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    for (auto& p : particles) {\n        int ix = (int)(p.x / dx);\n        int iy = (int)(p.y / dx);\n        int iz = (int)(p.z / dx);\n        \n        if (ix < 0 || ix >= nx-1 || iy < 0 || iy >= ny-1 || iz < 0 || iz >= nz-1) continue;\n        \n        int idx = ix*ny*nz + iy*nz + iz;\n        \n        // Half electric field push\n        double qm_dt = p.charge / p.mass * dt / 2.0;\n        p.vx += qm_dt * Ex[idx];\n        p.vy += qm_dt * Ey[idx];\n        p.vz += qm_dt * Ez[idx];\n        \n        // Magnetic rotation\n        double t_x = qm_dt * Bx[idx];\n        double t_y = qm_dt * By[idx];\n        double t_z = qm_dt * Bz[idx];\n        double t_mag = sqrt(t_x*t_x + t_y*t_y + t_z*t_z);\n        \n        double s_x = 2*t_x / (1 + t_mag*t_mag);\n        double s_y = 2*t_y / (1 + t_mag*t_mag);\n        double s_z = 2*t_z / (1 + t_mag*t_mag);\n        \n        double vprime_x = p.vx + p.vy*t_z - p.vz*t_y;\n        double vprime_y = p.vy + p.vz*t_x - p.vx*t_z;\n        double vprime_z = p.vz + p.vx*t_y - p.vy*t_x;\n        \n        p.vx += vprime_y*s_z - vprime_z*s_y;\n        p.vy += vprime_z*s_x - vprime_x*s_z;\n        p.vz += vprime_x*s_y - vprime_y*s_x;\n        \n        // Half electric field push\n        p.vx += qm_dt * Ex[idx];",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13pushParticlesRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdS6_S6_S6_S6_S6_iiidd",
+      "line": 104,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\nvoid pushParticles(std::vector<Particle>& particles, double* Ex, double* Ey, double* Ez,\n                  double* Bx, double* By, double* Bz, int nx, int ny, int nz,\n                  double dx, double dt) {\n    // Boris pusher\n    for (auto& p : particles) {\n        int ix = (int)(p.x / dx);\n        int iy = (int)(p.y / dx);\n        int iz = (int)(p.z / dx);\n        \n        if (ix < 0 || ix >= nx-1 || iy < 0 || iy >= ny-1 || iz < 0 || iz >= nz-1) continue;\n        \n        int idx = ix*ny*nz + iy*nz + iz;\n        \n        // Half electric field push\n        double qm_dt = p.charge / p.mass * dt / 2.0;\n        p.vx += qm_dt * Ex[idx];\n        p.vy += qm_dt * Ey[idx];\n        p.vz += qm_dt * Ez[idx];\n        \n        // Magnetic rotation\n        double t_x = qm_dt * Bx[idx];\n        double t_y = qm_dt * By[idx];\n        double t_z = qm_dt * Bz[idx];\n        double t_mag = sqrt(t_x*t_x + t_y*t_y + t_z*t_z);\n        \n        double s_x = 2*t_x / (1 + t_mag*t_mag);\n        double s_y = 2*t_y / (1 + t_mag*t_mag);\n        double s_z = 2*t_z / (1 + t_mag*t_mag);\n        \n        double vprime_x = p.vx + p.vy*t_z - p.vz*t_y;\n        double vprime_y = p.vy + p.vz*t_x - p.vx*t_z;\n        double vprime_z = p.vz + p.vx*t_y - p.vy*t_x;\n        \n        p.vx += vprime_y*s_z - vprime_z*s_y;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "main",
+      "line": 165,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::mt19937 rng(42);\n    std::uniform_real_distribution<> pos_dist(0.0, nx*dx);\n    std::normal_distribution<> vel_dist(0.0, 1e6);\n    \n    // Initialize particles\n    for (auto& p : particles) {\n        p.x = pos_dist(rng);\n        p.y = pos_dist(rng);\n        p.z = pos_dist(rng);\n        p.vx = vel_dist(rng);\n        p.vy = vel_dist(rng);\n        p.vz = vel_dist(rng);\n        p.charge = -1.6e-19; // Electron\n        p.mass = 9.11e-31;\n    }\n    \n    // PIC loop\n    for (int step = 0; step < 1000; step++) {\n        depositCharge(particles, rho.data(), nx, ny, nz, dx);\n        solveFieldEquations(rho.data(), Ex.data(), Ey.data(), Ez.data(),\n                          Bx.data(), By.data(), Bz.data(), nx, ny, nz, dx, dt);\n        pushParticles(particles, Ex.data(), Ey.data(), Ez.data(),\n                     Bx.data(), By.data(), Bz.data(), nx, ny, nz, dx, dt);\n    }\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13depositChargeRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdiiid",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "};\n\nvoid depositCharge(std::vector<Particle>& particles, double* rho,\n                  int nx, int ny, int nz, double dx) {\n    // Cloud-in-cell (CIC) interpolation\n    for (int i = 0; i < nx*ny*nz; i++) {\n        rho[i] = 0.0;\n    }\n    \n    for (const auto& p : particles) {\n        int ix = (int)(p.x / dx);\n        int iy = (int)(p.y / dx);\n        int iz = (int)(p.z / dx);\n        \n        if (ix < 0 || ix >= nx-1 || iy < 0 || iy >= ny-1 || iz < 0 || iz >= nz-1) continue;\n        \n        double wx = (p.x - ix * dx) / dx;\n        double wy = (p.y - iy * dx) / dx;\n        double wz = (p.z - iz * dx) / dx;\n        \n        // Distribute charge to 8 nearest grid points\n        rho[ix*ny*nz + iy*nz + iz] += p.charge * (1-wx)*(1-wy)*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + iz] += p.charge * wx*(1-wy)*(1-wz);\n        rho[ix*ny*nz + (iy+1)*nz + iz] += p.charge * (1-wx)*wy*(1-wz);\n        rho[ix*ny*nz + iy*nz + (iz+1)] += p.charge * (1-wx)*(1-wy)*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + iz] += p.charge * wx*wy*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + (iz+1)] += p.charge * wx*(1-wy)*wz;\n        rho[ix*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * (1-wx)*wy*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * wx*wy*wz;\n    }\n}\n\nvoid solveFieldEquations(double* rho, double* Ex, double* Ey, double* Ez,\n                        double* Bx, double* By, double* Bz,\n                        int nx, int ny, int nz, double dx, double dt) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13depositChargeRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdiiid",
+      "line": 19,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    // Cloud-in-cell (CIC) interpolation\n    for (int i = 0; i < nx*ny*nz; i++) {\n        rho[i] = 0.0;\n    }\n    \n    for (const auto& p : particles) {\n        int ix = (int)(p.x / dx);\n        int iy = (int)(p.y / dx);\n        int iz = (int)(p.z / dx);\n        \n        if (ix < 0 || ix >= nx-1 || iy < 0 || iy >= ny-1 || iz < 0 || iz >= nz-1) continue;\n        \n        double wx = (p.x - ix * dx) / dx;\n        double wy = (p.y - iy * dx) / dx;\n        double wz = (p.z - iz * dx) / dx;\n        \n        // Distribute charge to 8 nearest grid points\n        rho[ix*ny*nz + iy*nz + iz] += p.charge * (1-wx)*(1-wy)*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + iz] += p.charge * wx*(1-wy)*(1-wz);\n        rho[ix*ny*nz + (iy+1)*nz + iz] += p.charge * (1-wx)*wy*(1-wz);\n        rho[ix*ny*nz + iy*nz + (iz+1)] += p.charge * (1-wx)*(1-wy)*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + iz] += p.charge * wx*wy*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + (iz+1)] += p.charge * wx*(1-wy)*wz;\n        rho[ix*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * (1-wx)*wy*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * wx*wy*wz;\n    }\n}\n\nvoid solveFieldEquations(double* rho, double* Ex, double* Ey, double* Ez,\n                        double* Bx, double* By, double* Bz,\n                        int nx, int ny, int nz, double dx, double dt) {\n    const double epsilon_0 = 8.854e-12;\n    const double c = 3e8;\n    \n    // Solve Poisson equation for electric field: \u2207\u00b2\u03c6 = -\u03c1/\u03b5\u2080",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13depositChargeRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdiiid",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    for (const auto& p : particles) {\n        int ix = (int)(p.x / dx);\n        int iy = (int)(p.y / dx);\n        int iz = (int)(p.z / dx);\n        \n        if (ix < 0 || ix >= nx-1 || iy < 0 || iy >= ny-1 || iz < 0 || iz >= nz-1) continue;\n        \n        double wx = (p.x - ix * dx) / dx;\n        double wy = (p.y - iy * dx) / dx;\n        double wz = (p.z - iz * dx) / dx;\n        \n        // Distribute charge to 8 nearest grid points\n        rho[ix*ny*nz + iy*nz + iz] += p.charge * (1-wx)*(1-wy)*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + iz] += p.charge * wx*(1-wy)*(1-wz);\n        rho[ix*ny*nz + (iy+1)*nz + iz] += p.charge * (1-wx)*wy*(1-wz);\n        rho[ix*ny*nz + iy*nz + (iz+1)] += p.charge * (1-wx)*(1-wy)*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + iz] += p.charge * wx*wy*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + (iz+1)] += p.charge * wx*(1-wy)*wz;\n        rho[ix*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * (1-wx)*wy*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * wx*wy*wz;\n    }\n}\n\nvoid solveFieldEquations(double* rho, double* Ex, double* Ey, double* Ez,\n                        double* Bx, double* By, double* Bz,\n                        int nx, int ny, int nz, double dx, double dt) {\n    const double epsilon_0 = 8.854e-12;\n    const double c = 3e8;\n    \n    // Solve Poisson equation for electric field: \u2207\u00b2\u03c6 = -\u03c1/\u03b5\u2080\n    std::vector<double> phi(nx*ny*nz, 0.0);\n    \n    for (int iter = 0; iter < 10; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z13depositChargeRNSt3__16vectorI8ParticleNS_9allocatorIS1_EEEEPdiiid",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    for (const auto& p : particles) {\n        int ix = (int)(p.x / dx);\n        int iy = (int)(p.y / dx);\n        int iz = (int)(p.z / dx);\n        \n        if (ix < 0 || ix >= nx-1 || iy < 0 || iy >= ny-1 || iz < 0 || iz >= nz-1) continue;\n        \n        double wx = (p.x - ix * dx) / dx;\n        double wy = (p.y - iy * dx) / dx;\n        double wz = (p.z - iz * dx) / dx;\n        \n        // Distribute charge to 8 nearest grid points\n        rho[ix*ny*nz + iy*nz + iz] += p.charge * (1-wx)*(1-wy)*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + iz] += p.charge * wx*(1-wy)*(1-wz);\n        rho[ix*ny*nz + (iy+1)*nz + iz] += p.charge * (1-wx)*wy*(1-wz);\n        rho[ix*ny*nz + iy*nz + (iz+1)] += p.charge * (1-wx)*(1-wy)*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + iz] += p.charge * wx*wy*(1-wz);\n        rho[(ix+1)*ny*nz + iy*nz + (iz+1)] += p.charge * wx*(1-wy)*wz;\n        rho[ix*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * (1-wx)*wy*wz;\n        rho[(ix+1)*ny*nz + (iy+1)*nz + (iz+1)] += p.charge * wx*wy*wz;\n    }\n}\n\nvoid solveFieldEquations(double* rho, double* Ex, double* Ey, double* Ez,\n                        double* Bx, double* By, double* Bz,\n                        int nx, int ny, int nz, double dx, double dt) {\n    const double epsilon_0 = 8.854e-12;\n    const double c = 3e8;\n    \n    // Solve Poisson equation for electric field: \u2207\u00b2\u03c6 = -\u03c1/\u03b5\u2080\n    std::vector<double> phi(nx*ny*nz, 0.0);\n    \n    for (int iter = 0; iter < 10; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 51,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    const double c = 3e8;\n    \n    // Solve Poisson equation for electric field: \u2207\u00b2\u03c6 = -\u03c1/\u03b5\u2080\n    std::vector<double> phi(nx*ny*nz, 0.0);\n    \n    for (int iter = 0; iter < 10; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    phi[idx] = ((phi[(i+1)*ny*nz+j*nz+k] + phi[(i-1)*ny*nz+j*nz+k] +\n                                phi[i*ny*nz+(j+1)*nz+k] + phi[i*ny*nz+(j-1)*nz+k] +\n                                phi[i*ny*nz+j*nz+(k+1)] + phi[i*ny*nz+j*nz+(k-1)]) +\n                               rho[idx] * dx * dx / epsilon_0) / 6.0;\n                }\n            }\n        }\n    }\n    \n    // Calculate E = -\u2207\u03c6\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                Ex[idx] = -(phi[(i+1)*ny*nz+j*nz+k] - phi[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                Ey[idx] = -(phi[i*ny*nz+(j+1)*nz+k] - phi[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                Ez[idx] = -(phi[i*ny*nz+j*nz+(k+1)] - phi[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n            }\n        }\n    }\n    \n    // Update magnetic field: \u2202B/\u2202t = -\u2207\u00d7E\n    for (int i = 1; i < nx-1; i++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 54,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::vector<double> phi(nx*ny*nz, 0.0);\n    \n    for (int iter = 0; iter < 10; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    phi[idx] = ((phi[(i+1)*ny*nz+j*nz+k] + phi[(i-1)*ny*nz+j*nz+k] +\n                                phi[i*ny*nz+(j+1)*nz+k] + phi[i*ny*nz+(j-1)*nz+k] +\n                                phi[i*ny*nz+j*nz+(k+1)] + phi[i*ny*nz+j*nz+(k-1)]) +\n                               rho[idx] * dx * dx / epsilon_0) / 6.0;\n                }\n            }\n        }\n    }\n    \n    // Calculate E = -\u2207\u03c6\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                Ex[idx] = -(phi[(i+1)*ny*nz+j*nz+k] - phi[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                Ey[idx] = -(phi[i*ny*nz+(j+1)*nz+k] - phi[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                Ez[idx] = -(phi[i*ny*nz+j*nz+(k+1)] - phi[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n            }\n        }\n    }\n    \n    // Update magnetic field: \u2202B/\u2202t = -\u2207\u00d7E\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/plasma_pic.cpp",
+      "function": "_Z19solveFieldEquationsPdS_S_S_S_S_S_iiidd",
+      "line": 69,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    // Calculate E = -\u2207\u03c6\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                Ex[idx] = -(phi[(i+1)*ny*nz+j*nz+k] - phi[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                Ey[idx] = -(phi[i*ny*nz+(j+1)*nz+k] - phi[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                Ez[idx] = -(phi[i*ny*nz+j*nz+(k+1)] - phi[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n            }\n        }\n    }\n    \n    // Update magnetic field: \u2202B/\u2202t = -\u2207\u00d7E\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                double curl_Ex = (Ez[i*ny*nz+(j+1)*nz+k] - Ez[i*ny*nz+(j-1)*nz+k]) / (2*dx) -\n                                (Ey[i*ny*nz+j*nz+(k+1)] - Ey[i*ny*nz+j*nz+(k-1)]) / (2*dx);\n                double curl_Ey = (Ex[i*ny*nz+j*nz+(k+1)] - Ex[i*ny*nz+j*nz+(k-1)]) / (2*dx) -\n                                (Ez[(i+1)*ny*nz+j*nz+k] - Ez[(i-1)*ny*nz+j*nz+k]) / (2*dx);\n                double curl_Ez = (Ey[(i+1)*ny*nz+j*nz+k] - Ey[(i-1)*ny*nz+j*nz+k]) / (2*dx) -\n                                (Ex[i*ny*nz+(j+1)*nz+k] - Ex[i*ny*nz+(j-1)*nz+k]) / (2*dx);\n                \n                Bx[idx] -= dt * curl_Ex;\n                By[idx] -= dt * curl_Ey;\n                Bz[idx] -= dt * curl_Ez;\n            }\n        }\n    }\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

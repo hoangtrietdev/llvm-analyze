@@ -1,0 +1,499 @@
+{
+  "file": "sample/src/real-world/scientific/ray_tracing.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/scientific/ray_tracing.cpp",
+    "llvm_initial": 51,
+    "llvm_sys_noise": 45,
+    "llvm_project": 6,
+    "after_filter": 3,
+    "ai_batches": 1,
+    "ai_results": 3,
+    "omp_verified": 0,
+    "total_ms": 600.4,
+    "llvm_ms": 392.1
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/ray_tracing.cpp",
+      "function": "_ZN9RayTracer10trace_raysEv",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        t = (-b - sqrt(disc)) / (2.0 * a);\n        return t > 0;\n    }\n    \n    void trace_rays() {\n        for (int y = 0; y < HEIGHT; y++) {\n            for (int x = 0; x < WIDTH; x++) {\n                Ray ray;\n                ray.ox = (x - WIDTH/2.0) / WIDTH;\n                ray.oy = (y - HEIGHT/2.0) / HEIGHT;\n                ray.oz = 0;\n                ray.dx = 0;\n                ray.dy = 0;\n                ray.dz = -1;\n                \n                double min_t = 1e9;\n                const Sphere* hit_sphere = nullptr;\n                \n                for (const auto& sphere : spheres) {\n                    double t;\n                    if (intersect_sphere(ray, sphere, t) && t < min_t) {\n                        min_t = t;\n                        hit_sphere = &sphere;\n                    }\n                }\n                \n                if (hit_sphere) {\n                    framebuffer[y][x*3] = hit_sphere->r;\n                    framebuffer[y][x*3+1] = hit_sphere->g;\n                    framebuffer[y][x*3+2] = hit_sphere->b;\n                }\n            }\n        }\n    }\n};"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/ray_tracing.cpp",
+      "function": "_ZN9RayTracer10trace_raysEv",
+      "line": 59,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/ray_tracing.cpp",
+      "function": "_ZN9RayTracer10trace_raysEv",
+      "line": 67,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/ray_tracing.cpp",
+      "function": "_ZN9RayTracer10trace_raysEv",
+      "line": 39,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.44999999999999996
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/ray_tracing.cpp",
+      "function": "_ZN9RayTracer10trace_raysEv",
+      "line": 59,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "                ray.dz = -1;\n                \n                double min_t = 1e9;\n                const Sphere* hit_sphere = nullptr;\n                \n                for (const auto& sphere : spheres) {\n                    double t;\n                    if (intersect_sphere(ray, sphere, t) && t < min_t) {\n                        min_t = t;\n                        hit_sphere = &sphere;\n                    }\n                }\n                \n                if (hit_sphere) {\n                    framebuffer[y][x*3] = hit_sphere->r;\n                    framebuffer[y][x*3+1] = hit_sphere->g;\n                    framebuffer[y][x*3+2] = hit_sphere->b;\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    RayTracer tracer;\n    tracer.trace_rays();\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/ray_tracing.cpp",
+      "function": "_ZN9RayTracer10trace_raysEv",
+      "line": 47,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return t > 0;\n    }\n    \n    void trace_rays() {\n        for (int y = 0; y < HEIGHT; y++) {\n            for (int x = 0; x < WIDTH; x++) {\n                Ray ray;\n                ray.ox = (x - WIDTH/2.0) / WIDTH;\n                ray.oy = (y - HEIGHT/2.0) / HEIGHT;\n                ray.oz = 0;\n                ray.dx = 0;\n                ray.dy = 0;\n                ray.dz = -1;\n                \n                double min_t = 1e9;\n                const Sphere* hit_sphere = nullptr;\n                \n                for (const auto& sphere : spheres) {\n                    double t;\n                    if (intersect_sphere(ray, sphere, t) && t < min_t) {\n                        min_t = t;\n                        hit_sphere = &sphere;\n                    }\n                }\n                \n                if (hit_sphere) {\n                    framebuffer[y][x*3] = hit_sphere->r;\n                    framebuffer[y][x*3+1] = hit_sphere->g;\n                    framebuffer[y][x*3+2] = hit_sphere->b;\n                }\n            }\n        }\n    }\n};\n"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9RayTracerD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9RayTracerD1Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9RayTracerD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9RayTracerD1Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9RayTracerD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9RayTracerC2Ev",
+      "line": 1369,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9RayTracerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9RayTracerC2Ev",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9RayTracerC2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9RayTracerC2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9RayTracerC2Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9RayTracerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9RayTracerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9RayTracerC2Ev",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI6SphereNS_9allocatorIS1_EEE9push_backB8ne210101EOS1_",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI6SphereNS_9allocatorIS1_EEE9push_backB8ne210101EOS1_",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorI6SphereNS_9allocatorIS1_EEE9push_backB8ne210101EOS1_",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorI6SphereNS_9allocatorIS1_EEE9push_backB8ne210101EOS1_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 257,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/ray_tracing.cpp",
+      "function": "_ZN9RayTracer10trace_raysEv",
+      "line": 59,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "                ray.dz = -1;\n                \n                double min_t = 1e9;\n                const Sphere* hit_sphere = nullptr;\n                \n                for (const auto& sphere : spheres) {\n                    double t;\n                    if (intersect_sphere(ray, sphere, t) && t < min_t) {\n                        min_t = t;\n                        hit_sphere = &sphere;\n                    }\n                }\n                \n                if (hit_sphere) {\n                    framebuffer[y][x*3] = hit_sphere->r;\n                    framebuffer[y][x*3+1] = hit_sphere->g;\n                    framebuffer[y][x*3+2] = hit_sphere->b;\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    RayTracer tracer;\n    tracer.trace_rays();\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/ray_tracing.cpp",
+      "function": "_ZN9RayTracer10trace_raysEv",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        t = (-b - sqrt(disc)) / (2.0 * a);\n        return t > 0;\n    }\n    \n    void trace_rays() {\n        for (int y = 0; y < HEIGHT; y++) {\n            for (int x = 0; x < WIDTH; x++) {\n                Ray ray;\n                ray.ox = (x - WIDTH/2.0) / WIDTH;\n                ray.oy = (y - HEIGHT/2.0) / HEIGHT;\n                ray.oz = 0;\n                ray.dx = 0;\n                ray.dy = 0;\n                ray.dz = -1;\n                \n                double min_t = 1e9;\n                const Sphere* hit_sphere = nullptr;\n                \n                for (const auto& sphere : spheres) {\n                    double t;\n                    if (intersect_sphere(ray, sphere, t) && t < min_t) {\n                        min_t = t;\n                        hit_sphere = &sphere;\n                    }\n                }\n                \n                if (hit_sphere) {\n                    framebuffer[y][x*3] = hit_sphere->r;\n                    framebuffer[y][x*3+1] = hit_sphere->g;\n                    framebuffer[y][x*3+2] = hit_sphere->b;\n                }\n            }\n        }\n    }\n};",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/ray_tracing.cpp",
+      "function": "_ZN9RayTracer10trace_raysEv",
+      "line": 47,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return t > 0;\n    }\n    \n    void trace_rays() {\n        for (int y = 0; y < HEIGHT; y++) {\n            for (int x = 0; x < WIDTH; x++) {\n                Ray ray;\n                ray.ox = (x - WIDTH/2.0) / WIDTH;\n                ray.oy = (y - HEIGHT/2.0) / HEIGHT;\n                ray.oz = 0;\n                ray.dx = 0;\n                ray.dy = 0;\n                ray.dz = -1;\n                \n                double min_t = 1e9;\n                const Sphere* hit_sphere = nullptr;\n                \n                for (const auto& sphere : spheres) {\n                    double t;\n                    if (intersect_sphere(ray, sphere, t) && t < min_t) {\n                        min_t = t;\n                        hit_sphere = &sphere;\n                    }\n                }\n                \n                if (hit_sphere) {\n                    framebuffer[y][x*3] = hit_sphere->r;\n                    framebuffer[y][x*3+1] = hit_sphere->g;\n                    framebuffer[y][x*3+2] = hit_sphere->b;\n                }\n            }\n        }\n    }\n};\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

@@ -1,0 +1,1640 @@
+{
+  "file": "sample/src/real-world/quantum/error_correction.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/quantum/error_correction.cpp",
+    "llvm_initial": 118,
+    "llvm_sys_noise": 79,
+    "llvm_project": 39,
+    "after_filter": 29,
+    "ai_batches": 2,
+    "ai_results": 29,
+    "omp_verified": 0,
+    "total_ms": 4462.7,
+    "llvm_ms": 559.3
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "main",
+      "line": 159,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 31,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        state_vector[0] = Complex(1.0, 0.0);\n    }\n    \n    void encode_logical_qubits() {\n        // Surface code encoding (simplified)\n        for (int logical = 0; logical < num_logical_qubits; logical++) {\n            int start_idx = logical * (num_physical_qubits / num_logical_qubits);\n            int code_distance = 5;\n            \n            // Create stabilizer generators for this logical qubit\n            for (int i = 0; i < code_distance; i++) {\n                for (int j = 0; j < code_distance; j++) {\n                    std::vector<int> x_stabilizer, z_stabilizer;\n                    \n                    // X-type stabilizer (plaquette)\n                    int idx = start_idx + i * code_distance + j;\n                    x_stabilizer.push_back(idx);\n                    x_stabilizer.push_back((idx + 1) % num_physical_qubits);\n                    x_stabilizer.push_back((idx + code_distance) % num_physical_qubits);\n                    x_stabilizer.push_back((idx + code_distance + 1) % num_physical_qubits);\n                    \n                    stabilizer_generators.push_back(x_stabilizer);\n                }\n            }\n        }\n    }\n    \n    void apply_noise(double error_rate) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int qubit = 0; qubit < num_physical_qubits; qubit++) {\n            double rand_val = dis(gen);\n            \n            if (rand_val < error_rate / 3.0) {\n                // Bit flip (X error)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 31,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        state_vector[0] = Complex(1.0, 0.0);\n    }\n    \n    void encode_logical_qubits() {\n        // Surface code encoding (simplified)\n        for (int logical = 0; logical < num_logical_qubits; logical++) {\n            int start_idx = logical * (num_physical_qubits / num_logical_qubits);\n            int code_distance = 5;\n            \n            // Create stabilizer generators for this logical qubit\n            for (int i = 0; i < code_distance; i++) {\n                for (int j = 0; j < code_distance; j++) {\n                    std::vector<int> x_stabilizer, z_stabilizer;\n                    \n                    // X-type stabilizer (plaquette)\n                    int idx = start_idx + i * code_distance + j;\n                    x_stabilizer.push_back(idx);\n                    x_stabilizer.push_back((idx + 1) % num_physical_qubits);\n                    x_stabilizer.push_back((idx + code_distance) % num_physical_qubits);\n                    x_stabilizer.push_back((idx + code_distance + 1) % num_physical_qubits);\n                    \n                    stabilizer_generators.push_back(x_stabilizer);\n                }\n            }\n        }\n    }\n    \n    void apply_noise(double error_rate) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int qubit = 0; qubit < num_physical_qubits; qubit++) {\n            double rand_val = dis(gen);\n            \n            if (rand_val < error_rate / 3.0) {\n                // Bit flip (X error)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 36,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        for (int logical = 0; logical < num_logical_qubits; logical++) {\n            int start_idx = logical * (num_physical_qubits / num_logical_qubits);\n            int code_distance = 5;\n            \n            // Create stabilizer generators for this logical qubit\n            for (int i = 0; i < code_distance; i++) {\n                for (int j = 0; j < code_distance; j++) {\n                    std::vector<int> x_stabilizer, z_stabilizer;\n                    \n                    // X-type stabilizer (plaquette)\n                    int idx = start_idx + i * code_distance + j;\n                    x_stabilizer.push_back(idx);\n                    x_stabilizer.push_back((idx + 1) % num_physical_qubits);\n                    x_stabilizer.push_back((idx + code_distance) % num_physical_qubits);\n                    x_stabilizer.push_back((idx + code_distance + 1) % num_physical_qubits);\n                    \n                    stabilizer_generators.push_back(x_stabilizer);\n                }\n            }\n        }\n    }\n    \n    void apply_noise(double error_rate) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int qubit = 0; qubit < num_physical_qubits; qubit++) {\n            double rand_val = dis(gen);\n            \n            if (rand_val < error_rate / 3.0) {\n                // Bit flip (X error)\n                apply_pauli_x(qubit);\n            } else if (rand_val < 2.0 * error_rate / 3.0) {\n                // Phase flip (Z error)\n                apply_pauli_z(qubit);\n            } else if (rand_val < error_rate) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 1146,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 37,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection22error_correction_cycleEd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection22error_correction_cycleEd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrectionD1Ev",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrectionD1Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrectionD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrectionD1Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrectionD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN22QuantumErrorCorrectionC2Ei",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN22QuantumErrorCorrectionC2Ei",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "_ZN22QuantumErrorCorrectionC2Ei",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrectionC2Ei",
+      "line": 1369,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrectionC2Ei",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrectionC2Ei",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 935,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 257,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE9push_backB8ne210101ERKS3_",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE9push_backB8ne210101ERKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE9push_backB8ne210101ERKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE9push_backB8ne210101ERKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE24__emplace_back_slow_pathIJRKS3_EEEPS3_DpOT_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE24__emplace_back_slow_pathIJRKS3_EEEPS3_DpOT_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE24__emplace_back_slow_pathIJRKS3_EEEPS3_DpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE24__emplace_back_slow_pathIJRKS3_EEEPS3_DpOT_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE24__emplace_back_slow_pathIJRKS3_EEEPS3_DpOT_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE24__emplace_back_slow_pathIJRKS3_EEEPS3_DpOT_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE24__emplace_back_slow_pathIJRKS3_EEEPS3_DpOT_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIiNS_9allocatorIiEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIiNS_9allocatorIiEEEERNS2_IS4_EEED1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIiNS_9allocatorIiEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIiNS_9allocatorIiEEEERNS2_IS4_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 56,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void apply_noise(double error_rate) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int qubit = 0; qubit < num_physical_qubits; qubit++) {\n            double rand_val = dis(gen);\n            \n            if (rand_val < error_rate / 3.0) {\n                // Bit flip (X error)\n                apply_pauli_x(qubit);\n            } else if (rand_val < 2.0 * error_rate / 3.0) {\n                // Phase flip (Z error)\n                apply_pauli_z(qubit);\n            } else if (rand_val < error_rate) {\n                // Both (Y error)\n                apply_pauli_x(qubit);\n                apply_pauli_z(qubit);\n            }\n        }\n    }\n    \n    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 59,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.35
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 76,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 78,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 76,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 62,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 87,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }\n        \n        return syndrome;\n    }\n    \n    int measure_qubit_z_basis(int qubit) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 88,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }\n        \n        return syndrome;\n    }\n    \n    int measure_qubit_z_basis(int qubit) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;\n        "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 785,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 785,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 87,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }\n        \n        return syndrome;\n    }\n    \n    int measure_qubit_z_basis(int qubit) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 65,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 76,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 78,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 76,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 87,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }\n        \n        return syndrome;\n    }\n    \n    int measure_qubit_z_basis(int qubit) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 88,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }\n        \n        return syndrome;\n    }\n    \n    int measure_qubit_z_basis(int qubit) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;\n        "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 785,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 785,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 87,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }\n        \n        return syndrome;\n    }\n    \n    int measure_qubit_z_basis(int qubit) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 56,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void apply_noise(double error_rate) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int qubit = 0; qubit < num_physical_qubits; qubit++) {\n            double rand_val = dis(gen);\n            \n            if (rand_val < error_rate / 3.0) {\n                // Bit flip (X error)\n                apply_pauli_x(qubit);\n            } else if (rand_val < 2.0 * error_rate / 3.0) {\n                // Phase flip (Z error)\n                apply_pauli_z(qubit);\n            } else if (rand_val < error_rate) {\n                // Both (Y error)\n                apply_pauli_x(qubit);\n                apply_pauli_z(qubit);\n            }\n        }\n    }\n    \n    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection19measure_stabilizersEv",
+      "line": 149,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection19measure_stabilizersEv",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection19measure_stabilizersEv",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection19measure_stabilizersEv",
+      "line": 97,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection19measure_stabilizersEv",
+      "line": 101,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection19measure_stabilizersEv",
+      "line": 97,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }\n        \n        return syndrome;\n    }\n    \n    int measure_qubit_z_basis(int qubit) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                prob_one += std::norm(state_vector[i]);\n            }\n        }\n        \n        return (dis(gen) < prob_one) ? 1 : 0;\n    }\n    "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection19measure_stabilizersEv",
+      "line": 101,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }\n        \n        return syndrome;\n    }\n    \n    int measure_qubit_z_basis(int qubit) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                prob_one += std::norm(state_vector[i]);\n            }\n        }\n        \n        return (dis(gen) < prob_one) ? 1 : 0;\n    }\n    \n    void decode_and_correct(const std::vector<int>& syndrome) {\n        // Minimum weight perfect matching decoder (simplified)\n        std::vector<int> error_locations;\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection19measure_stabilizersEv",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 131,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "    \n    void decode_and_correct(const std::vector<int>& syndrome) {\n        // Minimum weight perfect matching decoder (simplified)\n        std::vector<int> error_locations;\n        \n        for (size_t i = 0; i < syndrome.size(); i++) {\n            if (syndrome[i] == 1) {\n                // Find most likely error pattern\n                for (int qubit : stabilizer_generators[i]) {\n                    error_locations.push_back(qubit);\n                }\n            }\n        }\n        \n        // Apply corrections\n        for (int qubit : error_locations) {\n            apply_pauli_x(qubit);\n        }\n    }\n    \n    void error_correction_cycle(double error_rate) {\n        apply_noise(error_rate);\n        std::vector<int> syndrome = measure_stabilizers();\n        decode_and_correct(syndrome);\n    }\n};\n\nint main() {\n    QuantumErrorCorrection qec(5);\n    \n    qec.encode_logical_qubits();\n    \n    // Run multiple error correction cycles\n    for (int cycle = 0; cycle < 100; cycle++) {\n        qec.error_correction_cycle(0.001);  // 0.1% error rate"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 141,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.47
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 132,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "    void decode_and_correct(const std::vector<int>& syndrome) {\n        // Minimum weight perfect matching decoder (simplified)\n        std::vector<int> error_locations;\n        \n        for (size_t i = 0; i < syndrome.size(); i++) {\n            if (syndrome[i] == 1) {\n                // Find most likely error pattern\n                for (int qubit : stabilizer_generators[i]) {\n                    error_locations.push_back(qubit);\n                }\n            }\n        }\n        \n        // Apply corrections\n        for (int qubit : error_locations) {\n            apply_pauli_x(qubit);\n        }\n    }\n    \n    void error_correction_cycle(double error_rate) {\n        apply_noise(error_rate);\n        std::vector<int> syndrome = measure_stabilizers();\n        decode_and_correct(syndrome);\n    }\n};\n\nint main() {\n    QuantumErrorCorrection qec(5);\n    \n    qec.encode_logical_qubits();\n    \n    // Run multiple error correction cycles\n    for (int cycle = 0; cycle < 100; cycle++) {\n        qec.error_correction_cycle(0.001);  // 0.1% error rate\n    }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 134,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.35
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 134,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "        std::vector<int> error_locations;\n        \n        for (size_t i = 0; i < syndrome.size(); i++) {\n            if (syndrome[i] == 1) {\n                // Find most likely error pattern\n                for (int qubit : stabilizer_generators[i]) {\n                    error_locations.push_back(qubit);\n                }\n            }\n        }\n        \n        // Apply corrections\n        for (int qubit : error_locations) {\n            apply_pauli_x(qubit);\n        }\n    }\n    \n    void error_correction_cycle(double error_rate) {\n        apply_noise(error_rate);\n        std::vector<int> syndrome = measure_stabilizers();\n        decode_and_correct(syndrome);\n    }\n};\n\nint main() {\n    QuantumErrorCorrection qec(5);\n    \n    qec.encode_logical_qubits();\n    \n    // Run multiple error correction cycles\n    for (int cycle = 0; cycle < 100; cycle++) {\n        qec.error_correction_cycle(0.001);  // 0.1% error rate\n    }\n    \n    return 0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 131,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 76,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 78,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 76,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 141,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                }\n            }\n        }\n        \n        // Apply corrections\n        for (int qubit : error_locations) {\n            apply_pauli_x(qubit);\n        }\n    }\n    \n    void error_correction_cycle(double error_rate) {\n        apply_noise(error_rate);\n        std::vector<int> syndrome = measure_stabilizers();\n        decode_and_correct(syndrome);\n    }\n};\n\nint main() {\n    QuantumErrorCorrection qec(5);\n    \n    qec.encode_logical_qubits();\n    \n    // Run multiple error correction cycles\n    for (int cycle = 0; cycle < 100; cycle++) {\n        qec.error_correction_cycle(0.001);  // 0.1% error rate\n    }\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection21measure_qubit_z_basisEi",
+      "line": 118,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                prob_one += std::norm(state_vector[i]);\n            }\n        }\n        \n        return (dis(gen) < prob_one) ? 1 : 0;\n    }\n    \n    void decode_and_correct(const std::vector<int>& syndrome) {\n        // Minimum weight perfect matching decoder (simplified)\n        std::vector<int> error_locations;\n        \n        for (size_t i = 0; i < syndrome.size(); i++) {\n            if (syndrome[i] == 1) {\n                // Find most likely error pattern\n                for (int qubit : stabilizer_generators[i]) {\n                    error_locations.push_back(qubit);\n                }\n            }\n        }\n        \n        // Apply corrections\n        for (int qubit : error_locations) {\n            apply_pauli_x(qubit);\n        }\n    }\n    \n    void error_correction_cycle(double error_rate) {\n        apply_noise(error_rate);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection21measure_qubit_z_basisEi",
+      "line": 119,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                prob_one += std::norm(state_vector[i]);\n            }\n        }\n        \n        return (dis(gen) < prob_one) ? 1 : 0;\n    }\n    \n    void decode_and_correct(const std::vector<int>& syndrome) {\n        // Minimum weight perfect matching decoder (simplified)\n        std::vector<int> error_locations;\n        \n        for (size_t i = 0; i < syndrome.size(); i++) {\n            if (syndrome[i] == 1) {\n                // Find most likely error pattern\n                for (int qubit : stabilizer_generators[i]) {\n                    error_locations.push_back(qubit);\n                }\n            }\n        }\n        \n        // Apply corrections\n        for (int qubit : error_locations) {\n            apply_pauli_x(qubit);\n        }\n    }\n    \n    void error_correction_cycle(double error_rate) {\n        apply_noise(error_rate);\n        std::vector<int> syndrome = measure_stabilizers();"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN22QuantumErrorCorrection21measure_qubit_z_basisEi",
+      "line": 971,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN22QuantumErrorCorrection21measure_qubit_z_basisEi",
+      "line": 973,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection21measure_qubit_z_basisEi",
+      "line": 118,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                prob_one += std::norm(state_vector[i]);\n            }\n        }\n        \n        return (dis(gen) < prob_one) ? 1 : 0;\n    }\n    \n    void decode_and_correct(const std::vector<int>& syndrome) {\n        // Minimum weight perfect matching decoder (simplified)\n        std::vector<int> error_locations;\n        \n        for (size_t i = 0; i < syndrome.size(); i++) {\n            if (syndrome[i] == 1) {\n                // Find most likely error pattern\n                for (int qubit : stabilizer_generators[i]) {\n                    error_locations.push_back(qubit);\n                }\n            }\n        }\n        \n        // Apply corrections\n        for (int qubit : error_locations) {\n            apply_pauli_x(qubit);\n        }\n    }\n    \n    void error_correction_cycle(double error_rate) {\n        apply_noise(error_rate);"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 31,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        state_vector[0] = Complex(1.0, 0.0);\n    }\n    \n    void encode_logical_qubits() {\n        // Surface code encoding (simplified)\n        for (int logical = 0; logical < num_logical_qubits; logical++) {\n            int start_idx = logical * (num_physical_qubits / num_logical_qubits);\n            int code_distance = 5;\n            \n            // Create stabilizer generators for this logical qubit\n            for (int i = 0; i < code_distance; i++) {\n                for (int j = 0; j < code_distance; j++) {\n                    std::vector<int> x_stabilizer, z_stabilizer;\n                    \n                    // X-type stabilizer (plaquette)\n                    int idx = start_idx + i * code_distance + j;\n                    x_stabilizer.push_back(idx);\n                    x_stabilizer.push_back((idx + 1) % num_physical_qubits);\n                    x_stabilizer.push_back((idx + code_distance) % num_physical_qubits);\n                    x_stabilizer.push_back((idx + code_distance + 1) % num_physical_qubits);\n                    \n                    stabilizer_generators.push_back(x_stabilizer);\n                }\n            }\n        }\n    }\n    \n    void apply_noise(double error_rate) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int qubit = 0; qubit < num_physical_qubits; qubit++) {\n            double rand_val = dis(gen);\n            \n            if (rand_val < error_rate / 3.0) {\n                // Bit flip (X error)",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection19measure_stabilizersEv",
+      "line": 101,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }\n        \n        return syndrome;\n    }\n    \n    int measure_qubit_z_basis(int qubit) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                prob_one += std::norm(state_vector[i]);\n            }\n        }\n        \n        return (dis(gen) < prob_one) ? 1 : 0;\n    }\n    \n    void decode_and_correct(const std::vector<int>& syndrome) {\n        // Minimum weight perfect matching decoder (simplified)\n        std::vector<int> error_locations;\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 141,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                }\n            }\n        }\n        \n        // Apply corrections\n        for (int qubit : error_locations) {\n            apply_pauli_x(qubit);\n        }\n    }\n    \n    void error_correction_cycle(double error_rate) {\n        apply_noise(error_rate);\n        std::vector<int> syndrome = measure_stabilizers();\n        decode_and_correct(syndrome);\n    }\n};\n\nint main() {\n    QuantumErrorCorrection qec(5);\n    \n    qec.encode_logical_qubits();\n    \n    // Run multiple error correction cycles\n    for (int cycle = 0; cycle < 100; cycle++) {\n        qec.error_correction_cycle(0.001);  // 0.1% error rate\n    }\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 131,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "    \n    void decode_and_correct(const std::vector<int>& syndrome) {\n        // Minimum weight perfect matching decoder (simplified)\n        std::vector<int> error_locations;\n        \n        for (size_t i = 0; i < syndrome.size(); i++) {\n            if (syndrome[i] == 1) {\n                // Find most likely error pattern\n                for (int qubit : stabilizer_generators[i]) {\n                    error_locations.push_back(qubit);\n                }\n            }\n        }\n        \n        // Apply corrections\n        for (int qubit : error_locations) {\n            apply_pauli_x(qubit);\n        }\n    }\n    \n    void error_correction_cycle(double error_rate) {\n        apply_noise(error_rate);\n        std::vector<int> syndrome = measure_stabilizers();\n        decode_and_correct(syndrome);\n    }\n};\n\nint main() {\n    QuantumErrorCorrection qec(5);\n    \n    qec.encode_logical_qubits();\n    \n    // Run multiple error correction cycles\n    for (int cycle = 0; cycle < 100; cycle++) {\n        qec.error_correction_cycle(0.001);  // 0.1% error rate",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.93
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 132,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "    void decode_and_correct(const std::vector<int>& syndrome) {\n        // Minimum weight perfect matching decoder (simplified)\n        std::vector<int> error_locations;\n        \n        for (size_t i = 0; i < syndrome.size(); i++) {\n            if (syndrome[i] == 1) {\n                // Find most likely error pattern\n                for (int qubit : stabilizer_generators[i]) {\n                    error_locations.push_back(qubit);\n                }\n            }\n        }\n        \n        // Apply corrections\n        for (int qubit : error_locations) {\n            apply_pauli_x(qubit);\n        }\n    }\n    \n    void error_correction_cycle(double error_rate) {\n        apply_noise(error_rate);\n        std::vector<int> syndrome = measure_stabilizers();\n        decode_and_correct(syndrome);\n    }\n};\n\nint main() {\n    QuantumErrorCorrection qec(5);\n    \n    qec.encode_logical_qubits();\n    \n    // Run multiple error correction cycles\n    for (int cycle = 0; cycle < 100; cycle++) {\n        qec.error_correction_cycle(0.001);  // 0.1% error rate\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.93
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 134,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "        std::vector<int> error_locations;\n        \n        for (size_t i = 0; i < syndrome.size(); i++) {\n            if (syndrome[i] == 1) {\n                // Find most likely error pattern\n                for (int qubit : stabilizer_generators[i]) {\n                    error_locations.push_back(qubit);\n                }\n            }\n        }\n        \n        // Apply corrections\n        for (int qubit : error_locations) {\n            apply_pauli_x(qubit);\n        }\n    }\n    \n    void error_correction_cycle(double error_rate) {\n        apply_noise(error_rate);\n        std::vector<int> syndrome = measure_stabilizers();\n        decode_and_correct(syndrome);\n    }\n};\n\nint main() {\n    QuantumErrorCorrection qec(5);\n    \n    qec.encode_logical_qubits();\n    \n    // Run multiple error correction cycles\n    for (int cycle = 0; cycle < 100; cycle++) {\n        qec.error_correction_cycle(0.001);  // 0.1% error rate\n    }\n    \n    return 0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.93
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection19measure_stabilizersEv",
+      "line": 97,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }\n        \n        return syndrome;\n    }\n    \n    int measure_qubit_z_basis(int qubit) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                prob_one += std::norm(state_vector[i]);\n            }\n        }\n        \n        return (dis(gen) < prob_one) ? 1 : 0;\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 87,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }\n        \n        return syndrome;\n    }\n    \n    int measure_qubit_z_basis(int qubit) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 88,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }\n        \n        return syndrome;\n    }\n    \n    int measure_qubit_z_basis(int qubit) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 87,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }\n        \n        return syndrome;\n    }\n    \n    int measure_qubit_z_basis(int qubit) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 87,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }\n        \n        return syndrome;\n    }\n    \n    int measure_qubit_z_basis(int qubit) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 88,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }\n        \n        return syndrome;\n    }\n    \n    int measure_qubit_z_basis(int qubit) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 87,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }\n        \n        return syndrome;\n    }\n    \n    int measure_qubit_z_basis(int qubit) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 31,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        state_vector[0] = Complex(1.0, 0.0);\n    }\n    \n    void encode_logical_qubits() {\n        // Surface code encoding (simplified)\n        for (int logical = 0; logical < num_logical_qubits; logical++) {\n            int start_idx = logical * (num_physical_qubits / num_logical_qubits);\n            int code_distance = 5;\n            \n            // Create stabilizer generators for this logical qubit\n            for (int i = 0; i < code_distance; i++) {\n                for (int j = 0; j < code_distance; j++) {\n                    std::vector<int> x_stabilizer, z_stabilizer;\n                    \n                    // X-type stabilizer (plaquette)\n                    int idx = start_idx + i * code_distance + j;\n                    x_stabilizer.push_back(idx);\n                    x_stabilizer.push_back((idx + 1) % num_physical_qubits);\n                    x_stabilizer.push_back((idx + code_distance) % num_physical_qubits);\n                    x_stabilizer.push_back((idx + code_distance + 1) % num_physical_qubits);\n                    \n                    stabilizer_generators.push_back(x_stabilizer);\n                }\n            }\n        }\n    }\n    \n    void apply_noise(double error_rate) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int qubit = 0; qubit < num_physical_qubits; qubit++) {\n            double rand_val = dis(gen);\n            \n            if (rand_val < error_rate / 3.0) {\n                // Bit flip (X error)",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection21encode_logical_qubitsEv",
+      "line": 36,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        for (int logical = 0; logical < num_logical_qubits; logical++) {\n            int start_idx = logical * (num_physical_qubits / num_logical_qubits);\n            int code_distance = 5;\n            \n            // Create stabilizer generators for this logical qubit\n            for (int i = 0; i < code_distance; i++) {\n                for (int j = 0; j < code_distance; j++) {\n                    std::vector<int> x_stabilizer, z_stabilizer;\n                    \n                    // X-type stabilizer (plaquette)\n                    int idx = start_idx + i * code_distance + j;\n                    x_stabilizer.push_back(idx);\n                    x_stabilizer.push_back((idx + 1) % num_physical_qubits);\n                    x_stabilizer.push_back((idx + code_distance) % num_physical_qubits);\n                    x_stabilizer.push_back((idx + code_distance + 1) % num_physical_qubits);\n                    \n                    stabilizer_generators.push_back(x_stabilizer);\n                }\n            }\n        }\n    }\n    \n    void apply_noise(double error_rate) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int qubit = 0; qubit < num_physical_qubits; qubit++) {\n            double rand_val = dis(gen);\n            \n            if (rand_val < error_rate / 3.0) {\n                // Bit flip (X error)\n                apply_pauli_x(qubit);\n            } else if (rand_val < 2.0 * error_rate / 3.0) {\n                // Phase flip (Z error)\n                apply_pauli_z(qubit);\n            } else if (rand_val < error_rate) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 56,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void apply_noise(double error_rate) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int qubit = 0; qubit < num_physical_qubits; qubit++) {\n            double rand_val = dis(gen);\n            \n            if (rand_val < error_rate / 3.0) {\n                // Bit flip (X error)\n                apply_pauli_x(qubit);\n            } else if (rand_val < 2.0 * error_rate / 3.0) {\n                // Phase flip (Z error)\n                apply_pauli_z(qubit);\n            } else if (rand_val < error_rate) {\n                // Both (Y error)\n                apply_pauli_x(qubit);\n                apply_pauli_z(qubit);\n            }\n        }\n    }\n    \n    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 76,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 78,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 76,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 76,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 78,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 76,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection11apply_noiseEd",
+      "line": 56,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void apply_noise(double error_rate) {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int qubit = 0; qubit < num_physical_qubits; qubit++) {\n            double rand_val = dis(gen);\n            \n            if (rand_val < error_rate / 3.0) {\n                // Bit flip (X error)\n                apply_pauli_x(qubit);\n            } else if (rand_val < 2.0 * error_rate / 3.0) {\n                // Phase flip (Z error)\n                apply_pauli_z(qubit);\n            } else if (rand_val < error_rate) {\n                // Both (Y error)\n                apply_pauli_x(qubit);\n                apply_pauli_z(qubit);\n            }\n        }\n    }\n    \n    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 76,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 78,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            \n            syndrome[s] = parity;\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection18decode_and_correctERKNSt3__16vectorIiNS0_9allocatorIiEEEE",
+      "line": 76,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void apply_pauli_x(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            int i_flipped = i ^ (1 << qubit);\n            if (i < i_flipped) {\n                std::swap(state_vector[i], state_vector[i_flipped]);\n            }\n        }\n    }\n    \n    void apply_pauli_z(int qubit) {\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= Complex(-1.0, 0.0);\n            }\n        }\n    }\n    \n    std::vector<int> measure_stabilizers() {\n        std::vector<int> syndrome(stabilizer_generators.size());\n        \n        for (size_t s = 0; s < stabilizer_generators.size(); s++) {\n            // Simplified stabilizer measurement\n            int parity = 0;\n            \n            for (int qubit : stabilizer_generators[s]) {\n                // Measure parity of qubits in stabilizer\n                parity ^= measure_qubit_z_basis(qubit);\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection21measure_qubit_z_basisEi",
+      "line": 118,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                prob_one += std::norm(state_vector[i]);\n            }\n        }\n        \n        return (dis(gen) < prob_one) ? 1 : 0;\n    }\n    \n    void decode_and_correct(const std::vector<int>& syndrome) {\n        // Minimum weight perfect matching decoder (simplified)\n        std::vector<int> error_locations;\n        \n        for (size_t i = 0; i < syndrome.size(); i++) {\n            if (syndrome[i] == 1) {\n                // Find most likely error pattern\n                for (int qubit : stabilizer_generators[i]) {\n                    error_locations.push_back(qubit);\n                }\n            }\n        }\n        \n        // Apply corrections\n        for (int qubit : error_locations) {\n            apply_pauli_x(qubit);\n        }\n    }\n    \n    void error_correction_cycle(double error_rate) {\n        apply_noise(error_rate);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection21measure_qubit_z_basisEi",
+      "line": 119,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                prob_one += std::norm(state_vector[i]);\n            }\n        }\n        \n        return (dis(gen) < prob_one) ? 1 : 0;\n    }\n    \n    void decode_and_correct(const std::vector<int>& syndrome) {\n        // Minimum weight perfect matching decoder (simplified)\n        std::vector<int> error_locations;\n        \n        for (size_t i = 0; i < syndrome.size(); i++) {\n            if (syndrome[i] == 1) {\n                // Find most likely error pattern\n                for (int qubit : stabilizer_generators[i]) {\n                    error_locations.push_back(qubit);\n                }\n            }\n        }\n        \n        // Apply corrections\n        for (int qubit : error_locations) {\n            apply_pauli_x(qubit);\n        }\n    }\n    \n    void error_correction_cycle(double error_rate) {\n        apply_noise(error_rate);\n        std::vector<int> syndrome = measure_stabilizers();",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/error_correction.cpp",
+      "function": "_ZN22QuantumErrorCorrection21measure_qubit_z_basisEi",
+      "line": 118,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        double prob_one = 0.0;\n        int dim = 1 << num_physical_qubits;\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                prob_one += std::norm(state_vector[i]);\n            }\n        }\n        \n        return (dis(gen) < prob_one) ? 1 : 0;\n    }\n    \n    void decode_and_correct(const std::vector<int>& syndrome) {\n        // Minimum weight perfect matching decoder (simplified)\n        std::vector<int> error_locations;\n        \n        for (size_t i = 0; i < syndrome.size(); i++) {\n            if (syndrome[i] == 1) {\n                // Find most likely error pattern\n                for (int qubit : stabilizer_generators[i]) {\n                    error_locations.push_back(qubit);\n                }\n            }\n        }\n        \n        // Apply corrections\n        for (int qubit : error_locations) {\n            apply_pauli_x(qubit);\n        }\n    }\n    \n    void error_correction_cycle(double error_rate) {\n        apply_noise(error_rate);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

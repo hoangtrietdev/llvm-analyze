@@ -1,0 +1,1098 @@
+{
+  "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+    "llvm_initial": 85,
+    "llvm_sys_noise": 60,
+    "llvm_project": 25,
+    "after_filter": 17,
+    "ai_batches": 2,
+    "ai_results": 17,
+    "omp_verified": 0,
+    "total_ms": 4068.0,
+    "llvm_ms": 603.1
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 34,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.47
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 52,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            double ke[24][24] = {0};\n            \n            // Gauss quadrature points\n            double gauss_pts[] = {-0.577350269, 0.577350269};\n            \n            for (int gp_i = 0; gp_i < 2; gp_i++) {\n                for (int gp_j = 0; gp_j < 2; gp_j++) {\n                    for (int gp_k = 0; gp_k < 2; gp_k++) {\n                        // Shape function derivatives\n                        double B[6][24] = {0};\n                        \n                        // Compute B matrix (strain-displacement)\n                        for (int n = 0; n < 8; n++) {\n                            B[0][n*3] = 0.125;    // dN/dx\n                            B[1][n*3+1] = 0.125;  // dN/dy\n                            B[2][n*3+2] = 0.125;  // dN/dz\n                        }\n                        \n                        // ke += B^T * C * B * det(J) * weight\n                        double weight = 1.0;\n                        double det_J = 1.0;\n                        \n                        for (int i = 0; i < 24; i++) {\n                            for (int j = 0; j < 24; j++) {\n                                for (int k = 0; k < 6; k++) {\n                                    for (int l = 0; l < 6; l++) {\n                                        ke[i][j] += B[k][i] * C[k][l] * B[l][j] * \n                                                   det_J * weight;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 53,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            \n            // Gauss quadrature points\n            double gauss_pts[] = {-0.577350269, 0.577350269};\n            \n            for (int gp_i = 0; gp_i < 2; gp_i++) {\n                for (int gp_j = 0; gp_j < 2; gp_j++) {\n                    for (int gp_k = 0; gp_k < 2; gp_k++) {\n                        // Shape function derivatives\n                        double B[6][24] = {0};\n                        \n                        // Compute B matrix (strain-displacement)\n                        for (int n = 0; n < 8; n++) {\n                            B[0][n*3] = 0.125;    // dN/dx\n                            B[1][n*3+1] = 0.125;  // dN/dy\n                            B[2][n*3+2] = 0.125;  // dN/dz\n                        }\n                        \n                        // ke += B^T * C * B * det(J) * weight\n                        double weight = 1.0;\n                        double det_J = 1.0;\n                        \n                        for (int i = 0; i < 24; i++) {\n                            for (int j = 0; j < 24; j++) {\n                                for (int k = 0; k < 6; k++) {\n                                    for (int l = 0; l < 6; l++) {\n                                        ke[i][j] += B[k][i] * C[k][l] * B[l][j] * \n                                                   det_J * weight;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n            "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 59,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    for (int gp_k = 0; gp_k < 2; gp_k++) {\n                        // Shape function derivatives\n                        double B[6][24] = {0};\n                        \n                        // Compute B matrix (strain-displacement)\n                        for (int n = 0; n < 8; n++) {\n                            B[0][n*3] = 0.125;    // dN/dx\n                            B[1][n*3+1] = 0.125;  // dN/dy\n                            B[2][n*3+2] = 0.125;  // dN/dz\n                        }\n                        \n                        // ke += B^T * C * B * det(J) * weight\n                        double weight = 1.0;\n                        double det_J = 1.0;\n                        \n                        for (int i = 0; i < 24; i++) {\n                            for (int j = 0; j < 24; j++) {\n                                for (int k = 0; k < 6; k++) {\n                                    for (int l = 0; l < 6; l++) {\n                                        ke[i][j] += B[k][i] * C[k][l] * B[l][j] * \n                                                   det_J * weight;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n            \n            // Assemble into global matrix\n            for (int i = 0; i < 8; i++) {\n                for (int j = 0; j < 8; j++) {\n                    int node_i = elem.node_ids[i];\n                    int node_j = elem.node_ids[j];\n                    "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 54,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 69,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                        \n                        // ke += B^T * C * B * det(J) * weight\n                        double weight = 1.0;\n                        double det_J = 1.0;\n                        \n                        for (int i = 0; i < 24; i++) {\n                            for (int j = 0; j < 24; j++) {\n                                for (int k = 0; k < 6; k++) {\n                                    for (int l = 0; l < 6; l++) {\n                                        ke[i][j] += B[k][i] * C[k][l] * B[l][j] * \n                                                   det_J * weight;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n            \n            // Assemble into global matrix\n            for (int i = 0; i < 8; i++) {\n                for (int j = 0; j < 8; j++) {\n                    int node_i = elem.node_ids[i];\n                    int node_j = elem.node_ids[j];\n                    \n                    for (int di = 0; di < 3; di++) {\n                        for (int dj = 0; dj < 3; dj++) {\n                            stiffness_matrix[node_i*3 + di][node_j*3 + dj] += \n                                ke[i*3 + di][j*3 + dj];\n                        }\n                    }\n                }\n            }\n        }\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 70,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                        // ke += B^T * C * B * det(J) * weight\n                        double weight = 1.0;\n                        double det_J = 1.0;\n                        \n                        for (int i = 0; i < 24; i++) {\n                            for (int j = 0; j < 24; j++) {\n                                for (int k = 0; k < 6; k++) {\n                                    for (int l = 0; l < 6; l++) {\n                                        ke[i][j] += B[k][i] * C[k][l] * B[l][j] * \n                                                   det_J * weight;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n            \n            // Assemble into global matrix\n            for (int i = 0; i < 8; i++) {\n                for (int j = 0; j < 8; j++) {\n                    int node_i = elem.node_ids[i];\n                    int node_j = elem.node_ids[j];\n                    \n                    for (int di = 0; di < 3; di++) {\n                        for (int dj = 0; dj < 3; dj++) {\n                            stiffness_matrix[node_i*3 + di][node_j*3 + dj] += \n                                ke[i*3 + di][j*3 + dj];\n                        }\n                    }\n                }\n            }\n        }\n    }\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 71,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                        double weight = 1.0;\n                        double det_J = 1.0;\n                        \n                        for (int i = 0; i < 24; i++) {\n                            for (int j = 0; j < 24; j++) {\n                                for (int k = 0; k < 6; k++) {\n                                    for (int l = 0; l < 6; l++) {\n                                        ke[i][j] += B[k][i] * C[k][l] * B[l][j] * \n                                                   det_J * weight;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n            \n            // Assemble into global matrix\n            for (int i = 0; i < 8; i++) {\n                for (int j = 0; j < 8; j++) {\n                    int node_i = elem.node_ids[i];\n                    int node_j = elem.node_ids[j];\n                    \n                    for (int di = 0; di < 3; di++) {\n                        for (int dj = 0; dj < 3; dj++) {\n                            stiffness_matrix[node_i*3 + di][node_j*3 + dj] += \n                                ke[i*3 + di][j*3 + dj];\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    void solve_linear_system() {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 72,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                        double det_J = 1.0;\n                        \n                        for (int i = 0; i < 24; i++) {\n                            for (int j = 0; j < 24; j++) {\n                                for (int k = 0; k < 6; k++) {\n                                    for (int l = 0; l < 6; l++) {\n                                        ke[i][j] += B[k][i] * C[k][l] * B[l][j] * \n                                                   det_J * weight;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n            \n            // Assemble into global matrix\n            for (int i = 0; i < 8; i++) {\n                for (int j = 0; j < 8; j++) {\n                    int node_i = elem.node_ids[i];\n                    int node_j = elem.node_ids[j];\n                    \n                    for (int di = 0; di < 3; di++) {\n                        for (int dj = 0; dj < 3; dj++) {\n                            stiffness_matrix[node_i*3 + di][node_j*3 + dj] += \n                                ke[i*3 + di][j*3 + dj];\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    void solve_linear_system() {\n        // Conjugate Gradient solver"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 34,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.47
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 84,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 85,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 89,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 90,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                for (int j = 0; j < 8; j++) {\n                    int node_i = elem.node_ids[i];\n                    int node_j = elem.node_ids[j];\n                    \n                    for (int di = 0; di < 3; di++) {\n                        for (int dj = 0; dj < 3; dj++) {\n                            stiffness_matrix[node_i*3 + di][node_j*3 + dj] += \n                                ke[i*3 + di][j*3 + dj];\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    void solve_linear_system() {\n        // Conjugate Gradient solver\n        int n = NUM_NODES * 3;\n        std::vector<double> x(n, 0.0);\n        std::vector<double> b(n, 0.0);\n        \n        // Build right-hand side\n        for (int i = 0; i < NUM_NODES; i++) {\n            b[i*3] = nodes[i].fx;\n            b[i*3+1] = nodes[i].fy;\n            b[i*3+2] = nodes[i].fz;\n        }\n        \n        std::vector<double> r = b;\n        std::vector<double> p = r;\n        double rsold = 0.0;\n        \n        for (int i = 0; i < n; i++) {\n            rsold += r[i] * r[i];\n        }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 107,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        int n = NUM_NODES * 3;\n        std::vector<double> x(n, 0.0);\n        std::vector<double> b(n, 0.0);\n        \n        // Build right-hand side\n        for (int i = 0; i < NUM_NODES; i++) {\n            b[i*3] = nodes[i].fx;\n            b[i*3+1] = nodes[i].fy;\n            b[i*3+2] = nodes[i].fz;\n        }\n        \n        std::vector<double> r = b;\n        std::vector<double> p = r;\n        double rsold = 0.0;\n        \n        for (int i = 0; i < n; i++) {\n            rsold += r[i] * r[i];\n        }\n        \n        for (int iter = 0; iter < 1000; iter++) {\n            // Ap = A * p\n            std::vector<double> Ap(n, 0.0);\n            for (int i = 0; i < n; i++) {\n                for (int j = 0; j < n; j++) {\n                    Ap[i] += stiffness_matrix[i][j] * p[j];\n                }\n            }\n            \n            // alpha = rsold / (p^T * Ap)\n            double pAp = 0.0;\n            for (int i = 0; i < n; i++) {\n                pAp += p[i] * Ap[i];\n            }\n            double alpha = rsold / pAp;\n            "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 117,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        \n        std::vector<double> r = b;\n        std::vector<double> p = r;\n        double rsold = 0.0;\n        \n        for (int i = 0; i < n; i++) {\n            rsold += r[i] * r[i];\n        }\n        \n        for (int iter = 0; iter < 1000; iter++) {\n            // Ap = A * p\n            std::vector<double> Ap(n, 0.0);\n            for (int i = 0; i < n; i++) {\n                for (int j = 0; j < n; j++) {\n                    Ap[i] += stiffness_matrix[i][j] * p[j];\n                }\n            }\n            \n            // alpha = rsold / (p^T * Ap)\n            double pAp = 0.0;\n            for (int i = 0; i < n; i++) {\n                pAp += p[i] * Ap[i];\n            }\n            double alpha = rsold / pAp;\n            \n            // x = x + alpha * p\n            // r = r - alpha * Ap\n            for (int i = 0; i < n; i++) {\n                x[i] += alpha * p[i];\n                r[i] -= alpha * Ap[i];\n            }\n            \n            double rsnew = 0.0;\n            for (int i = 0; i < n; i++) {\n                rsnew += r[i] * r[i];"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 124,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        }\n        \n        for (int iter = 0; iter < 1000; iter++) {\n            // Ap = A * p\n            std::vector<double> Ap(n, 0.0);\n            for (int i = 0; i < n; i++) {\n                for (int j = 0; j < n; j++) {\n                    Ap[i] += stiffness_matrix[i][j] * p[j];\n                }\n            }\n            \n            // alpha = rsold / (p^T * Ap)\n            double pAp = 0.0;\n            for (int i = 0; i < n; i++) {\n                pAp += p[i] * Ap[i];\n            }\n            double alpha = rsold / pAp;\n            \n            // x = x + alpha * p\n            // r = r - alpha * Ap\n            for (int i = 0; i < n; i++) {\n                x[i] += alpha * p[i];\n                r[i] -= alpha * Ap[i];\n            }\n            \n            double rsnew = 0.0;\n            for (int i = 0; i < n; i++) {\n                rsnew += r[i] * r[i];\n            }\n            \n            if (sqrt(rsnew) < 1e-10) break;\n            \n            // p = r + (rsnew / rsold) * p\n            double beta = rsnew / rsold;\n            for (int i = 0; i < n; i++) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 125,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        \n        for (int iter = 0; iter < 1000; iter++) {\n            // Ap = A * p\n            std::vector<double> Ap(n, 0.0);\n            for (int i = 0; i < n; i++) {\n                for (int j = 0; j < n; j++) {\n                    Ap[i] += stiffness_matrix[i][j] * p[j];\n                }\n            }\n            \n            // alpha = rsold / (p^T * Ap)\n            double pAp = 0.0;\n            for (int i = 0; i < n; i++) {\n                pAp += p[i] * Ap[i];\n            }\n            double alpha = rsold / pAp;\n            \n            // x = x + alpha * p\n            // r = r - alpha * Ap\n            for (int i = 0; i < n; i++) {\n                x[i] += alpha * p[i];\n                r[i] -= alpha * Ap[i];\n            }\n            \n            double rsnew = 0.0;\n            for (int i = 0; i < n; i++) {\n                rsnew += r[i] * r[i];\n            }\n            \n            if (sqrt(rsnew) < 1e-10) break;\n            \n            // p = r + (rsnew / rsold) * p\n            double beta = rsnew / rsold;\n            for (int i = 0; i < n; i++) {\n                p[i] = r[i] + beta * p[i];"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                }\n            }\n            \n            // alpha = rsold / (p^T * Ap)\n            double pAp = 0.0;\n            for (int i = 0; i < n; i++) {\n                pAp += p[i] * Ap[i];\n            }\n            double alpha = rsold / pAp;\n            \n            // x = x + alpha * p\n            // r = r - alpha * Ap\n            for (int i = 0; i < n; i++) {\n                x[i] += alpha * p[i];\n                r[i] -= alpha * Ap[i];\n            }\n            \n            double rsnew = 0.0;\n            for (int i = 0; i < n; i++) {\n                rsnew += r[i] * r[i];\n            }\n            \n            if (sqrt(rsnew) < 1e-10) break;\n            \n            // p = r + (rsnew / rsold) * p\n            double beta = rsnew / rsold;\n            for (int i = 0; i < n; i++) {\n                p[i] = r[i] + beta * p[i];\n            }\n            \n            rsold = rsnew;\n        }\n        \n        // Extract displacements\n        for (int i = 0; i < NUM_NODES; i++) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 139,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "            }\n            double alpha = rsold / pAp;\n            \n            // x = x + alpha * p\n            // r = r - alpha * Ap\n            for (int i = 0; i < n; i++) {\n                x[i] += alpha * p[i];\n                r[i] -= alpha * Ap[i];\n            }\n            \n            double rsnew = 0.0;\n            for (int i = 0; i < n; i++) {\n                rsnew += r[i] * r[i];\n            }\n            \n            if (sqrt(rsnew) < 1e-10) break;\n            \n            // p = r + (rsnew / rsold) * p\n            double beta = rsnew / rsold;\n            for (int i = 0; i < n; i++) {\n                p[i] = r[i] + beta * p[i];\n            }\n            \n            rsold = rsnew;\n        }\n        \n        // Extract displacements\n        for (int i = 0; i < NUM_NODES; i++) {\n            nodes[i].ux = x[i*3];\n            nodes[i].uy = x[i*3+1];\n            nodes[i].uz = x[i*3+2];\n        }\n    }\n    \n    void calculate_stresses() {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 149,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.35
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 145,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                x[i] += alpha * p[i];\n                r[i] -= alpha * Ap[i];\n            }\n            \n            double rsnew = 0.0;\n            for (int i = 0; i < n; i++) {\n                rsnew += r[i] * r[i];\n            }\n            \n            if (sqrt(rsnew) < 1e-10) break;\n            \n            // p = r + (rsnew / rsold) * p\n            double beta = rsnew / rsold;\n            for (int i = 0; i < n; i++) {\n                p[i] = r[i] + beta * p[i];\n            }\n            \n            rsold = rsnew;\n        }\n        \n        // Extract displacements\n        for (int i = 0; i < NUM_NODES; i++) {\n            nodes[i].ux = x[i*3];\n            nodes[i].uy = x[i*3+1];\n            nodes[i].uz = x[i*3+2];\n        }\n    }\n    \n    void calculate_stresses() {\n        for (const auto& elem : elements) {\n            double E = elem.young_modulus;\n            double nu = elem.poisson_ratio;\n            \n            // Calculate strain from displacements\n            double strain[6] = {0};"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 153,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "            \n            if (sqrt(rsnew) < 1e-10) break;\n            \n            // p = r + (rsnew / rsold) * p\n            double beta = rsnew / rsold;\n            for (int i = 0; i < n; i++) {\n                p[i] = r[i] + beta * p[i];\n            }\n            \n            rsold = rsnew;\n        }\n        \n        // Extract displacements\n        for (int i = 0; i < NUM_NODES; i++) {\n            nodes[i].ux = x[i*3];\n            nodes[i].uy = x[i*3+1];\n            nodes[i].uz = x[i*3+2];\n        }\n    }\n    \n    void calculate_stresses() {\n        for (const auto& elem : elements) {\n            double E = elem.young_modulus;\n            double nu = elem.poisson_ratio;\n            \n            // Calculate strain from displacements\n            double strain[6] = {0};\n            for (int i = 0; i < 8; i++) {\n                int node_id = elem.node_ids[i];\n                strain[0] += nodes[node_id].ux * 0.125;\n                strain[1] += nodes[node_id].uy * 0.125;\n                strain[2] += nodes[node_id].uz * 0.125;\n            }\n            \n            // Calculate stress"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "unknown",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 0,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.57
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 161,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            \n            rsold = rsnew;\n        }\n        \n        // Extract displacements\n        for (int i = 0; i < NUM_NODES; i++) {\n            nodes[i].ux = x[i*3];\n            nodes[i].uy = x[i*3+1];\n            nodes[i].uz = x[i*3+2];\n        }\n    }\n    \n    void calculate_stresses() {\n        for (const auto& elem : elements) {\n            double E = elem.young_modulus;\n            double nu = elem.poisson_ratio;\n            \n            // Calculate strain from displacements\n            double strain[6] = {0};\n            for (int i = 0; i < 8; i++) {\n                int node_id = elem.node_ids[i];\n                strain[0] += nodes[node_id].ux * 0.125;\n                strain[1] += nodes[node_id].uy * 0.125;\n                strain[2] += nodes[node_id].uz * 0.125;\n            }\n            \n            // Calculate stress\n            double factor = E / ((1.0 + nu) * (1.0 - 2.0 * nu));\n            double stress[6];\n            stress[0] = factor * ((1.0 - nu) * strain[0] + nu * strain[1] + nu * strain[2]);\n            stress[1] = factor * (nu * strain[0] + (1.0 - nu) * strain[1] + nu * strain[2]);\n            stress[2] = factor * (nu * strain[0] + nu * strain[1] + (1.0 - nu) * strain[2]);\n        }\n    }\n};"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverD1Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverD1Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverC2Ev",
+      "line": 1360,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverC2Ev",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverC2Ev",
+      "line": 1360,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverC2Ev",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverC2Ev",
+      "line": 1369,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverC2Ev",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverC2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverC2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverC2Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverC2Ev",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9FEMSolverC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI4NodeNS_9allocatorIS1_EEE8__appendEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI4NodeNS_9allocatorIS1_EEE8__appendEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI4NodeNS_9allocatorIS1_EEE8__appendEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorI4NodeNS_9allocatorIS1_EEE8__appendEm",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorI4NodeNS_9allocatorIS1_EEE8__appendEm",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorI4NodeNS_9allocatorIS1_EEE8__appendEm",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI7ElementNS_9allocatorIS1_EEE8__appendEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI7ElementNS_9allocatorIS1_EEE8__appendEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI7ElementNS_9allocatorIS1_EEE8__appendEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorI7ElementNS_9allocatorIS1_EEE8__appendEm",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorI7ElementNS_9allocatorIS1_EEE8__appendEm",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorI7ElementNS_9allocatorIS1_EEE8__appendEm",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 257,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 59,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    for (int gp_k = 0; gp_k < 2; gp_k++) {\n                        // Shape function derivatives\n                        double B[6][24] = {0};\n                        \n                        // Compute B matrix (strain-displacement)\n                        for (int n = 0; n < 8; n++) {\n                            B[0][n*3] = 0.125;    // dN/dx\n                            B[1][n*3+1] = 0.125;  // dN/dy\n                            B[2][n*3+2] = 0.125;  // dN/dz\n                        }\n                        \n                        // ke += B^T * C * B * det(J) * weight\n                        double weight = 1.0;\n                        double det_J = 1.0;\n                        \n                        for (int i = 0; i < 24; i++) {\n                            for (int j = 0; j < 24; j++) {\n                                for (int k = 0; k < 6; k++) {\n                                    for (int l = 0; l < 6; l++) {\n                                        ke[i][j] += B[k][i] * C[k][l] * B[l][j] * \n                                                   det_J * weight;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n            \n            // Assemble into global matrix\n            for (int i = 0; i < 8; i++) {\n                for (int j = 0; j < 8; j++) {\n                    int node_i = elem.node_ids[i];\n                    int node_j = elem.node_ids[j];\n                    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 72,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                        double det_J = 1.0;\n                        \n                        for (int i = 0; i < 24; i++) {\n                            for (int j = 0; j < 24; j++) {\n                                for (int k = 0; k < 6; k++) {\n                                    for (int l = 0; l < 6; l++) {\n                                        ke[i][j] += B[k][i] * C[k][l] * B[l][j] * \n                                                   det_J * weight;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n            \n            // Assemble into global matrix\n            for (int i = 0; i < 8; i++) {\n                for (int j = 0; j < 8; j++) {\n                    int node_i = elem.node_ids[i];\n                    int node_j = elem.node_ids[j];\n                    \n                    for (int di = 0; di < 3; di++) {\n                        for (int dj = 0; dj < 3; dj++) {\n                            stiffness_matrix[node_i*3 + di][node_j*3 + dj] += \n                                ke[i*3 + di][j*3 + dj];\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    void solve_linear_system() {\n        // Conjugate Gradient solver",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 90,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                for (int j = 0; j < 8; j++) {\n                    int node_i = elem.node_ids[i];\n                    int node_j = elem.node_ids[j];\n                    \n                    for (int di = 0; di < 3; di++) {\n                        for (int dj = 0; dj < 3; dj++) {\n                            stiffness_matrix[node_i*3 + di][node_j*3 + dj] += \n                                ke[i*3 + di][j*3 + dj];\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    void solve_linear_system() {\n        // Conjugate Gradient solver\n        int n = NUM_NODES * 3;\n        std::vector<double> x(n, 0.0);\n        std::vector<double> b(n, 0.0);\n        \n        // Build right-hand side\n        for (int i = 0; i < NUM_NODES; i++) {\n            b[i*3] = nodes[i].fx;\n            b[i*3+1] = nodes[i].fy;\n            b[i*3+2] = nodes[i].fz;\n        }\n        \n        std::vector<double> r = b;\n        std::vector<double> p = r;\n        double rsold = 0.0;\n        \n        for (int i = 0; i < n; i++) {\n            rsold += r[i] * r[i];\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 107,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        int n = NUM_NODES * 3;\n        std::vector<double> x(n, 0.0);\n        std::vector<double> b(n, 0.0);\n        \n        // Build right-hand side\n        for (int i = 0; i < NUM_NODES; i++) {\n            b[i*3] = nodes[i].fx;\n            b[i*3+1] = nodes[i].fy;\n            b[i*3+2] = nodes[i].fz;\n        }\n        \n        std::vector<double> r = b;\n        std::vector<double> p = r;\n        double rsold = 0.0;\n        \n        for (int i = 0; i < n; i++) {\n            rsold += r[i] * r[i];\n        }\n        \n        for (int iter = 0; iter < 1000; iter++) {\n            // Ap = A * p\n            std::vector<double> Ap(n, 0.0);\n            for (int i = 0; i < n; i++) {\n                for (int j = 0; j < n; j++) {\n                    Ap[i] += stiffness_matrix[i][j] * p[j];\n                }\n            }\n            \n            // alpha = rsold / (p^T * Ap)\n            double pAp = 0.0;\n            for (int i = 0; i < n; i++) {\n                pAp += p[i] * Ap[i];\n            }\n            double alpha = rsold / pAp;\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 161,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            \n            rsold = rsnew;\n        }\n        \n        // Extract displacements\n        for (int i = 0; i < NUM_NODES; i++) {\n            nodes[i].ux = x[i*3];\n            nodes[i].uy = x[i*3+1];\n            nodes[i].uz = x[i*3+2];\n        }\n    }\n    \n    void calculate_stresses() {\n        for (const auto& elem : elements) {\n            double E = elem.young_modulus;\n            double nu = elem.poisson_ratio;\n            \n            // Calculate strain from displacements\n            double strain[6] = {0};\n            for (int i = 0; i < 8; i++) {\n                int node_id = elem.node_ids[i];\n                strain[0] += nodes[node_id].ux * 0.125;\n                strain[1] += nodes[node_id].uy * 0.125;\n                strain[2] += nodes[node_id].uz * 0.125;\n            }\n            \n            // Calculate stress\n            double factor = E / ((1.0 + nu) * (1.0 - 2.0 * nu));\n            double stress[6];\n            stress[0] = factor * ((1.0 - nu) * strain[0] + nu * strain[1] + nu * strain[2]);\n            stress[1] = factor * (nu * strain[0] + (1.0 - nu) * strain[1] + nu * strain[2]);\n            stress[2] = factor * (nu * strain[0] + nu * strain[1] + (1.0 - nu) * strain[2]);\n        }\n    }\n};",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 124,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        }\n        \n        for (int iter = 0; iter < 1000; iter++) {\n            // Ap = A * p\n            std::vector<double> Ap(n, 0.0);\n            for (int i = 0; i < n; i++) {\n                for (int j = 0; j < n; j++) {\n                    Ap[i] += stiffness_matrix[i][j] * p[j];\n                }\n            }\n            \n            // alpha = rsold / (p^T * Ap)\n            double pAp = 0.0;\n            for (int i = 0; i < n; i++) {\n                pAp += p[i] * Ap[i];\n            }\n            double alpha = rsold / pAp;\n            \n            // x = x + alpha * p\n            // r = r - alpha * Ap\n            for (int i = 0; i < n; i++) {\n                x[i] += alpha * p[i];\n                r[i] -= alpha * Ap[i];\n            }\n            \n            double rsnew = 0.0;\n            for (int i = 0; i < n; i++) {\n                rsnew += r[i] * r[i];\n            }\n            \n            if (sqrt(rsnew) < 1e-10) break;\n            \n            // p = r + (rsnew / rsold) * p\n            double beta = rsnew / rsold;\n            for (int i = 0; i < n; i++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 117,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        \n        std::vector<double> r = b;\n        std::vector<double> p = r;\n        double rsold = 0.0;\n        \n        for (int i = 0; i < n; i++) {\n            rsold += r[i] * r[i];\n        }\n        \n        for (int iter = 0; iter < 1000; iter++) {\n            // Ap = A * p\n            std::vector<double> Ap(n, 0.0);\n            for (int i = 0; i < n; i++) {\n                for (int j = 0; j < n; j++) {\n                    Ap[i] += stiffness_matrix[i][j] * p[j];\n                }\n            }\n            \n            // alpha = rsold / (p^T * Ap)\n            double pAp = 0.0;\n            for (int i = 0; i < n; i++) {\n                pAp += p[i] * Ap[i];\n            }\n            double alpha = rsold / pAp;\n            \n            // x = x + alpha * p\n            // r = r - alpha * Ap\n            for (int i = 0; i < n; i++) {\n                x[i] += alpha * p[i];\n                r[i] -= alpha * Ap[i];\n            }\n            \n            double rsnew = 0.0;\n            for (int i = 0; i < n; i++) {\n                rsnew += r[i] * r[i];",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 125,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        \n        for (int iter = 0; iter < 1000; iter++) {\n            // Ap = A * p\n            std::vector<double> Ap(n, 0.0);\n            for (int i = 0; i < n; i++) {\n                for (int j = 0; j < n; j++) {\n                    Ap[i] += stiffness_matrix[i][j] * p[j];\n                }\n            }\n            \n            // alpha = rsold / (p^T * Ap)\n            double pAp = 0.0;\n            for (int i = 0; i < n; i++) {\n                pAp += p[i] * Ap[i];\n            }\n            double alpha = rsold / pAp;\n            \n            // x = x + alpha * p\n            // r = r - alpha * Ap\n            for (int i = 0; i < n; i++) {\n                x[i] += alpha * p[i];\n                r[i] -= alpha * Ap[i];\n            }\n            \n            double rsnew = 0.0;\n            for (int i = 0; i < n; i++) {\n                rsnew += r[i] * r[i];\n            }\n            \n            if (sqrt(rsnew) < 1e-10) break;\n            \n            // p = r + (rsnew / rsold) * p\n            double beta = rsnew / rsold;\n            for (int i = 0; i < n; i++) {\n                p[i] = r[i] + beta * p[i];",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 132,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                }\n            }\n            \n            // alpha = rsold / (p^T * Ap)\n            double pAp = 0.0;\n            for (int i = 0; i < n; i++) {\n                pAp += p[i] * Ap[i];\n            }\n            double alpha = rsold / pAp;\n            \n            // x = x + alpha * p\n            // r = r - alpha * Ap\n            for (int i = 0; i < n; i++) {\n                x[i] += alpha * p[i];\n                r[i] -= alpha * Ap[i];\n            }\n            \n            double rsnew = 0.0;\n            for (int i = 0; i < n; i++) {\n                rsnew += r[i] * r[i];\n            }\n            \n            if (sqrt(rsnew) < 1e-10) break;\n            \n            // p = r + (rsnew / rsold) * p\n            double beta = rsnew / rsold;\n            for (int i = 0; i < n; i++) {\n                p[i] = r[i] + beta * p[i];\n            }\n            \n            rsold = rsnew;\n        }\n        \n        // Extract displacements\n        for (int i = 0; i < NUM_NODES; i++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 139,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "            }\n            double alpha = rsold / pAp;\n            \n            // x = x + alpha * p\n            // r = r - alpha * Ap\n            for (int i = 0; i < n; i++) {\n                x[i] += alpha * p[i];\n                r[i] -= alpha * Ap[i];\n            }\n            \n            double rsnew = 0.0;\n            for (int i = 0; i < n; i++) {\n                rsnew += r[i] * r[i];\n            }\n            \n            if (sqrt(rsnew) < 1e-10) break;\n            \n            // p = r + (rsnew / rsold) * p\n            double beta = rsnew / rsold;\n            for (int i = 0; i < n; i++) {\n                p[i] = r[i] + beta * p[i];\n            }\n            \n            rsold = rsnew;\n        }\n        \n        // Extract displacements\n        for (int i = 0; i < NUM_NODES; i++) {\n            nodes[i].ux = x[i*3];\n            nodes[i].uy = x[i*3+1];\n            nodes[i].uz = x[i*3+2];\n        }\n    }\n    \n    void calculate_stresses() {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 145,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                x[i] += alpha * p[i];\n                r[i] -= alpha * Ap[i];\n            }\n            \n            double rsnew = 0.0;\n            for (int i = 0; i < n; i++) {\n                rsnew += r[i] * r[i];\n            }\n            \n            if (sqrt(rsnew) < 1e-10) break;\n            \n            // p = r + (rsnew / rsold) * p\n            double beta = rsnew / rsold;\n            for (int i = 0; i < n; i++) {\n                p[i] = r[i] + beta * p[i];\n            }\n            \n            rsold = rsnew;\n        }\n        \n        // Extract displacements\n        for (int i = 0; i < NUM_NODES; i++) {\n            nodes[i].ux = x[i*3];\n            nodes[i].uy = x[i*3+1];\n            nodes[i].uz = x[i*3+2];\n        }\n    }\n    \n    void calculate_stresses() {\n        for (const auto& elem : elements) {\n            double E = elem.young_modulus;\n            double nu = elem.poisson_ratio;\n            \n            // Calculate strain from displacements\n            double strain[6] = {0};",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver19solve_linear_systemEv",
+      "line": 153,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "            \n            if (sqrt(rsnew) < 1e-10) break;\n            \n            // p = r + (rsnew / rsold) * p\n            double beta = rsnew / rsold;\n            for (int i = 0; i < n; i++) {\n                p[i] = r[i] + beta * p[i];\n            }\n            \n            rsold = rsnew;\n        }\n        \n        // Extract displacements\n        for (int i = 0; i < NUM_NODES; i++) {\n            nodes[i].ux = x[i*3];\n            nodes[i].uy = x[i*3+1];\n            nodes[i].uz = x[i*3+2];\n        }\n    }\n    \n    void calculate_stresses() {\n        for (const auto& elem : elements) {\n            double E = elem.young_modulus;\n            double nu = elem.poisson_ratio;\n            \n            // Calculate strain from displacements\n            double strain[6] = {0};\n            for (int i = 0; i < 8; i++) {\n                int node_id = elem.node_ids[i];\n                strain[0] += nodes[node_id].ux * 0.125;\n                strain[1] += nodes[node_id].uy * 0.125;\n                strain[2] += nodes[node_id].uz * 0.125;\n            }\n            \n            // Calculate stress",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 52,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            double ke[24][24] = {0};\n            \n            // Gauss quadrature points\n            double gauss_pts[] = {-0.577350269, 0.577350269};\n            \n            for (int gp_i = 0; gp_i < 2; gp_i++) {\n                for (int gp_j = 0; gp_j < 2; gp_j++) {\n                    for (int gp_k = 0; gp_k < 2; gp_k++) {\n                        // Shape function derivatives\n                        double B[6][24] = {0};\n                        \n                        // Compute B matrix (strain-displacement)\n                        for (int n = 0; n < 8; n++) {\n                            B[0][n*3] = 0.125;    // dN/dx\n                            B[1][n*3+1] = 0.125;  // dN/dy\n                            B[2][n*3+2] = 0.125;  // dN/dz\n                        }\n                        \n                        // ke += B^T * C * B * det(J) * weight\n                        double weight = 1.0;\n                        double det_J = 1.0;\n                        \n                        for (int i = 0; i < 24; i++) {\n                            for (int j = 0; j < 24; j++) {\n                                for (int k = 0; k < 6; k++) {\n                                    for (int l = 0; l < 6; l++) {\n                                        ke[i][j] += B[k][i] * C[k][l] * B[l][j] * \n                                                   det_J * weight;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 53,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            \n            // Gauss quadrature points\n            double gauss_pts[] = {-0.577350269, 0.577350269};\n            \n            for (int gp_i = 0; gp_i < 2; gp_i++) {\n                for (int gp_j = 0; gp_j < 2; gp_j++) {\n                    for (int gp_k = 0; gp_k < 2; gp_k++) {\n                        // Shape function derivatives\n                        double B[6][24] = {0};\n                        \n                        // Compute B matrix (strain-displacement)\n                        for (int n = 0; n < 8; n++) {\n                            B[0][n*3] = 0.125;    // dN/dx\n                            B[1][n*3+1] = 0.125;  // dN/dy\n                            B[2][n*3+2] = 0.125;  // dN/dz\n                        }\n                        \n                        // ke += B^T * C * B * det(J) * weight\n                        double weight = 1.0;\n                        double det_J = 1.0;\n                        \n                        for (int i = 0; i < 24; i++) {\n                            for (int j = 0; j < 24; j++) {\n                                for (int k = 0; k < 6; k++) {\n                                    for (int l = 0; l < 6; l++) {\n                                        ke[i][j] += B[k][i] * C[k][l] * B[l][j] * \n                                                   det_J * weight;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 69,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                        \n                        // ke += B^T * C * B * det(J) * weight\n                        double weight = 1.0;\n                        double det_J = 1.0;\n                        \n                        for (int i = 0; i < 24; i++) {\n                            for (int j = 0; j < 24; j++) {\n                                for (int k = 0; k < 6; k++) {\n                                    for (int l = 0; l < 6; l++) {\n                                        ke[i][j] += B[k][i] * C[k][l] * B[l][j] * \n                                                   det_J * weight;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n            \n            // Assemble into global matrix\n            for (int i = 0; i < 8; i++) {\n                for (int j = 0; j < 8; j++) {\n                    int node_i = elem.node_ids[i];\n                    int node_j = elem.node_ids[j];\n                    \n                    for (int di = 0; di < 3; di++) {\n                        for (int dj = 0; dj < 3; dj++) {\n                            stiffness_matrix[node_i*3 + di][node_j*3 + dj] += \n                                ke[i*3 + di][j*3 + dj];\n                        }\n                    }\n                }\n            }\n        }\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 70,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                        // ke += B^T * C * B * det(J) * weight\n                        double weight = 1.0;\n                        double det_J = 1.0;\n                        \n                        for (int i = 0; i < 24; i++) {\n                            for (int j = 0; j < 24; j++) {\n                                for (int k = 0; k < 6; k++) {\n                                    for (int l = 0; l < 6; l++) {\n                                        ke[i][j] += B[k][i] * C[k][l] * B[l][j] * \n                                                   det_J * weight;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n            \n            // Assemble into global matrix\n            for (int i = 0; i < 8; i++) {\n                for (int j = 0; j < 8; j++) {\n                    int node_i = elem.node_ids[i];\n                    int node_j = elem.node_ids[j];\n                    \n                    for (int di = 0; di < 3; di++) {\n                        for (int dj = 0; dj < 3; dj++) {\n                            stiffness_matrix[node_i*3 + di][node_j*3 + dj] += \n                                ke[i*3 + di][j*3 + dj];\n                        }\n                    }\n                }\n            }\n        }\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/finite_element_analysis.cpp",
+      "function": "_ZN9FEMSolver25assemble_stiffness_matrixEv",
+      "line": 71,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                        double weight = 1.0;\n                        double det_J = 1.0;\n                        \n                        for (int i = 0; i < 24; i++) {\n                            for (int j = 0; j < 24; j++) {\n                                for (int k = 0; k < 6; k++) {\n                                    for (int l = 0; l < 6; l++) {\n                                        ke[i][j] += B[k][i] * C[k][l] * B[l][j] * \n                                                   det_J * weight;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n            \n            // Assemble into global matrix\n            for (int i = 0; i < 8; i++) {\n                for (int j = 0; j < 8; j++) {\n                    int node_i = elem.node_ids[i];\n                    int node_j = elem.node_ids[j];\n                    \n                    for (int di = 0; di < 3; di++) {\n                        for (int dj = 0; dj < 3; dj++) {\n                            stiffness_matrix[node_i*3 + di][node_j*3 + dj] += \n                                ke[i*3 + di][j*3 + dj];\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    void solve_linear_system() {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

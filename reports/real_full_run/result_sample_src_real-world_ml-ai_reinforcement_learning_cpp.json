@@ -1,0 +1,276 @@
+{
+  "file": "sample/src/real-world/ml-ai/reinforcement_learning.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/ml-ai/reinforcement_learning.cpp",
+    "llvm_initial": 29,
+    "llvm_sys_noise": 26,
+    "llvm_project": 3,
+    "after_filter": 1,
+    "ai_batches": 1,
+    "ai_results": 1,
+    "omp_verified": 0,
+    "total_ms": 553.6,
+    "llvm_ms": 406.9
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/reinforcement_learning.cpp",
+      "function": "_Z10q_learningRNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEEddd",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "const int NUM_ACTIONS = 4;\nconst int NUM_EPISODES = 1000;\n\nvoid q_learning(std::vector<std::vector<double>>& Q,\n               double alpha, double gamma, double epsilon) {\n    for (int episode = 0; episode < NUM_EPISODES; episode++) {\n        int state = 0;\n        \n        for (int step = 0; step < 1000; step++) {\n            int action;\n            \n            if (static_cast<double>(rand()) / RAND_MAX < epsilon) {\n                action = rand() % NUM_ACTIONS;\n            } else {\n                action = std::max_element(Q[state].begin(), Q[state].end()) - \n                        Q[state].begin();\n            }\n            \n            int next_state = (state + action) % NUM_STATES;\n            double reward = (next_state > state) ? 1.0 : -1.0;\n            \n            double max_q_next = *std::max_element(Q[next_state].begin(), \n                                                  Q[next_state].end());\n            \n            Q[state][action] += alpha * (reward + gamma * max_q_next - Q[state][action]);\n            \n            state = next_state;\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<double>> Q(NUM_STATES, \n        std::vector<double>(NUM_ACTIONS, 0.0));\n    "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/reinforcement_learning.cpp",
+      "function": "_Z10q_learningRNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEEddd",
+      "line": 17,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/max_element.h",
+      "function": "_Z10q_learningRNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEEddd",
+      "line": 29,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/max_element.h",
+      "function": "_Z10q_learningRNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEEddd",
+      "line": 31,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/max_element.h",
+      "function": "_Z10q_learningRNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEEddd",
+      "line": 29,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/max_element.h",
+      "function": "_Z10q_learningRNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEEddd",
+      "line": 31,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/reinforcement_learning.cpp",
+      "function": "_Z10q_learningRNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEEddd",
+      "line": 14,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/reinforcement_learning.cpp",
+      "function": "_Z10q_learningRNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEEddd",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "const int NUM_ACTIONS = 4;\nconst int NUM_EPISODES = 1000;\n\nvoid q_learning(std::vector<std::vector<double>>& Q,\n               double alpha, double gamma, double epsilon) {\n    for (int episode = 0; episode < NUM_EPISODES; episode++) {\n        int state = 0;\n        \n        for (int step = 0; step < 1000; step++) {\n            int action;\n            \n            if (static_cast<double>(rand()) / RAND_MAX < epsilon) {\n                action = rand() % NUM_ACTIONS;\n            } else {\n                action = std::max_element(Q[state].begin(), Q[state].end()) - \n                        Q[state].begin();\n            }\n            \n            int next_state = (state + action) % NUM_STATES;\n            double reward = (next_state > state) ? 1.0 : -1.0;\n            \n            double max_q_next = *std::max_element(Q[next_state].begin(), \n                                                  Q[next_state].end());\n            \n            Q[state][action] += alpha * (reward + gamma * max_q_next - Q[state][action]);\n            \n            state = next_state;\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<double>> Q(NUM_STATES, \n        std::vector<double>(NUM_ACTIONS, 0.0));\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

@@ -1,0 +1,1814 @@
+{
+  "file": "sample/src/real-world/trading/algo_trading.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/trading/algo_trading.cpp",
+    "llvm_initial": 133,
+    "llvm_sys_noise": 84,
+    "llvm_project": 49,
+    "after_filter": 31,
+    "ai_batches": 3,
+    "ai_results": 31,
+    "omp_verified": 0,
+    "total_ms": 7307.5,
+    "llvm_ms": 487.3
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "main",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "main",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "main",
+      "line": 463,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "main",
+      "line": 474,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.7000000000000001,
+      "context": "    auto bbSignal = trader.bollingerBandStrategy(prices);\n    auto rsiSignal = trader.rsiDivergenceStrategy(prices);\n    auto kalmanSignal = trader.kalmanMeanReversion(prices);\n    \n    // Execute trades\n    if (bbSignal.confidence > 0.7) {\n        trader.executeTrade(bbSignal, \"AAPL\", prices.back());\n    }\n    \n    // Backtest\n    std::vector<double> returns;\n    for (size_t i = 100; i < prices.size(); i++) {\n        trader.updatePositions(prices[i]);\n        \n        // Calculate return\n        if (i > 100) {\n            double ret = (prices[i] - prices[i-1]) / prices[i-1];\n            returns.push_back(ret);\n        }\n    }\n    \n    auto metrics = trader.computeRiskMetrics(returns);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "main",
+      "line": 480,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.20000000000000004
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "main",
+      "line": 484,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "    std::vector<double> returns;\n    for (size_t i = 100; i < prices.size(); i++) {\n        trader.updatePositions(prices[i]);\n        \n        // Calculate return\n        if (i > 100) {\n            double ret = (prices[i] - prices[i-1]) / prices[i-1];\n            returns.push_back(ret);\n        }\n    }\n    \n    auto metrics = trader.computeRiskMetrics(returns);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1146,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "main",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "main",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "main",
+      "line": 480,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE9push_backB8ne210101ERKd",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE9push_backB8ne210101ERKd",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE9push_backB8ne210101ERKd",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE9push_backB8ne210101ERKd",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21bollingerBandStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 88,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.75,
+      "context": "        signal.direction = 0;\n        signal.strength = 0;\n        \n        auto bands = computeBollingerBands(prices, 20, 2.0);\n        \n        if (bands.middle.size() < 2) return signal;\n        \n        double currentPrice = prices.back();\n        double upper = bands.upper.back();\n        double lower = bands.lower.back();\n        double middle = bands.middle.back();\n        \n        // Buy when price touches lower band\n        if (currentPrice <= lower) {\n            signal.direction = 1;\n            signal.strength = (lower - currentPrice) / lower;\n            signal.confidence = 0.7;\n            signal.reason = \"Price at lower Bollinger Band\";\n        }\n        // Sell when price touches upper band\n        else if (currentPrice >= upper) {\n            signal.direction = -1;\n            signal.strength = (currentPrice - upper) / upper;\n            signal.confidence = 0.7;\n            signal.reason = \"Price at upper Bollinger Band\";\n        }\n        // Exit when price crosses middle\n        else if (std::abs(currentPrice - middle) < middle * 0.001) {\n            signal.direction = 0;\n            signal.confidence = 0.5;\n            signal.reason = \"Price at middle band\";\n        }\n        \n        return signal;\n    }"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21bollingerBandStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 96,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        double upper = bands.upper.back();\n        double lower = bands.lower.back();\n        double middle = bands.middle.back();\n        \n        // Buy when price touches lower band\n        if (currentPrice <= lower) {\n            signal.direction = 1;\n            signal.strength = (lower - currentPrice) / lower;\n            signal.confidence = 0.7;\n            signal.reason = \"Price at lower Bollinger Band\";\n        }\n        // Sell when price touches upper band\n        else if (currentPrice >= upper) {\n            signal.direction = -1;\n            signal.strength = (currentPrice - upper) / upper;\n            signal.confidence = 0.7;\n            signal.reason = \"Price at upper Bollinger Band\";\n        }\n        // Exit when price crosses middle\n        else if (std::abs(currentPrice - middle) < middle * 0.001) {\n            signal.direction = 0;\n            signal.confidence = 0.5;\n            signal.reason = \"Price at middle band\";\n        }\n        \n        return signal;\n    }\n    \n    // Pairs trading (statistical arbitrage)\n    struct PairsTrade {\n        std::string symbol1;\n        std::string symbol2;\n        double hedgeRatio;\n        double spread;\n        double zscore;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21bollingerBandStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 103,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21bollingerBandStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 110,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.06999999999999999
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading21bollingerBandStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading21bollingerBandStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading21bollingerBandStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading21bollingerBandStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN11AlgoTrading21bollingerBandStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 1206,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21rsiDivergenceStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 233,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        Signal signal;\n        signal.direction = 0;\n        \n        auto rsi = computeRSI(prices, 14);\n        \n        if (rsi.size() < 5) return signal;\n        \n        // Check for bullish divergence\n        // Price makes lower low, RSI makes higher low\n        if (prices.back() < prices[prices.size() - 5] &&\n            rsi.back() > rsi[rsi.size() - 5]) {\n            signal.direction = 1;\n            signal.strength = (rsi.back() - rsi[rsi.size() - 5]) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bullish RSI divergence\";\n        }\n        // Check for bearish divergence\n        // Price makes higher high, RSI makes lower high\n        else if (prices.back() > prices[prices.size() - 5] &&\n                 rsi.back() < rsi[rsi.size() - 5]) {\n            signal.direction = -1;\n            signal.strength = (rsi[rsi.size() - 5] - rsi.back()) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bearish RSI divergence\";\n        }\n        // Oversold/overbought\n        else if (rsi.back() < 30) {\n            signal.direction = 1;\n            signal.strength = (30 - rsi.back()) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI oversold\";\n        } else if (rsi.back() > 70) {\n            signal.direction = -1;\n            signal.strength = (rsi.back() - 70) / 30;\n            signal.confidence = 0.6;"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21rsiDivergenceStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 237,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        \n        if (rsi.size() < 5) return signal;\n        \n        // Check for bullish divergence\n        // Price makes lower low, RSI makes higher low\n        if (prices.back() < prices[prices.size() - 5] &&\n            rsi.back() > rsi[rsi.size() - 5]) {\n            signal.direction = 1;\n            signal.strength = (rsi.back() - rsi[rsi.size() - 5]) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bullish RSI divergence\";\n        }\n        // Check for bearish divergence\n        // Price makes higher high, RSI makes lower high\n        else if (prices.back() > prices[prices.size() - 5] &&\n                 rsi.back() < rsi[rsi.size() - 5]) {\n            signal.direction = -1;\n            signal.strength = (rsi[rsi.size() - 5] - rsi.back()) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bearish RSI divergence\";\n        }\n        // Oversold/overbought\n        else if (rsi.back() < 30) {\n            signal.direction = 1;\n            signal.strength = (30 - rsi.back()) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI oversold\";\n        } else if (rsi.back() > 70) {\n            signal.direction = -1;\n            signal.strength = (rsi.back() - 70) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI overbought\";\n        }\n        \n        return signal;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21rsiDivergenceStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 237,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        \n        if (rsi.size() < 5) return signal;\n        \n        // Check for bullish divergence\n        // Price makes lower low, RSI makes higher low\n        if (prices.back() < prices[prices.size() - 5] &&\n            rsi.back() > rsi[rsi.size() - 5]) {\n            signal.direction = 1;\n            signal.strength = (rsi.back() - rsi[rsi.size() - 5]) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bullish RSI divergence\";\n        }\n        // Check for bearish divergence\n        // Price makes higher high, RSI makes lower high\n        else if (prices.back() > prices[prices.size() - 5] &&\n                 rsi.back() < rsi[rsi.size() - 5]) {\n            signal.direction = -1;\n            signal.strength = (rsi[rsi.size() - 5] - rsi.back()) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bearish RSI divergence\";\n        }\n        // Oversold/overbought\n        else if (rsi.back() < 30) {\n            signal.direction = 1;\n            signal.strength = (30 - rsi.back()) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI oversold\";\n        } else if (rsi.back() > 70) {\n            signal.direction = -1;\n            signal.strength = (rsi.back() - 70) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI overbought\";\n        }\n        \n        return signal;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading21rsiDivergenceStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21rsiDivergenceStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 246,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.15
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21rsiDivergenceStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 246,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.6499999999999999,
+      "context": "            signal.confidence = 0.75;\n            signal.reason = \"Bullish RSI divergence\";\n        }\n        // Check for bearish divergence\n        // Price makes higher high, RSI makes lower high\n        else if (prices.back() > prices[prices.size() - 5] &&\n                 rsi.back() < rsi[rsi.size() - 5]) {\n            signal.direction = -1;\n            signal.strength = (rsi[rsi.size() - 5] - rsi.back()) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bearish RSI divergence\";\n        }\n        // Oversold/overbought\n        else if (rsi.back() < 30) {\n            signal.direction = 1;\n            signal.strength = (30 - rsi.back()) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI oversold\";\n        } else if (rsi.back() > 70) {\n            signal.direction = -1;\n            signal.strength = (rsi.back() - 70) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI overbought\";\n        }\n        \n        return signal;\n    }\n    \n    // Mean reversion with Kalman Filter\n    struct KalmanFilter {\n        double x;  // State estimate\n        double P;  // Error covariance\n        double Q;  // Process noise\n        double R;  // Measurement noise\n    };"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21rsiDivergenceStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 254,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.6499999999999999,
+      "context": "            signal.strength = (rsi[rsi.size() - 5] - rsi.back()) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bearish RSI divergence\";\n        }\n        // Oversold/overbought\n        else if (rsi.back() < 30) {\n            signal.direction = 1;\n            signal.strength = (30 - rsi.back()) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI oversold\";\n        } else if (rsi.back() > 70) {\n            signal.direction = -1;\n            signal.strength = (rsi.back() - 70) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI overbought\";\n        }\n        \n        return signal;\n    }\n    \n    // Mean reversion with Kalman Filter\n    struct KalmanFilter {\n        double x;  // State estimate\n        double P;  // Error covariance\n        double Q;  // Process noise\n        double R;  // Measurement noise\n    };\n    \n    double updateKalman(KalmanFilter& kf, double measurement) {\n        // Prediction\n        double x_pred = kf.x;\n        double P_pred = kf.P + kf.Q;\n        \n        // Update\n        double K = P_pred / (P_pred + kf.R);  // Kalman gain"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21rsiDivergenceStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 259,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.15
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading21rsiDivergenceStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN11AlgoTrading21rsiDivergenceStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 1206,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading19kalmanMeanReversionERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 309,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        double currentPrice = prices.back();\n        double kalmanPrice = kalmanPrices.back();\n        double deviation = (currentPrice - kalmanPrice) / kalmanPrice;\n        \n        if (deviation < -0.02) {  // 2% below Kalman estimate\n            signal.direction = 1;\n            signal.strength = std::abs(deviation);\n            signal.confidence = 0.7;\n            signal.reason = \"Price below Kalman filter\";\n        } else if (deviation > 0.02) {\n            signal.direction = -1;\n            signal.strength = std::abs(deviation);\n            signal.confidence = 0.7;\n            signal.reason = \"Price above Kalman filter\";\n        }\n        \n        return signal;\n    }\n    \n    // Position sizing (Kelly criterion)\n    double kellyPositionSize(double winRate, double avgWin, double avgLoss) {\n        double winLossRatio = avgWin / avgLoss;\n        double kelly = winRate - (1 - winRate) / winLossRatio;\n        \n        // Use half Kelly for safety\n        return std::max(0.0, std::min(kelly / 2, 0.25));  // Cap at 25%\n    }\n    \n    // Risk management\n    struct RiskMetrics {\n        double sharpeRatio;\n        double maxDrawdown;\n        double winRate;\n        double profitFactor;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading19kalmanMeanReversionERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 1146,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading19kalmanMeanReversionERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZN11AlgoTrading19kalmanMeanReversionERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN11AlgoTrading19kalmanMeanReversionERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading19kalmanMeanReversionERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 301,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.7500000000000001,
+      "context": "        kf.P = 1.0;\n        kf.Q = 0.001;  // Low process noise for mean reversion\n        kf.R = 0.1;\n        \n        std::vector<double> kalmanPrices;\n        for (double price : prices) {\n            kalmanPrices.push_back(updateKalman(kf, price));\n        }\n        \n        double currentPrice = prices.back();\n        double kalmanPrice = kalmanPrices.back();\n        double deviation = (currentPrice - kalmanPrice) / kalmanPrice;\n        \n        if (deviation < -0.02) {  // 2% below Kalman estimate\n            signal.direction = 1;\n            signal.strength = std::abs(deviation);\n            signal.confidence = 0.7;\n            signal.reason = \"Price below Kalman filter\";\n        } else if (deviation > 0.02) {\n            signal.direction = -1;\n            signal.strength = std::abs(deviation);\n            signal.confidence = 0.7;\n            signal.reason = \"Price above Kalman filter\";\n        }\n        \n        return signal;\n    }\n    \n    // Position sizing (Kelly criterion)\n    double kellyPositionSize(double winRate, double avgWin, double avgLoss) {\n        double winLossRatio = avgWin / avgLoss;\n        double kelly = winRate - (1 - winRate) / winLossRatio;\n        \n        // Use half Kelly for safety\n        return std::max(0.0, std::min(kelly / 2, 0.25));  // Cap at 25%"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading19kalmanMeanReversionERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 314,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading19kalmanMeanReversionERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading19kalmanMeanReversionERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN11AlgoTrading19kalmanMeanReversionERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading12executeTradeERKNS_6SignalERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEd",
+      "line": 400,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    // Execute trade\n    void executeTrade(const Signal& signal, const std::string& symbol,\n                     double currentPrice) {\n        if (signal.direction == 0) return;\n        \n        // Position sizing\n        double positionSize = kellyPositionSize(0.6, 0.02, 0.01);\n        double dollarAmount = capital * positionSize * signal.strength;\n        int quantity = static_cast<int>(dollarAmount / currentPrice);\n        \n        if (quantity == 0) return;\n        \n        Position pos;\n        pos.symbol = symbol;\n        pos.quantity = quantity * signal.direction;\n        pos.entryPrice = currentPrice;\n        pos.currentPrice = currentPrice;\n        pos.unrealizedPnL = 0;\n        pos.realizedPnL = 0;\n        \n        // Set stop loss and take profit\n        if (signal.direction > 0) {\n            pos.stopLoss = currentPrice * 0.98;  // 2% stop\n            pos.takeProfit = currentPrice * 1.04;  // 4% target\n        } else {\n            pos.stopLoss = currentPrice * 1.02;\n            pos.takeProfit = currentPrice * 0.96;\n        }\n        \n        positions.push_back(pos);\n        capital -= dollarAmount;\n    }\n    "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading12executeTradeERKNS_6SignalERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEd",
+      "line": 407,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        // Position sizing\n        double positionSize = kellyPositionSize(0.6, 0.02, 0.01);\n        double dollarAmount = capital * positionSize * signal.strength;\n        int quantity = static_cast<int>(dollarAmount / currentPrice);\n        \n        if (quantity == 0) return;\n        \n        Position pos;\n        pos.symbol = symbol;\n        pos.quantity = quantity * signal.direction;\n        pos.entryPrice = currentPrice;\n        pos.currentPrice = currentPrice;\n        pos.unrealizedPnL = 0;\n        pos.realizedPnL = 0;\n        \n        // Set stop loss and take profit\n        if (signal.direction > 0) {\n            pos.stopLoss = currentPrice * 0.98;  // 2% stop\n            pos.takeProfit = currentPrice * 1.04;  // 4% target\n        } else {\n            pos.stopLoss = currentPrice * 1.02;\n            pos.takeProfit = currentPrice * 0.96;\n        }\n        \n        positions.push_back(pos);\n        capital -= dollarAmount;\n    }\n    \n    // Update positions\n    void updatePositions(double currentPrice) {\n        for (auto it = positions.begin(); it != positions.end();) {\n            it->currentPrice = currentPrice;\n            it->unrealizedPnL = (it->currentPrice - it->entryPrice) * \n                               it->quantity;\n            "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading12executeTradeERKNS_6SignalERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEd",
+      "line": 1146,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN11AlgoTrading12executeTradeERKNS_6SignalERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEd",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN11AlgoTrading12executeTradeERKNS_6SignalERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEd",
+      "line": 1003,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN11AlgoTrading12executeTradeERKNS_6SignalERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEd",
+      "line": 1206,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 432,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 438,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            it->currentPrice = currentPrice;\n            it->unrealizedPnL = (it->currentPrice - it->entryPrice) * \n                               it->quantity;\n            \n            // Check stop loss\n            bool hitStop = (it->quantity > 0 && currentPrice <= it->stopLoss) ||\n                          (it->quantity < 0 && currentPrice >= it->stopLoss);\n            \n            // Check take profit\n            bool hitTarget = (it->quantity > 0 && currentPrice >= it->takeProfit) ||\n                            (it->quantity < 0 && currentPrice <= it->takeProfit);\n            \n            if (hitStop || hitTarget) {\n                // Close position\n                it->realizedPnL = it->unrealizedPnL;\n                capital += it->entryPrice * std::abs(it->quantity) + it->realizedPnL;\n                it = positions.erase(it);\n            } else {\n                ++it;\n            }\n        }\n    }\n};\n\nint main() {\n    AlgoTrading trader(100000);  // $100k capital\n    \n    // Generate price data\n    std::vector<double> prices;\n    double price = 100;\n    for (int i = 0; i < 1000; i++) {\n        price += (rand() % 200 - 100) / 100.0;\n        prices.push_back(price);\n    }\n    "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 438,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            it->currentPrice = currentPrice;\n            it->unrealizedPnL = (it->currentPrice - it->entryPrice) * \n                               it->quantity;\n            \n            // Check stop loss\n            bool hitStop = (it->quantity > 0 && currentPrice <= it->stopLoss) ||\n                          (it->quantity < 0 && currentPrice >= it->stopLoss);\n            \n            // Check take profit\n            bool hitTarget = (it->quantity > 0 && currentPrice >= it->takeProfit) ||\n                            (it->quantity < 0 && currentPrice <= it->takeProfit);\n            \n            if (hitStop || hitTarget) {\n                // Close position\n                it->realizedPnL = it->unrealizedPnL;\n                capital += it->entryPrice * std::abs(it->quantity) + it->realizedPnL;\n                it = positions.erase(it);\n            } else {\n                ++it;\n            }\n        }\n    }\n};\n\nint main() {\n    AlgoTrading trader(100000);  // $100k capital\n    \n    // Generate price data\n    std::vector<double> prices;\n    double price = 100;\n    for (int i = 0; i < 1000; i++) {\n        price += (rand() % 200 - 100) / 100.0;\n        prices.push_back(price);\n    }\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 439,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.78,
+      "context": "            it->unrealizedPnL = (it->currentPrice - it->entryPrice) * \n                               it->quantity;\n            \n            // Check stop loss\n            bool hitStop = (it->quantity > 0 && currentPrice <= it->stopLoss) ||\n                          (it->quantity < 0 && currentPrice >= it->stopLoss);\n            \n            // Check take profit\n            bool hitTarget = (it->quantity > 0 && currentPrice >= it->takeProfit) ||\n                            (it->quantity < 0 && currentPrice <= it->takeProfit);\n            \n            if (hitStop || hitTarget) {\n                // Close position\n                it->realizedPnL = it->unrealizedPnL;\n                capital += it->entryPrice * std::abs(it->quantity) + it->realizedPnL;\n                it = positions.erase(it);\n            } else {\n                ++it;\n            }\n        }\n    }\n};\n\nint main() {\n    AlgoTrading trader(100000);  // $100k capital\n    \n    // Generate price data\n    std::vector<double> prices;\n    double price = 100;\n    for (int i = 0; i < 1000; i++) {\n        price += (rand() % 200 - 100) / 100.0;\n        prices.push_back(price);\n    }\n    \n    // Test strategies"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 442,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            // Check stop loss\n            bool hitStop = (it->quantity > 0 && currentPrice <= it->stopLoss) ||\n                          (it->quantity < 0 && currentPrice >= it->stopLoss);\n            \n            // Check take profit\n            bool hitTarget = (it->quantity > 0 && currentPrice >= it->takeProfit) ||\n                            (it->quantity < 0 && currentPrice <= it->takeProfit);\n            \n            if (hitStop || hitTarget) {\n                // Close position\n                it->realizedPnL = it->unrealizedPnL;\n                capital += it->entryPrice * std::abs(it->quantity) + it->realizedPnL;\n                it = positions.erase(it);\n            } else {\n                ++it;\n            }\n        }\n    }\n};\n\nint main() {\n    AlgoTrading trader(100000);  // $100k capital\n    \n    // Generate price data\n    std::vector<double> prices;\n    double price = 100;\n    for (int i = 0; i < 1000; i++) {\n        price += (rand() % 200 - 100) / 100.0;\n        prices.push_back(price);\n    }\n    \n    // Test strategies\n    auto bbSignal = trader.bollingerBandStrategy(prices);\n    auto rsiSignal = trader.rsiDivergenceStrategy(prices);\n    auto kalmanSignal = trader.kalmanMeanReversion(prices);"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 442,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            // Check stop loss\n            bool hitStop = (it->quantity > 0 && currentPrice <= it->stopLoss) ||\n                          (it->quantity < 0 && currentPrice >= it->stopLoss);\n            \n            // Check take profit\n            bool hitTarget = (it->quantity > 0 && currentPrice >= it->takeProfit) ||\n                            (it->quantity < 0 && currentPrice <= it->takeProfit);\n            \n            if (hitStop || hitTarget) {\n                // Close position\n                it->realizedPnL = it->unrealizedPnL;\n                capital += it->entryPrice * std::abs(it->quantity) + it->realizedPnL;\n                it = positions.erase(it);\n            } else {\n                ++it;\n            }\n        }\n    }\n};\n\nint main() {\n    AlgoTrading trader(100000);  // $100k capital\n    \n    // Generate price data\n    std::vector<double> prices;\n    double price = 100;\n    for (int i = 0; i < 1000; i++) {\n        price += (rand() % 200 - 100) / 100.0;\n        prices.push_back(price);\n    }\n    \n    // Test strategies\n    auto bbSignal = trader.bollingerBandStrategy(prices);\n    auto rsiSignal = trader.rsiDivergenceStrategy(prices);\n    auto kalmanSignal = trader.kalmanMeanReversion(prices);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 443,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            bool hitStop = (it->quantity > 0 && currentPrice <= it->stopLoss) ||\n                          (it->quantity < 0 && currentPrice >= it->stopLoss);\n            \n            // Check take profit\n            bool hitTarget = (it->quantity > 0 && currentPrice >= it->takeProfit) ||\n                            (it->quantity < 0 && currentPrice <= it->takeProfit);\n            \n            if (hitStop || hitTarget) {\n                // Close position\n                it->realizedPnL = it->unrealizedPnL;\n                capital += it->entryPrice * std::abs(it->quantity) + it->realizedPnL;\n                it = positions.erase(it);\n            } else {\n                ++it;\n            }\n        }\n    }\n};\n\nint main() {\n    AlgoTrading trader(100000);  // $100k capital\n    \n    // Generate price data\n    std::vector<double> prices;\n    double price = 100;\n    for (int i = 0; i < 1000; i++) {\n        price += (rand() % 200 - 100) / 100.0;\n        prices.push_back(price);\n    }\n    \n    // Test strategies\n    auto bbSignal = trader.bollingerBandStrategy(prices);\n    auto rsiSignal = trader.rsiDivergenceStrategy(prices);\n    auto kalmanSignal = trader.kalmanMeanReversion(prices);\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 445,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            \n            // Check take profit\n            bool hitTarget = (it->quantity > 0 && currentPrice >= it->takeProfit) ||\n                            (it->quantity < 0 && currentPrice <= it->takeProfit);\n            \n            if (hitStop || hitTarget) {\n                // Close position\n                it->realizedPnL = it->unrealizedPnL;\n                capital += it->entryPrice * std::abs(it->quantity) + it->realizedPnL;\n                it = positions.erase(it);\n            } else {\n                ++it;\n            }\n        }\n    }\n};\n\nint main() {\n    AlgoTrading trader(100000);  // $100k capital\n    \n    // Generate price data\n    std::vector<double> prices;\n    double price = 100;\n    for (int i = 0; i < 1000; i++) {\n        price += (rand() % 200 - 100) / 100.0;\n        prices.push_back(price);\n    }\n    \n    // Test strategies\n    auto bbSignal = trader.bollingerBandStrategy(prices);\n    auto rsiSignal = trader.rsiDivergenceStrategy(prices);\n    auto kalmanSignal = trader.kalmanMeanReversion(prices);\n    \n    // Execute trades\n    if (bbSignal.confidence > 0.7) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/move.h",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 45,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 2912,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/move.h",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 45,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 432,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading18computeRiskMetricsERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 346,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8,
+      "context": "    };\n    \n    RiskMetrics computeRiskMetrics(const std::vector<double>& returns) {\n        RiskMetrics metrics;\n        \n        if (returns.empty()) {\n            metrics.sharpeRatio = 0;\n            metrics.maxDrawdown = 0;\n            metrics.winRate = 0;\n            metrics.profitFactor = 0;\n            return metrics;\n        }\n        \n        // Sharpe ratio\n        double mean = 0, variance = 0;\n        for (double r : returns) mean += r;\n        mean /= returns.size();\n        \n        for (double r : returns) {\n            variance += (r - mean) * (r - mean);\n        }\n        double stdDev = std::sqrt(variance / returns.size());\n        metrics.sharpeRatio = stdDev > 0 ? mean / stdDev * std::sqrt(252) : 0;\n        \n        // Max drawdown\n        double peak = 0, cumReturn = 0;\n        metrics.maxDrawdown = 0;\n        \n        for (double r : returns) {\n            cumReturn += r;\n            peak = std::max(peak, cumReturn);\n            metrics.maxDrawdown = std::max(metrics.maxDrawdown, peak - cumReturn);\n        }\n        \n        // Win rate and profit factor"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading18computeRiskMetricsERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 356,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            return metrics;\n        }\n        \n        // Sharpe ratio\n        double mean = 0, variance = 0;\n        for (double r : returns) mean += r;\n        mean /= returns.size();\n        \n        for (double r : returns) {\n            variance += (r - mean) * (r - mean);\n        }\n        double stdDev = std::sqrt(variance / returns.size());\n        metrics.sharpeRatio = stdDev > 0 ? mean / stdDev * std::sqrt(252) : 0;\n        \n        // Max drawdown\n        double peak = 0, cumReturn = 0;\n        metrics.maxDrawdown = 0;\n        \n        for (double r : returns) {\n            cumReturn += r;\n            peak = std::max(peak, cumReturn);\n            metrics.maxDrawdown = std::max(metrics.maxDrawdown, peak - cumReturn);\n        }\n        \n        // Win rate and profit factor\n        int wins = 0;\n        double totalWins = 0, totalLosses = 0;\n        \n        for (double r : returns) {\n            if (r > 0) {\n                wins++;\n                totalWins += r;\n            } else {\n                totalLosses += -r;\n            }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading18computeRiskMetricsERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 363,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading18computeRiskMetricsERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 359,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.30000000000000004
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading18computeRiskMetricsERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 369,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Max drawdown\n        double peak = 0, cumReturn = 0;\n        metrics.maxDrawdown = 0;\n        \n        for (double r : returns) {\n            cumReturn += r;\n            peak = std::max(peak, cumReturn);\n            metrics.maxDrawdown = std::max(metrics.maxDrawdown, peak - cumReturn);\n        }\n        \n        // Win rate and profit factor\n        int wins = 0;\n        double totalWins = 0, totalLosses = 0;\n        \n        for (double r : returns) {\n            if (r > 0) {\n                wins++;\n                totalWins += r;\n            } else {\n                totalLosses += -r;\n            }\n        }\n        \n        metrics.winRate = static_cast<double>(wins) / returns.size();\n        metrics.avgWin = wins > 0 ? totalWins / wins : 0;\n        metrics.avgLoss = (returns.size() - wins) > 0 ? \n                         totalLosses / (returns.size() - wins) : 0;\n        metrics.profitFactor = totalLosses > 0 ? totalWins / totalLosses : 0;\n        \n        return metrics;\n    }\n    \n    // Execute trade\n    void executeTrade(const Signal& signal, const std::string& symbol,"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading18computeRiskMetricsERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 390,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n        }\n        \n        metrics.winRate = static_cast<double>(wins) / returns.size();\n        metrics.avgWin = wins > 0 ? totalWins / wins : 0;\n        metrics.avgLoss = (returns.size() - wins) > 0 ? \n                         totalLosses / (returns.size() - wins) : 0;\n        metrics.profitFactor = totalLosses > 0 ? totalWins / totalLosses : 0;\n        \n        return metrics;\n    }\n    \n    // Execute trade\n    void executeTrade(const Signal& signal, const std::string& symbol,\n                     double currentPrice) {\n        if (signal.direction == 0) return;\n        \n        // Position sizing\n        double positionSize = kellyPositionSize(0.6, 0.02, 0.01);\n        double dollarAmount = capital * positionSize * signal.strength;\n        int quantity = static_cast<int>(dollarAmount / currentPrice);\n        \n        if (quantity == 0) return;\n        \n        Position pos;\n        pos.symbol = symbol;\n        pos.quantity = quantity * signal.direction;\n        pos.entryPrice = currentPrice;\n        pos.currentPrice = currentPrice;\n        pos.unrealizedPnL = 0;\n        pos.realizedPnL = 0;\n        \n        // Set stop loss and take profit\n        if (signal.direction > 0) {\n            pos.stopLoss = currentPrice * 0.98;  // 2% stop"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading18computeRiskMetricsERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 379,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Win rate and profit factor\n        int wins = 0;\n        double totalWins = 0, totalLosses = 0;\n        \n        for (double r : returns) {\n            if (r > 0) {\n                wins++;\n                totalWins += r;\n            } else {\n                totalLosses += -r;\n            }\n        }\n        \n        metrics.winRate = static_cast<double>(wins) / returns.size();\n        metrics.avgWin = wins > 0 ? totalWins / wins : 0;\n        metrics.avgLoss = (returns.size() - wins) > 0 ? \n                         totalLosses / (returns.size() - wins) : 0;\n        metrics.profitFactor = totalLosses > 0 ? totalWins / totalLosses : 0;\n        \n        return metrics;\n    }\n    \n    // Execute trade\n    void executeTrade(const Signal& signal, const std::string& symbol,\n                     double currentPrice) {\n        if (signal.direction == 0) return;\n        \n        // Position sizing\n        double positionSize = kellyPositionSize(0.6, 0.02, 0.01);\n        double dollarAmount = capital * positionSize * signal.strength;\n        int quantity = static_cast<int>(dollarAmount / currentPrice);\n        \n        if (quantity == 0) return;\n        "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTradingD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTradingD1Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN11AlgoTradingD1Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTradingD1Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTradingD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21computeBollingerBandsERKNSt3__16vectorIdNS0_9allocatorIdEEEEid",
+      "line": 56,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.30000000000000004
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21computeBollingerBandsERKNSt3__16vectorIdNS0_9allocatorIdEEEEid",
+      "line": 59,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21computeBollingerBandsERKNSt3__16vectorIdNS0_9allocatorIdEEEEid",
+      "line": 66,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "            }\n            double sma = sum / period;\n            \n            // Compute standard deviation\n            double variance = 0;\n            for (int j = 0; j < period; j++) {\n                double diff = prices[i - j] - sma;\n                variance += diff * diff;\n            }\n            double stdDev = std::sqrt(variance / period);\n            \n            bands.middle.push_back(sma);\n            bands.upper.push_back(sma + numStdDev * stdDev);\n            bands.lower.push_back(sma - numStdDev * stdDev);\n            bands.bandwidth.push_back((bands.upper.back() - bands.lower.back()) / sma);\n        }\n        \n        return bands;\n    }\n    \n    Signal bollingerBandStrategy(const std::vector<double>& prices) {\n        Signal signal;\n        signal.direction = 0;\n        signal.strength = 0;\n        \n        auto bands = computeBollingerBands(prices, 20, 2.0);\n        \n        if (bands.middle.size() < 2) return signal;\n        \n        double currentPrice = prices.back();\n        double upper = bands.upper.back();\n        double lower = bands.lower.back();\n        double middle = bands.middle.back();\n        \n        // Buy when price touches lower band"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21computeBollingerBandsERKNSt3__16vectorIdNS0_9allocatorIdEEEEid",
+      "line": 59,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8800000000000001,
+      "context": "        BollingerBands bands;\n        \n        for (size_t i = period - 1; i < prices.size(); i++) {\n            // Compute SMA\n            double sum = 0;\n            for (int j = 0; j < period; j++) {\n                sum += prices[i - j];\n            }\n            double sma = sum / period;\n            \n            // Compute standard deviation\n            double variance = 0;\n            for (int j = 0; j < period; j++) {\n                double diff = prices[i - j] - sma;\n                variance += diff * diff;\n            }\n            double stdDev = std::sqrt(variance / period);\n            \n            bands.middle.push_back(sma);\n            bands.upper.push_back(sma + numStdDev * stdDev);\n            bands.lower.push_back(sma - numStdDev * stdDev);\n            bands.bandwidth.push_back((bands.upper.back() - bands.lower.back()) / sma);\n        }\n        \n        return bands;\n    }\n    \n    Signal bollingerBandStrategy(const std::vector<double>& prices) {\n        Signal signal;\n        signal.direction = 0;\n        signal.strength = 0;\n        \n        auto bands = computeBollingerBands(prices, 20, 2.0);\n        \n        if (bands.middle.size() < 2) return signal;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21computeBollingerBandsERKNSt3__16vectorIdNS0_9allocatorIdEEEEid",
+      "line": 66,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "            }\n            double sma = sum / period;\n            \n            // Compute standard deviation\n            double variance = 0;\n            for (int j = 0; j < period; j++) {\n                double diff = prices[i - j] - sma;\n                variance += diff * diff;\n            }\n            double stdDev = std::sqrt(variance / period);\n            \n            bands.middle.push_back(sma);\n            bands.upper.push_back(sma + numStdDev * stdDev);\n            bands.lower.push_back(sma - numStdDev * stdDev);\n            bands.bandwidth.push_back((bands.upper.back() - bands.lower.back()) / sma);\n        }\n        \n        return bands;\n    }\n    \n    Signal bollingerBandStrategy(const std::vector<double>& prices) {\n        Signal signal;\n        signal.direction = 0;\n        signal.strength = 0;\n        \n        auto bands = computeBollingerBands(prices, 20, 2.0);\n        \n        if (bands.middle.size() < 2) return signal;\n        \n        double currentPrice = prices.back();\n        double upper = bands.upper.back();\n        double lower = bands.lower.back();\n        double middle = bands.middle.back();\n        \n        // Buy when price touches lower band"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21computeBollingerBandsERKNSt3__16vectorIdNS0_9allocatorIdEEEEid",
+      "line": 56,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.30000000000000004
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading14BollingerBandsD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading14BollingerBandsD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading14BollingerBandsD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading14BollingerBandsD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE9push_backB8ne210101EOd",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE9push_backB8ne210101EOd",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE9push_backB8ne210101EOd",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE9push_backB8ne210101EOd",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading10computeRSIERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 201,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.30000000000000004
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading10computeRSIERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 203,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading10computeRSIERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.88,
+      "context": "        if (prices.size() < period + 1) return rsi;\n        \n        for (size_t i = period; i < prices.size(); i++) {\n            double gains = 0, losses = 0;\n            \n            for (int j = 0; j < period; j++) {\n                double change = prices[i - j] - prices[i - j - 1];\n                if (change > 0) {\n                    gains += change;\n                } else {\n                    losses += -change;\n                }\n            }\n            \n            double avgGain = gains / period;\n            double avgLoss = losses / period;\n            \n            double rs = avgLoss > 0 ? avgGain / avgLoss : 100;\n            double rsiValue = 100 - (100 / (1 + rs));\n            \n            rsi.push_back(rsiValue);\n        }\n        \n        return rsi;\n    }\n    \n    Signal rsiDivergenceStrategy(const std::vector<double>& prices) {\n        Signal signal;\n        signal.direction = 0;\n        \n        auto rsi = computeRSI(prices, 14);\n        \n        if (rsi.size() < 5) return signal;\n        \n        // Check for bullish divergence"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading10computeRSIERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 218,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "            }\n            \n            double avgGain = gains / period;\n            double avgLoss = losses / period;\n            \n            double rs = avgLoss > 0 ? avgGain / avgLoss : 100;\n            double rsiValue = 100 - (100 / (1 + rs));\n            \n            rsi.push_back(rsiValue);\n        }\n        \n        return rsi;\n    }\n    \n    Signal rsiDivergenceStrategy(const std::vector<double>& prices) {\n        Signal signal;\n        signal.direction = 0;\n        \n        auto rsi = computeRSI(prices, 14);\n        \n        if (rsi.size() < 5) return signal;\n        \n        // Check for bullish divergence\n        // Price makes lower low, RSI makes higher low\n        if (prices.back() < prices[prices.size() - 5] &&\n            rsi.back() > rsi[rsi.size() - 5]) {\n            signal.direction = 1;\n            signal.strength = (rsi.back() - rsi[rsi.size() - 5]) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bullish RSI divergence\";\n        }\n        // Check for bearish divergence\n        // Price makes higher high, RSI makes lower high\n        else if (prices.back() > prices[prices.size() - 5] &&\n                 rsi.back() < rsi[rsi.size() - 5]) {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading10computeRSIERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 206,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8800000000000001,
+      "context": "        if (prices.size() < period + 1) return rsi;\n        \n        for (size_t i = period; i < prices.size(); i++) {\n            double gains = 0, losses = 0;\n            \n            for (int j = 0; j < period; j++) {\n                double change = prices[i - j] - prices[i - j - 1];\n                if (change > 0) {\n                    gains += change;\n                } else {\n                    losses += -change;\n                }\n            }\n            \n            double avgGain = gains / period;\n            double avgLoss = losses / period;\n            \n            double rs = avgLoss > 0 ? avgGain / avgLoss : 100;\n            double rsiValue = 100 - (100 / (1 + rs));\n            \n            rsi.push_back(rsiValue);\n        }\n        \n        return rsi;\n    }\n    \n    Signal rsiDivergenceStrategy(const std::vector<double>& prices) {\n        Signal signal;\n        signal.direction = 0;\n        \n        auto rsi = computeRSI(prices, 14);\n        \n        if (rsi.size() < 5) return signal;\n        \n        // Check for bullish divergence"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading10computeRSIERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 203,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.30000000000000004
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11AlgoTrading10computeRSIERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN11AlgoTrading8PositionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN11AlgoTrading8PositionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIN11AlgoTrading8PositionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__16vectorIN11AlgoTrading8PositionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 1003,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__16vectorIN11AlgoTrading8PositionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 625,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__16vectorIN11AlgoTrading8PositionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 625,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__16vectorIN11AlgoTrading8PositionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__16vectorIN11AlgoTrading8PositionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 49,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN11AlgoTrading8PositionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE25__init_copy_ctor_externalEPKcm",
+      "line": 2574,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE25__init_copy_ctor_externalEPKcm",
+      "line": 2578,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE25__init_copy_ctor_externalEPKcm",
+      "line": 228,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN11AlgoTrading8PositionERNS_9allocatorIS2_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__114__split_bufferIN11AlgoTrading8PositionERNS_9allocatorIS2_EEED1Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN11AlgoTrading8PositionERNS_9allocatorIS2_EEED1Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN11AlgoTrading8PositionERNS_9allocatorIS2_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21bollingerBandStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 96,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        double upper = bands.upper.back();\n        double lower = bands.lower.back();\n        double middle = bands.middle.back();\n        \n        // Buy when price touches lower band\n        if (currentPrice <= lower) {\n            signal.direction = 1;\n            signal.strength = (lower - currentPrice) / lower;\n            signal.confidence = 0.7;\n            signal.reason = \"Price at lower Bollinger Band\";\n        }\n        // Sell when price touches upper band\n        else if (currentPrice >= upper) {\n            signal.direction = -1;\n            signal.strength = (currentPrice - upper) / upper;\n            signal.confidence = 0.7;\n            signal.reason = \"Price at upper Bollinger Band\";\n        }\n        // Exit when price crosses middle\n        else if (std::abs(currentPrice - middle) < middle * 0.001) {\n            signal.direction = 0;\n            signal.confidence = 0.5;\n            signal.reason = \"Price at middle band\";\n        }\n        \n        return signal;\n    }\n    \n    // Pairs trading (statistical arbitrage)\n    struct PairsTrade {\n        std::string symbol1;\n        std::string symbol2;\n        double hedgeRatio;\n        double spread;\n        double zscore;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading19kalmanMeanReversionERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 309,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        double currentPrice = prices.back();\n        double kalmanPrice = kalmanPrices.back();\n        double deviation = (currentPrice - kalmanPrice) / kalmanPrice;\n        \n        if (deviation < -0.02) {  // 2% below Kalman estimate\n            signal.direction = 1;\n            signal.strength = std::abs(deviation);\n            signal.confidence = 0.7;\n            signal.reason = \"Price below Kalman filter\";\n        } else if (deviation > 0.02) {\n            signal.direction = -1;\n            signal.strength = std::abs(deviation);\n            signal.confidence = 0.7;\n            signal.reason = \"Price above Kalman filter\";\n        }\n        \n        return signal;\n    }\n    \n    // Position sizing (Kelly criterion)\n    double kellyPositionSize(double winRate, double avgWin, double avgLoss) {\n        double winLossRatio = avgWin / avgLoss;\n        double kelly = winRate - (1 - winRate) / winLossRatio;\n        \n        // Use half Kelly for safety\n        return std::max(0.0, std::min(kelly / 2, 0.25));  // Cap at 25%\n    }\n    \n    // Risk management\n    struct RiskMetrics {\n        double sharpeRatio;\n        double maxDrawdown;\n        double winRate;\n        double profitFactor;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading12executeTradeERKNS_6SignalERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEd",
+      "line": 400,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    // Execute trade\n    void executeTrade(const Signal& signal, const std::string& symbol,\n                     double currentPrice) {\n        if (signal.direction == 0) return;\n        \n        // Position sizing\n        double positionSize = kellyPositionSize(0.6, 0.02, 0.01);\n        double dollarAmount = capital * positionSize * signal.strength;\n        int quantity = static_cast<int>(dollarAmount / currentPrice);\n        \n        if (quantity == 0) return;\n        \n        Position pos;\n        pos.symbol = symbol;\n        pos.quantity = quantity * signal.direction;\n        pos.entryPrice = currentPrice;\n        pos.currentPrice = currentPrice;\n        pos.unrealizedPnL = 0;\n        pos.realizedPnL = 0;\n        \n        // Set stop loss and take profit\n        if (signal.direction > 0) {\n            pos.stopLoss = currentPrice * 0.98;  // 2% stop\n            pos.takeProfit = currentPrice * 1.04;  // 4% target\n        } else {\n            pos.stopLoss = currentPrice * 1.02;\n            pos.takeProfit = currentPrice * 0.96;\n        }\n        \n        positions.push_back(pos);\n        capital -= dollarAmount;\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading12executeTradeERKNS_6SignalERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEd",
+      "line": 407,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        // Position sizing\n        double positionSize = kellyPositionSize(0.6, 0.02, 0.01);\n        double dollarAmount = capital * positionSize * signal.strength;\n        int quantity = static_cast<int>(dollarAmount / currentPrice);\n        \n        if (quantity == 0) return;\n        \n        Position pos;\n        pos.symbol = symbol;\n        pos.quantity = quantity * signal.direction;\n        pos.entryPrice = currentPrice;\n        pos.currentPrice = currentPrice;\n        pos.unrealizedPnL = 0;\n        pos.realizedPnL = 0;\n        \n        // Set stop loss and take profit\n        if (signal.direction > 0) {\n            pos.stopLoss = currentPrice * 0.98;  // 2% stop\n            pos.takeProfit = currentPrice * 1.04;  // 4% target\n        } else {\n            pos.stopLoss = currentPrice * 1.02;\n            pos.takeProfit = currentPrice * 0.96;\n        }\n        \n        positions.push_back(pos);\n        capital -= dollarAmount;\n    }\n    \n    // Update positions\n    void updatePositions(double currentPrice) {\n        for (auto it = positions.begin(); it != positions.end();) {\n            it->currentPrice = currentPrice;\n            it->unrealizedPnL = (it->currentPrice - it->entryPrice) * \n                               it->quantity;\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 438,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            it->currentPrice = currentPrice;\n            it->unrealizedPnL = (it->currentPrice - it->entryPrice) * \n                               it->quantity;\n            \n            // Check stop loss\n            bool hitStop = (it->quantity > 0 && currentPrice <= it->stopLoss) ||\n                          (it->quantity < 0 && currentPrice >= it->stopLoss);\n            \n            // Check take profit\n            bool hitTarget = (it->quantity > 0 && currentPrice >= it->takeProfit) ||\n                            (it->quantity < 0 && currentPrice <= it->takeProfit);\n            \n            if (hitStop || hitTarget) {\n                // Close position\n                it->realizedPnL = it->unrealizedPnL;\n                capital += it->entryPrice * std::abs(it->quantity) + it->realizedPnL;\n                it = positions.erase(it);\n            } else {\n                ++it;\n            }\n        }\n    }\n};\n\nint main() {\n    AlgoTrading trader(100000);  // $100k capital\n    \n    // Generate price data\n    std::vector<double> prices;\n    double price = 100;\n    for (int i = 0; i < 1000; i++) {\n        price += (rand() % 200 - 100) / 100.0;\n        prices.push_back(price);\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 438,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            it->currentPrice = currentPrice;\n            it->unrealizedPnL = (it->currentPrice - it->entryPrice) * \n                               it->quantity;\n            \n            // Check stop loss\n            bool hitStop = (it->quantity > 0 && currentPrice <= it->stopLoss) ||\n                          (it->quantity < 0 && currentPrice >= it->stopLoss);\n            \n            // Check take profit\n            bool hitTarget = (it->quantity > 0 && currentPrice >= it->takeProfit) ||\n                            (it->quantity < 0 && currentPrice <= it->takeProfit);\n            \n            if (hitStop || hitTarget) {\n                // Close position\n                it->realizedPnL = it->unrealizedPnL;\n                capital += it->entryPrice * std::abs(it->quantity) + it->realizedPnL;\n                it = positions.erase(it);\n            } else {\n                ++it;\n            }\n        }\n    }\n};\n\nint main() {\n    AlgoTrading trader(100000);  // $100k capital\n    \n    // Generate price data\n    std::vector<double> prices;\n    double price = 100;\n    for (int i = 0; i < 1000; i++) {\n        price += (rand() % 200 - 100) / 100.0;\n        prices.push_back(price);\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 442,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            // Check stop loss\n            bool hitStop = (it->quantity > 0 && currentPrice <= it->stopLoss) ||\n                          (it->quantity < 0 && currentPrice >= it->stopLoss);\n            \n            // Check take profit\n            bool hitTarget = (it->quantity > 0 && currentPrice >= it->takeProfit) ||\n                            (it->quantity < 0 && currentPrice <= it->takeProfit);\n            \n            if (hitStop || hitTarget) {\n                // Close position\n                it->realizedPnL = it->unrealizedPnL;\n                capital += it->entryPrice * std::abs(it->quantity) + it->realizedPnL;\n                it = positions.erase(it);\n            } else {\n                ++it;\n            }\n        }\n    }\n};\n\nint main() {\n    AlgoTrading trader(100000);  // $100k capital\n    \n    // Generate price data\n    std::vector<double> prices;\n    double price = 100;\n    for (int i = 0; i < 1000; i++) {\n        price += (rand() % 200 - 100) / 100.0;\n        prices.push_back(price);\n    }\n    \n    // Test strategies\n    auto bbSignal = trader.bollingerBandStrategy(prices);\n    auto rsiSignal = trader.rsiDivergenceStrategy(prices);\n    auto kalmanSignal = trader.kalmanMeanReversion(prices);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading18computeRiskMetricsERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 356,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            return metrics;\n        }\n        \n        // Sharpe ratio\n        double mean = 0, variance = 0;\n        for (double r : returns) mean += r;\n        mean /= returns.size();\n        \n        for (double r : returns) {\n            variance += (r - mean) * (r - mean);\n        }\n        double stdDev = std::sqrt(variance / returns.size());\n        metrics.sharpeRatio = stdDev > 0 ? mean / stdDev * std::sqrt(252) : 0;\n        \n        // Max drawdown\n        double peak = 0, cumReturn = 0;\n        metrics.maxDrawdown = 0;\n        \n        for (double r : returns) {\n            cumReturn += r;\n            peak = std::max(peak, cumReturn);\n            metrics.maxDrawdown = std::max(metrics.maxDrawdown, peak - cumReturn);\n        }\n        \n        // Win rate and profit factor\n        int wins = 0;\n        double totalWins = 0, totalLosses = 0;\n        \n        for (double r : returns) {\n            if (r > 0) {\n                wins++;\n                totalWins += r;\n            } else {\n                totalLosses += -r;\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading18computeRiskMetricsERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 369,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Max drawdown\n        double peak = 0, cumReturn = 0;\n        metrics.maxDrawdown = 0;\n        \n        for (double r : returns) {\n            cumReturn += r;\n            peak = std::max(peak, cumReturn);\n            metrics.maxDrawdown = std::max(metrics.maxDrawdown, peak - cumReturn);\n        }\n        \n        // Win rate and profit factor\n        int wins = 0;\n        double totalWins = 0, totalLosses = 0;\n        \n        for (double r : returns) {\n            if (r > 0) {\n                wins++;\n                totalWins += r;\n            } else {\n                totalLosses += -r;\n            }\n        }\n        \n        metrics.winRate = static_cast<double>(wins) / returns.size();\n        metrics.avgWin = wins > 0 ? totalWins / wins : 0;\n        metrics.avgLoss = (returns.size() - wins) > 0 ? \n                         totalLosses / (returns.size() - wins) : 0;\n        metrics.profitFactor = totalLosses > 0 ? totalWins / totalLosses : 0;\n        \n        return metrics;\n    }\n    \n    // Execute trade\n    void executeTrade(const Signal& signal, const std::string& symbol,",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading18computeRiskMetricsERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 390,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n        }\n        \n        metrics.winRate = static_cast<double>(wins) / returns.size();\n        metrics.avgWin = wins > 0 ? totalWins / wins : 0;\n        metrics.avgLoss = (returns.size() - wins) > 0 ? \n                         totalLosses / (returns.size() - wins) : 0;\n        metrics.profitFactor = totalLosses > 0 ? totalWins / totalLosses : 0;\n        \n        return metrics;\n    }\n    \n    // Execute trade\n    void executeTrade(const Signal& signal, const std::string& symbol,\n                     double currentPrice) {\n        if (signal.direction == 0) return;\n        \n        // Position sizing\n        double positionSize = kellyPositionSize(0.6, 0.02, 0.01);\n        double dollarAmount = capital * positionSize * signal.strength;\n        int quantity = static_cast<int>(dollarAmount / currentPrice);\n        \n        if (quantity == 0) return;\n        \n        Position pos;\n        pos.symbol = symbol;\n        pos.quantity = quantity * signal.direction;\n        pos.entryPrice = currentPrice;\n        pos.currentPrice = currentPrice;\n        pos.unrealizedPnL = 0;\n        pos.realizedPnL = 0;\n        \n        // Set stop loss and take profit\n        if (signal.direction > 0) {\n            pos.stopLoss = currentPrice * 0.98;  // 2% stop",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading18computeRiskMetricsERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 379,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Win rate and profit factor\n        int wins = 0;\n        double totalWins = 0, totalLosses = 0;\n        \n        for (double r : returns) {\n            if (r > 0) {\n                wins++;\n                totalWins += r;\n            } else {\n                totalLosses += -r;\n            }\n        }\n        \n        metrics.winRate = static_cast<double>(wins) / returns.size();\n        metrics.avgWin = wins > 0 ? totalWins / wins : 0;\n        metrics.avgLoss = (returns.size() - wins) > 0 ? \n                         totalLosses / (returns.size() - wins) : 0;\n        metrics.profitFactor = totalLosses > 0 ? totalWins / totalLosses : 0;\n        \n        return metrics;\n    }\n    \n    // Execute trade\n    void executeTrade(const Signal& signal, const std::string& symbol,\n                     double currentPrice) {\n        if (signal.direction == 0) return;\n        \n        // Position sizing\n        double positionSize = kellyPositionSize(0.6, 0.02, 0.01);\n        double dollarAmount = capital * positionSize * signal.strength;\n        int quantity = static_cast<int>(dollarAmount / currentPrice);\n        \n        if (quantity == 0) return;\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21computeBollingerBandsERKNSt3__16vectorIdNS0_9allocatorIdEEEEid",
+      "line": 59,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8800000000000001,
+      "context": "        BollingerBands bands;\n        \n        for (size_t i = period - 1; i < prices.size(); i++) {\n            // Compute SMA\n            double sum = 0;\n            for (int j = 0; j < period; j++) {\n                sum += prices[i - j];\n            }\n            double sma = sum / period;\n            \n            // Compute standard deviation\n            double variance = 0;\n            for (int j = 0; j < period; j++) {\n                double diff = prices[i - j] - sma;\n                variance += diff * diff;\n            }\n            double stdDev = std::sqrt(variance / period);\n            \n            bands.middle.push_back(sma);\n            bands.upper.push_back(sma + numStdDev * stdDev);\n            bands.lower.push_back(sma - numStdDev * stdDev);\n            bands.bandwidth.push_back((bands.upper.back() - bands.lower.back()) / sma);\n        }\n        \n        return bands;\n    }\n    \n    Signal bollingerBandStrategy(const std::vector<double>& prices) {\n        Signal signal;\n        signal.direction = 0;\n        signal.strength = 0;\n        \n        auto bands = computeBollingerBands(prices, 20, 2.0);\n        \n        if (bands.middle.size() < 2) return signal;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8800000000000001
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading10computeRSIERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 206,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8800000000000001,
+      "context": "        if (prices.size() < period + 1) return rsi;\n        \n        for (size_t i = period; i < prices.size(); i++) {\n            double gains = 0, losses = 0;\n            \n            for (int j = 0; j < period; j++) {\n                double change = prices[i - j] - prices[i - j - 1];\n                if (change > 0) {\n                    gains += change;\n                } else {\n                    losses += -change;\n                }\n            }\n            \n            double avgGain = gains / period;\n            double avgLoss = losses / period;\n            \n            double rs = avgLoss > 0 ? avgGain / avgLoss : 100;\n            double rsiValue = 100 - (100 / (1 + rs));\n            \n            rsi.push_back(rsiValue);\n        }\n        \n        return rsi;\n    }\n    \n    Signal rsiDivergenceStrategy(const std::vector<double>& prices) {\n        Signal signal;\n        signal.direction = 0;\n        \n        auto rsi = computeRSI(prices, 14);\n        \n        if (rsi.size() < 5) return signal;\n        \n        // Check for bullish divergence",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8800000000000001
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading10computeRSIERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.88,
+      "context": "        if (prices.size() < period + 1) return rsi;\n        \n        for (size_t i = period; i < prices.size(); i++) {\n            double gains = 0, losses = 0;\n            \n            for (int j = 0; j < period; j++) {\n                double change = prices[i - j] - prices[i - j - 1];\n                if (change > 0) {\n                    gains += change;\n                } else {\n                    losses += -change;\n                }\n            }\n            \n            double avgGain = gains / period;\n            double avgLoss = losses / period;\n            \n            double rs = avgLoss > 0 ? avgGain / avgLoss : 100;\n            double rsiValue = 100 - (100 / (1 + rs));\n            \n            rsi.push_back(rsiValue);\n        }\n        \n        return rsi;\n    }\n    \n    Signal rsiDivergenceStrategy(const std::vector<double>& prices) {\n        Signal signal;\n        signal.direction = 0;\n        \n        auto rsi = computeRSI(prices, 14);\n        \n        if (rsi.size() < 5) return signal;\n        \n        // Check for bullish divergence",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.88
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21rsiDivergenceStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 233,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        Signal signal;\n        signal.direction = 0;\n        \n        auto rsi = computeRSI(prices, 14);\n        \n        if (rsi.size() < 5) return signal;\n        \n        // Check for bullish divergence\n        // Price makes lower low, RSI makes higher low\n        if (prices.back() < prices[prices.size() - 5] &&\n            rsi.back() > rsi[rsi.size() - 5]) {\n            signal.direction = 1;\n            signal.strength = (rsi.back() - rsi[rsi.size() - 5]) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bullish RSI divergence\";\n        }\n        // Check for bearish divergence\n        // Price makes higher high, RSI makes lower high\n        else if (prices.back() > prices[prices.size() - 5] &&\n                 rsi.back() < rsi[rsi.size() - 5]) {\n            signal.direction = -1;\n            signal.strength = (rsi[rsi.size() - 5] - rsi.back()) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bearish RSI divergence\";\n        }\n        // Oversold/overbought\n        else if (rsi.back() < 30) {\n            signal.direction = 1;\n            signal.strength = (30 - rsi.back()) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI oversold\";\n        } else if (rsi.back() > 70) {\n            signal.direction = -1;\n            signal.strength = (rsi.back() - 70) / 30;\n            signal.confidence = 0.6;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21rsiDivergenceStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 237,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        \n        if (rsi.size() < 5) return signal;\n        \n        // Check for bullish divergence\n        // Price makes lower low, RSI makes higher low\n        if (prices.back() < prices[prices.size() - 5] &&\n            rsi.back() > rsi[rsi.size() - 5]) {\n            signal.direction = 1;\n            signal.strength = (rsi.back() - rsi[rsi.size() - 5]) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bullish RSI divergence\";\n        }\n        // Check for bearish divergence\n        // Price makes higher high, RSI makes lower high\n        else if (prices.back() > prices[prices.size() - 5] &&\n                 rsi.back() < rsi[rsi.size() - 5]) {\n            signal.direction = -1;\n            signal.strength = (rsi[rsi.size() - 5] - rsi.back()) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bearish RSI divergence\";\n        }\n        // Oversold/overbought\n        else if (rsi.back() < 30) {\n            signal.direction = 1;\n            signal.strength = (30 - rsi.back()) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI oversold\";\n        } else if (rsi.back() > 70) {\n            signal.direction = -1;\n            signal.strength = (rsi.back() - 70) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI overbought\";\n        }\n        \n        return signal;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21rsiDivergenceStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 237,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        \n        if (rsi.size() < 5) return signal;\n        \n        // Check for bullish divergence\n        // Price makes lower low, RSI makes higher low\n        if (prices.back() < prices[prices.size() - 5] &&\n            rsi.back() > rsi[rsi.size() - 5]) {\n            signal.direction = 1;\n            signal.strength = (rsi.back() - rsi[rsi.size() - 5]) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bullish RSI divergence\";\n        }\n        // Check for bearish divergence\n        // Price makes higher high, RSI makes lower high\n        else if (prices.back() > prices[prices.size() - 5] &&\n                 rsi.back() < rsi[rsi.size() - 5]) {\n            signal.direction = -1;\n            signal.strength = (rsi[rsi.size() - 5] - rsi.back()) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bearish RSI divergence\";\n        }\n        // Oversold/overbought\n        else if (rsi.back() < 30) {\n            signal.direction = 1;\n            signal.strength = (30 - rsi.back()) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI oversold\";\n        } else if (rsi.back() > 70) {\n            signal.direction = -1;\n            signal.strength = (rsi.back() - 70) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI overbought\";\n        }\n        \n        return signal;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading18computeRiskMetricsERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 346,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8,
+      "context": "    };\n    \n    RiskMetrics computeRiskMetrics(const std::vector<double>& returns) {\n        RiskMetrics metrics;\n        \n        if (returns.empty()) {\n            metrics.sharpeRatio = 0;\n            metrics.maxDrawdown = 0;\n            metrics.winRate = 0;\n            metrics.profitFactor = 0;\n            return metrics;\n        }\n        \n        // Sharpe ratio\n        double mean = 0, variance = 0;\n        for (double r : returns) mean += r;\n        mean /= returns.size();\n        \n        for (double r : returns) {\n            variance += (r - mean) * (r - mean);\n        }\n        double stdDev = std::sqrt(variance / returns.size());\n        metrics.sharpeRatio = stdDev > 0 ? mean / stdDev * std::sqrt(252) : 0;\n        \n        // Max drawdown\n        double peak = 0, cumReturn = 0;\n        metrics.maxDrawdown = 0;\n        \n        for (double r : returns) {\n            cumReturn += r;\n            peak = std::max(peak, cumReturn);\n            metrics.maxDrawdown = std::max(metrics.maxDrawdown, peak - cumReturn);\n        }\n        \n        // Win rate and profit factor",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.8
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 439,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.78,
+      "context": "            it->unrealizedPnL = (it->currentPrice - it->entryPrice) * \n                               it->quantity;\n            \n            // Check stop loss\n            bool hitStop = (it->quantity > 0 && currentPrice <= it->stopLoss) ||\n                          (it->quantity < 0 && currentPrice >= it->stopLoss);\n            \n            // Check take profit\n            bool hitTarget = (it->quantity > 0 && currentPrice >= it->takeProfit) ||\n                            (it->quantity < 0 && currentPrice <= it->takeProfit);\n            \n            if (hitStop || hitTarget) {\n                // Close position\n                it->realizedPnL = it->unrealizedPnL;\n                capital += it->entryPrice * std::abs(it->quantity) + it->realizedPnL;\n                it = positions.erase(it);\n            } else {\n                ++it;\n            }\n        }\n    }\n};\n\nint main() {\n    AlgoTrading trader(100000);  // $100k capital\n    \n    // Generate price data\n    std::vector<double> prices;\n    double price = 100;\n    for (int i = 0; i < 1000; i++) {\n        price += (rand() % 200 - 100) / 100.0;\n        prices.push_back(price);\n    }\n    \n    // Test strategies",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.78
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading19kalmanMeanReversionERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 301,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.7500000000000001,
+      "context": "        kf.P = 1.0;\n        kf.Q = 0.001;  // Low process noise for mean reversion\n        kf.R = 0.1;\n        \n        std::vector<double> kalmanPrices;\n        for (double price : prices) {\n            kalmanPrices.push_back(updateKalman(kf, price));\n        }\n        \n        double currentPrice = prices.back();\n        double kalmanPrice = kalmanPrices.back();\n        double deviation = (currentPrice - kalmanPrice) / kalmanPrice;\n        \n        if (deviation < -0.02) {  // 2% below Kalman estimate\n            signal.direction = 1;\n            signal.strength = std::abs(deviation);\n            signal.confidence = 0.7;\n            signal.reason = \"Price below Kalman filter\";\n        } else if (deviation > 0.02) {\n            signal.direction = -1;\n            signal.strength = std::abs(deviation);\n            signal.confidence = 0.7;\n            signal.reason = \"Price above Kalman filter\";\n        }\n        \n        return signal;\n    }\n    \n    // Position sizing (Kelly criterion)\n    double kellyPositionSize(double winRate, double avgWin, double avgLoss) {\n        double winLossRatio = avgWin / avgLoss;\n        double kelly = winRate - (1 - winRate) / winLossRatio;\n        \n        // Use half Kelly for safety\n        return std::max(0.0, std::min(kelly / 2, 0.25));  // Cap at 25%",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.7500000000000001
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21bollingerBandStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 88,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.75,
+      "context": "        signal.direction = 0;\n        signal.strength = 0;\n        \n        auto bands = computeBollingerBands(prices, 20, 2.0);\n        \n        if (bands.middle.size() < 2) return signal;\n        \n        double currentPrice = prices.back();\n        double upper = bands.upper.back();\n        double lower = bands.lower.back();\n        double middle = bands.middle.back();\n        \n        // Buy when price touches lower band\n        if (currentPrice <= lower) {\n            signal.direction = 1;\n            signal.strength = (lower - currentPrice) / lower;\n            signal.confidence = 0.7;\n            signal.reason = \"Price at lower Bollinger Band\";\n        }\n        // Sell when price touches upper band\n        else if (currentPrice >= upper) {\n            signal.direction = -1;\n            signal.strength = (currentPrice - upper) / upper;\n            signal.confidence = 0.7;\n            signal.reason = \"Price at upper Bollinger Band\";\n        }\n        // Exit when price crosses middle\n        else if (std::abs(currentPrice - middle) < middle * 0.001) {\n            signal.direction = 0;\n            signal.confidence = 0.5;\n            signal.reason = \"Price at middle band\";\n        }\n        \n        return signal;\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.75
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "main",
+      "line": 474,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.7000000000000001,
+      "context": "    auto bbSignal = trader.bollingerBandStrategy(prices);\n    auto rsiSignal = trader.rsiDivergenceStrategy(prices);\n    auto kalmanSignal = trader.kalmanMeanReversion(prices);\n    \n    // Execute trades\n    if (bbSignal.confidence > 0.7) {\n        trader.executeTrade(bbSignal, \"AAPL\", prices.back());\n    }\n    \n    // Backtest\n    std::vector<double> returns;\n    for (size_t i = 100; i < prices.size(); i++) {\n        trader.updatePositions(prices[i]);\n        \n        // Calculate return\n        if (i > 100) {\n            double ret = (prices[i] - prices[i-1]) / prices[i-1];\n            returns.push_back(ret);\n        }\n    }\n    \n    auto metrics = trader.computeRiskMetrics(returns);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.7000000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "main",
+      "line": 484,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "    std::vector<double> returns;\n    for (size_t i = 100; i < prices.size(); i++) {\n        trader.updatePositions(prices[i]);\n        \n        // Calculate return\n        if (i > 100) {\n            double ret = (prices[i] - prices[i-1]) / prices[i-1];\n            returns.push_back(ret);\n        }\n    }\n    \n    auto metrics = trader.computeRiskMetrics(returns);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading10computeRSIERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 218,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "            }\n            \n            double avgGain = gains / period;\n            double avgLoss = losses / period;\n            \n            double rs = avgLoss > 0 ? avgGain / avgLoss : 100;\n            double rsiValue = 100 - (100 / (1 + rs));\n            \n            rsi.push_back(rsiValue);\n        }\n        \n        return rsi;\n    }\n    \n    Signal rsiDivergenceStrategy(const std::vector<double>& prices) {\n        Signal signal;\n        signal.direction = 0;\n        \n        auto rsi = computeRSI(prices, 14);\n        \n        if (rsi.size() < 5) return signal;\n        \n        // Check for bullish divergence\n        // Price makes lower low, RSI makes higher low\n        if (prices.back() < prices[prices.size() - 5] &&\n            rsi.back() > rsi[rsi.size() - 5]) {\n            signal.direction = 1;\n            signal.strength = (rsi.back() - rsi[rsi.size() - 5]) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bullish RSI divergence\";\n        }\n        // Check for bearish divergence\n        // Price makes higher high, RSI makes lower high\n        else if (prices.back() > prices[prices.size() - 5] &&\n                 rsi.back() < rsi[rsi.size() - 5]) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21rsiDivergenceStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 246,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.6499999999999999,
+      "context": "            signal.confidence = 0.75;\n            signal.reason = \"Bullish RSI divergence\";\n        }\n        // Check for bearish divergence\n        // Price makes higher high, RSI makes lower high\n        else if (prices.back() > prices[prices.size() - 5] &&\n                 rsi.back() < rsi[rsi.size() - 5]) {\n            signal.direction = -1;\n            signal.strength = (rsi[rsi.size() - 5] - rsi.back()) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bearish RSI divergence\";\n        }\n        // Oversold/overbought\n        else if (rsi.back() < 30) {\n            signal.direction = 1;\n            signal.strength = (30 - rsi.back()) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI oversold\";\n        } else if (rsi.back() > 70) {\n            signal.direction = -1;\n            signal.strength = (rsi.back() - 70) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI overbought\";\n        }\n        \n        return signal;\n    }\n    \n    // Mean reversion with Kalman Filter\n    struct KalmanFilter {\n        double x;  // State estimate\n        double P;  // Error covariance\n        double Q;  // Process noise\n        double R;  // Measurement noise\n    };",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.6499999999999999
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21rsiDivergenceStrategyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 254,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.6499999999999999,
+      "context": "            signal.strength = (rsi[rsi.size() - 5] - rsi.back()) / 100;\n            signal.confidence = 0.75;\n            signal.reason = \"Bearish RSI divergence\";\n        }\n        // Oversold/overbought\n        else if (rsi.back() < 30) {\n            signal.direction = 1;\n            signal.strength = (30 - rsi.back()) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI oversold\";\n        } else if (rsi.back() > 70) {\n            signal.direction = -1;\n            signal.strength = (rsi.back() - 70) / 30;\n            signal.confidence = 0.6;\n            signal.reason = \"RSI overbought\";\n        }\n        \n        return signal;\n    }\n    \n    // Mean reversion with Kalman Filter\n    struct KalmanFilter {\n        double x;  // State estimate\n        double P;  // Error covariance\n        double Q;  // Process noise\n        double R;  // Measurement noise\n    };\n    \n    double updateKalman(KalmanFilter& kf, double measurement) {\n        // Prediction\n        double x_pred = kf.x;\n        double P_pred = kf.P + kf.Q;\n        \n        // Update\n        double K = P_pred / (P_pred + kf.R);  // Kalman gain",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.6499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 442,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            // Check stop loss\n            bool hitStop = (it->quantity > 0 && currentPrice <= it->stopLoss) ||\n                          (it->quantity < 0 && currentPrice >= it->stopLoss);\n            \n            // Check take profit\n            bool hitTarget = (it->quantity > 0 && currentPrice >= it->takeProfit) ||\n                            (it->quantity < 0 && currentPrice <= it->takeProfit);\n            \n            if (hitStop || hitTarget) {\n                // Close position\n                it->realizedPnL = it->unrealizedPnL;\n                capital += it->entryPrice * std::abs(it->quantity) + it->realizedPnL;\n                it = positions.erase(it);\n            } else {\n                ++it;\n            }\n        }\n    }\n};\n\nint main() {\n    AlgoTrading trader(100000);  // $100k capital\n    \n    // Generate price data\n    std::vector<double> prices;\n    double price = 100;\n    for (int i = 0; i < 1000; i++) {\n        price += (rand() % 200 - 100) / 100.0;\n        prices.push_back(price);\n    }\n    \n    // Test strategies\n    auto bbSignal = trader.bollingerBandStrategy(prices);\n    auto rsiSignal = trader.rsiDivergenceStrategy(prices);\n    auto kalmanSignal = trader.kalmanMeanReversion(prices);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 443,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            bool hitStop = (it->quantity > 0 && currentPrice <= it->stopLoss) ||\n                          (it->quantity < 0 && currentPrice >= it->stopLoss);\n            \n            // Check take profit\n            bool hitTarget = (it->quantity > 0 && currentPrice >= it->takeProfit) ||\n                            (it->quantity < 0 && currentPrice <= it->takeProfit);\n            \n            if (hitStop || hitTarget) {\n                // Close position\n                it->realizedPnL = it->unrealizedPnL;\n                capital += it->entryPrice * std::abs(it->quantity) + it->realizedPnL;\n                it = positions.erase(it);\n            } else {\n                ++it;\n            }\n        }\n    }\n};\n\nint main() {\n    AlgoTrading trader(100000);  // $100k capital\n    \n    // Generate price data\n    std::vector<double> prices;\n    double price = 100;\n    for (int i = 0; i < 1000; i++) {\n        price += (rand() % 200 - 100) / 100.0;\n        prices.push_back(price);\n    }\n    \n    // Test strategies\n    auto bbSignal = trader.bollingerBandStrategy(prices);\n    auto rsiSignal = trader.rsiDivergenceStrategy(prices);\n    auto kalmanSignal = trader.kalmanMeanReversion(prices);\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading15updatePositionsEd",
+      "line": 445,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            \n            // Check take profit\n            bool hitTarget = (it->quantity > 0 && currentPrice >= it->takeProfit) ||\n                            (it->quantity < 0 && currentPrice <= it->takeProfit);\n            \n            if (hitStop || hitTarget) {\n                // Close position\n                it->realizedPnL = it->unrealizedPnL;\n                capital += it->entryPrice * std::abs(it->quantity) + it->realizedPnL;\n                it = positions.erase(it);\n            } else {\n                ++it;\n            }\n        }\n    }\n};\n\nint main() {\n    AlgoTrading trader(100000);  // $100k capital\n    \n    // Generate price data\n    std::vector<double> prices;\n    double price = 100;\n    for (int i = 0; i < 1000; i++) {\n        price += (rand() % 200 - 100) / 100.0;\n        prices.push_back(price);\n    }\n    \n    // Test strategies\n    auto bbSignal = trader.bollingerBandStrategy(prices);\n    auto rsiSignal = trader.rsiDivergenceStrategy(prices);\n    auto kalmanSignal = trader.kalmanMeanReversion(prices);\n    \n    // Execute trades\n    if (bbSignal.confidence > 0.7) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21computeBollingerBandsERKNSt3__16vectorIdNS0_9allocatorIdEEEEid",
+      "line": 66,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "            }\n            double sma = sum / period;\n            \n            // Compute standard deviation\n            double variance = 0;\n            for (int j = 0; j < period; j++) {\n                double diff = prices[i - j] - sma;\n                variance += diff * diff;\n            }\n            double stdDev = std::sqrt(variance / period);\n            \n            bands.middle.push_back(sma);\n            bands.upper.push_back(sma + numStdDev * stdDev);\n            bands.lower.push_back(sma - numStdDev * stdDev);\n            bands.bandwidth.push_back((bands.upper.back() - bands.lower.back()) / sma);\n        }\n        \n        return bands;\n    }\n    \n    Signal bollingerBandStrategy(const std::vector<double>& prices) {\n        Signal signal;\n        signal.direction = 0;\n        signal.strength = 0;\n        \n        auto bands = computeBollingerBands(prices, 20, 2.0);\n        \n        if (bands.middle.size() < 2) return signal;\n        \n        double currentPrice = prices.back();\n        double upper = bands.upper.back();\n        double lower = bands.lower.back();\n        double middle = bands.middle.back();\n        \n        // Buy when price touches lower band",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/algo_trading.cpp",
+      "function": "_ZN11AlgoTrading21computeBollingerBandsERKNSt3__16vectorIdNS0_9allocatorIdEEEEid",
+      "line": 66,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "            }\n            double sma = sum / period;\n            \n            // Compute standard deviation\n            double variance = 0;\n            for (int j = 0; j < period; j++) {\n                double diff = prices[i - j] - sma;\n                variance += diff * diff;\n            }\n            double stdDev = std::sqrt(variance / period);\n            \n            bands.middle.push_back(sma);\n            bands.upper.push_back(sma + numStdDev * stdDev);\n            bands.lower.push_back(sma - numStdDev * stdDev);\n            bands.bandwidth.push_back((bands.upper.back() - bands.lower.back()) / sma);\n        }\n        \n        return bands;\n    }\n    \n    Signal bollingerBandStrategy(const std::vector<double>& prices) {\n        Signal signal;\n        signal.direction = 0;\n        signal.strength = 0;\n        \n        auto bands = computeBollingerBands(prices, 20, 2.0);\n        \n        if (bands.middle.size() < 2) return signal;\n        \n        double currentPrice = prices.back();\n        double upper = bands.upper.back();\n        double lower = bands.lower.back();\n        double middle = bands.middle.back();\n        \n        // Buy when price touches lower band",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    }
+  ]
+}

@@ -1,0 +1,1063 @@
+{
+  "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+    "llvm_initial": 88,
+    "llvm_sys_noise": 56,
+    "llvm_project": 32,
+    "after_filter": 14,
+    "ai_batches": 1,
+    "ai_results": 14,
+    "omp_verified": 0,
+    "total_ms": 922.6,
+    "llvm_ms": 525.8
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "main",
+      "line": 160,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "main",
+      "line": 163,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "main",
+      "line": 159,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "main",
+      "line": 163,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "main",
+      "line": 168,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "main",
+      "line": 163,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "        \n        for (int pass = 0; pass < 4; pass++) {\n            for (size_t i = 0; i < alice_key.size(); i += block_size) {\n                int alice_parity = 0, bob_parity = 0;\n                \n                for (int j = 0; j < block_size && i + j < alice_key.size(); j++) {\n                    alice_parity ^= alice_key[i + j];\n                    bob_parity ^= bob_key[i + j];\n                }\n                \n                if (alice_parity != bob_parity) {\n                    // Binary search for error\n                    int left = i, right = std::min(i + block_size, alice_key.size());\n                    \n                    while (right - left > 1) {\n                        int mid = (left + right) / 2;\n                        int alice_p = 0, bob_p = 0;\n                        \n                        for (int k = left; k < mid; k++) {\n                            alice_p ^= alice_key[k];\n                            bob_p ^= bob_key[k];\n                        }\n                        \n                        if (alice_p != bob_p) {\n                            right = mid;\n                        } else {\n                            left = mid;\n                        }\n                    }\n                    \n                    // Correct error\n                    bob_key[left] = alice_key[left];\n                }\n            }\n            "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "main",
+      "line": 172,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.20000000000000004
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "main",
+      "line": 176,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "main",
+      "line": 172,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "main",
+      "line": 176,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    \n                    while (right - left > 1) {\n                        int mid = (left + right) / 2;\n                        int alice_p = 0, bob_p = 0;\n                        \n                        for (int k = left; k < mid; k++) {\n                            alice_p ^= alice_key[k];\n                            bob_p ^= bob_key[k];\n                        }\n                        \n                        if (alice_p != bob_p) {\n                            right = mid;\n                        } else {\n                            left = mid;\n                        }\n                    }\n                    \n                    // Correct error\n                    bob_key[left] = alice_key[left];\n                }\n            }\n            \n            block_size /= 2;\n        }\n    }\n};\n\nint main() {\n    QuantumCryptography qkd;\n    \n    // Test without eavesdropping\n    auto result1 = qkd.simulate_bb84_protocol(0.01, 0.0);\n    \n    // Test with eavesdropping\n    auto result2 = qkd.simulate_bb84_protocol(0.01, 0.1);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "main",
+      "line": 160,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 31,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    BB84Result simulate_bb84_protocol(double channel_noise, double eavesdrop_prob) {\n        // Alice's random bits and bases\n        std::vector<int> alice_bits(KEY_LENGTH);\n        std::vector<int> alice_bases(KEY_LENGTH);\n        \n        for (int i = 0; i < KEY_LENGTH; i++) {\n            alice_bits[i] = bit_dis(gen);\n            alice_bases[i] = basis_dis(gen);  // 0: rectilinear, 1: diagonal\n        }\n        \n        // Prepare quantum states\n        std::vector<int> quantum_states(KEY_LENGTH);\n        for (int i = 0; i < KEY_LENGTH; i++) {\n            if (alice_bases[i] == 0) {\n                quantum_states[i] = alice_bits[i];  // |0> or |1>\n            } else {\n                quantum_states[i] = alice_bits[i] + 2;  // |+> or |->\n            }\n        }\n        \n        // Eve's interception (if eavesdropping)\n        std::vector<int> eve_measurements(KEY_LENGTH, -1);\n        for (int i = 0; i < KEY_LENGTH; i++) {\n            if (prob_dis(gen) < eavesdrop_prob) {\n                int eve_basis = basis_dis(gen);\n                eve_measurements[i] = measure_qubit(quantum_states[i], eve_basis, channel_noise);\n                \n                // Eve prepares new state\n                if (eve_basis == 0) {\n                    quantum_states[i] = eve_measurements[i];\n                } else {\n                    quantum_states[i] = eve_measurements[i] + 2;\n                }\n            }\n        }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 38,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            alice_bases[i] = basis_dis(gen);  // 0: rectilinear, 1: diagonal\n        }\n        \n        // Prepare quantum states\n        std::vector<int> quantum_states(KEY_LENGTH);\n        for (int i = 0; i < KEY_LENGTH; i++) {\n            if (alice_bases[i] == 0) {\n                quantum_states[i] = alice_bits[i];  // |0> or |1>\n            } else {\n                quantum_states[i] = alice_bits[i] + 2;  // |+> or |->\n            }\n        }\n        \n        // Eve's interception (if eavesdropping)\n        std::vector<int> eve_measurements(KEY_LENGTH, -1);\n        for (int i = 0; i < KEY_LENGTH; i++) {\n            if (prob_dis(gen) < eavesdrop_prob) {\n                int eve_basis = basis_dis(gen);\n                eve_measurements[i] = measure_qubit(quantum_states[i], eve_basis, channel_noise);\n                \n                // Eve prepares new state\n                if (eve_basis == 0) {\n                    quantum_states[i] = eve_measurements[i];\n                } else {\n                    quantum_states[i] = eve_measurements[i] + 2;\n                }\n            }\n        }\n        \n        // Bob's measurements\n        std::vector<int> bob_bases(KEY_LENGTH);\n        std::vector<int> bob_bits(KEY_LENGTH);\n        \n        for (int i = 0; i < KEY_LENGTH; i++) {\n            bob_bases[i] = basis_dis(gen);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 49,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.35
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 48,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 66,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Bob's measurements\n        std::vector<int> bob_bases(KEY_LENGTH);\n        std::vector<int> bob_bits(KEY_LENGTH);\n        \n        for (int i = 0; i < KEY_LENGTH; i++) {\n            bob_bases[i] = basis_dis(gen);\n            bob_bits[i] = measure_qubit(quantum_states[i], bob_bases[i], channel_noise);\n        }\n        \n        // Public basis comparison\n        std::vector<int> matching_bases;\n        for (int i = 0; i < KEY_LENGTH; i++) {\n            if (alice_bases[i] == bob_bases[i]) {\n                matching_bases.push_back(i);\n            }\n        }\n        \n        // Key sifting\n        std::vector<int> alice_key, bob_key;\n        for (int idx : matching_bases) {\n            alice_key.push_back(alice_bits[idx]);\n            bob_key.push_back(bob_bits[idx]);\n        }\n        \n        // Error estimation\n        int sample_size = std::min(100, static_cast<int>(alice_key.size() / 2));\n        int errors = 0;\n        \n        for (int i = 0; i < sample_size; i++) {\n            if (alice_key[i] != bob_key[i]) {\n                errors++;\n            }\n        }\n        "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 81,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.47
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 74,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        }\n        \n        // Public basis comparison\n        std::vector<int> matching_bases;\n        for (int i = 0; i < KEY_LENGTH; i++) {\n            if (alice_bases[i] == bob_bases[i]) {\n                matching_bases.push_back(i);\n            }\n        }\n        \n        // Key sifting\n        std::vector<int> alice_key, bob_key;\n        for (int idx : matching_bases) {\n            alice_key.push_back(alice_bits[idx]);\n            bob_key.push_back(bob_bits[idx]);\n        }\n        \n        // Error estimation\n        int sample_size = std::min(100, static_cast<int>(alice_key.size() / 2));\n        int errors = 0;\n        \n        for (int i = 0; i < sample_size; i++) {\n            if (alice_key[i] != bob_key[i]) {\n                errors++;\n            }\n        }\n        \n        double error_rate = static_cast<double>(errors) / sample_size;\n        bool secure = (error_rate < 0.11);  // QBER threshold\n        \n        // Privacy amplification (simplified)\n        if (secure) {\n            alice_key.erase(alice_key.begin(), alice_key.begin() + sample_size);\n            bob_key.erase(bob_key.begin(), bob_key.begin() + sample_size);\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 73,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "            bob_bits[i] = measure_qubit(quantum_states[i], bob_bases[i], channel_noise);\n        }\n        \n        // Public basis comparison\n        std::vector<int> matching_bases;\n        for (int i = 0; i < KEY_LENGTH; i++) {\n            if (alice_bases[i] == bob_bases[i]) {\n                matching_bases.push_back(i);\n            }\n        }\n        \n        // Key sifting\n        std::vector<int> alice_key, bob_key;\n        for (int idx : matching_bases) {\n            alice_key.push_back(alice_bits[idx]);\n            bob_key.push_back(bob_bits[idx]);\n        }\n        \n        // Error estimation\n        int sample_size = std::min(100, static_cast<int>(alice_key.size() / 2));\n        int errors = 0;\n        \n        for (int i = 0; i < sample_size; i++) {\n            if (alice_key[i] != bob_key[i]) {\n                errors++;\n            }\n        }\n        \n        double error_rate = static_cast<double>(errors) / sample_size;\n        bool secure = (error_rate < 0.11);  // QBER threshold\n        \n        // Privacy amplification (simplified)\n        if (secure) {\n            alice_key.erase(alice_key.begin(), alice_key.begin() + sample_size);\n            bob_key.erase(bob_key.begin(), bob_key.begin() + sample_size);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 90,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 81,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n        }\n        \n        // Key sifting\n        std::vector<int> alice_key, bob_key;\n        for (int idx : matching_bases) {\n            alice_key.push_back(alice_bits[idx]);\n            bob_key.push_back(bob_bits[idx]);\n        }\n        \n        // Error estimation\n        int sample_size = std::min(100, static_cast<int>(alice_key.size() / 2));\n        int errors = 0;\n        \n        for (int i = 0; i < sample_size; i++) {\n            if (alice_key[i] != bob_key[i]) {\n                errors++;\n            }\n        }\n        \n        double error_rate = static_cast<double>(errors) / sample_size;\n        bool secure = (error_rate < 0.11);  // QBER threshold\n        \n        // Privacy amplification (simplified)\n        if (secure) {\n            alice_key.erase(alice_key.begin(), alice_key.begin() + sample_size);\n            bob_key.erase(bob_key.begin(), bob_key.begin() + sample_size);\n        }\n        \n        return {alice_key, bob_key, error_rate, secure};\n    }\n    \n    int measure_qubit(int state, int basis, double noise) {\n        int result;\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 90,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        \n        // Error estimation\n        int sample_size = std::min(100, static_cast<int>(alice_key.size() / 2));\n        int errors = 0;\n        \n        for (int i = 0; i < sample_size; i++) {\n            if (alice_key[i] != bob_key[i]) {\n                errors++;\n            }\n        }\n        \n        double error_rate = static_cast<double>(errors) / sample_size;\n        bool secure = (error_rate < 0.11);  // QBER threshold\n        \n        // Privacy amplification (simplified)\n        if (secure) {\n            alice_key.erase(alice_key.begin(), alice_key.begin() + sample_size);\n            bob_key.erase(bob_key.begin(), bob_key.begin() + sample_size);\n        }\n        \n        return {alice_key, bob_key, error_rate, secure};\n    }\n    \n    int measure_qubit(int state, int basis, double noise) {\n        int result;\n        \n        // Add channel noise\n        if (prob_dis(gen) < noise) {\n            return bit_dis(gen);  // Random result due to noise\n        }\n        \n        if (basis == 0) {  // Rectilinear basis\n            if (state == 0 || state == 1) {\n                result = state;\n            } else {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 1174,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 1174,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography21privacy_amplificationERNSt3__16vectorIiNS0_9allocatorIiEEEEi",
+      "line": 137,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    void privacy_amplification(std::vector<int>& key, int final_length) {\n        // Use universal hashing to reduce key length\n        std::vector<int> compressed_key;\n        \n        for (int i = 0; i < final_length; i++) {\n            int hash_block = 0;\n            int block_size = key.size() / final_length;\n            \n            for (int j = 0; j < block_size; j++) {\n                int idx = i * block_size + j;\n                if (idx < static_cast<int>(key.size())) {\n                    hash_block ^= key[idx];\n                }\n            }\n            \n            compressed_key.push_back(hash_block);\n        }\n        \n        key = compressed_key;\n    }\n    \n    void error_correction_cascade(std::vector<int>& alice_key, \n                                  std::vector<int>& bob_key) {\n        // Cascade error correction protocol\n        int block_size = 64;\n        \n        for (int pass = 0; pass < 4; pass++) {\n            for (size_t i = 0; i < alice_key.size(); i += block_size) {\n                int alice_parity = 0, bob_parity = 0;\n                \n                for (int j = 0; j < block_size && i + j < alice_key.size(); j++) {\n                    alice_parity ^= alice_key[i + j];\n                    bob_parity ^= bob_key[i + j];\n                }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography21privacy_amplificationERNSt3__16vectorIiNS0_9allocatorIiEEEEi",
+      "line": 141,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography21privacy_amplificationERNSt3__16vectorIiNS0_9allocatorIiEEEEi",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography21privacy_amplificationERNSt3__16vectorIiNS0_9allocatorIiEEEEi",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZN19QuantumCryptography21privacy_amplificationERNSt3__16vectorIiNS0_9allocatorIiEEEEi",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN19QuantumCryptography21privacy_amplificationERNSt3__16vectorIiNS0_9allocatorIiEEEEi",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography21privacy_amplificationERNSt3__16vectorIiNS0_9allocatorIiEEEEi",
+      "line": 137,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    void privacy_amplification(std::vector<int>& key, int final_length) {\n        // Use universal hashing to reduce key length\n        std::vector<int> compressed_key;\n        \n        for (int i = 0; i < final_length; i++) {\n            int hash_block = 0;\n            int block_size = key.size() / final_length;\n            \n            for (int j = 0; j < block_size; j++) {\n                int idx = i * block_size + j;\n                if (idx < static_cast<int>(key.size())) {\n                    hash_block ^= key[idx];\n                }\n            }\n            \n            compressed_key.push_back(hash_block);\n        }\n        \n        key = compressed_key;\n    }\n    \n    void error_correction_cascade(std::vector<int>& alice_key, \n                                  std::vector<int>& bob_key) {\n        // Cascade error correction protocol\n        int block_size = 64;\n        \n        for (int pass = 0; pass < 4; pass++) {\n            for (size_t i = 0; i < alice_key.size(); i += block_size) {\n                int alice_parity = 0, bob_parity = 0;\n                \n                for (int j = 0; j < block_size && i + j < alice_key.size(); j++) {\n                    alice_parity ^= alice_key[i + j];\n                    bob_parity ^= bob_key[i + j];\n                }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography21privacy_amplificationERNSt3__16vectorIiNS0_9allocatorIiEEEEi",
+      "line": 143,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography21privacy_amplificationERNSt3__16vectorIiNS0_9allocatorIiEEEEi",
+      "line": 141,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography21privacy_amplificationERNSt3__16vectorIiNS0_9allocatorIiEEEEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography21privacy_amplificationERNSt3__16vectorIiNS0_9allocatorIiEEEEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography10BB84ResultD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19QuantumCryptography10BB84ResultD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN19QuantumCryptographyC2Ev",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN19QuantumCryptographyC2Ev",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "_ZN19QuantumCryptographyC2Ev",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography13measure_qubitEiid",
+      "line": 112,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography13measure_qubitEiid",
+      "line": 116,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        // Add channel noise\n        if (prob_dis(gen) < noise) {\n            return bit_dis(gen);  // Random result due to noise\n        }\n        \n        if (basis == 0) {  // Rectilinear basis\n            if (state == 0 || state == 1) {\n                result = state;\n            } else {\n                result = bit_dis(gen);  // 50/50 for diagonal in rectilinear\n            }\n        } else {  // Diagonal basis\n            if (state == 2 || state == 3) {\n                result = state - 2;\n            } else {\n                result = bit_dis(gen);  // 50/50 for rectilinear in diagonal\n            }\n        }\n        \n        return result;\n    }\n    \n    void privacy_amplification(std::vector<int>& key, int final_length) {\n        // Use universal hashing to reduce key length\n        std::vector<int> compressed_key;\n        \n        for (int i = 0; i < final_length; i++) {\n            int hash_block = 0;\n            int block_size = key.size() / final_length;\n            \n            for (int j = 0; j < block_size; j++) {\n                int idx = i * block_size + j;\n                if (idx < static_cast<int>(key.size())) {\n                    hash_block ^= key[idx];\n                }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography13measure_qubitEiid",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (prob_dis(gen) < noise) {\n            return bit_dis(gen);  // Random result due to noise\n        }\n        \n        if (basis == 0) {  // Rectilinear basis\n            if (state == 0 || state == 1) {\n                result = state;\n            } else {\n                result = bit_dis(gen);  // 50/50 for diagonal in rectilinear\n            }\n        } else {  // Diagonal basis\n            if (state == 2 || state == 3) {\n                result = state - 2;\n            } else {\n                result = bit_dis(gen);  // 50/50 for rectilinear in diagonal\n            }\n        }\n        \n        return result;\n    }\n    \n    void privacy_amplification(std::vector<int>& key, int final_length) {\n        // Use universal hashing to reduce key length\n        std::vector<int> compressed_key;\n        \n        for (int i = 0; i < final_length; i++) {\n            int hash_block = 0;\n            int block_size = key.size() / final_length;\n            \n            for (int j = 0; j < block_size; j++) {\n                int idx = i * block_size + j;\n                if (idx < static_cast<int>(key.size())) {\n                    hash_block ^= key[idx];\n                }\n            }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography13measure_qubitEiid",
+      "line": 123,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                result = state;\n            } else {\n                result = bit_dis(gen);  // 50/50 for diagonal in rectilinear\n            }\n        } else {  // Diagonal basis\n            if (state == 2 || state == 3) {\n                result = state - 2;\n            } else {\n                result = bit_dis(gen);  // 50/50 for rectilinear in diagonal\n            }\n        }\n        \n        return result;\n    }\n    \n    void privacy_amplification(std::vector<int>& key, int final_length) {\n        // Use universal hashing to reduce key length\n        std::vector<int> compressed_key;\n        \n        for (int i = 0; i < final_length; i++) {\n            int hash_block = 0;\n            int block_size = key.size() / final_length;\n            \n            for (int j = 0; j < block_size; j++) {\n                int idx = i * block_size + j;\n                if (idx < static_cast<int>(key.size())) {\n                    hash_block ^= key[idx];\n                }\n            }\n            \n            compressed_key.push_back(hash_block);\n        }\n        \n        key = compressed_key;\n    }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/uniform_int_distribution.h",
+      "function": "_ZNSt3__124uniform_int_distributionIiEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEiRT_RKNS1_10param_typeE",
+      "line": 215,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/uniform_int_distribution.h",
+      "function": "_ZNSt3__124uniform_int_distributionIiEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEiRT_RKNS1_10param_typeE",
+      "line": 219,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/uniform_int_distribution.h",
+      "function": "_ZNSt3__124uniform_int_distributionIiEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEiRT_RKNS1_10param_typeE",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 1058,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 1059,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 889,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 572,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "main",
+      "line": 176,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    \n                    while (right - left > 1) {\n                        int mid = (left + right) / 2;\n                        int alice_p = 0, bob_p = 0;\n                        \n                        for (int k = left; k < mid; k++) {\n                            alice_p ^= alice_key[k];\n                            bob_p ^= bob_key[k];\n                        }\n                        \n                        if (alice_p != bob_p) {\n                            right = mid;\n                        } else {\n                            left = mid;\n                        }\n                    }\n                    \n                    // Correct error\n                    bob_key[left] = alice_key[left];\n                }\n            }\n            \n            block_size /= 2;\n        }\n    }\n};\n\nint main() {\n    QuantumCryptography qkd;\n    \n    // Test without eavesdropping\n    auto result1 = qkd.simulate_bb84_protocol(0.01, 0.0);\n    \n    // Test with eavesdropping\n    auto result2 = qkd.simulate_bb84_protocol(0.01, 0.1);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 31,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    BB84Result simulate_bb84_protocol(double channel_noise, double eavesdrop_prob) {\n        // Alice's random bits and bases\n        std::vector<int> alice_bits(KEY_LENGTH);\n        std::vector<int> alice_bases(KEY_LENGTH);\n        \n        for (int i = 0; i < KEY_LENGTH; i++) {\n            alice_bits[i] = bit_dis(gen);\n            alice_bases[i] = basis_dis(gen);  // 0: rectilinear, 1: diagonal\n        }\n        \n        // Prepare quantum states\n        std::vector<int> quantum_states(KEY_LENGTH);\n        for (int i = 0; i < KEY_LENGTH; i++) {\n            if (alice_bases[i] == 0) {\n                quantum_states[i] = alice_bits[i];  // |0> or |1>\n            } else {\n                quantum_states[i] = alice_bits[i] + 2;  // |+> or |->\n            }\n        }\n        \n        // Eve's interception (if eavesdropping)\n        std::vector<int> eve_measurements(KEY_LENGTH, -1);\n        for (int i = 0; i < KEY_LENGTH; i++) {\n            if (prob_dis(gen) < eavesdrop_prob) {\n                int eve_basis = basis_dis(gen);\n                eve_measurements[i] = measure_qubit(quantum_states[i], eve_basis, channel_noise);\n                \n                // Eve prepares new state\n                if (eve_basis == 0) {\n                    quantum_states[i] = eve_measurements[i];\n                } else {\n                    quantum_states[i] = eve_measurements[i] + 2;\n                }\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 38,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            alice_bases[i] = basis_dis(gen);  // 0: rectilinear, 1: diagonal\n        }\n        \n        // Prepare quantum states\n        std::vector<int> quantum_states(KEY_LENGTH);\n        for (int i = 0; i < KEY_LENGTH; i++) {\n            if (alice_bases[i] == 0) {\n                quantum_states[i] = alice_bits[i];  // |0> or |1>\n            } else {\n                quantum_states[i] = alice_bits[i] + 2;  // |+> or |->\n            }\n        }\n        \n        // Eve's interception (if eavesdropping)\n        std::vector<int> eve_measurements(KEY_LENGTH, -1);\n        for (int i = 0; i < KEY_LENGTH; i++) {\n            if (prob_dis(gen) < eavesdrop_prob) {\n                int eve_basis = basis_dis(gen);\n                eve_measurements[i] = measure_qubit(quantum_states[i], eve_basis, channel_noise);\n                \n                // Eve prepares new state\n                if (eve_basis == 0) {\n                    quantum_states[i] = eve_measurements[i];\n                } else {\n                    quantum_states[i] = eve_measurements[i] + 2;\n                }\n            }\n        }\n        \n        // Bob's measurements\n        std::vector<int> bob_bases(KEY_LENGTH);\n        std::vector<int> bob_bits(KEY_LENGTH);\n        \n        for (int i = 0; i < KEY_LENGTH; i++) {\n            bob_bases[i] = basis_dis(gen);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 66,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Bob's measurements\n        std::vector<int> bob_bases(KEY_LENGTH);\n        std::vector<int> bob_bits(KEY_LENGTH);\n        \n        for (int i = 0; i < KEY_LENGTH; i++) {\n            bob_bases[i] = basis_dis(gen);\n            bob_bits[i] = measure_qubit(quantum_states[i], bob_bases[i], channel_noise);\n        }\n        \n        // Public basis comparison\n        std::vector<int> matching_bases;\n        for (int i = 0; i < KEY_LENGTH; i++) {\n            if (alice_bases[i] == bob_bases[i]) {\n                matching_bases.push_back(i);\n            }\n        }\n        \n        // Key sifting\n        std::vector<int> alice_key, bob_key;\n        for (int idx : matching_bases) {\n            alice_key.push_back(alice_bits[idx]);\n            bob_key.push_back(bob_bits[idx]);\n        }\n        \n        // Error estimation\n        int sample_size = std::min(100, static_cast<int>(alice_key.size() / 2));\n        int errors = 0;\n        \n        for (int i = 0; i < sample_size; i++) {\n            if (alice_key[i] != bob_key[i]) {\n                errors++;\n            }\n        }\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 74,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        }\n        \n        // Public basis comparison\n        std::vector<int> matching_bases;\n        for (int i = 0; i < KEY_LENGTH; i++) {\n            if (alice_bases[i] == bob_bases[i]) {\n                matching_bases.push_back(i);\n            }\n        }\n        \n        // Key sifting\n        std::vector<int> alice_key, bob_key;\n        for (int idx : matching_bases) {\n            alice_key.push_back(alice_bits[idx]);\n            bob_key.push_back(bob_bits[idx]);\n        }\n        \n        // Error estimation\n        int sample_size = std::min(100, static_cast<int>(alice_key.size() / 2));\n        int errors = 0;\n        \n        for (int i = 0; i < sample_size; i++) {\n            if (alice_key[i] != bob_key[i]) {\n                errors++;\n            }\n        }\n        \n        double error_rate = static_cast<double>(errors) / sample_size;\n        bool secure = (error_rate < 0.11);  // QBER threshold\n        \n        // Privacy amplification (simplified)\n        if (secure) {\n            alice_key.erase(alice_key.begin(), alice_key.begin() + sample_size);\n            bob_key.erase(bob_key.begin(), bob_key.begin() + sample_size);\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 81,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n        }\n        \n        // Key sifting\n        std::vector<int> alice_key, bob_key;\n        for (int idx : matching_bases) {\n            alice_key.push_back(alice_bits[idx]);\n            bob_key.push_back(bob_bits[idx]);\n        }\n        \n        // Error estimation\n        int sample_size = std::min(100, static_cast<int>(alice_key.size() / 2));\n        int errors = 0;\n        \n        for (int i = 0; i < sample_size; i++) {\n            if (alice_key[i] != bob_key[i]) {\n                errors++;\n            }\n        }\n        \n        double error_rate = static_cast<double>(errors) / sample_size;\n        bool secure = (error_rate < 0.11);  // QBER threshold\n        \n        // Privacy amplification (simplified)\n        if (secure) {\n            alice_key.erase(alice_key.begin(), alice_key.begin() + sample_size);\n            bob_key.erase(bob_key.begin(), bob_key.begin() + sample_size);\n        }\n        \n        return {alice_key, bob_key, error_rate, secure};\n    }\n    \n    int measure_qubit(int state, int basis, double noise) {\n        int result;\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 90,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        \n        // Error estimation\n        int sample_size = std::min(100, static_cast<int>(alice_key.size() / 2));\n        int errors = 0;\n        \n        for (int i = 0; i < sample_size; i++) {\n            if (alice_key[i] != bob_key[i]) {\n                errors++;\n            }\n        }\n        \n        double error_rate = static_cast<double>(errors) / sample_size;\n        bool secure = (error_rate < 0.11);  // QBER threshold\n        \n        // Privacy amplification (simplified)\n        if (secure) {\n            alice_key.erase(alice_key.begin(), alice_key.begin() + sample_size);\n            bob_key.erase(bob_key.begin(), bob_key.begin() + sample_size);\n        }\n        \n        return {alice_key, bob_key, error_rate, secure};\n    }\n    \n    int measure_qubit(int state, int basis, double noise) {\n        int result;\n        \n        // Add channel noise\n        if (prob_dis(gen) < noise) {\n            return bit_dis(gen);  // Random result due to noise\n        }\n        \n        if (basis == 0) {  // Rectilinear basis\n            if (state == 0 || state == 1) {\n                result = state;\n            } else {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "main",
+      "line": 163,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "        \n        for (int pass = 0; pass < 4; pass++) {\n            for (size_t i = 0; i < alice_key.size(); i += block_size) {\n                int alice_parity = 0, bob_parity = 0;\n                \n                for (int j = 0; j < block_size && i + j < alice_key.size(); j++) {\n                    alice_parity ^= alice_key[i + j];\n                    bob_parity ^= bob_key[i + j];\n                }\n                \n                if (alice_parity != bob_parity) {\n                    // Binary search for error\n                    int left = i, right = std::min(i + block_size, alice_key.size());\n                    \n                    while (right - left > 1) {\n                        int mid = (left + right) / 2;\n                        int alice_p = 0, bob_p = 0;\n                        \n                        for (int k = left; k < mid; k++) {\n                            alice_p ^= alice_key[k];\n                            bob_p ^= bob_key[k];\n                        }\n                        \n                        if (alice_p != bob_p) {\n                            right = mid;\n                        } else {\n                            left = mid;\n                        }\n                    }\n                    \n                    // Correct error\n                    bob_key[left] = alice_key[left];\n                }\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.78
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography22simulate_bb84_protocolEdd",
+      "line": 73,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "            bob_bits[i] = measure_qubit(quantum_states[i], bob_bases[i], channel_noise);\n        }\n        \n        // Public basis comparison\n        std::vector<int> matching_bases;\n        for (int i = 0; i < KEY_LENGTH; i++) {\n            if (alice_bases[i] == bob_bases[i]) {\n                matching_bases.push_back(i);\n            }\n        }\n        \n        // Key sifting\n        std::vector<int> alice_key, bob_key;\n        for (int idx : matching_bases) {\n            alice_key.push_back(alice_bits[idx]);\n            bob_key.push_back(bob_bits[idx]);\n        }\n        \n        // Error estimation\n        int sample_size = std::min(100, static_cast<int>(alice_key.size() / 2));\n        int errors = 0;\n        \n        for (int i = 0; i < sample_size; i++) {\n            if (alice_key[i] != bob_key[i]) {\n                errors++;\n            }\n        }\n        \n        double error_rate = static_cast<double>(errors) / sample_size;\n        bool secure = (error_rate < 0.11);  // QBER threshold\n        \n        // Privacy amplification (simplified)\n        if (secure) {\n            alice_key.erase(alice_key.begin(), alice_key.begin() + sample_size);\n            bob_key.erase(bob_key.begin(), bob_key.begin() + sample_size);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography21privacy_amplificationERNSt3__16vectorIiNS0_9allocatorIiEEEEi",
+      "line": 137,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    void privacy_amplification(std::vector<int>& key, int final_length) {\n        // Use universal hashing to reduce key length\n        std::vector<int> compressed_key;\n        \n        for (int i = 0; i < final_length; i++) {\n            int hash_block = 0;\n            int block_size = key.size() / final_length;\n            \n            for (int j = 0; j < block_size; j++) {\n                int idx = i * block_size + j;\n                if (idx < static_cast<int>(key.size())) {\n                    hash_block ^= key[idx];\n                }\n            }\n            \n            compressed_key.push_back(hash_block);\n        }\n        \n        key = compressed_key;\n    }\n    \n    void error_correction_cascade(std::vector<int>& alice_key, \n                                  std::vector<int>& bob_key) {\n        // Cascade error correction protocol\n        int block_size = 64;\n        \n        for (int pass = 0; pass < 4; pass++) {\n            for (size_t i = 0; i < alice_key.size(); i += block_size) {\n                int alice_parity = 0, bob_parity = 0;\n                \n                for (int j = 0; j < block_size && i + j < alice_key.size(); j++) {\n                    alice_parity ^= alice_key[i + j];\n                    bob_parity ^= bob_key[i + j];\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography21privacy_amplificationERNSt3__16vectorIiNS0_9allocatorIiEEEEi",
+      "line": 137,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    void privacy_amplification(std::vector<int>& key, int final_length) {\n        // Use universal hashing to reduce key length\n        std::vector<int> compressed_key;\n        \n        for (int i = 0; i < final_length; i++) {\n            int hash_block = 0;\n            int block_size = key.size() / final_length;\n            \n            for (int j = 0; j < block_size; j++) {\n                int idx = i * block_size + j;\n                if (idx < static_cast<int>(key.size())) {\n                    hash_block ^= key[idx];\n                }\n            }\n            \n            compressed_key.push_back(hash_block);\n        }\n        \n        key = compressed_key;\n    }\n    \n    void error_correction_cascade(std::vector<int>& alice_key, \n                                  std::vector<int>& bob_key) {\n        // Cascade error correction protocol\n        int block_size = 64;\n        \n        for (int pass = 0; pass < 4; pass++) {\n            for (size_t i = 0; i < alice_key.size(); i += block_size) {\n                int alice_parity = 0, bob_parity = 0;\n                \n                for (int j = 0; j < block_size && i + j < alice_key.size(); j++) {\n                    alice_parity ^= alice_key[i + j];\n                    bob_parity ^= bob_key[i + j];\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography13measure_qubitEiid",
+      "line": 116,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        // Add channel noise\n        if (prob_dis(gen) < noise) {\n            return bit_dis(gen);  // Random result due to noise\n        }\n        \n        if (basis == 0) {  // Rectilinear basis\n            if (state == 0 || state == 1) {\n                result = state;\n            } else {\n                result = bit_dis(gen);  // 50/50 for diagonal in rectilinear\n            }\n        } else {  // Diagonal basis\n            if (state == 2 || state == 3) {\n                result = state - 2;\n            } else {\n                result = bit_dis(gen);  // 50/50 for rectilinear in diagonal\n            }\n        }\n        \n        return result;\n    }\n    \n    void privacy_amplification(std::vector<int>& key, int final_length) {\n        // Use universal hashing to reduce key length\n        std::vector<int> compressed_key;\n        \n        for (int i = 0; i < final_length; i++) {\n            int hash_block = 0;\n            int block_size = key.size() / final_length;\n            \n            for (int j = 0; j < block_size; j++) {\n                int idx = i * block_size + j;\n                if (idx < static_cast<int>(key.size())) {\n                    hash_block ^= key[idx];\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography13measure_qubitEiid",
+      "line": 117,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (prob_dis(gen) < noise) {\n            return bit_dis(gen);  // Random result due to noise\n        }\n        \n        if (basis == 0) {  // Rectilinear basis\n            if (state == 0 || state == 1) {\n                result = state;\n            } else {\n                result = bit_dis(gen);  // 50/50 for diagonal in rectilinear\n            }\n        } else {  // Diagonal basis\n            if (state == 2 || state == 3) {\n                result = state - 2;\n            } else {\n                result = bit_dis(gen);  // 50/50 for rectilinear in diagonal\n            }\n        }\n        \n        return result;\n    }\n    \n    void privacy_amplification(std::vector<int>& key, int final_length) {\n        // Use universal hashing to reduce key length\n        std::vector<int> compressed_key;\n        \n        for (int i = 0; i < final_length; i++) {\n            int hash_block = 0;\n            int block_size = key.size() / final_length;\n            \n            for (int j = 0; j < block_size; j++) {\n                int idx = i * block_size + j;\n                if (idx < static_cast<int>(key.size())) {\n                    hash_block ^= key[idx];\n                }\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_cryptography.cpp",
+      "function": "_ZN19QuantumCryptography13measure_qubitEiid",
+      "line": 123,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                result = state;\n            } else {\n                result = bit_dis(gen);  // 50/50 for diagonal in rectilinear\n            }\n        } else {  // Diagonal basis\n            if (state == 2 || state == 3) {\n                result = state - 2;\n            } else {\n                result = bit_dis(gen);  // 50/50 for rectilinear in diagonal\n            }\n        }\n        \n        return result;\n    }\n    \n    void privacy_amplification(std::vector<int>& key, int final_length) {\n        // Use universal hashing to reduce key length\n        std::vector<int> compressed_key;\n        \n        for (int i = 0; i < final_length; i++) {\n            int hash_block = 0;\n            int block_size = key.size() / final_length;\n            \n            for (int j = 0; j < block_size; j++) {\n                int idx = i * block_size + j;\n                if (idx < static_cast<int>(key.size())) {\n                    hash_block ^= key[idx];\n                }\n            }\n            \n            compressed_key.push_back(hash_block);\n        }\n        \n        key = compressed_key;\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

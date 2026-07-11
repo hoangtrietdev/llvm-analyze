@@ -1,0 +1,106 @@
+{
+  "file": "sample/src/real-world/computer-vision/face_recognition.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/computer-vision/face_recognition.cpp",
+    "llvm_initial": 6,
+    "after_filter": 2,
+    "cache_hits": 0,
+    "cache_misses": 2,
+    "omp_verified": 0,
+    "omp_similar": 0,
+    "ai_call_made": 1,
+    "total_ms": 1625.4,
+    "llvm_ms": 385.9,
+    "ai_ms": 1184.7
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/computer-vision/face_recognition.cpp",
+      "function": "_Z17cosine_similarityRKNSt3__16vectorIfNS_9allocatorIfEEEES5_",
+      "line": 10,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "float cosine_similarity(const std::vector<float>& a, const std::vector<float>& b) {\n    float dot = 0.0f, norm_a = 0.0f, norm_b = 0.0f;\n    \n    for (size_t i = 0; i < a.size(); i++) {\n        dot += a[i] * b[i];\n        norm_a += a[i] * a[i];\n        norm_b += b[i] * b[i];"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/computer-vision/face_recognition.cpp",
+      "function": "_Z17cosine_similarityRKNSt3__16vectorIfNS_9allocatorIfEEEES5_",
+      "line": 10,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.35
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/computer-vision/face_recognition.cpp",
+      "function": "_Z14recognize_faceRKNSt3__16vectorIfNS_9allocatorIfEEEERKNS0_IS3_NS1_IS3_EEEE",
+      "line": 24,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "    float max_similarity = -1.0f;\n    int best_match = -1;\n    \n    for (size_t i = 0; i < gallery_embeddings.size(); i++) {\n        float sim = cosine_similarity(query_embedding, gallery_embeddings[i]);\n        if (sim > max_similarity) {\n            max_similarity = sim;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/computer-vision/face_recognition.cpp",
+      "function": "_Z14recognize_faceRKNSt3__16vectorIfNS_9allocatorIfEEEERKNS0_IS3_NS1_IS3_EEEE",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/computer-vision/face_recognition.cpp",
+      "function": "_Z14recognize_faceRKNSt3__16vectorIfNS_9allocatorIfEEEERKNS0_IS3_NS1_IS3_EEEE",
+      "line": 10,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.35
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/computer-vision/face_recognition.cpp",
+      "function": "_Z14recognize_faceRKNSt3__16vectorIfNS_9allocatorIfEEEERKNS0_IS3_NS1_IS3_EEEE",
+      "line": 24,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    }
+  ],
+  "final_results": [
+    {
+      "classification": "safe_parallel",
+      "reasoning": "The code exhibits an embarrassingly parallel pattern with independent operations and no loop-carried dependencies. The array access with simple indexing suggests that each iteration can be executed independently.",
+      "confidence": 0.9,
+      "transformations": [
+        "Apply OpenMP parallel for directive to the loop",
+        "Use reduction clause for the dot product"
+      ],
+      "tests_recommended": [
+        "Validate the parallel implementation against the serial version",
+        "Test with different input sizes to ensure scalability"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "Although the code appears to be embarrassingly parallel, the cosine_similarity function is called within the loop, which may introduce dependencies or data races. Runtime checking is necessary to ensure the correctness of the parallel implementation.",
+      "confidence": 0.8,
+      "transformations": [
+        "Apply OpenMP parallel for directive to the loop",
+        "Use task directive for the cosine_similarity function call"
+      ],
+      "tests_recommended": [
+        "Validate the parallel implementation against the serial version",
+        "Test with different input sizes to ensure scalability and correctness"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    }
+  ]
+}

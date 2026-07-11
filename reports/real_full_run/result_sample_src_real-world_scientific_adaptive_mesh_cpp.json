@@ -1,0 +1,309 @@
+{
+  "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+    "llvm_initial": 18,
+    "llvm_sys_noise": 4,
+    "llvm_project": 14,
+    "after_filter": 6,
+    "ai_batches": 1,
+    "ai_results": 6,
+    "omp_verified": 0,
+    "total_ms": 606.0,
+    "llvm_ms": 379.1
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "main",
+      "line": 81,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement14markRefinementEPNS_4CellE",
+      "line": 27,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        root = new Cell{0, 0, 0, 1, 1, 1, 0, 0, false, {}};\n    }\n    \n    // Mark cells for refinement\n    void markRefinement(Cell* cell) {\n        if (cell->level >= maxLevel) return;\n        \n        // Compute gradient\n        double gradient = computeGradient(cell);\n        \n        if (gradient > refinementThreshold && cell->children.empty()) {\n            cell->needsRefinement = true;\n        } else if (!cell->children.empty()) {\n            for (auto child : cell->children) {\n                markRefinement(child);\n            }\n        }\n    }\n    \n    // Refine marked cells\n    void refine(Cell* cell) {\n        if (!cell->needsRefinement) {\n            if (!cell->children.empty()) {\n                for (auto child : cell->children) {\n                    refine(child);\n                }\n            }\n            return;\n        }\n        \n        // Create 8 children (octree)\n        double hdx = cell->dx / 2;\n        double hdy = cell->dy / 2;\n        double hdz = cell->dz / 2;\n        "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement14markRefinementEPNS_4CellE",
+      "line": 32,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.06999999999999999
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement14markRefinementEPNS_4CellE",
+      "line": 32,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.6499999999999999,
+      "context": "        if (cell->level >= maxLevel) return;\n        \n        // Compute gradient\n        double gradient = computeGradient(cell);\n        \n        if (gradient > refinementThreshold && cell->children.empty()) {\n            cell->needsRefinement = true;\n        } else if (!cell->children.empty()) {\n            for (auto child : cell->children) {\n                markRefinement(child);\n            }\n        }\n    }\n    \n    // Refine marked cells\n    void refine(Cell* cell) {\n        if (!cell->needsRefinement) {\n            if (!cell->children.empty()) {\n                for (auto child : cell->children) {\n                    refine(child);\n                }\n            }\n            return;\n        }\n        \n        // Create 8 children (octree)\n        double hdx = cell->dx / 2;\n        double hdy = cell->dy / 2;\n        double hdz = cell->dz / 2;\n        \n        for (int iz = 0; iz < 2; iz++) {\n            for (int iy = 0; iy < 2; iy++) {\n                for (int ix = 0; ix < 2; ix++) {\n                    Cell* child = new Cell();\n                    child->x = cell->x + (ix - 0.5) * hdx;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement14markRefinementEPNS_4CellE",
+      "line": 34,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.6499999999999999,
+      "context": "        // Compute gradient\n        double gradient = computeGradient(cell);\n        \n        if (gradient > refinementThreshold && cell->children.empty()) {\n            cell->needsRefinement = true;\n        } else if (!cell->children.empty()) {\n            for (auto child : cell->children) {\n                markRefinement(child);\n            }\n        }\n    }\n    \n    // Refine marked cells\n    void refine(Cell* cell) {\n        if (!cell->needsRefinement) {\n            if (!cell->children.empty()) {\n                for (auto child : cell->children) {\n                    refine(child);\n                }\n            }\n            return;\n        }\n        \n        // Create 8 children (octree)\n        double hdx = cell->dx / 2;\n        double hdy = cell->dy / 2;\n        double hdz = cell->dz / 2;\n        \n        for (int iz = 0; iz < 2; iz++) {\n            for (int iy = 0; iy < 2; iy++) {\n                for (int ix = 0; ix < 2; ix++) {\n                    Cell* child = new Cell();\n                    child->x = cell->x + (ix - 0.5) * hdx;\n                    child->y = cell->y + (iy - 0.5) * hdy;\n                    child->z = cell->z + (iz - 0.5) * hdz;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement14markRefinementEPNS_4CellE",
+      "line": 35,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.06999999999999999
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement6refineEPNS_4CellE",
+      "line": 43,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        }\n    }\n    \n    // Refine marked cells\n    void refine(Cell* cell) {\n        if (!cell->needsRefinement) {\n            if (!cell->children.empty()) {\n                for (auto child : cell->children) {\n                    refine(child);\n                }\n            }\n            return;\n        }\n        \n        // Create 8 children (octree)\n        double hdx = cell->dx / 2;\n        double hdy = cell->dy / 2;\n        double hdz = cell->dz / 2;\n        \n        for (int iz = 0; iz < 2; iz++) {\n            for (int iy = 0; iy < 2; iy++) {\n                for (int ix = 0; ix < 2; ix++) {\n                    Cell* child = new Cell();\n                    child->x = cell->x + (ix - 0.5) * hdx;\n                    child->y = cell->y + (iy - 0.5) * hdy;\n                    child->z = cell->z + (iz - 0.5) * hdz;\n                    child->dx = hdx;\n                    child->dy = hdy;\n                    child->dz = hdz;\n                    child->level = cell->level + 1;\n                    child->value = interpolateValue(cell, child);\n                    child->needsRefinement = false;\n                    \n                    cell->children.push_back(child);\n                }"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement6refineEPNS_4CellE",
+      "line": 44,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "    }\n    \n    // Refine marked cells\n    void refine(Cell* cell) {\n        if (!cell->needsRefinement) {\n            if (!cell->children.empty()) {\n                for (auto child : cell->children) {\n                    refine(child);\n                }\n            }\n            return;\n        }\n        \n        // Create 8 children (octree)\n        double hdx = cell->dx / 2;\n        double hdy = cell->dy / 2;\n        double hdz = cell->dz / 2;\n        \n        for (int iz = 0; iz < 2; iz++) {\n            for (int iy = 0; iy < 2; iy++) {\n                for (int ix = 0; ix < 2; ix++) {\n                    Cell* child = new Cell();\n                    child->x = cell->x + (ix - 0.5) * hdx;\n                    child->y = cell->y + (iy - 0.5) * hdy;\n                    child->z = cell->z + (iz - 0.5) * hdz;\n                    child->dx = hdx;\n                    child->dy = hdy;\n                    child->dz = hdz;\n                    child->level = cell->level + 1;\n                    child->value = interpolateValue(cell, child);\n                    child->needsRefinement = false;\n                    \n                    cell->children.push_back(child);\n                }\n            }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement6refineEPNS_4CellE",
+      "line": 45,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement6refineEPNS_4CellE",
+      "line": 57,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement6refineEPNS_4CellE",
+      "line": 58,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement6refineEPNS_4CellE",
+      "line": 59,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.4
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIPN22AdaptiveMeshRefinement4CellENS_9allocatorIS3_EEE9push_backB8ne210101ERKS3_",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIPN22AdaptiveMeshRefinement4CellENS_9allocatorIS3_EEE9push_backB8ne210101ERKS3_",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIPN22AdaptiveMeshRefinement4CellENS_9allocatorIS3_EEE9push_backB8ne210101ERKS3_",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIPN22AdaptiveMeshRefinement4CellENS_9allocatorIS3_EEE9push_backB8ne210101ERKS3_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement12updateValuesEPNS_4CellE",
+      "line": 88,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "            updateValues(root);\n        }\n    }\n    \n    void updateValues(Cell* cell) {\n        if (cell->children.empty()) {\n            // Leaf cell: update value\n            double newValue = 0.0;\n            int count = 0;\n            \n            // Average from neighbors (simplified)\n            auto neighbors = findNeighbors(cell);\n            for (Cell* neighbor : neighbors) {\n                newValue += neighbor->value;\n                count++;\n            }\n            \n            if (count > 0) {\n                cell->value = newValue / count;\n            }\n        } else {\n            for (auto child : cell->children) {\n                updateValues(child);\n            }\n        }\n    }\n    \n    // Coarsen mesh where refinement no longer needed\n    void coarsen(Cell* cell) {\n        if (cell->children.empty()) return;\n        \n        // Check if all children can be coarsened\n        bool canCoarsen = true;\n        for (auto child : cell->children) {\n            if (!child->children.empty() || child->needsRefinement) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement12updateValuesEPNS_4CellE",
+      "line": 104,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement14markRefinementEPNS_4CellE",
+      "line": 27,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        root = new Cell{0, 0, 0, 1, 1, 1, 0, 0, false, {}};\n    }\n    \n    // Mark cells for refinement\n    void markRefinement(Cell* cell) {\n        if (cell->level >= maxLevel) return;\n        \n        // Compute gradient\n        double gradient = computeGradient(cell);\n        \n        if (gradient > refinementThreshold && cell->children.empty()) {\n            cell->needsRefinement = true;\n        } else if (!cell->children.empty()) {\n            for (auto child : cell->children) {\n                markRefinement(child);\n            }\n        }\n    }\n    \n    // Refine marked cells\n    void refine(Cell* cell) {\n        if (!cell->needsRefinement) {\n            if (!cell->children.empty()) {\n                for (auto child : cell->children) {\n                    refine(child);\n                }\n            }\n            return;\n        }\n        \n        // Create 8 children (octree)\n        double hdx = cell->dx / 2;\n        double hdy = cell->dy / 2;\n        double hdz = cell->dz / 2;\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement6refineEPNS_4CellE",
+      "line": 43,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        }\n    }\n    \n    // Refine marked cells\n    void refine(Cell* cell) {\n        if (!cell->needsRefinement) {\n            if (!cell->children.empty()) {\n                for (auto child : cell->children) {\n                    refine(child);\n                }\n            }\n            return;\n        }\n        \n        // Create 8 children (octree)\n        double hdx = cell->dx / 2;\n        double hdy = cell->dy / 2;\n        double hdz = cell->dz / 2;\n        \n        for (int iz = 0; iz < 2; iz++) {\n            for (int iy = 0; iy < 2; iy++) {\n                for (int ix = 0; ix < 2; ix++) {\n                    Cell* child = new Cell();\n                    child->x = cell->x + (ix - 0.5) * hdx;\n                    child->y = cell->y + (iy - 0.5) * hdy;\n                    child->z = cell->z + (iz - 0.5) * hdz;\n                    child->dx = hdx;\n                    child->dy = hdy;\n                    child->dz = hdz;\n                    child->level = cell->level + 1;\n                    child->value = interpolateValue(cell, child);\n                    child->needsRefinement = false;\n                    \n                    cell->children.push_back(child);\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement6refineEPNS_4CellE",
+      "line": 44,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "    }\n    \n    // Refine marked cells\n    void refine(Cell* cell) {\n        if (!cell->needsRefinement) {\n            if (!cell->children.empty()) {\n                for (auto child : cell->children) {\n                    refine(child);\n                }\n            }\n            return;\n        }\n        \n        // Create 8 children (octree)\n        double hdx = cell->dx / 2;\n        double hdy = cell->dy / 2;\n        double hdz = cell->dz / 2;\n        \n        for (int iz = 0; iz < 2; iz++) {\n            for (int iy = 0; iy < 2; iy++) {\n                for (int ix = 0; ix < 2; ix++) {\n                    Cell* child = new Cell();\n                    child->x = cell->x + (ix - 0.5) * hdx;\n                    child->y = cell->y + (iy - 0.5) * hdy;\n                    child->z = cell->z + (iz - 0.5) * hdz;\n                    child->dx = hdx;\n                    child->dy = hdy;\n                    child->dz = hdz;\n                    child->level = cell->level + 1;\n                    child->value = interpolateValue(cell, child);\n                    child->needsRefinement = false;\n                    \n                    cell->children.push_back(child);\n                }\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement12updateValuesEPNS_4CellE",
+      "line": 88,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "            updateValues(root);\n        }\n    }\n    \n    void updateValues(Cell* cell) {\n        if (cell->children.empty()) {\n            // Leaf cell: update value\n            double newValue = 0.0;\n            int count = 0;\n            \n            // Average from neighbors (simplified)\n            auto neighbors = findNeighbors(cell);\n            for (Cell* neighbor : neighbors) {\n                newValue += neighbor->value;\n                count++;\n            }\n            \n            if (count > 0) {\n                cell->value = newValue / count;\n            }\n        } else {\n            for (auto child : cell->children) {\n                updateValues(child);\n            }\n        }\n    }\n    \n    // Coarsen mesh where refinement no longer needed\n    void coarsen(Cell* cell) {\n        if (cell->children.empty()) return;\n        \n        // Check if all children can be coarsened\n        bool canCoarsen = true;\n        for (auto child : cell->children) {\n            if (!child->children.empty() || child->needsRefinement) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement14markRefinementEPNS_4CellE",
+      "line": 32,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.6499999999999999,
+      "context": "        if (cell->level >= maxLevel) return;\n        \n        // Compute gradient\n        double gradient = computeGradient(cell);\n        \n        if (gradient > refinementThreshold && cell->children.empty()) {\n            cell->needsRefinement = true;\n        } else if (!cell->children.empty()) {\n            for (auto child : cell->children) {\n                markRefinement(child);\n            }\n        }\n    }\n    \n    // Refine marked cells\n    void refine(Cell* cell) {\n        if (!cell->needsRefinement) {\n            if (!cell->children.empty()) {\n                for (auto child : cell->children) {\n                    refine(child);\n                }\n            }\n            return;\n        }\n        \n        // Create 8 children (octree)\n        double hdx = cell->dx / 2;\n        double hdy = cell->dy / 2;\n        double hdz = cell->dz / 2;\n        \n        for (int iz = 0; iz < 2; iz++) {\n            for (int iy = 0; iy < 2; iy++) {\n                for (int ix = 0; ix < 2; ix++) {\n                    Cell* child = new Cell();\n                    child->x = cell->x + (ix - 0.5) * hdx;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.6499999999999999
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/adaptive_mesh.cpp",
+      "function": "_ZN22AdaptiveMeshRefinement14markRefinementEPNS_4CellE",
+      "line": 34,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.6499999999999999,
+      "context": "        // Compute gradient\n        double gradient = computeGradient(cell);\n        \n        if (gradient > refinementThreshold && cell->children.empty()) {\n            cell->needsRefinement = true;\n        } else if (!cell->children.empty()) {\n            for (auto child : cell->children) {\n                markRefinement(child);\n            }\n        }\n    }\n    \n    // Refine marked cells\n    void refine(Cell* cell) {\n        if (!cell->needsRefinement) {\n            if (!cell->children.empty()) {\n                for (auto child : cell->children) {\n                    refine(child);\n                }\n            }\n            return;\n        }\n        \n        // Create 8 children (octree)\n        double hdx = cell->dx / 2;\n        double hdy = cell->dy / 2;\n        double hdz = cell->dz / 2;\n        \n        for (int iz = 0; iz < 2; iz++) {\n            for (int iy = 0; iy < 2; iy++) {\n                for (int ix = 0; ix < 2; ix++) {\n                    Cell* child = new Cell();\n                    child->x = cell->x + (ix - 0.5) * hdx;\n                    child->y = cell->y + (iy - 0.5) * hdy;\n                    child->z = cell->z + (iz - 0.5) * hdz;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.6499999999999999
+    }
+  ]
+}

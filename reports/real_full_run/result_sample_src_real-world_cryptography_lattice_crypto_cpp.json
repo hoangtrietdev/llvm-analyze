@@ -1,0 +1,251 @@
+{
+  "file": "sample/src/real-world/cryptography/lattice_crypto.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/cryptography/lattice_crypto.cpp",
+    "llvm_initial": 15,
+    "after_filter": 8,
+    "cache_hits": 0,
+    "cache_misses": 8,
+    "omp_verified": 0,
+    "omp_similar": 0,
+    "ai_call_made": 1,
+    "total_ms": 1056.4,
+    "llvm_ms": 807.2,
+    "ai_ms": 126.7
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/lattice_crypto.cpp",
+      "function": "_Z19generateLatticeKeysPxS_iid",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "void generateLatticeKeys(int64_t* public_key, int64_t* private_key, \n                        int n, int q, double sigma) {\n    // Generate random private key\n    for (int i = 0; i < n; i++) {\n        private_key[i] = rand() % 3 - 1; // {-1, 0, 1}\n    }\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/lattice_crypto.cpp",
+      "function": "_Z19generateLatticeKeysPxS_iid",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/cryptography/lattice_crypto.cpp",
+      "function": "_Z19generateLatticeKeysPxS_iid",
+      "line": 8,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "void generateLatticeKeys(int64_t* public_key, int64_t* private_key, \n                        int n, int q, double sigma) {\n    // Generate random private key\n    for (int i = 0; i < n; i++) {\n        private_key[i] = rand() % 3 - 1; // {-1, 0, 1}\n    }\n    "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/cryptography/lattice_crypto.cpp",
+      "function": "_Z19generateLatticeKeysPxS_iid",
+      "line": 13,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.44999999999999996
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/lattice_crypto.cpp",
+      "function": "_Z14latticeEncryptPxS_iii",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void latticeEncrypt(int64_t* ciphertext, int64_t* public_key, int message_bit,\n                   int n, int q) {\n    // Select random subset of public key elements\n    for (int i = 0; i < n; i++) {\n        int64_t u = 0;\n        int64_t v = 0;\n        "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/cryptography/lattice_crypto.cpp",
+      "function": "_Z14latticeEncryptPxS_iii",
+      "line": 25,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void latticeEncrypt(int64_t* ciphertext, int64_t* public_key, int message_bit,\n                   int n, int q) {\n    // Select random subset of public key elements\n    for (int i = 0; i < n; i++) {\n        int64_t u = 0;\n        int64_t v = 0;\n        "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/cryptography/lattice_crypto.cpp",
+      "function": "_Z14latticeEncryptPxS_iii",
+      "line": 30,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/lattice_crypto.cpp",
+      "function": "_Z14latticeEncryptPxS_iii",
+      "line": 29,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/lattice_crypto.cpp",
+      "function": "_Z14latticeDecryptPxS_ii",
+      "line": 45,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "int latticeDecrypt(int64_t* ciphertext, int64_t* private_key, int n, int q) {\n    int64_t inner_product = 0;\n    \n    for (int i = 0; i < n; i++) {\n        inner_product = (inner_product + ciphertext[i] * private_key[i]) % q;\n    }\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/lattice_crypto.cpp",
+      "function": "_Z14latticeDecryptPxS_ii",
+      "line": 50,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    // Decode message bit\n    return (inner_product > q / 4 && inner_product < 3 * q / 4) ? 1 : 0;\n}\n\nint main() {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/cryptography/lattice_crypto.cpp",
+      "function": "_Z14latticeDecryptPxS_ii",
+      "line": 45,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "int latticeDecrypt(int64_t* ciphertext, int64_t* private_key, int n, int q) {\n    int64_t inner_product = 0;\n    \n    for (int i = 0; i < n; i++) {\n        inner_product = (inner_product + ciphertext[i] * private_key[i]) % q;\n    }\n    "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/cryptography/lattice_crypto.cpp",
+      "function": "main",
+      "line": 8,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "void generateLatticeKeys(int64_t* public_key, int64_t* private_key, \n                        int n, int q, double sigma) {\n    // Generate random private key\n    for (int i = 0; i < n; i++) {\n        private_key[i] = rand() % 3 - 1; // {-1, 0, 1}\n    }\n    "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/cryptography/lattice_crypto.cpp",
+      "function": "main",
+      "line": 13,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.4
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/lattice_crypto.cpp",
+      "function": "main",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/cryptography/lattice_crypto.cpp",
+      "function": "main",
+      "line": 29,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.20000000000000004
+    }
+  ],
+  "final_results": [
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    }
+  ]
+}

@@ -1,0 +1,407 @@
+{
+  "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+    "llvm_initial": 22,
+    "llvm_sys_noise": 8,
+    "llvm_project": 14,
+    "after_filter": 9,
+    "ai_batches": 1,
+    "ai_results": 9,
+    "omp_verified": 0,
+    "total_ms": 646.5,
+    "llvm_ms": 416.8
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "_Z19hullWhiteSimulationPdiiddd",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z19hullWhiteSimulationPdiiddd",
+      "line": 11,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z19hullWhiteSimulationPdiiddd",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::normal_distribution<> normal(0.0, 1.0);\n    \n    for (int path = 0; path < n_paths; path++) {\n        double r = forward_rates[0];\n        \n        for (int t = 1; t < n_tenors; t++) {\n            double theta = forward_rates[t]; // Simplified\n            double dW = normal(rng) * sqrt(dt);\n            \n            r = r + a * (theta - r) * dt + sigma * dW;\n            forward_rates[path * n_tenors + t] = r;\n        }\n    }\n}\n\ndouble swapRate(double* discount_factors, int start, int maturity, double tenor) {\n    double numerator = discount_factors[start] - discount_factors[maturity];\n    double denominator = 0.0;\n    \n    for (int i = start + 1; i <= maturity; i++) {\n        denominator += discount_factors[i] * tenor;\n    }\n    \n    return numerator / denominator;\n}\n\ndouble payerSwaptionPayoff(double strike, double swap_rate, double notional,\n                          double* discount_factors, int start, int maturity, double tenor) {\n    if (swap_rate <= strike) return 0.0;\n    \n    double annuity = 0.0;\n    for (int i = start + 1; i <= maturity; i++) {\n        annuity += discount_factors[i] * tenor;\n    }\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z19hullWhiteSimulationPdiiddd",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void hullWhiteSimulation(double* forward_rates, int n_tenors, int n_paths,\n                        double a, double sigma, double dt) {\n    std::mt19937 rng(42);\n    std::normal_distribution<> normal(0.0, 1.0);\n    \n    for (int path = 0; path < n_paths; path++) {\n        double r = forward_rates[0];\n        \n        for (int t = 1; t < n_tenors; t++) {\n            double theta = forward_rates[t]; // Simplified\n            double dW = normal(rng) * sqrt(dt);\n            \n            r = r + a * (theta - r) * dt + sigma * dW;\n            forward_rates[path * n_tenors + t] = r;\n        }\n    }\n}\n\ndouble swapRate(double* discount_factors, int start, int maturity, double tenor) {\n    double numerator = discount_factors[start] - discount_factors[maturity];\n    double denominator = 0.0;\n    \n    for (int i = start + 1; i <= maturity; i++) {\n        denominator += discount_factors[i] * tenor;\n    }\n    \n    return numerator / denominator;\n}\n\ndouble payerSwaptionPayoff(double strike, double swap_rate, double notional,\n                          double* discount_factors, int start, int maturity, double tenor) {\n    if (swap_rate <= strike) return 0.0;\n    \n    double annuity = 0.0;\n    for (int i = start + 1; i <= maturity; i++) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z19hullWhiteSimulationPdiiddd",
+      "line": 14,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z8swapRatePdiid",
+      "line": 28,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\ndouble swapRate(double* discount_factors, int start, int maturity, double tenor) {\n    double numerator = discount_factors[start] - discount_factors[maturity];\n    double denominator = 0.0;\n    \n    for (int i = start + 1; i <= maturity; i++) {\n        denominator += discount_factors[i] * tenor;\n    }\n    \n    return numerator / denominator;\n}\n\ndouble payerSwaptionPayoff(double strike, double swap_rate, double notional,\n                          double* discount_factors, int start, int maturity, double tenor) {\n    if (swap_rate <= strike) return 0.0;\n    \n    double annuity = 0.0;\n    for (int i = start + 1; i <= maturity; i++) {\n        annuity += discount_factors[i] * tenor;\n    }\n    \n    return notional * (swap_rate - strike) * annuity;\n}\n\nvoid priceSwaptionMonteCarlo(double S0, double strike, double maturity,\n                            double swap_tenor, double notional,\n                            int n_simulations, double a, double sigma,\n                            double& price, double& std_error) {\n    const int n_steps = 252;\n    double dt = maturity / n_steps;\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> normal(0.0, 1.0);\n    \n    std::vector<double> payoffs(n_simulations);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z8swapRatePdiid",
+      "line": 28,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "\ndouble swapRate(double* discount_factors, int start, int maturity, double tenor) {\n    double numerator = discount_factors[start] - discount_factors[maturity];\n    double denominator = 0.0;\n    \n    for (int i = start + 1; i <= maturity; i++) {\n        denominator += discount_factors[i] * tenor;\n    }\n    \n    return numerator / denominator;\n}\n\ndouble payerSwaptionPayoff(double strike, double swap_rate, double notional,\n                          double* discount_factors, int start, int maturity, double tenor) {\n    if (swap_rate <= strike) return 0.0;\n    \n    double annuity = 0.0;\n    for (int i = start + 1; i <= maturity; i++) {\n        annuity += discount_factors[i] * tenor;\n    }\n    \n    return notional * (swap_rate - strike) * annuity;\n}\n\nvoid priceSwaptionMonteCarlo(double S0, double strike, double maturity,\n                            double swap_tenor, double notional,\n                            int n_simulations, double a, double sigma,\n                            double& price, double& std_error) {\n    const int n_steps = 252;\n    double dt = maturity / n_steps;\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> normal(0.0, 1.0);\n    \n    std::vector<double> payoffs(n_simulations);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z19payerSwaptionPayoffdddPdiid",
+      "line": 37,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    return numerator / denominator;\n}\n\ndouble payerSwaptionPayoff(double strike, double swap_rate, double notional,\n                          double* discount_factors, int start, int maturity, double tenor) {\n    if (swap_rate <= strike) return 0.0;\n    \n    double annuity = 0.0;\n    for (int i = start + 1; i <= maturity; i++) {\n        annuity += discount_factors[i] * tenor;\n    }\n    \n    return notional * (swap_rate - strike) * annuity;\n}\n\nvoid priceSwaptionMonteCarlo(double S0, double strike, double maturity,\n                            double swap_tenor, double notional,\n                            int n_simulations, double a, double sigma,\n                            double& price, double& std_error) {\n    const int n_steps = 252;\n    double dt = maturity / n_steps;\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> normal(0.0, 1.0);\n    \n    std::vector<double> payoffs(n_simulations);\n    \n    for (int sim = 0; sim < n_simulations; sim++) {\n        std::vector<double> rates(n_steps + 1);\n        std::vector<double> discount_factors(n_steps + 1, 1.0);\n        \n        rates[0] = S0;\n        \n        // Simulate rate path\n        for (int t = 1; t <= n_steps; t++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z19payerSwaptionPayoffdddPdiid",
+      "line": 40,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "double payerSwaptionPayoff(double strike, double swap_rate, double notional,\n                          double* discount_factors, int start, int maturity, double tenor) {\n    if (swap_rate <= strike) return 0.0;\n    \n    double annuity = 0.0;\n    for (int i = start + 1; i <= maturity; i++) {\n        annuity += discount_factors[i] * tenor;\n    }\n    \n    return notional * (swap_rate - strike) * annuity;\n}\n\nvoid priceSwaptionMonteCarlo(double S0, double strike, double maturity,\n                            double swap_tenor, double notional,\n                            int n_simulations, double a, double sigma,\n                            double& price, double& std_error) {\n    const int n_steps = 252;\n    double dt = maturity / n_steps;\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> normal(0.0, 1.0);\n    \n    std::vector<double> payoffs(n_simulations);\n    \n    for (int sim = 0; sim < n_simulations; sim++) {\n        std::vector<double> rates(n_steps + 1);\n        std::vector<double> discount_factors(n_steps + 1, 1.0);\n        \n        rates[0] = S0;\n        \n        // Simulate rate path\n        for (int t = 1; t <= n_steps; t++) {\n            double dW = normal(rng) * sqrt(dt);\n            rates[t] = rates[t-1] + a * (0.05 - rates[t-1]) * dt + sigma * dW;\n            "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z19payerSwaptionPayoffdddPdiid",
+      "line": 40,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "double payerSwaptionPayoff(double strike, double swap_rate, double notional,\n                          double* discount_factors, int start, int maturity, double tenor) {\n    if (swap_rate <= strike) return 0.0;\n    \n    double annuity = 0.0;\n    for (int i = start + 1; i <= maturity; i++) {\n        annuity += discount_factors[i] * tenor;\n    }\n    \n    return notional * (swap_rate - strike) * annuity;\n}\n\nvoid priceSwaptionMonteCarlo(double S0, double strike, double maturity,\n                            double swap_tenor, double notional,\n                            int n_simulations, double a, double sigma,\n                            double& price, double& std_error) {\n    const int n_steps = 252;\n    double dt = maturity / n_steps;\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> normal(0.0, 1.0);\n    \n    std::vector<double> payoffs(n_simulations);\n    \n    for (int sim = 0; sim < n_simulations; sim++) {\n        std::vector<double> rates(n_steps + 1);\n        std::vector<double> discount_factors(n_steps + 1, 1.0);\n        \n        rates[0] = S0;\n        \n        // Simulate rate path\n        for (int t = 1; t <= n_steps; t++) {\n            double dW = normal(rng) * sqrt(dt);\n            rates[t] = rates[t-1] + a * (0.05 - rates[t-1]) * dt + sigma * dW;\n            "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "_Z23priceSwaptionMonteCarlodddddiddRdS_",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z23priceSwaptionMonteCarlodddddiddRdS_",
+      "line": 149,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z23priceSwaptionMonteCarlodddddiddRdS_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z23priceSwaptionMonteCarlodddddiddRdS_",
+      "line": 59,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::mt19937 rng(42);\n    std::normal_distribution<> normal(0.0, 1.0);\n    \n    std::vector<double> payoffs(n_simulations);\n    \n    for (int sim = 0; sim < n_simulations; sim++) {\n        std::vector<double> rates(n_steps + 1);\n        std::vector<double> discount_factors(n_steps + 1, 1.0);\n        \n        rates[0] = S0;\n        \n        // Simulate rate path\n        for (int t = 1; t <= n_steps; t++) {\n            double dW = normal(rng) * sqrt(dt);\n            rates[t] = rates[t-1] + a * (0.05 - rates[t-1]) * dt + sigma * dW;\n            \n            discount_factors[t] = discount_factors[t-1] * exp(-rates[t] * dt);\n        }\n        \n        // Calculate swap rate at maturity\n        int swap_start = n_steps;\n        int swap_maturity = n_steps;  // Simplified\n        double final_swap_rate = swapRate(discount_factors.data(), swap_start, \n                                         swap_maturity, swap_tenor);\n        \n        // Calculate payoff\n        payoffs[sim] = payerSwaptionPayoff(strike, final_swap_rate, notional,\n                                          discount_factors.data(), swap_start,\n                                          swap_maturity, swap_tenor);\n    }\n    \n    // Calculate price and standard error\n    double sum = 0.0, sum_sq = 0.0;\n    for (double payoff : payoffs) {\n        double discounted_payoff = payoff * exp(-S0 * maturity);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z23priceSwaptionMonteCarlodddddiddRdS_",
+      "line": 87,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z23priceSwaptionMonteCarlodddddiddRdS_",
+      "line": 59,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z23priceSwaptionMonteCarlodddddiddRdS_",
+      "line": 66,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        std::vector<double> discount_factors(n_steps + 1, 1.0);\n        \n        rates[0] = S0;\n        \n        // Simulate rate path\n        for (int t = 1; t <= n_steps; t++) {\n            double dW = normal(rng) * sqrt(dt);\n            rates[t] = rates[t-1] + a * (0.05 - rates[t-1]) * dt + sigma * dW;\n            \n            discount_factors[t] = discount_factors[t-1] * exp(-rates[t] * dt);\n        }\n        \n        // Calculate swap rate at maturity\n        int swap_start = n_steps;\n        int swap_maturity = n_steps;  // Simplified\n        double final_swap_rate = swapRate(discount_factors.data(), swap_start, \n                                         swap_maturity, swap_tenor);\n        \n        // Calculate payoff\n        payoffs[sim] = payerSwaptionPayoff(strike, final_swap_rate, notional,\n                                          discount_factors.data(), swap_start,\n                                          swap_maturity, swap_tenor);\n    }\n    \n    // Calculate price and standard error\n    double sum = 0.0, sum_sq = 0.0;\n    for (double payoff : payoffs) {\n        double discounted_payoff = payoff * exp(-S0 * maturity);\n        sum += discounted_payoff;\n        sum_sq += discounted_payoff * discounted_payoff;\n    }\n    \n    price = sum / n_simulations;\n    double variance = (sum_sq / n_simulations - price * price) / n_simulations;\n    std_error = sqrt(variance);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z23priceSwaptionMonteCarlodddddiddRdS_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z23priceSwaptionMonteCarlodddddiddRdS_",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z23priceSwaptionMonteCarlodddddiddRdS_",
+      "line": 87,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/normal_distribution.h",
+      "function": "_ZNSt3__119normal_distributionIdEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEdRT_RKNS1_10param_typeE",
+      "line": 113,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/normal_distribution.h",
+      "function": "_ZNSt3__119normal_distributionIdEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEdRT_RKNS1_10param_typeE",
+      "line": 125,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z8swapRatePdiid",
+      "line": 28,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\ndouble swapRate(double* discount_factors, int start, int maturity, double tenor) {\n    double numerator = discount_factors[start] - discount_factors[maturity];\n    double denominator = 0.0;\n    \n    for (int i = start + 1; i <= maturity; i++) {\n        denominator += discount_factors[i] * tenor;\n    }\n    \n    return numerator / denominator;\n}\n\ndouble payerSwaptionPayoff(double strike, double swap_rate, double notional,\n                          double* discount_factors, int start, int maturity, double tenor) {\n    if (swap_rate <= strike) return 0.0;\n    \n    double annuity = 0.0;\n    for (int i = start + 1; i <= maturity; i++) {\n        annuity += discount_factors[i] * tenor;\n    }\n    \n    return notional * (swap_rate - strike) * annuity;\n}\n\nvoid priceSwaptionMonteCarlo(double S0, double strike, double maturity,\n                            double swap_tenor, double notional,\n                            int n_simulations, double a, double sigma,\n                            double& price, double& std_error) {\n    const int n_steps = 252;\n    double dt = maturity / n_steps;\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> normal(0.0, 1.0);\n    \n    std::vector<double> payoffs(n_simulations);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z19payerSwaptionPayoffdddPdiid",
+      "line": 40,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "double payerSwaptionPayoff(double strike, double swap_rate, double notional,\n                          double* discount_factors, int start, int maturity, double tenor) {\n    if (swap_rate <= strike) return 0.0;\n    \n    double annuity = 0.0;\n    for (int i = start + 1; i <= maturity; i++) {\n        annuity += discount_factors[i] * tenor;\n    }\n    \n    return notional * (swap_rate - strike) * annuity;\n}\n\nvoid priceSwaptionMonteCarlo(double S0, double strike, double maturity,\n                            double swap_tenor, double notional,\n                            int n_simulations, double a, double sigma,\n                            double& price, double& std_error) {\n    const int n_steps = 252;\n    double dt = maturity / n_steps;\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> normal(0.0, 1.0);\n    \n    std::vector<double> payoffs(n_simulations);\n    \n    for (int sim = 0; sim < n_simulations; sim++) {\n        std::vector<double> rates(n_steps + 1);\n        std::vector<double> discount_factors(n_steps + 1, 1.0);\n        \n        rates[0] = S0;\n        \n        // Simulate rate path\n        for (int t = 1; t <= n_steps; t++) {\n            double dW = normal(rng) * sqrt(dt);\n            rates[t] = rates[t-1] + a * (0.05 - rates[t-1]) * dt + sigma * dW;\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z8swapRatePdiid",
+      "line": 28,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "\ndouble swapRate(double* discount_factors, int start, int maturity, double tenor) {\n    double numerator = discount_factors[start] - discount_factors[maturity];\n    double denominator = 0.0;\n    \n    for (int i = start + 1; i <= maturity; i++) {\n        denominator += discount_factors[i] * tenor;\n    }\n    \n    return numerator / denominator;\n}\n\ndouble payerSwaptionPayoff(double strike, double swap_rate, double notional,\n                          double* discount_factors, int start, int maturity, double tenor) {\n    if (swap_rate <= strike) return 0.0;\n    \n    double annuity = 0.0;\n    for (int i = start + 1; i <= maturity; i++) {\n        annuity += discount_factors[i] * tenor;\n    }\n    \n    return notional * (swap_rate - strike) * annuity;\n}\n\nvoid priceSwaptionMonteCarlo(double S0, double strike, double maturity,\n                            double swap_tenor, double notional,\n                            int n_simulations, double a, double sigma,\n                            double& price, double& std_error) {\n    const int n_steps = 252;\n    double dt = maturity / n_steps;\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> normal(0.0, 1.0);\n    \n    std::vector<double> payoffs(n_simulations);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z19payerSwaptionPayoffdddPdiid",
+      "line": 40,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "double payerSwaptionPayoff(double strike, double swap_rate, double notional,\n                          double* discount_factors, int start, int maturity, double tenor) {\n    if (swap_rate <= strike) return 0.0;\n    \n    double annuity = 0.0;\n    for (int i = start + 1; i <= maturity; i++) {\n        annuity += discount_factors[i] * tenor;\n    }\n    \n    return notional * (swap_rate - strike) * annuity;\n}\n\nvoid priceSwaptionMonteCarlo(double S0, double strike, double maturity,\n                            double swap_tenor, double notional,\n                            int n_simulations, double a, double sigma,\n                            double& price, double& std_error) {\n    const int n_steps = 252;\n    double dt = maturity / n_steps;\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> normal(0.0, 1.0);\n    \n    std::vector<double> payoffs(n_simulations);\n    \n    for (int sim = 0; sim < n_simulations; sim++) {\n        std::vector<double> rates(n_steps + 1);\n        std::vector<double> discount_factors(n_steps + 1, 1.0);\n        \n        rates[0] = S0;\n        \n        // Simulate rate path\n        for (int t = 1; t <= n_steps; t++) {\n            double dW = normal(rng) * sqrt(dt);\n            rates[t] = rates[t-1] + a * (0.05 - rates[t-1]) * dt + sigma * dW;\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z23priceSwaptionMonteCarlodddddiddRdS_",
+      "line": 66,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        std::vector<double> discount_factors(n_steps + 1, 1.0);\n        \n        rates[0] = S0;\n        \n        // Simulate rate path\n        for (int t = 1; t <= n_steps; t++) {\n            double dW = normal(rng) * sqrt(dt);\n            rates[t] = rates[t-1] + a * (0.05 - rates[t-1]) * dt + sigma * dW;\n            \n            discount_factors[t] = discount_factors[t-1] * exp(-rates[t] * dt);\n        }\n        \n        // Calculate swap rate at maturity\n        int swap_start = n_steps;\n        int swap_maturity = n_steps;  // Simplified\n        double final_swap_rate = swapRate(discount_factors.data(), swap_start, \n                                         swap_maturity, swap_tenor);\n        \n        // Calculate payoff\n        payoffs[sim] = payerSwaptionPayoff(strike, final_swap_rate, notional,\n                                          discount_factors.data(), swap_start,\n                                          swap_maturity, swap_tenor);\n    }\n    \n    // Calculate price and standard error\n    double sum = 0.0, sum_sq = 0.0;\n    for (double payoff : payoffs) {\n        double discounted_payoff = payoff * exp(-S0 * maturity);\n        sum += discounted_payoff;\n        sum_sq += discounted_payoff * discounted_payoff;\n    }\n    \n    price = sum / n_simulations;\n    double variance = (sum_sq / n_simulations - price * price) / n_simulations;\n    std_error = sqrt(variance);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z19hullWhiteSimulationPdiiddd",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::normal_distribution<> normal(0.0, 1.0);\n    \n    for (int path = 0; path < n_paths; path++) {\n        double r = forward_rates[0];\n        \n        for (int t = 1; t < n_tenors; t++) {\n            double theta = forward_rates[t]; // Simplified\n            double dW = normal(rng) * sqrt(dt);\n            \n            r = r + a * (theta - r) * dt + sigma * dW;\n            forward_rates[path * n_tenors + t] = r;\n        }\n    }\n}\n\ndouble swapRate(double* discount_factors, int start, int maturity, double tenor) {\n    double numerator = discount_factors[start] - discount_factors[maturity];\n    double denominator = 0.0;\n    \n    for (int i = start + 1; i <= maturity; i++) {\n        denominator += discount_factors[i] * tenor;\n    }\n    \n    return numerator / denominator;\n}\n\ndouble payerSwaptionPayoff(double strike, double swap_rate, double notional,\n                          double* discount_factors, int start, int maturity, double tenor) {\n    if (swap_rate <= strike) return 0.0;\n    \n    double annuity = 0.0;\n    for (int i = start + 1; i <= maturity; i++) {\n        annuity += discount_factors[i] * tenor;\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z19hullWhiteSimulationPdiiddd",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void hullWhiteSimulation(double* forward_rates, int n_tenors, int n_paths,\n                        double a, double sigma, double dt) {\n    std::mt19937 rng(42);\n    std::normal_distribution<> normal(0.0, 1.0);\n    \n    for (int path = 0; path < n_paths; path++) {\n        double r = forward_rates[0];\n        \n        for (int t = 1; t < n_tenors; t++) {\n            double theta = forward_rates[t]; // Simplified\n            double dW = normal(rng) * sqrt(dt);\n            \n            r = r + a * (theta - r) * dt + sigma * dW;\n            forward_rates[path * n_tenors + t] = r;\n        }\n    }\n}\n\ndouble swapRate(double* discount_factors, int start, int maturity, double tenor) {\n    double numerator = discount_factors[start] - discount_factors[maturity];\n    double denominator = 0.0;\n    \n    for (int i = start + 1; i <= maturity; i++) {\n        denominator += discount_factors[i] * tenor;\n    }\n    \n    return numerator / denominator;\n}\n\ndouble payerSwaptionPayoff(double strike, double swap_rate, double notional,\n                          double* discount_factors, int start, int maturity, double tenor) {\n    if (swap_rate <= strike) return 0.0;\n    \n    double annuity = 0.0;\n    for (int i = start + 1; i <= maturity; i++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z19payerSwaptionPayoffdddPdiid",
+      "line": 37,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    return numerator / denominator;\n}\n\ndouble payerSwaptionPayoff(double strike, double swap_rate, double notional,\n                          double* discount_factors, int start, int maturity, double tenor) {\n    if (swap_rate <= strike) return 0.0;\n    \n    double annuity = 0.0;\n    for (int i = start + 1; i <= maturity; i++) {\n        annuity += discount_factors[i] * tenor;\n    }\n    \n    return notional * (swap_rate - strike) * annuity;\n}\n\nvoid priceSwaptionMonteCarlo(double S0, double strike, double maturity,\n                            double swap_tenor, double notional,\n                            int n_simulations, double a, double sigma,\n                            double& price, double& std_error) {\n    const int n_steps = 252;\n    double dt = maturity / n_steps;\n    \n    std::mt19937 rng(42);\n    std::normal_distribution<> normal(0.0, 1.0);\n    \n    std::vector<double> payoffs(n_simulations);\n    \n    for (int sim = 0; sim < n_simulations; sim++) {\n        std::vector<double> rates(n_steps + 1);\n        std::vector<double> discount_factors(n_steps + 1, 1.0);\n        \n        rates[0] = S0;\n        \n        // Simulate rate path\n        for (int t = 1; t <= n_steps; t++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/swaption_pricing.cpp",
+      "function": "_Z23priceSwaptionMonteCarlodddddiddRdS_",
+      "line": 59,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::mt19937 rng(42);\n    std::normal_distribution<> normal(0.0, 1.0);\n    \n    std::vector<double> payoffs(n_simulations);\n    \n    for (int sim = 0; sim < n_simulations; sim++) {\n        std::vector<double> rates(n_steps + 1);\n        std::vector<double> discount_factors(n_steps + 1, 1.0);\n        \n        rates[0] = S0;\n        \n        // Simulate rate path\n        for (int t = 1; t <= n_steps; t++) {\n            double dW = normal(rng) * sqrt(dt);\n            rates[t] = rates[t-1] + a * (0.05 - rates[t-1]) * dt + sigma * dW;\n            \n            discount_factors[t] = discount_factors[t-1] * exp(-rates[t] * dt);\n        }\n        \n        // Calculate swap rate at maturity\n        int swap_start = n_steps;\n        int swap_maturity = n_steps;  // Simplified\n        double final_swap_rate = swapRate(discount_factors.data(), swap_start, \n                                         swap_maturity, swap_tenor);\n        \n        // Calculate payoff\n        payoffs[sim] = payerSwaptionPayoff(strike, final_swap_rate, notional,\n                                          discount_factors.data(), swap_start,\n                                          swap_maturity, swap_tenor);\n    }\n    \n    // Calculate price and standard error\n    double sum = 0.0, sum_sq = 0.0;\n    for (double payoff : payoffs) {\n        double discounted_payoff = payoff * exp(-S0 * maturity);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

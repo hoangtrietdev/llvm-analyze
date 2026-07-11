@@ -1,0 +1,659 @@
+{
+  "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+    "llvm_initial": 54,
+    "llvm_sys_noise": 44,
+    "llvm_project": 10,
+    "after_filter": 9,
+    "ai_batches": 1,
+    "ai_results": 9,
+    "omp_verified": 0,
+    "total_ms": 583.7,
+    "llvm_ms": 383.9
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void simulate_chemical_reactions(\n    std::vector<std::vector<std::vector<ChemicalSpecies>>>& grid,\n    double dt) {\n    \n    // Chemical reactions\n    for (int i = 0; i < GRID_SIZE; i++) {\n        for (int j = 0; j < GRID_SIZE; j++) {\n            for (int k = 0; k < GRID_SIZE; k++) {\n                for (int s = 0; s < NUM_SPECIES; s++) {\n                    // Simple first-order reaction\n                    double reaction = grid[i][j][k].reaction_rate[s] * \n                                     grid[i][j][k].concentration[s] * dt;\n                    grid[i][j][k].concentration[s] -= reaction;\n                    \n                    // Product formation\n                    if (s < NUM_SPECIES - 1) {\n                        grid[i][j][k].concentration[s + 1] += reaction * 0.8;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 19,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::vector<std::vector<std::vector<ChemicalSpecies>>>& grid,\n    double dt) {\n    \n    // Chemical reactions\n    for (int i = 0; i < GRID_SIZE; i++) {\n        for (int j = 0; j < GRID_SIZE; j++) {\n            for (int k = 0; k < GRID_SIZE; k++) {\n                for (int s = 0; s < NUM_SPECIES; s++) {\n                    // Simple first-order reaction\n                    double reaction = grid[i][j][k].reaction_rate[s] * \n                                     grid[i][j][k].concentration[s] * dt;\n                    grid[i][j][k].concentration[s] -= reaction;\n                    \n                    // Product formation\n                    if (s < NUM_SPECIES - 1) {\n                        grid[i][j][k].concentration[s + 1] += reaction * 0.8;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -\n                        6.0 * grid[i][j][k].concentration[s]"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    double dt) {\n    \n    // Chemical reactions\n    for (int i = 0; i < GRID_SIZE; i++) {\n        for (int j = 0; j < GRID_SIZE; j++) {\n            for (int k = 0; k < GRID_SIZE; k++) {\n                for (int s = 0; s < NUM_SPECIES; s++) {\n                    // Simple first-order reaction\n                    double reaction = grid[i][j][k].reaction_rate[s] * \n                                     grid[i][j][k].concentration[s] * dt;\n                    grid[i][j][k].concentration[s] -= reaction;\n                    \n                    // Product formation\n                    if (s < NUM_SPECIES - 1) {\n                        grid[i][j][k].concentration[s + 1] += reaction * 0.8;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -\n                        6.0 * grid[i][j][k].concentration[s]\n                    );"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 28,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    double reaction = grid[i][j][k].reaction_rate[s] * \n                                     grid[i][j][k].concentration[s] * dt;\n                    grid[i][j][k].concentration[s] -= reaction;\n                    \n                    // Product formation\n                    if (s < NUM_SPECIES - 1) {\n                        grid[i][j][k].concentration[s + 1] += reaction * 0.8;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -\n                        6.0 * grid[i][j][k].concentration[s]\n                    );\n                    grid[i][j][k].concentration[s] += 0.1 * laplacian * dt;\n                }\n            }\n        }\n    }\n}\n\nint main() {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 21,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    \n    // Chemical reactions\n    for (int i = 0; i < GRID_SIZE; i++) {\n        for (int j = 0; j < GRID_SIZE; j++) {\n            for (int k = 0; k < GRID_SIZE; k++) {\n                for (int s = 0; s < NUM_SPECIES; s++) {\n                    // Simple first-order reaction\n                    double reaction = grid[i][j][k].reaction_rate[s] * \n                                     grid[i][j][k].concentration[s] * dt;\n                    grid[i][j][k].concentration[s] -= reaction;\n                    \n                    // Product formation\n                    if (s < NUM_SPECIES - 1) {\n                        grid[i][j][k].concentration[s + 1] += reaction * 0.8;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -\n                        6.0 * grid[i][j][k].concentration[s]\n                    );\n                    grid[i][j][k].concentration[s] += 0.1 * laplacian * dt;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 37,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n        }\n    }\n    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -\n                        6.0 * grid[i][j][k].concentration[s]\n                    );\n                    grid[i][j][k].concentration[s] += 0.1 * laplacian * dt;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<std::vector<ChemicalSpecies>>> grid(GRID_SIZE,\n        std::vector<std::vector<ChemicalSpecies>>(GRID_SIZE,\n            std::vector<ChemicalSpecies>(GRID_SIZE)));\n    \n    for (int t = 0; t < 100; t++) {\n        simulate_chemical_reactions(grid, 0.1);\n    }\n    \n    return 0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 38,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n    }\n    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -\n                        6.0 * grid[i][j][k].concentration[s]\n                    );\n                    grid[i][j][k].concentration[s] += 0.1 * laplacian * dt;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<std::vector<ChemicalSpecies>>> grid(GRID_SIZE,\n        std::vector<std::vector<ChemicalSpecies>>(GRID_SIZE,\n            std::vector<ChemicalSpecies>(GRID_SIZE)));\n    \n    for (int t = 0; t < 100; t++) {\n        simulate_chemical_reactions(grid, 0.1);\n    }\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 39,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    }\n    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -\n                        6.0 * grid[i][j][k].concentration[s]\n                    );\n                    grid[i][j][k].concentration[s] += 0.1 * laplacian * dt;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<std::vector<ChemicalSpecies>>> grid(GRID_SIZE,\n        std::vector<std::vector<ChemicalSpecies>>(GRID_SIZE,\n            std::vector<ChemicalSpecies>(GRID_SIZE)));\n    \n    for (int t = 0; t < 100; t++) {\n        simulate_chemical_reactions(grid, 0.1);\n    }\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 40,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -\n                        6.0 * grid[i][j][k].concentration[s]\n                    );\n                    grid[i][j][k].concentration[s] += 0.1 * laplacian * dt;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<std::vector<ChemicalSpecies>>> grid(GRID_SIZE,\n        std::vector<std::vector<ChemicalSpecies>>(GRID_SIZE,\n            std::vector<ChemicalSpecies>(GRID_SIZE)));\n    \n    for (int t = 0; t < 100; t++) {\n        simulate_chemical_reactions(grid, 0.1);\n    }\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "main",
+      "line": 62,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.42000000000000004
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I15ChemicalSpeciesNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I15ChemicalSpeciesNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I15ChemicalSpeciesNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I15ChemicalSpeciesNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I15ChemicalSpeciesNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEC2B8ne210101EmRKS6_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEC2B8ne210101EmRKS6_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEC2B8ne210101EmRKS6_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEC2B8ne210101EmRKS6_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEC2B8ne210101EmRKS6_",
+      "line": 935,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEC2B8ne210101EmRKS6_",
+      "line": 84,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorI15ChemicalSpeciesNS1_IS3_EEEEEEPS5_S7_S7_EET2_RT_T0_T1_S8_",
+      "line": 542,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorI15ChemicalSpeciesNS1_IS3_EEEEEEPS5_S7_S7_EET2_RT_T0_T1_S8_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorI15ChemicalSpeciesNS1_IS3_EEEEEEPS5_S7_S7_EET2_RT_T0_T1_S8_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorI15ChemicalSpeciesNS1_IS3_EEEEEEPS5_S7_S7_EET2_RT_T0_T1_S8_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorI15ChemicalSpeciesNS1_IS3_EEEEEEPS5_S7_S7_EET2_RT_T0_T1_S8_",
+      "line": 542,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorI15ChemicalSpeciesNS2_IS4_EEEEEEPS6_EEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorI15ChemicalSpeciesNS2_IS4_EEEEEEPS6_EEED1B8ne210101Ev",
+      "line": 49,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorI15ChemicalSpeciesNS2_IS4_EEEEEEPS6_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorI15ChemicalSpeciesNS2_IS4_EEEEEEPS6_EEED1B8ne210101Ev",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 28,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    double reaction = grid[i][j][k].reaction_rate[s] * \n                                     grid[i][j][k].concentration[s] * dt;\n                    grid[i][j][k].concentration[s] -= reaction;\n                    \n                    // Product formation\n                    if (s < NUM_SPECIES - 1) {\n                        grid[i][j][k].concentration[s + 1] += reaction * 0.8;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -\n                        6.0 * grid[i][j][k].concentration[s]\n                    );\n                    grid[i][j][k].concentration[s] += 0.1 * laplacian * dt;\n                }\n            }\n        }\n    }\n}\n\nint main() {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    double dt) {\n    \n    // Chemical reactions\n    for (int i = 0; i < GRID_SIZE; i++) {\n        for (int j = 0; j < GRID_SIZE; j++) {\n            for (int k = 0; k < GRID_SIZE; k++) {\n                for (int s = 0; s < NUM_SPECIES; s++) {\n                    // Simple first-order reaction\n                    double reaction = grid[i][j][k].reaction_rate[s] * \n                                     grid[i][j][k].concentration[s] * dt;\n                    grid[i][j][k].concentration[s] -= reaction;\n                    \n                    // Product formation\n                    if (s < NUM_SPECIES - 1) {\n                        grid[i][j][k].concentration[s + 1] += reaction * 0.8;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -\n                        6.0 * grid[i][j][k].concentration[s]\n                    );",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 21,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    \n    // Chemical reactions\n    for (int i = 0; i < GRID_SIZE; i++) {\n        for (int j = 0; j < GRID_SIZE; j++) {\n            for (int k = 0; k < GRID_SIZE; k++) {\n                for (int s = 0; s < NUM_SPECIES; s++) {\n                    // Simple first-order reaction\n                    double reaction = grid[i][j][k].reaction_rate[s] * \n                                     grid[i][j][k].concentration[s] * dt;\n                    grid[i][j][k].concentration[s] -= reaction;\n                    \n                    // Product formation\n                    if (s < NUM_SPECIES - 1) {\n                        grid[i][j][k].concentration[s + 1] += reaction * 0.8;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -\n                        6.0 * grid[i][j][k].concentration[s]\n                    );\n                    grid[i][j][k].concentration[s] += 0.1 * laplacian * dt;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 39,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    }\n    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -\n                        6.0 * grid[i][j][k].concentration[s]\n                    );\n                    grid[i][j][k].concentration[s] += 0.1 * laplacian * dt;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<std::vector<ChemicalSpecies>>> grid(GRID_SIZE,\n        std::vector<std::vector<ChemicalSpecies>>(GRID_SIZE,\n            std::vector<ChemicalSpecies>(GRID_SIZE)));\n    \n    for (int t = 0; t < 100; t++) {\n        simulate_chemical_reactions(grid, 0.1);\n    }\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 40,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -\n                        6.0 * grid[i][j][k].concentration[s]\n                    );\n                    grid[i][j][k].concentration[s] += 0.1 * laplacian * dt;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<std::vector<ChemicalSpecies>>> grid(GRID_SIZE,\n        std::vector<std::vector<ChemicalSpecies>>(GRID_SIZE,\n            std::vector<ChemicalSpecies>(GRID_SIZE)));\n    \n    for (int t = 0; t < 100; t++) {\n        simulate_chemical_reactions(grid, 0.1);\n    }\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void simulate_chemical_reactions(\n    std::vector<std::vector<std::vector<ChemicalSpecies>>>& grid,\n    double dt) {\n    \n    // Chemical reactions\n    for (int i = 0; i < GRID_SIZE; i++) {\n        for (int j = 0; j < GRID_SIZE; j++) {\n            for (int k = 0; k < GRID_SIZE; k++) {\n                for (int s = 0; s < NUM_SPECIES; s++) {\n                    // Simple first-order reaction\n                    double reaction = grid[i][j][k].reaction_rate[s] * \n                                     grid[i][j][k].concentration[s] * dt;\n                    grid[i][j][k].concentration[s] -= reaction;\n                    \n                    // Product formation\n                    if (s < NUM_SPECIES - 1) {\n                        grid[i][j][k].concentration[s + 1] += reaction * 0.8;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 19,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::vector<std::vector<std::vector<ChemicalSpecies>>>& grid,\n    double dt) {\n    \n    // Chemical reactions\n    for (int i = 0; i < GRID_SIZE; i++) {\n        for (int j = 0; j < GRID_SIZE; j++) {\n            for (int k = 0; k < GRID_SIZE; k++) {\n                for (int s = 0; s < NUM_SPECIES; s++) {\n                    // Simple first-order reaction\n                    double reaction = grid[i][j][k].reaction_rate[s] * \n                                     grid[i][j][k].concentration[s] * dt;\n                    grid[i][j][k].concentration[s] -= reaction;\n                    \n                    // Product formation\n                    if (s < NUM_SPECIES - 1) {\n                        grid[i][j][k].concentration[s + 1] += reaction * 0.8;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -\n                        6.0 * grid[i][j][k].concentration[s]",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 37,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n        }\n    }\n    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -\n                        6.0 * grid[i][j][k].concentration[s]\n                    );\n                    grid[i][j][k].concentration[s] += 0.1 * laplacian * dt;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<std::vector<ChemicalSpecies>>> grid(GRID_SIZE,\n        std::vector<std::vector<ChemicalSpecies>>(GRID_SIZE,\n            std::vector<ChemicalSpecies>(GRID_SIZE)));\n    \n    for (int t = 0; t < 100; t++) {\n        simulate_chemical_reactions(grid, 0.1);\n    }\n    \n    return 0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/atmospheric_chemistry.cpp",
+      "function": "_Z27simulate_chemical_reactionsRNSt3__16vectorINS0_INS0_I15ChemicalSpeciesNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEEd",
+      "line": 38,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n    }\n    \n    // Diffusion\n    for (int s = 0; s < NUM_SPECIES; s++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                for (int k = 1; k < GRID_SIZE - 1; k++) {\n                    double laplacian = (\n                        grid[i+1][j][k].concentration[s] +\n                        grid[i-1][j][k].concentration[s] +\n                        grid[i][j+1][k].concentration[s] +\n                        grid[i][j-1][k].concentration[s] +\n                        grid[i][j][k+1].concentration[s] +\n                        grid[i][j][k-1].concentration[s] -\n                        6.0 * grid[i][j][k].concentration[s]\n                    );\n                    grid[i][j][k].concentration[s] += 0.1 * laplacian * dt;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<std::vector<ChemicalSpecies>>> grid(GRID_SIZE,\n        std::vector<std::vector<ChemicalSpecies>>(GRID_SIZE,\n            std::vector<ChemicalSpecies>(GRID_SIZE)));\n    \n    for (int t = 0; t < 100; t++) {\n        simulate_chemical_reactions(grid, 0.1);\n    }\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "file": "sample/src/real-world/trading/option_greeks.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/trading/option_greeks.cpp",
+    "llvm_initial": 3,
+    "llvm_sys_noise": 1,
+    "llvm_project": 2,
+    "after_filter": 1,
+    "ai_batches": 1,
+    "ai_results": 1,
+    "omp_verified": 0,
+    "total_ms": 535.9,
+    "llvm_ms": 385.9
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/option_greeks.cpp",
+      "function": "main",
+      "line": 85,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.20000000000000004
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/option_greeks.cpp",
+      "function": "_ZN16OptionRiskEngine13computeGreeksEdRKNS_6OptionE",
+      "line": 72,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        double term2 = riskFreeRate * opt.strike * \n                      std::exp(-riskFreeRate * opt.maturity) * normalCDF(d2);\n        g.theta = opt.isCall ? term1 - term2 : term1 + term2;\n        \n        // Rho\n        g.rho = opt.isCall ? \n                opt.strike * opt.maturity * std::exp(-riskFreeRate * opt.maturity) * normalCDF(d2) :\n                -opt.strike * opt.maturity * std::exp(-riskFreeRate * opt.maturity) * normalCDF(-d2);\n        \n        return g;\n    }\n    \n    // Portfolio Greeks aggregation\n    Greeks aggregatePortfolioGreeks(double S, const std::vector<Option>& portfolio,\n                                   const std::vector<int>& positions) {\n        \n        Greeks total = {0, 0, 0, 0, 0};\n        \n        for (size_t i = 0; i < portfolio.size(); i++) {\n            Greeks g = computeGreeks(S, portfolio[i]);\n            \n            total.delta += g.delta * positions[i];\n            total.gamma += g.gamma * positions[i];\n            total.vega += g.vega * positions[i];\n            total.theta += g.theta * positions[i];\n            total.rho += g.rho * positions[i];\n        }\n        \n        return total;\n    }\n    \n    // Delta hedging\n    std::vector<int> computeDeltaHedge(double S, const std::vector<Option>& portfolio,\n                                      const std::vector<int>& positions) {\n        "
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/option_greeks.cpp",
+      "function": "_ZN16OptionRiskEngine13computeGreeksEdRKNS_6OptionE",
+      "line": 72,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        double term2 = riskFreeRate * opt.strike * \n                      std::exp(-riskFreeRate * opt.maturity) * normalCDF(d2);\n        g.theta = opt.isCall ? term1 - term2 : term1 + term2;\n        \n        // Rho\n        g.rho = opt.isCall ? \n                opt.strike * opt.maturity * std::exp(-riskFreeRate * opt.maturity) * normalCDF(d2) :\n                -opt.strike * opt.maturity * std::exp(-riskFreeRate * opt.maturity) * normalCDF(-d2);\n        \n        return g;\n    }\n    \n    // Portfolio Greeks aggregation\n    Greeks aggregatePortfolioGreeks(double S, const std::vector<Option>& portfolio,\n                                   const std::vector<int>& positions) {\n        \n        Greeks total = {0, 0, 0, 0, 0};\n        \n        for (size_t i = 0; i < portfolio.size(); i++) {\n            Greeks g = computeGreeks(S, portfolio[i]);\n            \n            total.delta += g.delta * positions[i];\n            total.gamma += g.gamma * positions[i];\n            total.vega += g.vega * positions[i];\n            total.theta += g.theta * positions[i];\n            total.rho += g.rho * positions[i];\n        }\n        \n        return total;\n    }\n    \n    // Delta hedging\n    std::vector<int> computeDeltaHedge(double S, const std::vector<Option>& portfolio,\n                                      const std::vector<int>& positions) {\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    }
+  ]
+}

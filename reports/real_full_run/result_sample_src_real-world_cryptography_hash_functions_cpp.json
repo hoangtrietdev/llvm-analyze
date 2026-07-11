@@ -1,0 +1,155 @@
+{
+  "file": "sample/src/real-world/cryptography/hash_functions.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/cryptography/hash_functions.cpp",
+    "llvm_initial": 7,
+    "after_filter": 6,
+    "cache_hits": 0,
+    "cache_misses": 6,
+    "omp_verified": 0,
+    "omp_similar": 0,
+    "ai_call_made": 1,
+    "total_ms": 482.5,
+    "llvm_ms": 346.1,
+    "ai_ms": 88.8
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/cryptography/hash_functions.cpp",
+      "function": "_Z14sha256_processPKhmPh",
+      "line": 15,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "        0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19\n    };\n    \n    for (size_t block = 0; block < len / 64; block++) {\n        uint32_t w[64] = {0};\n        \n        for (int i = 0; i < 16; i++) {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/cryptography/hash_functions.cpp",
+      "function": "_Z14sha256_processPKhmPh",
+      "line": 18,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    for (size_t block = 0; block < len / 64; block++) {\n        uint32_t w[64] = {0};\n        \n        for (int i = 0; i < 16; i++) {\n            w[i] = (data[block*64 + i*4] << 24) |\n                   (data[block*64 + i*4 + 1] << 16) |\n                   (data[block*64 + i*4 + 2] << 8) |"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/cryptography/hash_functions.cpp",
+      "function": "_Z14sha256_processPKhmPh",
+      "line": 25,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "                   (data[block*64 + i*4 + 3]);\n        }\n        \n        for (int i = 16; i < 64; i++) {\n            uint32_t s0 = rotate_left(w[i-15], 7) ^ rotate_left(w[i-15], 18) ^ (w[i-15] >> 3);\n            uint32_t s1 = rotate_left(w[i-2], 17) ^ rotate_left(w[i-2], 19) ^ (w[i-2] >> 10);\n            w[i] = w[i-16] + s0 + w[i-7] + s1;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/cryptography/hash_functions.cpp",
+      "function": "_Z14sha256_processPKhmPh",
+      "line": 15,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "        0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19\n    };\n    \n    for (size_t block = 0; block < len / 64; block++) {\n        uint32_t w[64] = {0};\n        \n        for (int i = 0; i < 16; i++) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/cryptography/hash_functions.cpp",
+      "function": "_Z14sha256_processPKhmPh",
+      "line": 34,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        uint32_t a = state[0], b = state[1], c = state[2], d = state[3];\n        uint32_t e = state[4], f = state[5], g = state[6], h = state[7];\n        \n        for (int i = 0; i < 64; i++) {\n            uint32_t S1 = rotate_left(e, 6) ^ rotate_left(e, 11) ^ rotate_left(e, 25);\n            uint32_t ch = (e & f) ^ ((~e) & g);\n            uint32_t temp1 = h + S1 + ch + w[i];"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/cryptography/hash_functions.cpp",
+      "function": "_Z14sha256_processPKhmPh",
+      "line": 50,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        state[4] += e; state[5] += f; state[6] += g; state[7] += h;\n    }\n    \n    for (int i = 0; i < 8; i++) {\n        hash[i*4] = (state[i] >> 24) & 0xff;\n        hash[i*4 + 1] = (state[i] >> 16) & 0xff;\n        hash[i*4 + 2] = (state[i] >> 8) & 0xff;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/cryptography/hash_functions.cpp",
+      "function": "main",
+      "line": 63,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.12000000000000002
+    }
+  ],
+  "final_results": [
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback"
+    }
+  ]
+}

@@ -1,0 +1,316 @@
+{
+  "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+    "llvm_initial": 11,
+    "llvm_sys_noise": 0,
+    "llvm_project": 11,
+    "after_filter": 9,
+    "ai_batches": 1,
+    "ai_results": 9,
+    "omp_verified": 0,
+    "total_ms": 1575.8,
+    "llvm_ms": 351.9
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z10analyzeHRVPdiRdS0_S0_",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid analyzeHRV(double* rr_intervals, int n_intervals, \n               double& sdnn, double& rmssd, double& pnn50) {\n    // SDNN: Standard deviation of NN intervals\n    double mean = 0.0;\n    for (int i = 0; i < n_intervals; i++) {\n        mean += rr_intervals[i];\n    }\n    mean /= n_intervals;\n    \n    double variance = 0.0;\n    for (int i = 0; i < n_intervals; i++) {\n        variance += (rr_intervals[i] - mean) * (rr_intervals[i] - mean);\n    }\n    sdnn = sqrt(variance / n_intervals);\n    \n    // RMSSD: Root mean square of successive differences\n    double sum_squared_diff = 0.0;\n    int nn50 = 0;\n    \n    for (int i = 1; i < n_intervals; i++) {\n        double diff = rr_intervals[i] - rr_intervals[i-1];\n        sum_squared_diff += diff * diff;\n        \n        if (fabs(diff) > 50.0) {\n            nn50++;\n        }\n    }\n    rmssd = sqrt(sum_squared_diff / (n_intervals - 1));\n    \n    // pNN50: Percentage of successive RR intervals differing by > 50ms\n    pnn50 = 100.0 * nn50 / (n_intervals - 1);\n}\n\nvoid computeFrequencyDomain(double* rr_intervals, int n, double* lf, double* hf) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z10analyzeHRVPdiRdS0_S0_",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        mean += rr_intervals[i];\n    }\n    mean /= n_intervals;\n    \n    double variance = 0.0;\n    for (int i = 0; i < n_intervals; i++) {\n        variance += (rr_intervals[i] - mean) * (rr_intervals[i] - mean);\n    }\n    sdnn = sqrt(variance / n_intervals);\n    \n    // RMSSD: Root mean square of successive differences\n    double sum_squared_diff = 0.0;\n    int nn50 = 0;\n    \n    for (int i = 1; i < n_intervals; i++) {\n        double diff = rr_intervals[i] - rr_intervals[i-1];\n        sum_squared_diff += diff * diff;\n        \n        if (fabs(diff) > 50.0) {\n            nn50++;\n        }\n    }\n    rmssd = sqrt(sum_squared_diff / (n_intervals - 1));\n    \n    // pNN50: Percentage of successive RR intervals differing by > 50ms\n    pnn50 = 100.0 * nn50 / (n_intervals - 1);\n}\n\nvoid computeFrequencyDomain(double* rr_intervals, int n, double* lf, double* hf) {\n    // Simple FFT approximation for LF (0.04-0.15 Hz) and HF (0.15-0.4 Hz)\n    *lf = 0.0;\n    *hf = 0.0;\n    \n    for (int freq = 0; freq < n/2; freq++) {\n        double power = 0.0;"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z10analyzeHRVPdiRdS0_S0_",
+      "line": 9,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\nvoid analyzeHRV(double* rr_intervals, int n_intervals, \n               double& sdnn, double& rmssd, double& pnn50) {\n    // SDNN: Standard deviation of NN intervals\n    double mean = 0.0;\n    for (int i = 0; i < n_intervals; i++) {\n        mean += rr_intervals[i];\n    }\n    mean /= n_intervals;\n    \n    double variance = 0.0;\n    for (int i = 0; i < n_intervals; i++) {\n        variance += (rr_intervals[i] - mean) * (rr_intervals[i] - mean);\n    }\n    sdnn = sqrt(variance / n_intervals);\n    \n    // RMSSD: Root mean square of successive differences\n    double sum_squared_diff = 0.0;\n    int nn50 = 0;\n    \n    for (int i = 1; i < n_intervals; i++) {\n        double diff = rr_intervals[i] - rr_intervals[i-1];\n        sum_squared_diff += diff * diff;\n        \n        if (fabs(diff) > 50.0) {\n            nn50++;\n        }\n    }\n    rmssd = sqrt(sum_squared_diff / (n_intervals - 1));\n    \n    // pNN50: Percentage of successive RR intervals differing by > 50ms\n    pnn50 = 100.0 * nn50 / (n_intervals - 1);\n}\n\nvoid computeFrequencyDomain(double* rr_intervals, int n, double* lf, double* hf) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z10analyzeHRVPdiRdS0_S0_",
+      "line": 24,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    \n    // RMSSD: Root mean square of successive differences\n    double sum_squared_diff = 0.0;\n    int nn50 = 0;\n    \n    for (int i = 1; i < n_intervals; i++) {\n        double diff = rr_intervals[i] - rr_intervals[i-1];\n        sum_squared_diff += diff * diff;\n        \n        if (fabs(diff) > 50.0) {\n            nn50++;\n        }\n    }\n    rmssd = sqrt(sum_squared_diff / (n_intervals - 1));\n    \n    // pNN50: Percentage of successive RR intervals differing by > 50ms\n    pnn50 = 100.0 * nn50 / (n_intervals - 1);\n}\n\nvoid computeFrequencyDomain(double* rr_intervals, int n, double* lf, double* hf) {\n    // Simple FFT approximation for LF (0.04-0.15 Hz) and HF (0.15-0.4 Hz)\n    *lf = 0.0;\n    *hf = 0.0;\n    \n    for (int freq = 0; freq < n/2; freq++) {\n        double power = 0.0;\n        for (int i = 0; i < n; i++) {\n            power += rr_intervals[i] * cos(2.0 * M_PI * freq * i / n);\n        }\n        power *= power;\n        \n        double frequency = (double)freq / n;\n        if (frequency >= 0.04 && frequency < 0.15) {\n            *lf += power;\n        } else if (frequency >= 0.15 && frequency < 0.4) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z10analyzeHRVPdiRdS0_S0_",
+      "line": 15,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        mean += rr_intervals[i];\n    }\n    mean /= n_intervals;\n    \n    double variance = 0.0;\n    for (int i = 0; i < n_intervals; i++) {\n        variance += (rr_intervals[i] - mean) * (rr_intervals[i] - mean);\n    }\n    sdnn = sqrt(variance / n_intervals);\n    \n    // RMSSD: Root mean square of successive differences\n    double sum_squared_diff = 0.0;\n    int nn50 = 0;\n    \n    for (int i = 1; i < n_intervals; i++) {\n        double diff = rr_intervals[i] - rr_intervals[i-1];\n        sum_squared_diff += diff * diff;\n        \n        if (fabs(diff) > 50.0) {\n            nn50++;\n        }\n    }\n    rmssd = sqrt(sum_squared_diff / (n_intervals - 1));\n    \n    // pNN50: Percentage of successive RR intervals differing by > 50ms\n    pnn50 = 100.0 * nn50 / (n_intervals - 1);\n}\n\nvoid computeFrequencyDomain(double* rr_intervals, int n, double* lf, double* hf) {\n    // Simple FFT approximation for LF (0.04-0.15 Hz) and HF (0.15-0.4 Hz)\n    *lf = 0.0;\n    *hf = 0.0;\n    \n    for (int freq = 0; freq < n/2; freq++) {\n        double power = 0.0;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z10analyzeHRVPdiRdS0_S0_",
+      "line": 24,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    \n    // RMSSD: Root mean square of successive differences\n    double sum_squared_diff = 0.0;\n    int nn50 = 0;\n    \n    for (int i = 1; i < n_intervals; i++) {\n        double diff = rr_intervals[i] - rr_intervals[i-1];\n        sum_squared_diff += diff * diff;\n        \n        if (fabs(diff) > 50.0) {\n            nn50++;\n        }\n    }\n    rmssd = sqrt(sum_squared_diff / (n_intervals - 1));\n    \n    // pNN50: Percentage of successive RR intervals differing by > 50ms\n    pnn50 = 100.0 * nn50 / (n_intervals - 1);\n}\n\nvoid computeFrequencyDomain(double* rr_intervals, int n, double* lf, double* hf) {\n    // Simple FFT approximation for LF (0.04-0.15 Hz) and HF (0.15-0.4 Hz)\n    *lf = 0.0;\n    *hf = 0.0;\n    \n    for (int freq = 0; freq < n/2; freq++) {\n        double power = 0.0;\n        for (int i = 0; i < n; i++) {\n            power += rr_intervals[i] * cos(2.0 * M_PI * freq * i / n);\n        }\n        power *= power;\n        \n        double frequency = (double)freq / n;\n        if (frequency >= 0.04 && frequency < 0.15) {\n            *lf += power;\n        } else if (frequency >= 0.15 && frequency < 0.4) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z22computeFrequencyDomainPdiS_S_",
+      "line": 43,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "void computeFrequencyDomain(double* rr_intervals, int n, double* lf, double* hf) {\n    // Simple FFT approximation for LF (0.04-0.15 Hz) and HF (0.15-0.4 Hz)\n    *lf = 0.0;\n    *hf = 0.0;\n    \n    for (int freq = 0; freq < n/2; freq++) {\n        double power = 0.0;\n        for (int i = 0; i < n; i++) {\n            power += rr_intervals[i] * cos(2.0 * M_PI * freq * i / n);\n        }\n        power *= power;\n        \n        double frequency = (double)freq / n;\n        if (frequency >= 0.04 && frequency < 0.15) {\n            *lf += power;\n        } else if (frequency >= 0.15 && frequency < 0.4) {\n            *hf += power;\n        }\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> rr_intervals(n, 800.0);\n    \n    double sdnn, rmssd, pnn50;\n    analyzeHRV(rr_intervals.data(), n, sdnn, rmssd, pnn50);\n    \n    double lf, hf;\n    computeFrequencyDomain(rr_intervals.data(), n, &lf, &hf);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z22computeFrequencyDomainPdiS_S_",
+      "line": 51,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z22computeFrequencyDomainPdiS_S_",
+      "line": 45,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "    *lf = 0.0;\n    *hf = 0.0;\n    \n    for (int freq = 0; freq < n/2; freq++) {\n        double power = 0.0;\n        for (int i = 0; i < n; i++) {\n            power += rr_intervals[i] * cos(2.0 * M_PI * freq * i / n);\n        }\n        power *= power;\n        \n        double frequency = (double)freq / n;\n        if (frequency >= 0.04 && frequency < 0.15) {\n            *lf += power;\n        } else if (frequency >= 0.15 && frequency < 0.4) {\n            *hf += power;\n        }\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> rr_intervals(n, 800.0);\n    \n    double sdnn, rmssd, pnn50;\n    analyzeHRV(rr_intervals.data(), n, sdnn, rmssd, pnn50);\n    \n    double lf, hf;\n    computeFrequencyDomain(rr_intervals.data(), n, &lf, &hf);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z22computeFrequencyDomainPdiS_S_",
+      "line": 53,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z22computeFrequencyDomainPdiS_S_",
+      "line": 43,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "void computeFrequencyDomain(double* rr_intervals, int n, double* lf, double* hf) {\n    // Simple FFT approximation for LF (0.04-0.15 Hz) and HF (0.15-0.4 Hz)\n    *lf = 0.0;\n    *hf = 0.0;\n    \n    for (int freq = 0; freq < n/2; freq++) {\n        double power = 0.0;\n        for (int i = 0; i < n; i++) {\n            power += rr_intervals[i] * cos(2.0 * M_PI * freq * i / n);\n        }\n        power *= power;\n        \n        double frequency = (double)freq / n;\n        if (frequency >= 0.04 && frequency < 0.15) {\n            *lf += power;\n        } else if (frequency >= 0.15 && frequency < 0.4) {\n            *hf += power;\n        }\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> rr_intervals(n, 800.0);\n    \n    double sdnn, rmssd, pnn50;\n    analyzeHRV(rr_intervals.data(), n, sdnn, rmssd, pnn50);\n    \n    double lf, hf;\n    computeFrequencyDomain(rr_intervals.data(), n, &lf, &hf);\n    \n    return 0;\n}"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z10analyzeHRVPdiRdS0_S0_",
+      "line": 9,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\nvoid analyzeHRV(double* rr_intervals, int n_intervals, \n               double& sdnn, double& rmssd, double& pnn50) {\n    // SDNN: Standard deviation of NN intervals\n    double mean = 0.0;\n    for (int i = 0; i < n_intervals; i++) {\n        mean += rr_intervals[i];\n    }\n    mean /= n_intervals;\n    \n    double variance = 0.0;\n    for (int i = 0; i < n_intervals; i++) {\n        variance += (rr_intervals[i] - mean) * (rr_intervals[i] - mean);\n    }\n    sdnn = sqrt(variance / n_intervals);\n    \n    // RMSSD: Root mean square of successive differences\n    double sum_squared_diff = 0.0;\n    int nn50 = 0;\n    \n    for (int i = 1; i < n_intervals; i++) {\n        double diff = rr_intervals[i] - rr_intervals[i-1];\n        sum_squared_diff += diff * diff;\n        \n        if (fabs(diff) > 50.0) {\n            nn50++;\n        }\n    }\n    rmssd = sqrt(sum_squared_diff / (n_intervals - 1));\n    \n    // pNN50: Percentage of successive RR intervals differing by > 50ms\n    pnn50 = 100.0 * nn50 / (n_intervals - 1);\n}\n\nvoid computeFrequencyDomain(double* rr_intervals, int n, double* lf, double* hf) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z22computeFrequencyDomainPdiS_S_",
+      "line": 43,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "void computeFrequencyDomain(double* rr_intervals, int n, double* lf, double* hf) {\n    // Simple FFT approximation for LF (0.04-0.15 Hz) and HF (0.15-0.4 Hz)\n    *lf = 0.0;\n    *hf = 0.0;\n    \n    for (int freq = 0; freq < n/2; freq++) {\n        double power = 0.0;\n        for (int i = 0; i < n; i++) {\n            power += rr_intervals[i] * cos(2.0 * M_PI * freq * i / n);\n        }\n        power *= power;\n        \n        double frequency = (double)freq / n;\n        if (frequency >= 0.04 && frequency < 0.15) {\n            *lf += power;\n        } else if (frequency >= 0.15 && frequency < 0.4) {\n            *hf += power;\n        }\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> rr_intervals(n, 800.0);\n    \n    double sdnn, rmssd, pnn50;\n    analyzeHRV(rr_intervals.data(), n, sdnn, rmssd, pnn50);\n    \n    double lf, hf;\n    computeFrequencyDomain(rr_intervals.data(), n, &lf, &hf);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z22computeFrequencyDomainPdiS_S_",
+      "line": 43,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "void computeFrequencyDomain(double* rr_intervals, int n, double* lf, double* hf) {\n    // Simple FFT approximation for LF (0.04-0.15 Hz) and HF (0.15-0.4 Hz)\n    *lf = 0.0;\n    *hf = 0.0;\n    \n    for (int freq = 0; freq < n/2; freq++) {\n        double power = 0.0;\n        for (int i = 0; i < n; i++) {\n            power += rr_intervals[i] * cos(2.0 * M_PI * freq * i / n);\n        }\n        power *= power;\n        \n        double frequency = (double)freq / n;\n        if (frequency >= 0.04 && frequency < 0.15) {\n            *lf += power;\n        } else if (frequency >= 0.15 && frequency < 0.4) {\n            *hf += power;\n        }\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> rr_intervals(n, 800.0);\n    \n    double sdnn, rmssd, pnn50;\n    analyzeHRV(rr_intervals.data(), n, sdnn, rmssd, pnn50);\n    \n    double lf, hf;\n    computeFrequencyDomain(rr_intervals.data(), n, &lf, &hf);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z10analyzeHRVPdiRdS0_S0_",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        mean += rr_intervals[i];\n    }\n    mean /= n_intervals;\n    \n    double variance = 0.0;\n    for (int i = 0; i < n_intervals; i++) {\n        variance += (rr_intervals[i] - mean) * (rr_intervals[i] - mean);\n    }\n    sdnn = sqrt(variance / n_intervals);\n    \n    // RMSSD: Root mean square of successive differences\n    double sum_squared_diff = 0.0;\n    int nn50 = 0;\n    \n    for (int i = 1; i < n_intervals; i++) {\n        double diff = rr_intervals[i] - rr_intervals[i-1];\n        sum_squared_diff += diff * diff;\n        \n        if (fabs(diff) > 50.0) {\n            nn50++;\n        }\n    }\n    rmssd = sqrt(sum_squared_diff / (n_intervals - 1));\n    \n    // pNN50: Percentage of successive RR intervals differing by > 50ms\n    pnn50 = 100.0 * nn50 / (n_intervals - 1);\n}\n\nvoid computeFrequencyDomain(double* rr_intervals, int n, double* lf, double* hf) {\n    // Simple FFT approximation for LF (0.04-0.15 Hz) and HF (0.15-0.4 Hz)\n    *lf = 0.0;\n    *hf = 0.0;\n    \n    for (int freq = 0; freq < n/2; freq++) {\n        double power = 0.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z22computeFrequencyDomainPdiS_S_",
+      "line": 45,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "    *lf = 0.0;\n    *hf = 0.0;\n    \n    for (int freq = 0; freq < n/2; freq++) {\n        double power = 0.0;\n        for (int i = 0; i < n; i++) {\n            power += rr_intervals[i] * cos(2.0 * M_PI * freq * i / n);\n        }\n        power *= power;\n        \n        double frequency = (double)freq / n;\n        if (frequency >= 0.04 && frequency < 0.15) {\n            *lf += power;\n        } else if (frequency >= 0.15 && frequency < 0.4) {\n            *hf += power;\n        }\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> rr_intervals(n, 800.0);\n    \n    double sdnn, rmssd, pnn50;\n    analyzeHRV(rr_intervals.data(), n, sdnn, rmssd, pnn50);\n    \n    double lf, hf;\n    computeFrequencyDomain(rr_intervals.data(), n, &lf, &hf);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.7000000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z10analyzeHRVPdiRdS0_S0_",
+      "line": 24,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    \n    // RMSSD: Root mean square of successive differences\n    double sum_squared_diff = 0.0;\n    int nn50 = 0;\n    \n    for (int i = 1; i < n_intervals; i++) {\n        double diff = rr_intervals[i] - rr_intervals[i-1];\n        sum_squared_diff += diff * diff;\n        \n        if (fabs(diff) > 50.0) {\n            nn50++;\n        }\n    }\n    rmssd = sqrt(sum_squared_diff / (n_intervals - 1));\n    \n    // pNN50: Percentage of successive RR intervals differing by > 50ms\n    pnn50 = 100.0 * nn50 / (n_intervals - 1);\n}\n\nvoid computeFrequencyDomain(double* rr_intervals, int n, double* lf, double* hf) {\n    // Simple FFT approximation for LF (0.04-0.15 Hz) and HF (0.15-0.4 Hz)\n    *lf = 0.0;\n    *hf = 0.0;\n    \n    for (int freq = 0; freq < n/2; freq++) {\n        double power = 0.0;\n        for (int i = 0; i < n; i++) {\n            power += rr_intervals[i] * cos(2.0 * M_PI * freq * i / n);\n        }\n        power *= power;\n        \n        double frequency = (double)freq / n;\n        if (frequency >= 0.04 && frequency < 0.15) {\n            *lf += power;\n        } else if (frequency >= 0.15 && frequency < 0.4) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z10analyzeHRVPdiRdS0_S0_",
+      "line": 15,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        mean += rr_intervals[i];\n    }\n    mean /= n_intervals;\n    \n    double variance = 0.0;\n    for (int i = 0; i < n_intervals; i++) {\n        variance += (rr_intervals[i] - mean) * (rr_intervals[i] - mean);\n    }\n    sdnn = sqrt(variance / n_intervals);\n    \n    // RMSSD: Root mean square of successive differences\n    double sum_squared_diff = 0.0;\n    int nn50 = 0;\n    \n    for (int i = 1; i < n_intervals; i++) {\n        double diff = rr_intervals[i] - rr_intervals[i-1];\n        sum_squared_diff += diff * diff;\n        \n        if (fabs(diff) > 50.0) {\n            nn50++;\n        }\n    }\n    rmssd = sqrt(sum_squared_diff / (n_intervals - 1));\n    \n    // pNN50: Percentage of successive RR intervals differing by > 50ms\n    pnn50 = 100.0 * nn50 / (n_intervals - 1);\n}\n\nvoid computeFrequencyDomain(double* rr_intervals, int n, double* lf, double* hf) {\n    // Simple FFT approximation for LF (0.04-0.15 Hz) and HF (0.15-0.4 Hz)\n    *lf = 0.0;\n    *hf = 0.0;\n    \n    for (int freq = 0; freq < n/2; freq++) {\n        double power = 0.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z10analyzeHRVPdiRdS0_S0_",
+      "line": 24,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    \n    // RMSSD: Root mean square of successive differences\n    double sum_squared_diff = 0.0;\n    int nn50 = 0;\n    \n    for (int i = 1; i < n_intervals; i++) {\n        double diff = rr_intervals[i] - rr_intervals[i-1];\n        sum_squared_diff += diff * diff;\n        \n        if (fabs(diff) > 50.0) {\n            nn50++;\n        }\n    }\n    rmssd = sqrt(sum_squared_diff / (n_intervals - 1));\n    \n    // pNN50: Percentage of successive RR intervals differing by > 50ms\n    pnn50 = 100.0 * nn50 / (n_intervals - 1);\n}\n\nvoid computeFrequencyDomain(double* rr_intervals, int n, double* lf, double* hf) {\n    // Simple FFT approximation for LF (0.04-0.15 Hz) and HF (0.15-0.4 Hz)\n    *lf = 0.0;\n    *hf = 0.0;\n    \n    for (int freq = 0; freq < n/2; freq++) {\n        double power = 0.0;\n        for (int i = 0; i < n; i++) {\n            power += rr_intervals[i] * cos(2.0 * M_PI * freq * i / n);\n        }\n        power *= power;\n        \n        double frequency = (double)freq / n;\n        if (frequency >= 0.04 && frequency < 0.15) {\n            *lf += power;\n        } else if (frequency >= 0.15 && frequency < 0.4) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/hrv_analysis.cpp",
+      "function": "_Z10analyzeHRVPdiRdS0_S0_",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid analyzeHRV(double* rr_intervals, int n_intervals, \n               double& sdnn, double& rmssd, double& pnn50) {\n    // SDNN: Standard deviation of NN intervals\n    double mean = 0.0;\n    for (int i = 0; i < n_intervals; i++) {\n        mean += rr_intervals[i];\n    }\n    mean /= n_intervals;\n    \n    double variance = 0.0;\n    for (int i = 0; i < n_intervals; i++) {\n        variance += (rr_intervals[i] - mean) * (rr_intervals[i] - mean);\n    }\n    sdnn = sqrt(variance / n_intervals);\n    \n    // RMSSD: Root mean square of successive differences\n    double sum_squared_diff = 0.0;\n    int nn50 = 0;\n    \n    for (int i = 1; i < n_intervals; i++) {\n        double diff = rr_intervals[i] - rr_intervals[i-1];\n        sum_squared_diff += diff * diff;\n        \n        if (fabs(diff) > 50.0) {\n            nn50++;\n        }\n    }\n    rmssd = sqrt(sum_squared_diff / (n_intervals - 1));\n    \n    // pNN50: Percentage of successive RR intervals differing by > 50ms\n    pnn50 = 100.0 * nn50 / (n_intervals - 1);\n}\n\nvoid computeFrequencyDomain(double* rr_intervals, int n, double* lf, double* hf) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

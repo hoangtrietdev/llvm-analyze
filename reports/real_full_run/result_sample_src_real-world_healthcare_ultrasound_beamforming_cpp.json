@@ -1,0 +1,214 @@
+{
+  "file": "sample/src/real-world/healthcare/ultrasound_beamforming.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/healthcare/ultrasound_beamforming.cpp",
+    "llvm_initial": 7,
+    "llvm_sys_noise": 0,
+    "llvm_project": 7,
+    "after_filter": 6,
+    "ai_batches": 1,
+    "ai_results": 6,
+    "omp_verified": 0,
+    "total_ms": 604.5,
+    "llvm_ms": 355.5
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ultrasound_beamforming.cpp",
+      "function": "_Z21ultrasoundBeamformingPdS_iiiddd",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid ultrasoundBeamforming(double* rf_data, double* image, \n                          int n_elements, int n_samples, int n_lines,\n                          double element_pitch, double sample_rate, double sound_speed) {\n    for (int line = 0; line < n_lines; line++) {\n        double angle = (line - n_lines/2.0) / n_lines * M_PI / 6.0; // \u00b130 degrees\n        \n        for (int depth = 0; depth < n_samples; depth++) {\n            double depth_m = depth / sample_rate * sound_speed / 2.0;\n            double lateral_pos = depth_m * tan(angle);\n            \n            double sum = 0.0;\n            \n            for (int elem = 0; elem < n_elements; elem++) {\n                double elem_pos = (elem - n_elements/2.0) * element_pitch;\n                \n                // Calculate time delay for this element\n                double dx = lateral_pos - elem_pos;\n                double distance = sqrt(depth_m*depth_m + dx*dx);\n                double time_delay = 2.0 * distance / sound_speed;\n                int sample_idx = (int)(time_delay * sample_rate);\n                \n                if (sample_idx >= 0 && sample_idx < n_samples) {\n                    // Apply apodization (Hamming window)\n                    double apod = 0.54 - 0.46 * cos(2*M_PI*elem / n_elements);\n                    sum += rf_data[elem * n_samples + sample_idx] * apod;\n                }\n            }\n            \n            image[line * n_samples + depth] = sum / n_elements;\n        }\n    }\n}\n"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ultrasound_beamforming.cpp",
+      "function": "_Z21ultrasoundBeamformingPdS_iiiddd",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                          int n_elements, int n_samples, int n_lines,\n                          double element_pitch, double sample_rate, double sound_speed) {\n    for (int line = 0; line < n_lines; line++) {\n        double angle = (line - n_lines/2.0) / n_lines * M_PI / 6.0; // \u00b130 degrees\n        \n        for (int depth = 0; depth < n_samples; depth++) {\n            double depth_m = depth / sample_rate * sound_speed / 2.0;\n            double lateral_pos = depth_m * tan(angle);\n            \n            double sum = 0.0;\n            \n            for (int elem = 0; elem < n_elements; elem++) {\n                double elem_pos = (elem - n_elements/2.0) * element_pitch;\n                \n                // Calculate time delay for this element\n                double dx = lateral_pos - elem_pos;\n                double distance = sqrt(depth_m*depth_m + dx*dx);\n                double time_delay = 2.0 * distance / sound_speed;\n                int sample_idx = (int)(time_delay * sample_rate);\n                \n                if (sample_idx >= 0 && sample_idx < n_samples) {\n                    // Apply apodization (Hamming window)\n                    double apod = 0.54 - 0.46 * cos(2*M_PI*elem / n_elements);\n                    sum += rf_data[elem * n_samples + sample_idx] * apod;\n                }\n            }\n            \n            image[line * n_samples + depth] = sum / n_elements;\n        }\n    }\n}\n\nint main() {\n    const int n_elements = 128;\n    const int n_samples = 2048;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ultrasound_beamforming.cpp",
+      "function": "_Z21ultrasoundBeamformingPdS_iiiddd",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid ultrasoundBeamforming(double* rf_data, double* image, \n                          int n_elements, int n_samples, int n_lines,\n                          double element_pitch, double sample_rate, double sound_speed) {\n    for (int line = 0; line < n_lines; line++) {\n        double angle = (line - n_lines/2.0) / n_lines * M_PI / 6.0; // \u00b130 degrees\n        \n        for (int depth = 0; depth < n_samples; depth++) {\n            double depth_m = depth / sample_rate * sound_speed / 2.0;\n            double lateral_pos = depth_m * tan(angle);\n            \n            double sum = 0.0;\n            \n            for (int elem = 0; elem < n_elements; elem++) {\n                double elem_pos = (elem - n_elements/2.0) * element_pitch;\n                \n                // Calculate time delay for this element\n                double dx = lateral_pos - elem_pos;\n                double distance = sqrt(depth_m*depth_m + dx*dx);\n                double time_delay = 2.0 * distance / sound_speed;\n                int sample_idx = (int)(time_delay * sample_rate);\n                \n                if (sample_idx >= 0 && sample_idx < n_samples) {\n                    // Apply apodization (Hamming window)\n                    double apod = 0.54 - 0.46 * cos(2*M_PI*elem / n_elements);\n                    sum += rf_data[elem * n_samples + sample_idx] * apod;\n                }\n            }\n            \n            image[line * n_samples + depth] = sum / n_elements;\n        }\n    }\n}\n"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ultrasound_beamforming.cpp",
+      "function": "_Z21ultrasoundBeamformingPdS_iiiddd",
+      "line": 17,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            double depth_m = depth / sample_rate * sound_speed / 2.0;\n            double lateral_pos = depth_m * tan(angle);\n            \n            double sum = 0.0;\n            \n            for (int elem = 0; elem < n_elements; elem++) {\n                double elem_pos = (elem - n_elements/2.0) * element_pitch;\n                \n                // Calculate time delay for this element\n                double dx = lateral_pos - elem_pos;\n                double distance = sqrt(depth_m*depth_m + dx*dx);\n                double time_delay = 2.0 * distance / sound_speed;\n                int sample_idx = (int)(time_delay * sample_rate);\n                \n                if (sample_idx >= 0 && sample_idx < n_samples) {\n                    // Apply apodization (Hamming window)\n                    double apod = 0.54 - 0.46 * cos(2*M_PI*elem / n_elements);\n                    sum += rf_data[elem * n_samples + sample_idx] * apod;\n                }\n            }\n            \n            image[line * n_samples + depth] = sum / n_elements;\n        }\n    }\n}\n\nint main() {\n    const int n_elements = 128;\n    const int n_samples = 2048;\n    const int n_lines = 256;\n    \n    std::vector<double> rf_data(n_elements * n_samples, 0.5);\n    std::vector<double> image(n_lines * n_samples);\n    \n    ultrasoundBeamforming(rf_data.data(), image.data(), n_elements, n_samples, n_lines,"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ultrasound_beamforming.cpp",
+      "function": "_Z21ultrasoundBeamformingPdS_iiiddd",
+      "line": 11,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                          int n_elements, int n_samples, int n_lines,\n                          double element_pitch, double sample_rate, double sound_speed) {\n    for (int line = 0; line < n_lines; line++) {\n        double angle = (line - n_lines/2.0) / n_lines * M_PI / 6.0; // \u00b130 degrees\n        \n        for (int depth = 0; depth < n_samples; depth++) {\n            double depth_m = depth / sample_rate * sound_speed / 2.0;\n            double lateral_pos = depth_m * tan(angle);\n            \n            double sum = 0.0;\n            \n            for (int elem = 0; elem < n_elements; elem++) {\n                double elem_pos = (elem - n_elements/2.0) * element_pitch;\n                \n                // Calculate time delay for this element\n                double dx = lateral_pos - elem_pos;\n                double distance = sqrt(depth_m*depth_m + dx*dx);\n                double time_delay = 2.0 * distance / sound_speed;\n                int sample_idx = (int)(time_delay * sample_rate);\n                \n                if (sample_idx >= 0 && sample_idx < n_samples) {\n                    // Apply apodization (Hamming window)\n                    double apod = 0.54 - 0.46 * cos(2*M_PI*elem / n_elements);\n                    sum += rf_data[elem * n_samples + sample_idx] * apod;\n                }\n            }\n            \n            image[line * n_samples + depth] = sum / n_elements;\n        }\n    }\n}\n\nint main() {\n    const int n_elements = 128;\n    const int n_samples = 2048;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ultrasound_beamforming.cpp",
+      "function": "_Z21ultrasoundBeamformingPdS_iiiddd",
+      "line": 26,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ultrasound_beamforming.cpp",
+      "function": "_Z21ultrasoundBeamformingPdS_iiiddd",
+      "line": 17,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            double depth_m = depth / sample_rate * sound_speed / 2.0;\n            double lateral_pos = depth_m * tan(angle);\n            \n            double sum = 0.0;\n            \n            for (int elem = 0; elem < n_elements; elem++) {\n                double elem_pos = (elem - n_elements/2.0) * element_pitch;\n                \n                // Calculate time delay for this element\n                double dx = lateral_pos - elem_pos;\n                double distance = sqrt(depth_m*depth_m + dx*dx);\n                double time_delay = 2.0 * distance / sound_speed;\n                int sample_idx = (int)(time_delay * sample_rate);\n                \n                if (sample_idx >= 0 && sample_idx < n_samples) {\n                    // Apply apodization (Hamming window)\n                    double apod = 0.54 - 0.46 * cos(2*M_PI*elem / n_elements);\n                    sum += rf_data[elem * n_samples + sample_idx] * apod;\n                }\n            }\n            \n            image[line * n_samples + depth] = sum / n_elements;\n        }\n    }\n}\n\nint main() {\n    const int n_elements = 128;\n    const int n_samples = 2048;\n    const int n_lines = 256;\n    \n    std::vector<double> rf_data(n_elements * n_samples, 0.5);\n    std::vector<double> image(n_lines * n_samples);\n    \n    ultrasoundBeamforming(rf_data.data(), image.data(), n_elements, n_samples, n_lines,"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ultrasound_beamforming.cpp",
+      "function": "_Z21ultrasoundBeamformingPdS_iiiddd",
+      "line": 11,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                          int n_elements, int n_samples, int n_lines,\n                          double element_pitch, double sample_rate, double sound_speed) {\n    for (int line = 0; line < n_lines; line++) {\n        double angle = (line - n_lines/2.0) / n_lines * M_PI / 6.0; // \u00b130 degrees\n        \n        for (int depth = 0; depth < n_samples; depth++) {\n            double depth_m = depth / sample_rate * sound_speed / 2.0;\n            double lateral_pos = depth_m * tan(angle);\n            \n            double sum = 0.0;\n            \n            for (int elem = 0; elem < n_elements; elem++) {\n                double elem_pos = (elem - n_elements/2.0) * element_pitch;\n                \n                // Calculate time delay for this element\n                double dx = lateral_pos - elem_pos;\n                double distance = sqrt(depth_m*depth_m + dx*dx);\n                double time_delay = 2.0 * distance / sound_speed;\n                int sample_idx = (int)(time_delay * sample_rate);\n                \n                if (sample_idx >= 0 && sample_idx < n_samples) {\n                    // Apply apodization (Hamming window)\n                    double apod = 0.54 - 0.46 * cos(2*M_PI*elem / n_elements);\n                    sum += rf_data[elem * n_samples + sample_idx] * apod;\n                }\n            }\n            \n            image[line * n_samples + depth] = sum / n_elements;\n        }\n    }\n}\n\nint main() {\n    const int n_elements = 128;\n    const int n_samples = 2048;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ultrasound_beamforming.cpp",
+      "function": "_Z21ultrasoundBeamformingPdS_iiiddd",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid ultrasoundBeamforming(double* rf_data, double* image, \n                          int n_elements, int n_samples, int n_lines,\n                          double element_pitch, double sample_rate, double sound_speed) {\n    for (int line = 0; line < n_lines; line++) {\n        double angle = (line - n_lines/2.0) / n_lines * M_PI / 6.0; // \u00b130 degrees\n        \n        for (int depth = 0; depth < n_samples; depth++) {\n            double depth_m = depth / sample_rate * sound_speed / 2.0;\n            double lateral_pos = depth_m * tan(angle);\n            \n            double sum = 0.0;\n            \n            for (int elem = 0; elem < n_elements; elem++) {\n                double elem_pos = (elem - n_elements/2.0) * element_pitch;\n                \n                // Calculate time delay for this element\n                double dx = lateral_pos - elem_pos;\n                double distance = sqrt(depth_m*depth_m + dx*dx);\n                double time_delay = 2.0 * distance / sound_speed;\n                int sample_idx = (int)(time_delay * sample_rate);\n                \n                if (sample_idx >= 0 && sample_idx < n_samples) {\n                    // Apply apodization (Hamming window)\n                    double apod = 0.54 - 0.46 * cos(2*M_PI*elem / n_elements);\n                    sum += rf_data[elem * n_samples + sample_idx] * apod;\n                }\n            }\n            \n            image[line * n_samples + depth] = sum / n_elements;\n        }\n    }\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ultrasound_beamforming.cpp",
+      "function": "_Z21ultrasoundBeamformingPdS_iiiddd",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                          int n_elements, int n_samples, int n_lines,\n                          double element_pitch, double sample_rate, double sound_speed) {\n    for (int line = 0; line < n_lines; line++) {\n        double angle = (line - n_lines/2.0) / n_lines * M_PI / 6.0; // \u00b130 degrees\n        \n        for (int depth = 0; depth < n_samples; depth++) {\n            double depth_m = depth / sample_rate * sound_speed / 2.0;\n            double lateral_pos = depth_m * tan(angle);\n            \n            double sum = 0.0;\n            \n            for (int elem = 0; elem < n_elements; elem++) {\n                double elem_pos = (elem - n_elements/2.0) * element_pitch;\n                \n                // Calculate time delay for this element\n                double dx = lateral_pos - elem_pos;\n                double distance = sqrt(depth_m*depth_m + dx*dx);\n                double time_delay = 2.0 * distance / sound_speed;\n                int sample_idx = (int)(time_delay * sample_rate);\n                \n                if (sample_idx >= 0 && sample_idx < n_samples) {\n                    // Apply apodization (Hamming window)\n                    double apod = 0.54 - 0.46 * cos(2*M_PI*elem / n_elements);\n                    sum += rf_data[elem * n_samples + sample_idx] * apod;\n                }\n            }\n            \n            image[line * n_samples + depth] = sum / n_elements;\n        }\n    }\n}\n\nint main() {\n    const int n_elements = 128;\n    const int n_samples = 2048;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ultrasound_beamforming.cpp",
+      "function": "_Z21ultrasoundBeamformingPdS_iiiddd",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid ultrasoundBeamforming(double* rf_data, double* image, \n                          int n_elements, int n_samples, int n_lines,\n                          double element_pitch, double sample_rate, double sound_speed) {\n    for (int line = 0; line < n_lines; line++) {\n        double angle = (line - n_lines/2.0) / n_lines * M_PI / 6.0; // \u00b130 degrees\n        \n        for (int depth = 0; depth < n_samples; depth++) {\n            double depth_m = depth / sample_rate * sound_speed / 2.0;\n            double lateral_pos = depth_m * tan(angle);\n            \n            double sum = 0.0;\n            \n            for (int elem = 0; elem < n_elements; elem++) {\n                double elem_pos = (elem - n_elements/2.0) * element_pitch;\n                \n                // Calculate time delay for this element\n                double dx = lateral_pos - elem_pos;\n                double distance = sqrt(depth_m*depth_m + dx*dx);\n                double time_delay = 2.0 * distance / sound_speed;\n                int sample_idx = (int)(time_delay * sample_rate);\n                \n                if (sample_idx >= 0 && sample_idx < n_samples) {\n                    // Apply apodization (Hamming window)\n                    double apod = 0.54 - 0.46 * cos(2*M_PI*elem / n_elements);\n                    sum += rf_data[elem * n_samples + sample_idx] * apod;\n                }\n            }\n            \n            image[line * n_samples + depth] = sum / n_elements;\n        }\n    }\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ultrasound_beamforming.cpp",
+      "function": "_Z21ultrasoundBeamformingPdS_iiiddd",
+      "line": 17,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            double depth_m = depth / sample_rate * sound_speed / 2.0;\n            double lateral_pos = depth_m * tan(angle);\n            \n            double sum = 0.0;\n            \n            for (int elem = 0; elem < n_elements; elem++) {\n                double elem_pos = (elem - n_elements/2.0) * element_pitch;\n                \n                // Calculate time delay for this element\n                double dx = lateral_pos - elem_pos;\n                double distance = sqrt(depth_m*depth_m + dx*dx);\n                double time_delay = 2.0 * distance / sound_speed;\n                int sample_idx = (int)(time_delay * sample_rate);\n                \n                if (sample_idx >= 0 && sample_idx < n_samples) {\n                    // Apply apodization (Hamming window)\n                    double apod = 0.54 - 0.46 * cos(2*M_PI*elem / n_elements);\n                    sum += rf_data[elem * n_samples + sample_idx] * apod;\n                }\n            }\n            \n            image[line * n_samples + depth] = sum / n_elements;\n        }\n    }\n}\n\nint main() {\n    const int n_elements = 128;\n    const int n_samples = 2048;\n    const int n_lines = 256;\n    \n    std::vector<double> rf_data(n_elements * n_samples, 0.5);\n    std::vector<double> image(n_lines * n_samples);\n    \n    ultrasoundBeamforming(rf_data.data(), image.data(), n_elements, n_samples, n_lines,",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ultrasound_beamforming.cpp",
+      "function": "_Z21ultrasoundBeamformingPdS_iiiddd",
+      "line": 17,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            double depth_m = depth / sample_rate * sound_speed / 2.0;\n            double lateral_pos = depth_m * tan(angle);\n            \n            double sum = 0.0;\n            \n            for (int elem = 0; elem < n_elements; elem++) {\n                double elem_pos = (elem - n_elements/2.0) * element_pitch;\n                \n                // Calculate time delay for this element\n                double dx = lateral_pos - elem_pos;\n                double distance = sqrt(depth_m*depth_m + dx*dx);\n                double time_delay = 2.0 * distance / sound_speed;\n                int sample_idx = (int)(time_delay * sample_rate);\n                \n                if (sample_idx >= 0 && sample_idx < n_samples) {\n                    // Apply apodization (Hamming window)\n                    double apod = 0.54 - 0.46 * cos(2*M_PI*elem / n_elements);\n                    sum += rf_data[elem * n_samples + sample_idx] * apod;\n                }\n            }\n            \n            image[line * n_samples + depth] = sum / n_elements;\n        }\n    }\n}\n\nint main() {\n    const int n_elements = 128;\n    const int n_samples = 2048;\n    const int n_lines = 256;\n    \n    std::vector<double> rf_data(n_elements * n_samples, 0.5);\n    std::vector<double> image(n_lines * n_samples);\n    \n    ultrasoundBeamforming(rf_data.data(), image.data(), n_elements, n_samples, n_lines,",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

@@ -1,0 +1,905 @@
+{
+  "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+    "llvm_initial": 76,
+    "llvm_sys_noise": 62,
+    "llvm_project": 14,
+    "after_filter": 12,
+    "ai_batches": 1,
+    "ai_results": 12,
+    "omp_verified": 0,
+    "total_ms": 638.8,
+    "llvm_ms": 431.9
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "main",
+      "line": 34,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "main",
+      "line": 47,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            // Derived features\n            feature_matrix[i][6] = loan_portfolio[i].amount / loan_portfolio[i].income;\n            feature_matrix[i][7] = loan_portfolio[i].interest_rate * loan_portfolio[i].debt_to_income;\n            \n            // Polynomial features\n            for (int j = 8; j < NUM_FEATURES; j++) {\n                int idx = j % 6;\n                feature_matrix[i][j] = feature_matrix[i][idx] * feature_matrix[i][idx];\n            }\n        }\n    }\n    \n    double sigmoid(double x) {\n        return 1.0 / (1.0 + exp(-x));\n    }\n    \n    void train_logistic_regression(int iterations, double learning_rate) {\n        for (int iter = 0; iter < iterations; iter++) {\n            // Calculate gradients\n            std::vector<double> gradients(NUM_FEATURES, 0.0);\n            \n            for (int i = 0; i < NUM_LOANS; i++) {\n                // Forward pass\n                double score = 0.0;\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    score += weights[j] * feature_matrix[i][j];\n                }\n                \n                double prediction = sigmoid(score);\n                double error = prediction - (loan_portfolio[i].defaulted ? 1.0 : 0.0);\n                \n                // Accumulate gradients\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    gradients[j] += error * feature_matrix[i][j];\n                }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "main",
+      "line": 87,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "            }\n        }\n    }\n    \n    void predict_defaults() {\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double score = 0.0;\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                score += weights[j] * feature_matrix[i][j];\n            }\n            loan_portfolio[i].probability_default = sigmoid(score);\n        }\n    }\n    \n    double calculate_expected_loss() {\n        double total_loss = 0.0;\n        \n        for (int i = 0; i < NUM_LOANS; i++) {\n            double exposure = loan_portfolio[i].amount;\n            double pd = loan_portfolio[i].probability_default;\n            double lgd = 0.45;  // Loss Given Default (45%)\n            \n            double expected_loss = exposure * pd * lgd;\n            total_loss += expected_loss;\n        }\n        \n        return total_loss;\n    }\n    \n    void calculate_portfolio_var(double confidence_level) {\n        std::vector<double> loss_distribution(10000, 0.0);\n        \n        // Monte Carlo simulation of portfolio losses\n        for (int sim = 0; sim < 10000; sim++) {\n            double total_loss = 0.0;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "main",
+      "line": 89,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "    }\n    \n    void predict_defaults() {\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double score = 0.0;\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                score += weights[j] * feature_matrix[i][j];\n            }\n            loan_portfolio[i].probability_default = sigmoid(score);\n        }\n    }\n    \n    double calculate_expected_loss() {\n        double total_loss = 0.0;\n        \n        for (int i = 0; i < NUM_LOANS; i++) {\n            double exposure = loan_portfolio[i].amount;\n            double pd = loan_portfolio[i].probability_default;\n            double lgd = 0.45;  // Loss Given Default (45%)\n            \n            double expected_loss = exposure * pd * lgd;\n            total_loss += expected_loss;\n        }\n        \n        return total_loss;\n    }\n    \n    void calculate_portfolio_var(double confidence_level) {\n        std::vector<double> loss_distribution(10000, 0.0);\n        \n        // Monte Carlo simulation of portfolio losses\n        for (int sim = 0; sim < 10000; sim++) {\n            double total_loss = 0.0;\n            \n            for (int i = 0; i < NUM_LOANS; i++) {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "main",
+      "line": 135,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        double var = loss_distribution[var_index];\n    }\n    \n    void stress_test_scenarios() {\n        // Economic downturn scenario\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double stress_factor = 1.5;\n            loan_portfolio[i].probability_default *= stress_factor;\n            loan_portfolio[i].probability_default = \n                std::min(1.0, loan_portfolio[i].probability_default);\n        }\n        \n        double stressed_loss = calculate_expected_loss();\n    }\n};\n\nint main() {\n    CreditRiskModel model;\n    \n    model.extract_features();\n    model.train_logistic_regression(1000, 0.01);\n    model.predict_defaults();\n    \n    double expected_loss = model.calculate_expected_loss();\n    model.calculate_portfolio_var(0.95);\n    model.stress_test_scenarios();\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "_ZN15CreditRiskModel25train_logistic_regressionEid",
+      "line": 59,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    double sigmoid(double x) {\n        return 1.0 / (1.0 + exp(-x));\n    }\n    \n    void train_logistic_regression(int iterations, double learning_rate) {\n        for (int iter = 0; iter < iterations; iter++) {\n            // Calculate gradients\n            std::vector<double> gradients(NUM_FEATURES, 0.0);\n            \n            for (int i = 0; i < NUM_LOANS; i++) {\n                // Forward pass\n                double score = 0.0;\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    score += weights[j] * feature_matrix[i][j];\n                }\n                \n                double prediction = sigmoid(score);\n                double error = prediction - (loan_portfolio[i].defaulted ? 1.0 : 0.0);\n                \n                // Accumulate gradients\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    gradients[j] += error * feature_matrix[i][j];\n                }\n            }\n            \n            // Update weights\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                weights[j] -= learning_rate * gradients[j] / NUM_LOANS;\n            }\n        }\n    }\n    \n    void predict_defaults() {\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double score = 0.0;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "_ZN15CreditRiskModel25train_logistic_regressionEid",
+      "line": 66,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "            std::vector<double> gradients(NUM_FEATURES, 0.0);\n            \n            for (int i = 0; i < NUM_LOANS; i++) {\n                // Forward pass\n                double score = 0.0;\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    score += weights[j] * feature_matrix[i][j];\n                }\n                \n                double prediction = sigmoid(score);\n                double error = prediction - (loan_portfolio[i].defaulted ? 1.0 : 0.0);\n                \n                // Accumulate gradients\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    gradients[j] += error * feature_matrix[i][j];\n                }\n            }\n            \n            // Update weights\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                weights[j] -= learning_rate * gradients[j] / NUM_LOANS;\n            }\n        }\n    }\n    \n    void predict_defaults() {\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double score = 0.0;\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                score += weights[j] * feature_matrix[i][j];\n            }\n            loan_portfolio[i].probability_default = sigmoid(score);\n        }\n    }\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "_ZN15CreditRiskModel25train_logistic_regressionEid",
+      "line": 63,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    void train_logistic_regression(int iterations, double learning_rate) {\n        for (int iter = 0; iter < iterations; iter++) {\n            // Calculate gradients\n            std::vector<double> gradients(NUM_FEATURES, 0.0);\n            \n            for (int i = 0; i < NUM_LOANS; i++) {\n                // Forward pass\n                double score = 0.0;\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    score += weights[j] * feature_matrix[i][j];\n                }\n                \n                double prediction = sigmoid(score);\n                double error = prediction - (loan_portfolio[i].defaulted ? 1.0 : 0.0);\n                \n                // Accumulate gradients\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    gradients[j] += error * feature_matrix[i][j];\n                }\n            }\n            \n            // Update weights\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                weights[j] -= learning_rate * gradients[j] / NUM_LOANS;\n            }\n        }\n    }\n    \n    void predict_defaults() {\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double score = 0.0;\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                score += weights[j] * feature_matrix[i][j];\n            }\n            loan_portfolio[i].probability_default = sigmoid(score);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "_ZN15CreditRiskModel25train_logistic_regressionEid",
+      "line": 74,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                \n                double prediction = sigmoid(score);\n                double error = prediction - (loan_portfolio[i].defaulted ? 1.0 : 0.0);\n                \n                // Accumulate gradients\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    gradients[j] += error * feature_matrix[i][j];\n                }\n            }\n            \n            // Update weights\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                weights[j] -= learning_rate * gradients[j] / NUM_LOANS;\n            }\n        }\n    }\n    \n    void predict_defaults() {\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double score = 0.0;\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                score += weights[j] * feature_matrix[i][j];\n            }\n            loan_portfolio[i].probability_default = sigmoid(score);\n        }\n    }\n    \n    double calculate_expected_loss() {\n        double total_loss = 0.0;\n        \n        for (int i = 0; i < NUM_LOANS; i++) {\n            double exposure = loan_portfolio[i].amount;\n            double pd = loan_portfolio[i].probability_default;\n            double lgd = 0.45;  // Loss Given Default (45%)\n            "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "_ZN15CreditRiskModel25train_logistic_regressionEid",
+      "line": 59,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "_ZN15CreditRiskModel25train_logistic_regressionEid",
+      "line": 80,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    gradients[j] += error * feature_matrix[i][j];\n                }\n            }\n            \n            // Update weights\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                weights[j] -= learning_rate * gradients[j] / NUM_LOANS;\n            }\n        }\n    }\n    \n    void predict_defaults() {\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double score = 0.0;\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                score += weights[j] * feature_matrix[i][j];\n            }\n            loan_portfolio[i].probability_default = sigmoid(score);\n        }\n    }\n    \n    double calculate_expected_loss() {\n        double total_loss = 0.0;\n        \n        for (int i = 0; i < NUM_LOANS; i++) {\n            double exposure = loan_portfolio[i].amount;\n            double pd = loan_portfolio[i].probability_default;\n            double lgd = 0.45;  // Loss Given Default (45%)\n            \n            double expected_loss = exposure * pd * lgd;\n            total_loss += expected_loss;\n        }\n        \n        return total_loss;\n    }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "_ZN15CreditRiskModel23calculate_portfolio_varEd",
+      "line": 115,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    void calculate_portfolio_var(double confidence_level) {\n        std::vector<double> loss_distribution(10000, 0.0);\n        \n        // Monte Carlo simulation of portfolio losses\n        for (int sim = 0; sim < 10000; sim++) {\n            double total_loss = 0.0;\n            \n            for (int i = 0; i < NUM_LOANS; i++) {\n                double random = static_cast<double>(rand()) / RAND_MAX;\n                if (random < loan_portfolio[i].probability_default) {\n                    total_loss += loan_portfolio[i].amount * 0.45;  // LGD\n                }\n            }\n            \n            loss_distribution[sim] = total_loss;\n        }\n        \n        std::sort(loss_distribution.begin(), loss_distribution.end());\n        int var_index = static_cast<int>(confidence_level * 10000);\n        double var = loss_distribution[var_index];\n    }\n    \n    void stress_test_scenarios() {\n        // Economic downturn scenario\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double stress_factor = 1.5;\n            loan_portfolio[i].probability_default *= stress_factor;\n            loan_portfolio[i].probability_default = \n                std::min(1.0, loan_portfolio[i].probability_default);\n        }\n        \n        double stressed_loss = calculate_expected_loss();\n    }\n};"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "_ZN15CreditRiskModel23calculate_portfolio_varEd",
+      "line": 120,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (int sim = 0; sim < 10000; sim++) {\n            double total_loss = 0.0;\n            \n            for (int i = 0; i < NUM_LOANS; i++) {\n                double random = static_cast<double>(rand()) / RAND_MAX;\n                if (random < loan_portfolio[i].probability_default) {\n                    total_loss += loan_portfolio[i].amount * 0.45;  // LGD\n                }\n            }\n            \n            loss_distribution[sim] = total_loss;\n        }\n        \n        std::sort(loss_distribution.begin(), loss_distribution.end());\n        int var_index = static_cast<int>(confidence_level * 10000);\n        double var = loss_distribution[var_index];\n    }\n    \n    void stress_test_scenarios() {\n        // Economic downturn scenario\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double stress_factor = 1.5;\n            loan_portfolio[i].probability_default *= stress_factor;\n            loan_portfolio[i].probability_default = \n                std::min(1.0, loan_portfolio[i].probability_default);\n        }\n        \n        double stressed_loss = calculate_expected_loss();\n    }\n};\n\nint main() {\n    CreditRiskModel model;\n    \n    model.extract_features();"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "_ZN15CreditRiskModel23calculate_portfolio_varEd",
+      "line": 118,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "        \n        // Monte Carlo simulation of portfolio losses\n        for (int sim = 0; sim < 10000; sim++) {\n            double total_loss = 0.0;\n            \n            for (int i = 0; i < NUM_LOANS; i++) {\n                double random = static_cast<double>(rand()) / RAND_MAX;\n                if (random < loan_portfolio[i].probability_default) {\n                    total_loss += loan_portfolio[i].amount * 0.45;  // LGD\n                }\n            }\n            \n            loss_distribution[sim] = total_loss;\n        }\n        \n        std::sort(loss_distribution.begin(), loss_distribution.end());\n        int var_index = static_cast<int>(confidence_level * 10000);\n        double var = loss_distribution[var_index];\n    }\n    \n    void stress_test_scenarios() {\n        // Economic downturn scenario\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double stress_factor = 1.5;\n            loan_portfolio[i].probability_default *= stress_factor;\n            loan_portfolio[i].probability_default = \n                std::min(1.0, loan_portfolio[i].probability_default);\n        }\n        \n        double stressed_loss = calculate_expected_loss();\n    }\n};\n\nint main() {\n    CreditRiskModel model;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelD1Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelD1Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelC2Ev",
+      "line": 1360,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelC2Ev",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelC2Ev",
+      "line": 1369,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelC2Ev",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelC2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelC2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelC2Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelC2Ev",
+      "line": 1369,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelC2Ev",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15CreditRiskModelC2Ev",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI4LoanNS_9allocatorIS1_EEE8__appendEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI4LoanNS_9allocatorIS1_EEE8__appendEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorI4LoanNS_9allocatorIS1_EEE8__appendEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorI4LoanNS_9allocatorIS1_EEE8__appendEm",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorI4LoanNS_9allocatorIS1_EEE8__appendEm",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorI4LoanNS_9allocatorIS1_EEE8__appendEm",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 257,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEmRKd",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEmRKd",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEmRKd",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEmRKd",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEmRKd",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEmRKd",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEmRKd",
+      "line": 257,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEmRKd",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "main",
+      "line": 47,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            // Derived features\n            feature_matrix[i][6] = loan_portfolio[i].amount / loan_portfolio[i].income;\n            feature_matrix[i][7] = loan_portfolio[i].interest_rate * loan_portfolio[i].debt_to_income;\n            \n            // Polynomial features\n            for (int j = 8; j < NUM_FEATURES; j++) {\n                int idx = j % 6;\n                feature_matrix[i][j] = feature_matrix[i][idx] * feature_matrix[i][idx];\n            }\n        }\n    }\n    \n    double sigmoid(double x) {\n        return 1.0 / (1.0 + exp(-x));\n    }\n    \n    void train_logistic_regression(int iterations, double learning_rate) {\n        for (int iter = 0; iter < iterations; iter++) {\n            // Calculate gradients\n            std::vector<double> gradients(NUM_FEATURES, 0.0);\n            \n            for (int i = 0; i < NUM_LOANS; i++) {\n                // Forward pass\n                double score = 0.0;\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    score += weights[j] * feature_matrix[i][j];\n                }\n                \n                double prediction = sigmoid(score);\n                double error = prediction - (loan_portfolio[i].defaulted ? 1.0 : 0.0);\n                \n                // Accumulate gradients\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    gradients[j] += error * feature_matrix[i][j];\n                }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "main",
+      "line": 135,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        double var = loss_distribution[var_index];\n    }\n    \n    void stress_test_scenarios() {\n        // Economic downturn scenario\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double stress_factor = 1.5;\n            loan_portfolio[i].probability_default *= stress_factor;\n            loan_portfolio[i].probability_default = \n                std::min(1.0, loan_portfolio[i].probability_default);\n        }\n        \n        double stressed_loss = calculate_expected_loss();\n    }\n};\n\nint main() {\n    CreditRiskModel model;\n    \n    model.extract_features();\n    model.train_logistic_regression(1000, 0.01);\n    model.predict_defaults();\n    \n    double expected_loss = model.calculate_expected_loss();\n    model.calculate_portfolio_var(0.95);\n    model.stress_test_scenarios();\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "_ZN15CreditRiskModel25train_logistic_regressionEid",
+      "line": 80,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    gradients[j] += error * feature_matrix[i][j];\n                }\n            }\n            \n            // Update weights\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                weights[j] -= learning_rate * gradients[j] / NUM_LOANS;\n            }\n        }\n    }\n    \n    void predict_defaults() {\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double score = 0.0;\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                score += weights[j] * feature_matrix[i][j];\n            }\n            loan_portfolio[i].probability_default = sigmoid(score);\n        }\n    }\n    \n    double calculate_expected_loss() {\n        double total_loss = 0.0;\n        \n        for (int i = 0; i < NUM_LOANS; i++) {\n            double exposure = loan_portfolio[i].amount;\n            double pd = loan_portfolio[i].probability_default;\n            double lgd = 0.45;  // Loss Given Default (45%)\n            \n            double expected_loss = exposure * pd * lgd;\n            total_loss += expected_loss;\n        }\n        \n        return total_loss;\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "_ZN15CreditRiskModel23calculate_portfolio_varEd",
+      "line": 115,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    void calculate_portfolio_var(double confidence_level) {\n        std::vector<double> loss_distribution(10000, 0.0);\n        \n        // Monte Carlo simulation of portfolio losses\n        for (int sim = 0; sim < 10000; sim++) {\n            double total_loss = 0.0;\n            \n            for (int i = 0; i < NUM_LOANS; i++) {\n                double random = static_cast<double>(rand()) / RAND_MAX;\n                if (random < loan_portfolio[i].probability_default) {\n                    total_loss += loan_portfolio[i].amount * 0.45;  // LGD\n                }\n            }\n            \n            loss_distribution[sim] = total_loss;\n        }\n        \n        std::sort(loss_distribution.begin(), loss_distribution.end());\n        int var_index = static_cast<int>(confidence_level * 10000);\n        double var = loss_distribution[var_index];\n    }\n    \n    void stress_test_scenarios() {\n        // Economic downturn scenario\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double stress_factor = 1.5;\n            loan_portfolio[i].probability_default *= stress_factor;\n            loan_portfolio[i].probability_default = \n                std::min(1.0, loan_portfolio[i].probability_default);\n        }\n        \n        double stressed_loss = calculate_expected_loss();\n    }\n};",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "_ZN15CreditRiskModel23calculate_portfolio_varEd",
+      "line": 120,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (int sim = 0; sim < 10000; sim++) {\n            double total_loss = 0.0;\n            \n            for (int i = 0; i < NUM_LOANS; i++) {\n                double random = static_cast<double>(rand()) / RAND_MAX;\n                if (random < loan_portfolio[i].probability_default) {\n                    total_loss += loan_portfolio[i].amount * 0.45;  // LGD\n                }\n            }\n            \n            loss_distribution[sim] = total_loss;\n        }\n        \n        std::sort(loss_distribution.begin(), loss_distribution.end());\n        int var_index = static_cast<int>(confidence_level * 10000);\n        double var = loss_distribution[var_index];\n    }\n    \n    void stress_test_scenarios() {\n        // Economic downturn scenario\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double stress_factor = 1.5;\n            loan_portfolio[i].probability_default *= stress_factor;\n            loan_portfolio[i].probability_default = \n                std::min(1.0, loan_portfolio[i].probability_default);\n        }\n        \n        double stressed_loss = calculate_expected_loss();\n    }\n};\n\nint main() {\n    CreditRiskModel model;\n    \n    model.extract_features();",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "_ZN15CreditRiskModel23calculate_portfolio_varEd",
+      "line": 118,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "        \n        // Monte Carlo simulation of portfolio losses\n        for (int sim = 0; sim < 10000; sim++) {\n            double total_loss = 0.0;\n            \n            for (int i = 0; i < NUM_LOANS; i++) {\n                double random = static_cast<double>(rand()) / RAND_MAX;\n                if (random < loan_portfolio[i].probability_default) {\n                    total_loss += loan_portfolio[i].amount * 0.45;  // LGD\n                }\n            }\n            \n            loss_distribution[sim] = total_loss;\n        }\n        \n        std::sort(loss_distribution.begin(), loss_distribution.end());\n        int var_index = static_cast<int>(confidence_level * 10000);\n        double var = loss_distribution[var_index];\n    }\n    \n    void stress_test_scenarios() {\n        // Economic downturn scenario\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double stress_factor = 1.5;\n            loan_portfolio[i].probability_default *= stress_factor;\n            loan_portfolio[i].probability_default = \n                std::min(1.0, loan_portfolio[i].probability_default);\n        }\n        \n        double stressed_loss = calculate_expected_loss();\n    }\n};\n\nint main() {\n    CreditRiskModel model;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "_ZN15CreditRiskModel25train_logistic_regressionEid",
+      "line": 66,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "            std::vector<double> gradients(NUM_FEATURES, 0.0);\n            \n            for (int i = 0; i < NUM_LOANS; i++) {\n                // Forward pass\n                double score = 0.0;\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    score += weights[j] * feature_matrix[i][j];\n                }\n                \n                double prediction = sigmoid(score);\n                double error = prediction - (loan_portfolio[i].defaulted ? 1.0 : 0.0);\n                \n                // Accumulate gradients\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    gradients[j] += error * feature_matrix[i][j];\n                }\n            }\n            \n            // Update weights\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                weights[j] -= learning_rate * gradients[j] / NUM_LOANS;\n            }\n        }\n    }\n    \n    void predict_defaults() {\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double score = 0.0;\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                score += weights[j] * feature_matrix[i][j];\n            }\n            loan_portfolio[i].probability_default = sigmoid(score);\n        }\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "_ZN15CreditRiskModel25train_logistic_regressionEid",
+      "line": 74,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                \n                double prediction = sigmoid(score);\n                double error = prediction - (loan_portfolio[i].defaulted ? 1.0 : 0.0);\n                \n                // Accumulate gradients\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    gradients[j] += error * feature_matrix[i][j];\n                }\n            }\n            \n            // Update weights\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                weights[j] -= learning_rate * gradients[j] / NUM_LOANS;\n            }\n        }\n    }\n    \n    void predict_defaults() {\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double score = 0.0;\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                score += weights[j] * feature_matrix[i][j];\n            }\n            loan_portfolio[i].probability_default = sigmoid(score);\n        }\n    }\n    \n    double calculate_expected_loss() {\n        double total_loss = 0.0;\n        \n        for (int i = 0; i < NUM_LOANS; i++) {\n            double exposure = loan_portfolio[i].amount;\n            double pd = loan_portfolio[i].probability_default;\n            double lgd = 0.45;  // Loss Given Default (45%)\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "_ZN15CreditRiskModel25train_logistic_regressionEid",
+      "line": 59,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    double sigmoid(double x) {\n        return 1.0 / (1.0 + exp(-x));\n    }\n    \n    void train_logistic_regression(int iterations, double learning_rate) {\n        for (int iter = 0; iter < iterations; iter++) {\n            // Calculate gradients\n            std::vector<double> gradients(NUM_FEATURES, 0.0);\n            \n            for (int i = 0; i < NUM_LOANS; i++) {\n                // Forward pass\n                double score = 0.0;\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    score += weights[j] * feature_matrix[i][j];\n                }\n                \n                double prediction = sigmoid(score);\n                double error = prediction - (loan_portfolio[i].defaulted ? 1.0 : 0.0);\n                \n                // Accumulate gradients\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    gradients[j] += error * feature_matrix[i][j];\n                }\n            }\n            \n            // Update weights\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                weights[j] -= learning_rate * gradients[j] / NUM_LOANS;\n            }\n        }\n    }\n    \n    void predict_defaults() {\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double score = 0.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "_ZN15CreditRiskModel25train_logistic_regressionEid",
+      "line": 63,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    void train_logistic_regression(int iterations, double learning_rate) {\n        for (int iter = 0; iter < iterations; iter++) {\n            // Calculate gradients\n            std::vector<double> gradients(NUM_FEATURES, 0.0);\n            \n            for (int i = 0; i < NUM_LOANS; i++) {\n                // Forward pass\n                double score = 0.0;\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    score += weights[j] * feature_matrix[i][j];\n                }\n                \n                double prediction = sigmoid(score);\n                double error = prediction - (loan_portfolio[i].defaulted ? 1.0 : 0.0);\n                \n                // Accumulate gradients\n                for (int j = 0; j < NUM_FEATURES; j++) {\n                    gradients[j] += error * feature_matrix[i][j];\n                }\n            }\n            \n            // Update weights\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                weights[j] -= learning_rate * gradients[j] / NUM_LOANS;\n            }\n        }\n    }\n    \n    void predict_defaults() {\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double score = 0.0;\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                score += weights[j] * feature_matrix[i][j];\n            }\n            loan_portfolio[i].probability_default = sigmoid(score);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "main",
+      "line": 87,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "            }\n        }\n    }\n    \n    void predict_defaults() {\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double score = 0.0;\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                score += weights[j] * feature_matrix[i][j];\n            }\n            loan_portfolio[i].probability_default = sigmoid(score);\n        }\n    }\n    \n    double calculate_expected_loss() {\n        double total_loss = 0.0;\n        \n        for (int i = 0; i < NUM_LOANS; i++) {\n            double exposure = loan_portfolio[i].amount;\n            double pd = loan_portfolio[i].probability_default;\n            double lgd = 0.45;  // Loss Given Default (45%)\n            \n            double expected_loss = exposure * pd * lgd;\n            total_loss += expected_loss;\n        }\n        \n        return total_loss;\n    }\n    \n    void calculate_portfolio_var(double confidence_level) {\n        std::vector<double> loss_distribution(10000, 0.0);\n        \n        // Monte Carlo simulation of portfolio losses\n        for (int sim = 0; sim < 10000; sim++) {\n            double total_loss = 0.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6000000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_risk_model.cpp",
+      "function": "main",
+      "line": 89,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "    }\n    \n    void predict_defaults() {\n        for (int i = 0; i < NUM_LOANS; i++) {\n            double score = 0.0;\n            for (int j = 0; j < NUM_FEATURES; j++) {\n                score += weights[j] * feature_matrix[i][j];\n            }\n            loan_portfolio[i].probability_default = sigmoid(score);\n        }\n    }\n    \n    double calculate_expected_loss() {\n        double total_loss = 0.0;\n        \n        for (int i = 0; i < NUM_LOANS; i++) {\n            double exposure = loan_portfolio[i].amount;\n            double pd = loan_portfolio[i].probability_default;\n            double lgd = 0.45;  // Loss Given Default (45%)\n            \n            double expected_loss = exposure * pd * lgd;\n            total_loss += expected_loss;\n        }\n        \n        return total_loss;\n    }\n    \n    void calculate_portfolio_var(double confidence_level) {\n        std::vector<double> loss_distribution(10000, 0.0);\n        \n        // Monte Carlo simulation of portfolio losses\n        for (int sim = 0; sim < 10000; sim++) {\n            double total_loss = 0.0;\n            \n            for (int i = 0; i < NUM_LOANS; i++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6000000000000001
+    }
+  ]
+}

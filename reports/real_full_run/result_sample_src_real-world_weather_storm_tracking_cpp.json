@@ -1,0 +1,2255 @@
+{
+  "file": "sample/src/real-world/weather/storm_tracking.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/weather/storm_tracking.cpp",
+    "llvm_initial": 203,
+    "llvm_sys_noise": 163,
+    "llvm_project": 40,
+    "after_filter": 26,
+    "ai_batches": 2,
+    "ai_results": 26,
+    "omp_verified": 0,
+    "total_ms": 4194.0,
+    "llvm_ms": 600.3
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 37,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 45,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                cell.stormId = -1;\n            }\n        }\n        \n        // Identify cells exceeding threshold\n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].reflectivity > threshold) {\n                    grid[j][i].isStorm = true;\n                }\n            }\n        }\n    }\n    \n    // Connected component labeling\n    void labelStorms() {\n        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);\n                        storms.push_back(storm);\n                        currentId++;\n                    }\n                }\n            }\n        }\n    }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 38,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 37,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    // Detect storm cells using reflectivity threshold\n    void detectStormCells(double threshold) {\n        // Reset storm flags\n        for (auto& row : grid) {\n            for (auto& cell : row) {\n                cell.isStorm = false;\n                cell.stormId = -1;\n            }\n        }\n        \n        // Identify cells exceeding threshold\n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].reflectivity > threshold) {\n                    grid[j][i].isStorm = true;\n                }\n            }\n        }\n    }\n    \n    // Connected component labeling\n    void labelStorms() {\n        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 38,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    // Detect storm cells using reflectivity threshold\n    void detectStormCells(double threshold) {\n        // Reset storm flags\n        for (auto& row : grid) {\n            for (auto& cell : row) {\n                cell.isStorm = false;\n                cell.stormId = -1;\n            }\n        }\n        \n        // Identify cells exceeding threshold\n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].reflectivity > threshold) {\n                    grid[j][i].isStorm = true;\n                }\n            }\n        }\n    }\n    \n    // Connected component labeling\n    void labelStorms() {\n        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 45,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 47,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        }\n        \n        // Identify cells exceeding threshold\n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].reflectivity > threshold) {\n                    grid[j][i].isStorm = true;\n                }\n            }\n        }\n    }\n    \n    // Connected component labeling\n    void labelStorms() {\n        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);\n                        storms.push_back(storm);\n                        currentId++;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Flood fill for connected components"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 149,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 208,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 215,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            double maxZ = storms[s].maxReflectivity;\n            double area = storms[s].area;\n            \n            // MESH (Maximum Expected Size of Hail)\n            double mesh = 0.0;\n            if (maxZ > 50) {\n                mesh = 2.54 * std::pow(10, (maxZ - 50) / 20.0);\n            }\n            \n            hailSizes[s] = mesh;\n        }\n        \n        return hailSizes;\n    }\n    \n    // Probability of severe weather\n    double computeSevereProbability(const Storm& storm) {\n        double prob = 0.0;\n        \n        // Reflectivity factor\n        if (storm.maxReflectivity > 60) prob += 0.3;\n        if (storm.maxReflectivity > 65) prob += 0.3;\n        \n        // Size factor\n        if (storm.area > 100) prob += 0.2;\n        \n        // Velocity factor\n        double speed = std::sqrt(storm.velocityU * storm.velocityU + \n                                storm.velocityV * storm.velocityV);\n        if (speed > 15) prob += 0.2;\n        \n        return std::min(prob, 1.0);\n    }\n};\n"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 208,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "    \n    // Hail size estimation\n    std::vector<double> estimateHailSize() {\n        std::vector<double> hailSizes(storms.size());\n        \n        for (size_t s = 0; s < storms.size(); s++) {\n            // Severe Hail Index (simplified)\n            double maxZ = storms[s].maxReflectivity;\n            double area = storms[s].area;\n            \n            // MESH (Maximum Expected Size of Hail)\n            double mesh = 0.0;\n            if (maxZ > 50) {\n                mesh = 2.54 * std::pow(10, (maxZ - 50) / 20.0);\n            }\n            \n            hailSizes[s] = mesh;\n        }\n        \n        return hailSizes;\n    }\n    \n    // Probability of severe weather\n    double computeSevereProbability(const Storm& storm) {\n        double prob = 0.0;\n        \n        // Reflectivity factor\n        if (storm.maxReflectivity > 60) prob += 0.3;\n        if (storm.maxReflectivity > 65) prob += 0.3;\n        \n        // Size factor\n        if (storm.area > 100) prob += 0.2;\n        \n        // Velocity factor\n        double speed = std::sqrt(storm.velocityU * storm.velocityU + "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 59,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    // Connected component labeling\n    void labelStorms() {\n        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);\n                        storms.push_back(storm);\n                        currentId++;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Flood fill for connected components\n    void floodFill(int x, int y, int id, Storm& storm) {\n        std::queue<std::pair<int, int>> q;\n        q.push({x, y});\n        grid[y][x].stormId = id;\n        \n        while (!q.empty()) {\n            auto [cx, cy] = q.front();\n            q.pop();\n            \n            storm.cells.push_back({cx, cy});\n            \n            // 8-connectivity"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 60,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    void labelStorms() {\n        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);\n                        storms.push_back(storm);\n                        currentId++;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Flood fill for connected components\n    void floodFill(int x, int y, int id, Storm& storm) {\n        std::queue<std::pair<int, int>> q;\n        q.push({x, y});\n        grid[y][x].stormId = id;\n        \n        while (!q.empty()) {\n            auto [cx, cy] = q.front();\n            q.pop();\n            \n            storm.cells.push_back({cx, cy});\n            \n            // 8-connectivity\n            for (int dy = -1; dy <= 1; dy++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 59,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    // Connected component labeling\n    void labelStorms() {\n        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);\n                        storms.push_back(storm);\n                        currentId++;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Flood fill for connected components\n    void floodFill(int x, int y, int id, Storm& storm) {\n        std::queue<std::pair<int, int>> q;\n        q.push({x, y});\n        grid[y][x].stormId = id;\n        \n        while (!q.empty()) {\n            auto [cx, cy] = q.front();\n            q.pop();\n            \n            storm.cells.push_back({cx, cy});\n            \n            // 8-connectivity"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 61,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);\n                        storms.push_back(storm);\n                        currentId++;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Flood fill for connected components\n    void floodFill(int x, int y, int id, Storm& storm) {\n        std::queue<std::pair<int, int>> q;\n        q.push({x, y});\n        grid[y][x].stormId = id;\n        \n        while (!q.empty()) {\n            auto [cx, cy] = q.front();\n            q.pop();\n            \n            storm.cells.push_back({cx, cy});\n            \n            // 8-connectivity\n            for (int dy = -1; dy <= 1; dy++) {\n                for (int dx = -1; dx <= 1; dx++) {"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 61,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);\n                        storms.push_back(storm);\n                        currentId++;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Flood fill for connected components\n    void floodFill(int x, int y, int id, Storm& storm) {\n        std::queue<std::pair<int, int>> q;\n        q.push({x, y});\n        grid[y][x].stormId = id;\n        \n        while (!q.empty()) {\n            auto [cx, cy] = q.front();\n            q.pop();\n            \n            storm.cells.push_back({cx, cy});\n            \n            // 8-connectivity\n            for (int dy = -1; dy <= 1; dy++) {\n                for (int dx = -1; dx <= 1; dx++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 66,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 114,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 114,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        storm.velocityU = 0;\n        storm.velocityV = 0;\n        storm.maxReflectivity = -100;\n        storm.area = storm.cells.size() * dx * dy;\n        \n        for (const auto& [i, j] : storm.cells) {\n            storm.centerX += i;\n            storm.centerY += j;\n            storm.velocityU += grid[j][i].u;\n            storm.velocityV += grid[j][i].v;\n            storm.maxReflectivity = std::max(storm.maxReflectivity, \n                                            grid[j][i].reflectivity);\n        }\n        \n        int n = storm.cells.size();\n        storm.centerX /= n;\n        storm.centerY /= n;\n        storm.velocityU /= n;\n        storm.velocityV /= n;\n    }\n    \n    // Track storms over time\n    std::vector<std::pair<int, int>> matchStorms(\n        const std::vector<Storm>& previousStorms) {\n        \n        std::vector<std::pair<int, int>> matches;\n        \n        for (size_t i = 0; i < storms.size(); i++) {\n            double bestDistance = 1e9;\n            int bestMatch = -1;\n            \n            for (size_t j = 0; j < previousStorms.size(); j++) {\n                double dx = storms[i].centerX - previousStorms[j].centerX;\n                double dy = storms[i].centerY - previousStorms[j].centerY;\n                double distance = std::sqrt(dx * dx + dy * dy);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 60,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    void labelStorms() {\n        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);\n                        storms.push_back(storm);\n                        currentId++;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Flood fill for connected components\n    void floodFill(int x, int y, int id, Storm& storm) {\n        std::queue<std::pair<int, int>> q;\n        q.push({x, y});\n        grid[y][x].stormId = id;\n        \n        while (!q.empty()) {\n            auto [cx, cy] = q.front();\n            q.pop();\n            \n            storm.cells.push_back({cx, cy});\n            \n            // 8-connectivity\n            for (int dy = -1; dy <= 1; dy++) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker14detectRotationEd",
+      "line": 188,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker14detectRotationEd",
+      "line": 189,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::vector<std::pair<int, int>> detectRotation(double vorticityThreshold) {\n        std::vector<std::pair<int, int>> rotations;\n        \n        // Compute vorticity\n        for (int j = 1; j < ny - 1; j++) {\n            for (int i = 1; i < nx - 1; i++) {\n                double dvdx = (grid[j][i+1].v - grid[j][i-1].v) / (2 * dx);\n                double dudy = (grid[j+1][i].u - grid[j-1][i].u) / (2 * dy);\n                \n                grid[j][i].vorticity = dvdx - dudy;\n                \n                if (std::abs(grid[j][i].vorticity) > vorticityThreshold) {\n                    rotations.push_back({i, j});\n                }\n            }\n        }\n        \n        return rotations;\n    }\n    \n    // Hail size estimation\n    std::vector<double> estimateHailSize() {\n        std::vector<double> hailSizes(storms.size());\n        \n        for (size_t s = 0; s < storms.size(); s++) {\n            // Severe Hail Index (simplified)\n            double maxZ = storms[s].maxReflectivity;\n            double area = storms[s].area;\n            \n            // MESH (Maximum Expected Size of Hail)\n            double mesh = 0.0;\n            if (maxZ > 50) {\n                mesh = 2.54 * std::pow(10, (maxZ - 50) / 20.0);\n            }\n            "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker14detectRotationEd",
+      "line": 188,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    // Detect rotation (mesocyclones)\n    std::vector<std::pair<int, int>> detectRotation(double vorticityThreshold) {\n        std::vector<std::pair<int, int>> rotations;\n        \n        // Compute vorticity\n        for (int j = 1; j < ny - 1; j++) {\n            for (int i = 1; i < nx - 1; i++) {\n                double dvdx = (grid[j][i+1].v - grid[j][i-1].v) / (2 * dx);\n                double dudy = (grid[j+1][i].u - grid[j-1][i].u) / (2 * dy);\n                \n                grid[j][i].vorticity = dvdx - dudy;\n                \n                if (std::abs(grid[j][i].vorticity) > vorticityThreshold) {\n                    rotations.push_back({i, j});\n                }\n            }\n        }\n        \n        return rotations;\n    }\n    \n    // Hail size estimation\n    std::vector<double> estimateHailSize() {\n        std::vector<double> hailSizes(storms.size());\n        \n        for (size_t s = 0; s < storms.size(); s++) {\n            // Severe Hail Index (simplified)\n            double maxZ = storms[s].maxReflectivity;\n            double area = storms[s].area;\n            \n            // MESH (Maximum Expected Size of Hail)\n            double mesh = 0.0;\n            if (maxZ > 50) {\n                mesh = 2.54 * std::pow(10, (maxZ - 50) / 20.0);\n            }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker14detectRotationEd",
+      "line": 195,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.17000000000000004
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTracker14detectRotationEd",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker14detectRotationEd",
+      "line": 189,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::vector<std::pair<int, int>> detectRotation(double vorticityThreshold) {\n        std::vector<std::pair<int, int>> rotations;\n        \n        // Compute vorticity\n        for (int j = 1; j < ny - 1; j++) {\n            for (int i = 1; i < nx - 1; i++) {\n                double dvdx = (grid[j][i+1].v - grid[j][i-1].v) / (2 * dx);\n                double dudy = (grid[j+1][i].u - grid[j-1][i].u) / (2 * dy);\n                \n                grid[j][i].vorticity = dvdx - dudy;\n                \n                if (std::abs(grid[j][i].vorticity) > vorticityThreshold) {\n                    rotations.push_back({i, j});\n                }\n            }\n        }\n        \n        return rotations;\n    }\n    \n    // Hail size estimation\n    std::vector<double> estimateHailSize() {\n        std::vector<double> hailSizes(storms.size());\n        \n        for (size_t s = 0; s < storms.size(); s++) {\n            // Severe Hail Index (simplified)\n            double maxZ = storms[s].maxReflectivity;\n            double area = storms[s].area;\n            \n            // MESH (Maximum Expected Size of Hail)\n            double mesh = 0.0;\n            if (maxZ > 50) {\n                mesh = 2.54 * std::pow(10, (maxZ - 50) / 20.0);\n            }\n            "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTracker7nowcastEi",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTracker7nowcastEi",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTracker7nowcastEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTracker7nowcastEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker7nowcastEi",
+      "line": 161,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTracker7nowcastEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker7nowcastEi",
+      "line": 167,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker7nowcastEi",
+      "line": 161,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    // Extrapolation nowcast\n    std::vector<std::vector<double>> nowcast(int leadTime) {\n        std::vector<std::vector<double>> forecast(ny, std::vector<double>(nx, 0));\n        \n        for (const auto& storm : storms) {\n            // Predict future position\n            double futureX = storm.centerX + storm.velocityU * leadTime;\n            double futureY = storm.centerY + storm.velocityV * leadTime;\n            \n            // Project storm cells\n            for (const auto& [i, j] : storm.cells) {\n                double offsetX = i - storm.centerX;\n                double offsetY = j - storm.centerY;\n                \n                int newI = static_cast<int>(futureX + offsetX);\n                int newJ = static_cast<int>(futureY + offsetY);\n                \n                if (newI >= 0 && newI < nx && newJ >= 0 && newJ < ny) {\n                    forecast[newJ][newI] = grid[j][i].reflectivity;\n                }\n            }\n        }\n        \n        return forecast;\n    }\n    \n    // Detect rotation (mesocyclones)\n    std::vector<std::pair<int, int>> detectRotation(double vorticityThreshold) {\n        std::vector<std::pair<int, int>> rotations;\n        \n        // Compute vorticity\n        for (int j = 1; j < ny - 1; j++) {\n            for (int i = 1; i < nx - 1; i++) {\n                double dvdx = (grid[j][i+1].v - grid[j][i-1].v) / (2 * dx);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker7nowcastEi",
+      "line": 174,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                double offsetY = j - storm.centerY;\n                \n                int newI = static_cast<int>(futureX + offsetX);\n                int newJ = static_cast<int>(futureY + offsetY);\n                \n                if (newI >= 0 && newI < nx && newJ >= 0 && newJ < ny) {\n                    forecast[newJ][newI] = grid[j][i].reflectivity;\n                }\n            }\n        }\n        \n        return forecast;\n    }\n    \n    // Detect rotation (mesocyclones)\n    std::vector<std::pair<int, int>> detectRotation(double vorticityThreshold) {\n        std::vector<std::pair<int, int>> rotations;\n        \n        // Compute vorticity\n        for (int j = 1; j < ny - 1; j++) {\n            for (int i = 1; i < nx - 1; i++) {\n                double dvdx = (grid[j][i+1].v - grid[j][i-1].v) / (2 * dx);\n                double dudy = (grid[j+1][i].u - grid[j-1][i].u) / (2 * dy);\n                \n                grid[j][i].vorticity = dvdx - dudy;\n                \n                if (std::abs(grid[j][i].vorticity) > vorticityThreshold) {\n                    rotations.push_back({i, j});\n                }\n            }\n        }\n        \n        return rotations;\n    }\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker7nowcastEi",
+      "line": 174,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                double offsetY = j - storm.centerY;\n                \n                int newI = static_cast<int>(futureX + offsetX);\n                int newJ = static_cast<int>(futureY + offsetY);\n                \n                if (newI >= 0 && newI < nx && newJ >= 0 && newJ < ny) {\n                    forecast[newJ][newI] = grid[j][i].reflectivity;\n                }\n            }\n        }\n        \n        return forecast;\n    }\n    \n    // Detect rotation (mesocyclones)\n    std::vector<std::pair<int, int>> detectRotation(double vorticityThreshold) {\n        std::vector<std::pair<int, int>> rotations;\n        \n        // Compute vorticity\n        for (int j = 1; j < ny - 1; j++) {\n            for (int i = 1; i < nx - 1; i++) {\n                double dvdx = (grid[j][i+1].v - grid[j][i-1].v) / (2 * dx);\n                double dudy = (grid[j+1][i].u - grid[j-1][i].u) / (2 * dy);\n                \n                grid[j][i].vorticity = dvdx - dudy;\n                \n                if (std::abs(grid[j][i].vorticity) > vorticityThreshold) {\n                    rotations.push_back({i, j});\n                }\n            }\n        }\n        \n        return rotations;\n    }\n    "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker7nowcastEi",
+      "line": 167,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            // Predict future position\n            double futureX = storm.centerX + storm.velocityU * leadTime;\n            double futureY = storm.centerY + storm.velocityV * leadTime;\n            \n            // Project storm cells\n            for (const auto& [i, j] : storm.cells) {\n                double offsetX = i - storm.centerX;\n                double offsetY = j - storm.centerY;\n                \n                int newI = static_cast<int>(futureX + offsetX);\n                int newJ = static_cast<int>(futureY + offsetY);\n                \n                if (newI >= 0 && newI < nx && newJ >= 0 && newJ < ny) {\n                    forecast[newJ][newI] = grid[j][i].reflectivity;\n                }\n            }\n        }\n        \n        return forecast;\n    }\n    \n    // Detect rotation (mesocyclones)\n    std::vector<std::pair<int, int>> detectRotation(double vorticityThreshold) {\n        std::vector<std::pair<int, int>> rotations;\n        \n        // Compute vorticity\n        for (int j = 1; j < ny - 1; j++) {\n            for (int i = 1; i < nx - 1; i++) {\n                double dvdx = (grid[j][i+1].v - grid[j][i-1].v) / (2 * dx);\n                double dudy = (grid[j+1][i].u - grid[j-1][i].u) / (2 * dy);\n                \n                grid[j][i].vorticity = dvdx - dudy;\n                \n                if (std::abs(grid[j][i].vorticity) > vorticityThreshold) {\n                    rotations.push_back({i, j});"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerD1Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerD1Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerD1Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerD1Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerC2Eiid",
+      "line": 149,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerC2Eiid",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerC2Eiid",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerC2Eiid",
+      "line": 1369,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerC2Eiid",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerC2Eiid",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerC2Eiid",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerC2Eiid",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerC2Eiid",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN12StormTrackerC2Eiid",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEE8__appendEmRKS5_",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEE8__appendEmRKS5_",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEE8__appendEmRKS5_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEE8__appendEmRKS5_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEE8__appendEmRKS5_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEE8__appendEmRKS5_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEE8__appendEmRKS5_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEE8__appendEmRKS5_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEE8__appendEmRKS5_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEE8__appendEmRKS5_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEE8__appendEmRKS5_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEE8__appendEmRKS5_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEE8__appendEmRKS5_",
+      "line": 257,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IN12StormTracker4CellENS_9allocatorIS2_EEEENS3_IS5_EEE8__appendEmRKS5_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIN12StormTracker4CellENS_9allocatorIS3_EEEERNS4_IS6_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIN12StormTracker4CellENS_9allocatorIS3_EEEERNS4_IS6_EEED1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIN12StormTracker4CellENS_9allocatorIS3_EEEERNS4_IS6_EEED1Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIN12StormTracker4CellENS_9allocatorIS3_EEEERNS4_IS6_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 1604,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 82,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.17000000000000004
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 82,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 1169,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 89,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            q.pop();\n            \n            storm.cells.push_back({cx, cy});\n            \n            // 8-connectivity\n            for (int dy = -1; dy <= 1; dy++) {\n                for (int dx = -1; dx <= 1; dx++) {\n                    int nx = cx + dx;\n                    int ny = cy + dy;\n                    \n                    if (nx >= 0 && nx < this->nx && ny >= 0 && ny < this->ny &&\n                        grid[ny][nx].isStorm && grid[ny][nx].stormId == -1) {\n                        \n                        grid[ny][nx].stormId = id;\n                        q.push({nx, ny});\n                    }\n                }\n            }\n        }\n    }\n    \n    // Compute storm properties\n    void computeStormProperties(Storm& storm) {\n        storm.centerX = 0;\n        storm.centerY = 0;\n        storm.velocityU = 0;\n        storm.velocityV = 0;\n        storm.maxReflectivity = -100;\n        storm.area = storm.cells.size() * dx * dy;\n        \n        for (const auto& [i, j] : storm.cells) {\n            storm.centerX += i;\n            storm.centerY += j;\n            storm.velocityU += grid[j][i].u;\n            storm.velocityV += grid[j][i].v;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 94,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            for (int dy = -1; dy <= 1; dy++) {\n                for (int dx = -1; dx <= 1; dx++) {\n                    int nx = cx + dx;\n                    int ny = cy + dy;\n                    \n                    if (nx >= 0 && nx < this->nx && ny >= 0 && ny < this->ny &&\n                        grid[ny][nx].isStorm && grid[ny][nx].stormId == -1) {\n                        \n                        grid[ny][nx].stormId = id;\n                        q.push({nx, ny});\n                    }\n                }\n            }\n        }\n    }\n    \n    // Compute storm properties\n    void computeStormProperties(Storm& storm) {\n        storm.centerX = 0;\n        storm.centerY = 0;\n        storm.velocityU = 0;\n        storm.velocityV = 0;\n        storm.maxReflectivity = -100;\n        storm.area = storm.cells.size() * dx * dy;\n        \n        for (const auto& [i, j] : storm.cells) {\n            storm.centerX += i;\n            storm.centerY += j;\n            storm.velocityU += grid[j][i].u;\n            storm.velocityV += grid[j][i].v;\n            storm.maxReflectivity = std::max(storm.maxReflectivity, \n                                            grid[j][i].reflectivity);\n        }\n        \n        int n = storm.cells.size();"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 94,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            for (int dy = -1; dy <= 1; dy++) {\n                for (int dx = -1; dx <= 1; dx++) {\n                    int nx = cx + dx;\n                    int ny = cy + dy;\n                    \n                    if (nx >= 0 && nx < this->nx && ny >= 0 && ny < this->ny &&\n                        grid[ny][nx].isStorm && grid[ny][nx].stormId == -1) {\n                        \n                        grid[ny][nx].stormId = id;\n                        q.push({nx, ny});\n                    }\n                }\n            }\n        }\n    }\n    \n    // Compute storm properties\n    void computeStormProperties(Storm& storm) {\n        storm.centerX = 0;\n        storm.centerY = 0;\n        storm.velocityU = 0;\n        storm.velocityV = 0;\n        storm.maxReflectivity = -100;\n        storm.area = storm.cells.size() * dx * dy;\n        \n        for (const auto& [i, j] : storm.cells) {\n            storm.centerX += i;\n            storm.centerY += j;\n            storm.velocityU += grid[j][i].u;\n            storm.velocityV += grid[j][i].v;\n            storm.maxReflectivity = std::max(storm.maxReflectivity, \n                                            grid[j][i].reflectivity);\n        }\n        \n        int n = storm.cells.size();"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 95,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                for (int dx = -1; dx <= 1; dx++) {\n                    int nx = cx + dx;\n                    int ny = cy + dy;\n                    \n                    if (nx >= 0 && nx < this->nx && ny >= 0 && ny < this->ny &&\n                        grid[ny][nx].isStorm && grid[ny][nx].stormId == -1) {\n                        \n                        grid[ny][nx].stormId = id;\n                        q.push({nx, ny});\n                    }\n                }\n            }\n        }\n    }\n    \n    // Compute storm properties\n    void computeStormProperties(Storm& storm) {\n        storm.centerX = 0;\n        storm.centerY = 0;\n        storm.velocityU = 0;\n        storm.velocityV = 0;\n        storm.maxReflectivity = -100;\n        storm.area = storm.cells.size() * dx * dy;\n        \n        for (const auto& [i, j] : storm.cells) {\n            storm.centerX += i;\n            storm.centerY += j;\n            storm.velocityU += grid[j][i].u;\n            storm.velocityV += grid[j][i].v;\n            storm.maxReflectivity = std::max(storm.maxReflectivity, \n                                            grid[j][i].reflectivity);\n        }\n        \n        int n = storm.cells.size();\n        storm.centerX /= n;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 95,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                for (int dx = -1; dx <= 1; dx++) {\n                    int nx = cx + dx;\n                    int ny = cy + dy;\n                    \n                    if (nx >= 0 && nx < this->nx && ny >= 0 && ny < this->ny &&\n                        grid[ny][nx].isStorm && grid[ny][nx].stormId == -1) {\n                        \n                        grid[ny][nx].stormId = id;\n                        q.push({nx, ny});\n                    }\n                }\n            }\n        }\n    }\n    \n    // Compute storm properties\n    void computeStormProperties(Storm& storm) {\n        storm.centerX = 0;\n        storm.centerY = 0;\n        storm.velocityU = 0;\n        storm.velocityV = 0;\n        storm.maxReflectivity = -100;\n        storm.area = storm.cells.size() * dx * dy;\n        \n        for (const auto& [i, j] : storm.cells) {\n            storm.centerX += i;\n            storm.centerY += j;\n            storm.velocityU += grid[j][i].u;\n            storm.velocityV += grid[j][i].v;\n            storm.maxReflectivity = std::max(storm.maxReflectivity, \n                                            grid[j][i].reflectivity);\n        }\n        \n        int n = storm.cells.size();\n        storm.centerX /= n;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 1604,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 90,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            \n            storm.cells.push_back({cx, cy});\n            \n            // 8-connectivity\n            for (int dy = -1; dy <= 1; dy++) {\n                for (int dx = -1; dx <= 1; dx++) {\n                    int nx = cx + dx;\n                    int ny = cy + dy;\n                    \n                    if (nx >= 0 && nx < this->nx && ny >= 0 && ny < this->ny &&\n                        grid[ny][nx].isStorm && grid[ny][nx].stormId == -1) {\n                        \n                        grid[ny][nx].stormId = id;\n                        q.push({nx, ny});\n                    }\n                }\n            }\n        }\n    }\n    \n    // Compute storm properties\n    void computeStormProperties(Storm& storm) {\n        storm.centerX = 0;\n        storm.centerY = 0;\n        storm.velocityU = 0;\n        storm.velocityV = 0;\n        storm.maxReflectivity = -100;\n        storm.area = storm.cells.size() * dx * dy;\n        \n        for (const auto& [i, j] : storm.cells) {\n            storm.centerX += i;\n            storm.centerY += j;\n            storm.velocityU += grid[j][i].u;\n            storm.velocityV += grid[j][i].v;\n            storm.maxReflectivity = std::max(storm.maxReflectivity, "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 2535,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 2535,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 623,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 623,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEE9push_backB8ne210101ERKS2_",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEE9push_backB8ne210101ERKS2_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEE9push_backB8ne210101ERKS2_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEE9push_backB8ne210101ERKS2_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_4pairIiiEENS_9allocatorIS2_EEE9push_backB8ne210101EOS2_",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_4pairIiiEENS_9allocatorIS2_EEE9push_backB8ne210101EOS2_",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS_4pairIiiEENS_9allocatorIS2_EEE9push_backB8ne210101EOS2_",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS_4pairIiiEENS_9allocatorIS2_EEE9push_backB8ne210101EOS2_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeINS_4pairIiiEENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 2174,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeINS_4pairIiiEENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 2181,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeINS_4pairIiiEENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 2184,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__15dequeINS_4pairIiiEENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeINS_4pairIiiEENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 457,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeINS_4pairIiiEENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 458,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__15dequeINS_4pairIiiEENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeINS_4pairIiiEENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 2205,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeINS_4pairIiiEENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeINS_4pairIiiEENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/unique_ptr.h",
+      "function": "_ZNSt3__15dequeINS_4pairIiiEENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 289,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 457,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 458,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 457,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 458,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 434,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 435,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 434,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 435,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEERNS_9allocatorIS3_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPNS_4pairIiiEERNS_9allocatorIS3_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeINS_4pairIiiEENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 2535,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeINS_4pairIiiEENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 2535,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeINS_4pairIiiEENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 623,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeINS_4pairIiiEENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 623,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeINS_4pairIiiEENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeINS_4pairIiiEENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 625,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 625,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 49,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN12StormTracker5StormENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN12StormTracker5StormERNS_9allocatorIS2_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferIN12StormTracker5StormERNS_9allocatorIS2_EEED1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN12StormTracker5StormERNS_9allocatorIS2_EEED1Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN12StormTracker5StormERNS_9allocatorIS2_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 45,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                cell.stormId = -1;\n            }\n        }\n        \n        // Identify cells exceeding threshold\n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].reflectivity > threshold) {\n                    grid[j][i].isStorm = true;\n                }\n            }\n        }\n    }\n    \n    // Connected component labeling\n    void labelStorms() {\n        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);\n                        storms.push_back(storm);\n                        currentId++;\n                    }\n                }\n            }\n        }\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 37,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    // Detect storm cells using reflectivity threshold\n    void detectStormCells(double threshold) {\n        // Reset storm flags\n        for (auto& row : grid) {\n            for (auto& cell : row) {\n                cell.isStorm = false;\n                cell.stormId = -1;\n            }\n        }\n        \n        // Identify cells exceeding threshold\n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].reflectivity > threshold) {\n                    grid[j][i].isStorm = true;\n                }\n            }\n        }\n    }\n    \n    // Connected component labeling\n    void labelStorms() {\n        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 38,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    // Detect storm cells using reflectivity threshold\n    void detectStormCells(double threshold) {\n        // Reset storm flags\n        for (auto& row : grid) {\n            for (auto& cell : row) {\n                cell.isStorm = false;\n                cell.stormId = -1;\n            }\n        }\n        \n        // Identify cells exceeding threshold\n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].reflectivity > threshold) {\n                    grid[j][i].isStorm = true;\n                }\n            }\n        }\n    }\n    \n    // Connected component labeling\n    void labelStorms() {\n        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 47,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        }\n        \n        // Identify cells exceeding threshold\n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].reflectivity > threshold) {\n                    grid[j][i].isStorm = true;\n                }\n            }\n        }\n    }\n    \n    // Connected component labeling\n    void labelStorms() {\n        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);\n                        storms.push_back(storm);\n                        currentId++;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Flood fill for connected components",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 215,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            double maxZ = storms[s].maxReflectivity;\n            double area = storms[s].area;\n            \n            // MESH (Maximum Expected Size of Hail)\n            double mesh = 0.0;\n            if (maxZ > 50) {\n                mesh = 2.54 * std::pow(10, (maxZ - 50) / 20.0);\n            }\n            \n            hailSizes[s] = mesh;\n        }\n        \n        return hailSizes;\n    }\n    \n    // Probability of severe weather\n    double computeSevereProbability(const Storm& storm) {\n        double prob = 0.0;\n        \n        // Reflectivity factor\n        if (storm.maxReflectivity > 60) prob += 0.3;\n        if (storm.maxReflectivity > 65) prob += 0.3;\n        \n        // Size factor\n        if (storm.area > 100) prob += 0.2;\n        \n        // Velocity factor\n        double speed = std::sqrt(storm.velocityU * storm.velocityU + \n                                storm.velocityV * storm.velocityV);\n        if (speed > 15) prob += 0.2;\n        \n        return std::min(prob, 1.0);\n    }\n};\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 59,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    // Connected component labeling\n    void labelStorms() {\n        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);\n                        storms.push_back(storm);\n                        currentId++;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Flood fill for connected components\n    void floodFill(int x, int y, int id, Storm& storm) {\n        std::queue<std::pair<int, int>> q;\n        q.push({x, y});\n        grid[y][x].stormId = id;\n        \n        while (!q.empty()) {\n            auto [cx, cy] = q.front();\n            q.pop();\n            \n            storm.cells.push_back({cx, cy});\n            \n            // 8-connectivity",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 61,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);\n                        storms.push_back(storm);\n                        currentId++;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Flood fill for connected components\n    void floodFill(int x, int y, int id, Storm& storm) {\n        std::queue<std::pair<int, int>> q;\n        q.push({x, y});\n        grid[y][x].stormId = id;\n        \n        while (!q.empty()) {\n            auto [cx, cy] = q.front();\n            q.pop();\n            \n            storm.cells.push_back({cx, cy});\n            \n            // 8-connectivity\n            for (int dy = -1; dy <= 1; dy++) {\n                for (int dx = -1; dx <= 1; dx++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 61,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);\n                        storms.push_back(storm);\n                        currentId++;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Flood fill for connected components\n    void floodFill(int x, int y, int id, Storm& storm) {\n        std::queue<std::pair<int, int>> q;\n        q.push({x, y});\n        grid[y][x].stormId = id;\n        \n        while (!q.empty()) {\n            auto [cx, cy] = q.front();\n            q.pop();\n            \n            storm.cells.push_back({cx, cy});\n            \n            // 8-connectivity\n            for (int dy = -1; dy <= 1; dy++) {\n                for (int dx = -1; dx <= 1; dx++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 114,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        storm.velocityU = 0;\n        storm.velocityV = 0;\n        storm.maxReflectivity = -100;\n        storm.area = storm.cells.size() * dx * dy;\n        \n        for (const auto& [i, j] : storm.cells) {\n            storm.centerX += i;\n            storm.centerY += j;\n            storm.velocityU += grid[j][i].u;\n            storm.velocityV += grid[j][i].v;\n            storm.maxReflectivity = std::max(storm.maxReflectivity, \n                                            grid[j][i].reflectivity);\n        }\n        \n        int n = storm.cells.size();\n        storm.centerX /= n;\n        storm.centerY /= n;\n        storm.velocityU /= n;\n        storm.velocityV /= n;\n    }\n    \n    // Track storms over time\n    std::vector<std::pair<int, int>> matchStorms(\n        const std::vector<Storm>& previousStorms) {\n        \n        std::vector<std::pair<int, int>> matches;\n        \n        for (size_t i = 0; i < storms.size(); i++) {\n            double bestDistance = 1e9;\n            int bestMatch = -1;\n            \n            for (size_t j = 0; j < previousStorms.size(); j++) {\n                double dx = storms[i].centerX - previousStorms[j].centerX;\n                double dy = storms[i].centerY - previousStorms[j].centerY;\n                double distance = std::sqrt(dx * dx + dy * dy);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker7nowcastEi",
+      "line": 161,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    // Extrapolation nowcast\n    std::vector<std::vector<double>> nowcast(int leadTime) {\n        std::vector<std::vector<double>> forecast(ny, std::vector<double>(nx, 0));\n        \n        for (const auto& storm : storms) {\n            // Predict future position\n            double futureX = storm.centerX + storm.velocityU * leadTime;\n            double futureY = storm.centerY + storm.velocityV * leadTime;\n            \n            // Project storm cells\n            for (const auto& [i, j] : storm.cells) {\n                double offsetX = i - storm.centerX;\n                double offsetY = j - storm.centerY;\n                \n                int newI = static_cast<int>(futureX + offsetX);\n                int newJ = static_cast<int>(futureY + offsetY);\n                \n                if (newI >= 0 && newI < nx && newJ >= 0 && newJ < ny) {\n                    forecast[newJ][newI] = grid[j][i].reflectivity;\n                }\n            }\n        }\n        \n        return forecast;\n    }\n    \n    // Detect rotation (mesocyclones)\n    std::vector<std::pair<int, int>> detectRotation(double vorticityThreshold) {\n        std::vector<std::pair<int, int>> rotations;\n        \n        // Compute vorticity\n        for (int j = 1; j < ny - 1; j++) {\n            for (int i = 1; i < nx - 1; i++) {\n                double dvdx = (grid[j][i+1].v - grid[j][i-1].v) / (2 * dx);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker7nowcastEi",
+      "line": 174,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                double offsetY = j - storm.centerY;\n                \n                int newI = static_cast<int>(futureX + offsetX);\n                int newJ = static_cast<int>(futureY + offsetY);\n                \n                if (newI >= 0 && newI < nx && newJ >= 0 && newJ < ny) {\n                    forecast[newJ][newI] = grid[j][i].reflectivity;\n                }\n            }\n        }\n        \n        return forecast;\n    }\n    \n    // Detect rotation (mesocyclones)\n    std::vector<std::pair<int, int>> detectRotation(double vorticityThreshold) {\n        std::vector<std::pair<int, int>> rotations;\n        \n        // Compute vorticity\n        for (int j = 1; j < ny - 1; j++) {\n            for (int i = 1; i < nx - 1; i++) {\n                double dvdx = (grid[j][i+1].v - grid[j][i-1].v) / (2 * dx);\n                double dudy = (grid[j+1][i].u - grid[j-1][i].u) / (2 * dy);\n                \n                grid[j][i].vorticity = dvdx - dudy;\n                \n                if (std::abs(grid[j][i].vorticity) > vorticityThreshold) {\n                    rotations.push_back({i, j});\n                }\n            }\n        }\n        \n        return rotations;\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker7nowcastEi",
+      "line": 167,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            // Predict future position\n            double futureX = storm.centerX + storm.velocityU * leadTime;\n            double futureY = storm.centerY + storm.velocityV * leadTime;\n            \n            // Project storm cells\n            for (const auto& [i, j] : storm.cells) {\n                double offsetX = i - storm.centerX;\n                double offsetY = j - storm.centerY;\n                \n                int newI = static_cast<int>(futureX + offsetX);\n                int newJ = static_cast<int>(futureY + offsetY);\n                \n                if (newI >= 0 && newI < nx && newJ >= 0 && newJ < ny) {\n                    forecast[newJ][newI] = grid[j][i].reflectivity;\n                }\n            }\n        }\n        \n        return forecast;\n    }\n    \n    // Detect rotation (mesocyclones)\n    std::vector<std::pair<int, int>> detectRotation(double vorticityThreshold) {\n        std::vector<std::pair<int, int>> rotations;\n        \n        // Compute vorticity\n        for (int j = 1; j < ny - 1; j++) {\n            for (int i = 1; i < nx - 1; i++) {\n                double dvdx = (grid[j][i+1].v - grid[j][i-1].v) / (2 * dx);\n                double dudy = (grid[j+1][i].u - grid[j-1][i].u) / (2 * dy);\n                \n                grid[j][i].vorticity = dvdx - dudy;\n                \n                if (std::abs(grid[j][i].vorticity) > vorticityThreshold) {\n                    rotations.push_back({i, j});",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 95,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                for (int dx = -1; dx <= 1; dx++) {\n                    int nx = cx + dx;\n                    int ny = cy + dy;\n                    \n                    if (nx >= 0 && nx < this->nx && ny >= 0 && ny < this->ny &&\n                        grid[ny][nx].isStorm && grid[ny][nx].stormId == -1) {\n                        \n                        grid[ny][nx].stormId = id;\n                        q.push({nx, ny});\n                    }\n                }\n            }\n        }\n    }\n    \n    // Compute storm properties\n    void computeStormProperties(Storm& storm) {\n        storm.centerX = 0;\n        storm.centerY = 0;\n        storm.velocityU = 0;\n        storm.velocityV = 0;\n        storm.maxReflectivity = -100;\n        storm.area = storm.cells.size() * dx * dy;\n        \n        for (const auto& [i, j] : storm.cells) {\n            storm.centerX += i;\n            storm.centerY += j;\n            storm.velocityU += grid[j][i].u;\n            storm.velocityV += grid[j][i].v;\n            storm.maxReflectivity = std::max(storm.maxReflectivity, \n                                            grid[j][i].reflectivity);\n        }\n        \n        int n = storm.cells.size();\n        storm.centerX /= n;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 95,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                for (int dx = -1; dx <= 1; dx++) {\n                    int nx = cx + dx;\n                    int ny = cy + dy;\n                    \n                    if (nx >= 0 && nx < this->nx && ny >= 0 && ny < this->ny &&\n                        grid[ny][nx].isStorm && grid[ny][nx].stormId == -1) {\n                        \n                        grid[ny][nx].stormId = id;\n                        q.push({nx, ny});\n                    }\n                }\n            }\n        }\n    }\n    \n    // Compute storm properties\n    void computeStormProperties(Storm& storm) {\n        storm.centerX = 0;\n        storm.centerY = 0;\n        storm.velocityU = 0;\n        storm.velocityV = 0;\n        storm.maxReflectivity = -100;\n        storm.area = storm.cells.size() * dx * dy;\n        \n        for (const auto& [i, j] : storm.cells) {\n            storm.centerX += i;\n            storm.centerY += j;\n            storm.velocityU += grid[j][i].u;\n            storm.velocityV += grid[j][i].v;\n            storm.maxReflectivity = std::max(storm.maxReflectivity, \n                                            grid[j][i].reflectivity);\n        }\n        \n        int n = storm.cells.size();\n        storm.centerX /= n;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "main",
+      "line": 208,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "    \n    // Hail size estimation\n    std::vector<double> estimateHailSize() {\n        std::vector<double> hailSizes(storms.size());\n        \n        for (size_t s = 0; s < storms.size(); s++) {\n            // Severe Hail Index (simplified)\n            double maxZ = storms[s].maxReflectivity;\n            double area = storms[s].area;\n            \n            // MESH (Maximum Expected Size of Hail)\n            double mesh = 0.0;\n            if (maxZ > 50) {\n                mesh = 2.54 * std::pow(10, (maxZ - 50) / 20.0);\n            }\n            \n            hailSizes[s] = mesh;\n        }\n        \n        return hailSizes;\n    }\n    \n    // Probability of severe weather\n    double computeSevereProbability(const Storm& storm) {\n        double prob = 0.0;\n        \n        // Reflectivity factor\n        if (storm.maxReflectivity > 60) prob += 0.3;\n        if (storm.maxReflectivity > 65) prob += 0.3;\n        \n        // Size factor\n        if (storm.area > 100) prob += 0.2;\n        \n        // Velocity factor\n        double speed = std::sqrt(storm.velocityU * storm.velocityU + ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.78
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 60,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    void labelStorms() {\n        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);\n                        storms.push_back(storm);\n                        currentId++;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Flood fill for connected components\n    void floodFill(int x, int y, int id, Storm& storm) {\n        std::queue<std::pair<int, int>> q;\n        q.push({x, y});\n        grid[y][x].stormId = id;\n        \n        while (!q.empty()) {\n            auto [cx, cy] = q.front();\n            q.pop();\n            \n            storm.cells.push_back({cx, cy});\n            \n            // 8-connectivity\n            for (int dy = -1; dy <= 1; dy++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 59,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    // Connected component labeling\n    void labelStorms() {\n        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);\n                        storms.push_back(storm);\n                        currentId++;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Flood fill for connected components\n    void floodFill(int x, int y, int id, Storm& storm) {\n        std::queue<std::pair<int, int>> q;\n        q.push({x, y});\n        grid[y][x].stormId = id;\n        \n        while (!q.empty()) {\n            auto [cx, cy] = q.front();\n            q.pop();\n            \n            storm.cells.push_back({cx, cy});\n            \n            // 8-connectivity",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker11labelStormsEv",
+      "line": 60,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    void labelStorms() {\n        storms.clear();\n        int currentId = 0;\n        \n        for (int j = 0; j < ny; j++) {\n            for (int i = 0; i < nx; i++) {\n                if (grid[j][i].isStorm && grid[j][i].stormId == -1) {\n                    Storm storm;\n                    storm.id = currentId;\n                    floodFill(i, j, currentId, storm);\n                    \n                    if (storm.cells.size() > 10) {  // Minimum size\n                        computeStormProperties(storm);\n                        storms.push_back(storm);\n                        currentId++;\n                    }\n                }\n            }\n        }\n    }\n    \n    // Flood fill for connected components\n    void floodFill(int x, int y, int id, Storm& storm) {\n        std::queue<std::pair<int, int>> q;\n        q.push({x, y});\n        grid[y][x].stormId = id;\n        \n        while (!q.empty()) {\n            auto [cx, cy] = q.front();\n            q.pop();\n            \n            storm.cells.push_back({cx, cy});\n            \n            // 8-connectivity\n            for (int dy = -1; dy <= 1; dy++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker14detectRotationEd",
+      "line": 189,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::vector<std::pair<int, int>> detectRotation(double vorticityThreshold) {\n        std::vector<std::pair<int, int>> rotations;\n        \n        // Compute vorticity\n        for (int j = 1; j < ny - 1; j++) {\n            for (int i = 1; i < nx - 1; i++) {\n                double dvdx = (grid[j][i+1].v - grid[j][i-1].v) / (2 * dx);\n                double dudy = (grid[j+1][i].u - grid[j-1][i].u) / (2 * dy);\n                \n                grid[j][i].vorticity = dvdx - dudy;\n                \n                if (std::abs(grid[j][i].vorticity) > vorticityThreshold) {\n                    rotations.push_back({i, j});\n                }\n            }\n        }\n        \n        return rotations;\n    }\n    \n    // Hail size estimation\n    std::vector<double> estimateHailSize() {\n        std::vector<double> hailSizes(storms.size());\n        \n        for (size_t s = 0; s < storms.size(); s++) {\n            // Severe Hail Index (simplified)\n            double maxZ = storms[s].maxReflectivity;\n            double area = storms[s].area;\n            \n            // MESH (Maximum Expected Size of Hail)\n            double mesh = 0.0;\n            if (maxZ > 50) {\n                mesh = 2.54 * std::pow(10, (maxZ - 50) / 20.0);\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker14detectRotationEd",
+      "line": 188,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    // Detect rotation (mesocyclones)\n    std::vector<std::pair<int, int>> detectRotation(double vorticityThreshold) {\n        std::vector<std::pair<int, int>> rotations;\n        \n        // Compute vorticity\n        for (int j = 1; j < ny - 1; j++) {\n            for (int i = 1; i < nx - 1; i++) {\n                double dvdx = (grid[j][i+1].v - grid[j][i-1].v) / (2 * dx);\n                double dudy = (grid[j+1][i].u - grid[j-1][i].u) / (2 * dy);\n                \n                grid[j][i].vorticity = dvdx - dudy;\n                \n                if (std::abs(grid[j][i].vorticity) > vorticityThreshold) {\n                    rotations.push_back({i, j});\n                }\n            }\n        }\n        \n        return rotations;\n    }\n    \n    // Hail size estimation\n    std::vector<double> estimateHailSize() {\n        std::vector<double> hailSizes(storms.size());\n        \n        for (size_t s = 0; s < storms.size(); s++) {\n            // Severe Hail Index (simplified)\n            double maxZ = storms[s].maxReflectivity;\n            double area = storms[s].area;\n            \n            // MESH (Maximum Expected Size of Hail)\n            double mesh = 0.0;\n            if (maxZ > 50) {\n                mesh = 2.54 * std::pow(10, (maxZ - 50) / 20.0);\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker14detectRotationEd",
+      "line": 189,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::vector<std::pair<int, int>> detectRotation(double vorticityThreshold) {\n        std::vector<std::pair<int, int>> rotations;\n        \n        // Compute vorticity\n        for (int j = 1; j < ny - 1; j++) {\n            for (int i = 1; i < nx - 1; i++) {\n                double dvdx = (grid[j][i+1].v - grid[j][i-1].v) / (2 * dx);\n                double dudy = (grid[j+1][i].u - grid[j-1][i].u) / (2 * dy);\n                \n                grid[j][i].vorticity = dvdx - dudy;\n                \n                if (std::abs(grid[j][i].vorticity) > vorticityThreshold) {\n                    rotations.push_back({i, j});\n                }\n            }\n        }\n        \n        return rotations;\n    }\n    \n    // Hail size estimation\n    std::vector<double> estimateHailSize() {\n        std::vector<double> hailSizes(storms.size());\n        \n        for (size_t s = 0; s < storms.size(); s++) {\n            // Severe Hail Index (simplified)\n            double maxZ = storms[s].maxReflectivity;\n            double area = storms[s].area;\n            \n            // MESH (Maximum Expected Size of Hail)\n            double mesh = 0.0;\n            if (maxZ > 50) {\n                mesh = 2.54 * std::pow(10, (maxZ - 50) / 20.0);\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker7nowcastEi",
+      "line": 174,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                double offsetY = j - storm.centerY;\n                \n                int newI = static_cast<int>(futureX + offsetX);\n                int newJ = static_cast<int>(futureY + offsetY);\n                \n                if (newI >= 0 && newI < nx && newJ >= 0 && newJ < ny) {\n                    forecast[newJ][newI] = grid[j][i].reflectivity;\n                }\n            }\n        }\n        \n        return forecast;\n    }\n    \n    // Detect rotation (mesocyclones)\n    std::vector<std::pair<int, int>> detectRotation(double vorticityThreshold) {\n        std::vector<std::pair<int, int>> rotations;\n        \n        // Compute vorticity\n        for (int j = 1; j < ny - 1; j++) {\n            for (int i = 1; i < nx - 1; i++) {\n                double dvdx = (grid[j][i+1].v - grid[j][i-1].v) / (2 * dx);\n                double dudy = (grid[j+1][i].u - grid[j-1][i].u) / (2 * dy);\n                \n                grid[j][i].vorticity = dvdx - dudy;\n                \n                if (std::abs(grid[j][i].vorticity) > vorticityThreshold) {\n                    rotations.push_back({i, j});\n                }\n            }\n        }\n        \n        return rotations;\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 89,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            q.pop();\n            \n            storm.cells.push_back({cx, cy});\n            \n            // 8-connectivity\n            for (int dy = -1; dy <= 1; dy++) {\n                for (int dx = -1; dx <= 1; dx++) {\n                    int nx = cx + dx;\n                    int ny = cy + dy;\n                    \n                    if (nx >= 0 && nx < this->nx && ny >= 0 && ny < this->ny &&\n                        grid[ny][nx].isStorm && grid[ny][nx].stormId == -1) {\n                        \n                        grid[ny][nx].stormId = id;\n                        q.push({nx, ny});\n                    }\n                }\n            }\n        }\n    }\n    \n    // Compute storm properties\n    void computeStormProperties(Storm& storm) {\n        storm.centerX = 0;\n        storm.centerY = 0;\n        storm.velocityU = 0;\n        storm.velocityV = 0;\n        storm.maxReflectivity = -100;\n        storm.area = storm.cells.size() * dx * dy;\n        \n        for (const auto& [i, j] : storm.cells) {\n            storm.centerX += i;\n            storm.centerY += j;\n            storm.velocityU += grid[j][i].u;\n            storm.velocityV += grid[j][i].v;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 94,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            for (int dy = -1; dy <= 1; dy++) {\n                for (int dx = -1; dx <= 1; dx++) {\n                    int nx = cx + dx;\n                    int ny = cy + dy;\n                    \n                    if (nx >= 0 && nx < this->nx && ny >= 0 && ny < this->ny &&\n                        grid[ny][nx].isStorm && grid[ny][nx].stormId == -1) {\n                        \n                        grid[ny][nx].stormId = id;\n                        q.push({nx, ny});\n                    }\n                }\n            }\n        }\n    }\n    \n    // Compute storm properties\n    void computeStormProperties(Storm& storm) {\n        storm.centerX = 0;\n        storm.centerY = 0;\n        storm.velocityU = 0;\n        storm.velocityV = 0;\n        storm.maxReflectivity = -100;\n        storm.area = storm.cells.size() * dx * dy;\n        \n        for (const auto& [i, j] : storm.cells) {\n            storm.centerX += i;\n            storm.centerY += j;\n            storm.velocityU += grid[j][i].u;\n            storm.velocityV += grid[j][i].v;\n            storm.maxReflectivity = std::max(storm.maxReflectivity, \n                                            grid[j][i].reflectivity);\n        }\n        \n        int n = storm.cells.size();",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 94,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            for (int dy = -1; dy <= 1; dy++) {\n                for (int dx = -1; dx <= 1; dx++) {\n                    int nx = cx + dx;\n                    int ny = cy + dy;\n                    \n                    if (nx >= 0 && nx < this->nx && ny >= 0 && ny < this->ny &&\n                        grid[ny][nx].isStorm && grid[ny][nx].stormId == -1) {\n                        \n                        grid[ny][nx].stormId = id;\n                        q.push({nx, ny});\n                    }\n                }\n            }\n        }\n    }\n    \n    // Compute storm properties\n    void computeStormProperties(Storm& storm) {\n        storm.centerX = 0;\n        storm.centerY = 0;\n        storm.velocityU = 0;\n        storm.velocityV = 0;\n        storm.maxReflectivity = -100;\n        storm.area = storm.cells.size() * dx * dy;\n        \n        for (const auto& [i, j] : storm.cells) {\n            storm.centerX += i;\n            storm.centerY += j;\n            storm.velocityU += grid[j][i].u;\n            storm.velocityV += grid[j][i].v;\n            storm.maxReflectivity = std::max(storm.maxReflectivity, \n                                            grid[j][i].reflectivity);\n        }\n        \n        int n = storm.cells.size();",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/storm_tracking.cpp",
+      "function": "_ZN12StormTracker9floodFillEiiiRNS_5StormE",
+      "line": 90,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            \n            storm.cells.push_back({cx, cy});\n            \n            // 8-connectivity\n            for (int dy = -1; dy <= 1; dy++) {\n                for (int dx = -1; dx <= 1; dx++) {\n                    int nx = cx + dx;\n                    int ny = cy + dy;\n                    \n                    if (nx >= 0 && nx < this->nx && ny >= 0 && ny < this->ny &&\n                        grid[ny][nx].isStorm && grid[ny][nx].stormId == -1) {\n                        \n                        grid[ny][nx].stormId = id;\n                        q.push({nx, ny});\n                    }\n                }\n            }\n        }\n    }\n    \n    // Compute storm properties\n    void computeStormProperties(Storm& storm) {\n        storm.centerX = 0;\n        storm.centerY = 0;\n        storm.velocityU = 0;\n        storm.velocityV = 0;\n        storm.maxReflectivity = -100;\n        storm.area = storm.cells.size() * dx * dy;\n        \n        for (const auto& [i, j] : storm.cells) {\n            storm.centerX += i;\n            storm.centerY += j;\n            storm.velocityU += grid[j][i].u;\n            storm.velocityV += grid[j][i].v;\n            storm.maxReflectivity = std::max(storm.maxReflectivity, ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

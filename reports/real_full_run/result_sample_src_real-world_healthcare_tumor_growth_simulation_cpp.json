@@ -1,0 +1,1788 @@
+{
+  "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+    "llvm_initial": 148,
+    "llvm_sys_noise": 113,
+    "llvm_project": 35,
+    "after_filter": 25,
+    "ai_batches": 2,
+    "ai_results": 25,
+    "omp_verified": 0,
+    "total_ms": 4129.2,
+    "llvm_ms": 549.1
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "main",
+      "line": 183,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "main",
+      "line": 179,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 53,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        std::vector<std::vector<std::vector<double>>> new_oxygen(TISSUE_SIZE,\n            std::vector<std::vector<double>>(TISSUE_SIZE,\n                std::vector<double>(TISSUE_SIZE)));\n        \n        // Oxygen diffusion\n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    double laplacian = (\n                        tissue[i+1][j][k].oxygen_level +\n                        tissue[i-1][j][k].oxygen_level +\n                        tissue[i][j+1][k].oxygen_level +\n                        tissue[i][j-1][k].oxygen_level +\n                        tissue[i][j][k+1].oxygen_level +\n                        tissue[i][j][k-1].oxygen_level -\n                        6.0 * tissue[i][j][k].oxygen_level\n                    );\n                    \n                    new_oxygen[i][j][k] = tissue[i][j][k].oxygen_level + 0.1 * laplacian;\n                    \n                    // Consumption by cells\n                    if (tissue[i][j][k].type == CANCER) {\n                        new_oxygen[i][j][k] -= 0.05;\n                    } else if (tissue[i][j][k].type == NORMAL) {\n                        new_oxygen[i][j][k] -= 0.02;\n                    }\n                    \n                    // Supply from blood vessels\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        new_oxygen[i][j][k] = 1.0;\n                    }\n                }\n            }\n        }\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 54,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            std::vector<std::vector<double>>(TISSUE_SIZE,\n                std::vector<double>(TISSUE_SIZE)));\n        \n        // Oxygen diffusion\n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    double laplacian = (\n                        tissue[i+1][j][k].oxygen_level +\n                        tissue[i-1][j][k].oxygen_level +\n                        tissue[i][j+1][k].oxygen_level +\n                        tissue[i][j-1][k].oxygen_level +\n                        tissue[i][j][k+1].oxygen_level +\n                        tissue[i][j][k-1].oxygen_level -\n                        6.0 * tissue[i][j][k].oxygen_level\n                    );\n                    \n                    new_oxygen[i][j][k] = tissue[i][j][k].oxygen_level + 0.1 * laplacian;\n                    \n                    // Consumption by cells\n                    if (tissue[i][j][k].type == CANCER) {\n                        new_oxygen[i][j][k] -= 0.05;\n                    } else if (tissue[i][j][k].type == NORMAL) {\n                        new_oxygen[i][j][k] -= 0.02;\n                    }\n                    \n                    // Supply from blood vessels\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        new_oxygen[i][j][k] = 1.0;\n                    }\n                }\n            }\n        }\n        \n        // Update oxygen levels"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 76,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    } else if (tissue[i][j][k].type == NORMAL) {\n                        new_oxygen[i][j][k] -= 0.02;\n                    }\n                    \n                    // Supply from blood vessels\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        new_oxygen[i][j][k] = 1.0;\n                    }\n                }\n            }\n        }\n        \n        // Update oxygen levels\n        for (int i = 0; i < TISSUE_SIZE; i++) {\n            for (int j = 0; j < TISSUE_SIZE; j++) {\n                for (int k = 0; k < TISSUE_SIZE; k++) {\n                    tissue[i][j][k].oxygen_level = std::max(0.0, \n                        std::min(1.0, new_oxygen[i][j][k]));\n                }\n            }\n        }\n    }\n    \n    void cell_division_and_death() {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    Cell& cell = tissue[i][j][k];\n                    \n                    // Cell death from hypoxia\n                    if (cell.oxygen_level < 0.2 && cell.type != BLOOD_VESSEL) {\n                        cell.type = NECROTIC;\n                        continue;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 55,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                std::vector<double>(TISSUE_SIZE)));\n        \n        // Oxygen diffusion\n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    double laplacian = (\n                        tissue[i+1][j][k].oxygen_level +\n                        tissue[i-1][j][k].oxygen_level +\n                        tissue[i][j+1][k].oxygen_level +\n                        tissue[i][j-1][k].oxygen_level +\n                        tissue[i][j][k+1].oxygen_level +\n                        tissue[i][j][k-1].oxygen_level -\n                        6.0 * tissue[i][j][k].oxygen_level\n                    );\n                    \n                    new_oxygen[i][j][k] = tissue[i][j][k].oxygen_level + 0.1 * laplacian;\n                    \n                    // Consumption by cells\n                    if (tissue[i][j][k].type == CANCER) {\n                        new_oxygen[i][j][k] -= 0.05;\n                    } else if (tissue[i][j][k].type == NORMAL) {\n                        new_oxygen[i][j][k] -= 0.02;\n                    }\n                    \n                    // Supply from blood vessels\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        new_oxygen[i][j][k] = 1.0;\n                    }\n                }\n            }\n        }\n        \n        // Update oxygen levels\n        for (int i = 0; i < TISSUE_SIZE; i++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 84,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                }\n            }\n        }\n        \n        // Update oxygen levels\n        for (int i = 0; i < TISSUE_SIZE; i++) {\n            for (int j = 0; j < TISSUE_SIZE; j++) {\n                for (int k = 0; k < TISSUE_SIZE; k++) {\n                    tissue[i][j][k].oxygen_level = std::max(0.0, \n                        std::min(1.0, new_oxygen[i][j][k]));\n                }\n            }\n        }\n    }\n    \n    void cell_division_and_death() {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    Cell& cell = tissue[i][j][k];\n                    \n                    // Cell death from hypoxia\n                    if (cell.oxygen_level < 0.2 && cell.type != BLOOD_VESSEL) {\n                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 85,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 86,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        }\n        \n        // Update oxygen levels\n        for (int i = 0; i < TISSUE_SIZE; i++) {\n            for (int j = 0; j < TISSUE_SIZE; j++) {\n                for (int k = 0; k < TISSUE_SIZE; k++) {\n                    tissue[i][j][k].oxygen_level = std::max(0.0, \n                        std::min(1.0, new_oxygen[i][j][k]));\n                }\n            }\n        }\n    }\n    \n    void cell_division_and_death() {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    Cell& cell = tissue[i][j][k];\n                    \n                    // Cell death from hypoxia\n                    if (cell.oxygen_level < 0.2 && cell.type != BLOOD_VESSEL) {\n                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 97,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void cell_division_and_death() {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    Cell& cell = tissue[i][j][k];\n                    \n                    // Cell death from hypoxia\n                    if (cell.oxygen_level < 0.2 && cell.type != BLOOD_VESSEL) {\n                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 98,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    void cell_division_and_death() {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    Cell& cell = tissue[i][j][k];\n                    \n                    // Cell death from hypoxia\n                    if (cell.oxygen_level < 0.2 && cell.type != BLOOD_VESSEL) {\n                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 103,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    Cell& cell = tissue[i][j][k];\n                    \n                    // Cell death from hypoxia\n                    if (cell.oxygen_level < 0.2 && cell.type != BLOOD_VESSEL) {\n                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;\n                                        break;\n                                    }\n                                }\n                            }\n                        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 103,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    Cell& cell = tissue[i][j][k];\n                    \n                    // Cell death from hypoxia\n                    if (cell.oxygen_level < 0.2 && cell.type != BLOOD_VESSEL) {\n                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;\n                                        break;\n                                    }\n                                }\n                            }\n                        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 109,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n    "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 109,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n    "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 112,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    void simulate_angiogenesis() {\n        // Growth of new blood vessels toward hypoxic regions\n        for (int i = 2; i < TISSUE_SIZE - 2; i++) {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 123,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    void simulate_angiogenesis() {\n        // Growth of new blood vessels toward hypoxic regions\n        for (int i = 2; i < TISSUE_SIZE - 2; i++) {\n            for (int j = 2; j < TISSUE_SIZE - 2; j++) {\n                for (int k = 2; k < TISSUE_SIZE - 2; k++) {\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        // Check for nearby hypoxic cells\n                        bool hypoxia_nearby = false;\n                        for (int di = -2; di <= 2; di++) {\n                            for (int dj = -2; dj <= 2; dj++) {\n                                for (int dk = -2; dk <= 2; dk++) {\n                                    if (tissue[i+di][j+dj][k+dk].oxygen_level < 0.3 &&\n                                        tissue[i+di][j+dj][k+dk].type == CANCER) {\n                                        hypoxia_nearby = true;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 124,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 118,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    void simulate_angiogenesis() {\n        // Growth of new blood vessels toward hypoxic regions\n        for (int i = 2; i < TISSUE_SIZE - 2; i++) {\n            for (int j = 2; j < TISSUE_SIZE - 2; j++) {\n                for (int k = 2; k < TISSUE_SIZE - 2; k++) {\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        // Check for nearby hypoxic cells\n                        bool hypoxia_nearby = false;\n                        for (int di = -2; di <= 2; di++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 99,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    void cell_division_and_death() {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    Cell& cell = tissue[i][j][k];\n                    \n                    // Cell death from hypoxia\n                    if (cell.oxygen_level < 0.2 && cell.type != BLOOD_VESSEL) {\n                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;\n                                        break;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 141,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 142,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 144,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    void simulate_angiogenesis() {\n        // Growth of new blood vessels toward hypoxic regions\n        for (int i = 2; i < TISSUE_SIZE - 2; i++) {\n            for (int j = 2; j < TISSUE_SIZE - 2; j++) {\n                for (int k = 2; k < TISSUE_SIZE - 2; k++) {\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        // Check for nearby hypoxic cells\n                        bool hypoxia_nearby = false;\n                        for (int di = -2; di <= 2; di++) {\n                            for (int dj = -2; dj <= 2; dj++) {\n                                for (int dk = -2; dk <= 2; dk++) {\n                                    if (tissue[i+di][j+dj][k+dk].oxygen_level < 0.3 &&\n                                        tissue[i+di][j+dj][k+dk].type == CANCER) {\n                                        hypoxia_nearby = true;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                        \n                        // Sprout new vessel toward hypoxic region\n                        if (hypoxia_nearby && rand() % 100 < 5) {\n                            int di = (rand() % 3) - 1;\n                            int dj = (rand() % 3) - 1;\n                            int dk = (rand() % 3) - 1;\n                            \n                            if (tissue[i+di][j+dj][k+dk].type != BLOOD_VESSEL) {\n                                tissue[i+di][j+dj][k+dk].type = BLOOD_VESSEL;\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 160,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.18000000000000008
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 147,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            for (int j = 2; j < TISSUE_SIZE - 2; j++) {\n                for (int k = 2; k < TISSUE_SIZE - 2; k++) {\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        // Check for nearby hypoxic cells\n                        bool hypoxia_nearby = false;\n                        for (int di = -2; di <= 2; di++) {\n                            for (int dj = -2; dj <= 2; dj++) {\n                                for (int dk = -2; dk <= 2; dk++) {\n                                    if (tissue[i+di][j+dj][k+dk].oxygen_level < 0.3 &&\n                                        tissue[i+di][j+dj][k+dk].type == CANCER) {\n                                        hypoxia_nearby = true;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                        \n                        // Sprout new vessel toward hypoxic region\n                        if (hypoxia_nearby && rand() % 100 < 5) {\n                            int di = (rand() % 3) - 1;\n                            int dj = (rand() % 3) - 1;\n                            int dk = (rand() % 3) - 1;\n                            \n                            if (tissue[i+di][j+dj][k+dk].type != BLOOD_VESSEL) {\n                                tissue[i+di][j+dj][k+dk].type = BLOOD_VESSEL;\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n};\n\nint main() {"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 150,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                        // Check for nearby hypoxic cells\n                        bool hypoxia_nearby = false;\n                        for (int di = -2; di <= 2; di++) {\n                            for (int dj = -2; dj <= 2; dj++) {\n                                for (int dk = -2; dk <= 2; dk++) {\n                                    if (tissue[i+di][j+dj][k+dk].oxygen_level < 0.3 &&\n                                        tissue[i+di][j+dj][k+dk].type == CANCER) {\n                                        hypoxia_nearby = true;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                        \n                        // Sprout new vessel toward hypoxic region\n                        if (hypoxia_nearby && rand() % 100 < 5) {\n                            int di = (rand() % 3) - 1;\n                            int dj = (rand() % 3) - 1;\n                            int dk = (rand() % 3) - 1;\n                            \n                            if (tissue[i+di][j+dj][k+dk].type != BLOOD_VESSEL) {\n                                tissue[i+di][j+dj][k+dk].type = BLOOD_VESSEL;\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    TumorSimulator sim;\n    \n    for (int t = 0; t < MAX_TIMESTEPS; t++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 150,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                        // Check for nearby hypoxic cells\n                        bool hypoxia_nearby = false;\n                        for (int di = -2; di <= 2; di++) {\n                            for (int dj = -2; dj <= 2; dj++) {\n                                for (int dk = -2; dk <= 2; dk++) {\n                                    if (tissue[i+di][j+dj][k+dk].oxygen_level < 0.3 &&\n                                        tissue[i+di][j+dj][k+dk].type == CANCER) {\n                                        hypoxia_nearby = true;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                        \n                        // Sprout new vessel toward hypoxic region\n                        if (hypoxia_nearby && rand() % 100 < 5) {\n                            int di = (rand() % 3) - 1;\n                            int dj = (rand() % 3) - 1;\n                            int dk = (rand() % 3) - 1;\n                            \n                            if (tissue[i+di][j+dj][k+dk].type != BLOOD_VESSEL) {\n                                tissue[i+di][j+dj][k+dk].type = BLOOD_VESSEL;\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    TumorSimulator sim;\n    \n    for (int t = 0; t < MAX_TIMESTEPS; t++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        // Check for nearby hypoxic cells\n                        bool hypoxia_nearby = false;\n                        for (int di = -2; di <= 2; di++) {\n                            for (int dj = -2; dj <= 2; dj++) {\n                                for (int dk = -2; dk <= 2; dk++) {\n                                    if (tissue[i+di][j+dj][k+dk].oxygen_level < 0.3 &&\n                                        tissue[i+di][j+dj][k+dk].type == CANCER) {\n                                        hypoxia_nearby = true;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                        \n                        // Sprout new vessel toward hypoxic region\n                        if (hypoxia_nearby && rand() % 100 < 5) {\n                            int di = (rand() % 3) - 1;\n                            int dj = (rand() % 3) - 1;\n                            int dk = (rand() % 3) - 1;\n                            \n                            if (tissue[i+di][j+dj][k+dk].type != BLOOD_VESSEL) {\n                                tissue[i+di][j+dj][k+dk].type = BLOOD_VESSEL;\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    TumorSimulator sim;\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 148,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                for (int k = 2; k < TISSUE_SIZE - 2; k++) {\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        // Check for nearby hypoxic cells\n                        bool hypoxia_nearby = false;\n                        for (int di = -2; di <= 2; di++) {\n                            for (int dj = -2; dj <= 2; dj++) {\n                                for (int dk = -2; dk <= 2; dk++) {\n                                    if (tissue[i+di][j+dj][k+dk].oxygen_level < 0.3 &&\n                                        tissue[i+di][j+dj][k+dk].type == CANCER) {\n                                        hypoxia_nearby = true;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                        \n                        // Sprout new vessel toward hypoxic region\n                        if (hypoxia_nearby && rand() % 100 < 5) {\n                            int di = (rand() % 3) - 1;\n                            int dj = (rand() % 3) - 1;\n                            int dk = (rand() % 3) - 1;\n                            \n                            if (tissue[i+di][j+dj][k+dk].type != BLOOD_VESSEL) {\n                                tissue[i+di][j+dj][k+dk].type = BLOOD_VESSEL;\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    TumorSimulator sim;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 160,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.10000000000000007
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 165,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 143,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN14TumorSimulatorC2Ev",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN14TumorSimulatorC2Ev",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "_ZN14TumorSimulatorC2Ev",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14TumorSimulatorC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14TumorSimulatorC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14TumorSimulatorC2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14TumorSimulatorC2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14TumorSimulatorC2Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14TumorSimulatorC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14TumorSimulatorC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulatorC2Ev",
+      "line": 38,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        tissue.resize(TISSUE_SIZE,\n            std::vector<std::vector<Cell>>(TISSUE_SIZE,\n                std::vector<Cell>(TISSUE_SIZE)));\n        \n        // Initialize tissue\n        for (int i = 0; i < TISSUE_SIZE; i++) {\n            for (int j = 0; j < TISSUE_SIZE; j++) {\n                for (int k = 0; k < TISSUE_SIZE; k++) {\n                    tissue[i][j][k] = {NORMAL, 1.0, 1.0, 0.0, 0, true};\n                }\n            }\n        }\n    }\n    \n    void diffuse_nutrients() {\n        std::vector<std::vector<std::vector<double>>> new_oxygen(TISSUE_SIZE,\n            std::vector<std::vector<double>>(TISSUE_SIZE,\n                std::vector<double>(TISSUE_SIZE)));\n        \n        // Oxygen diffusion\n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    double laplacian = (\n                        tissue[i+1][j][k].oxygen_level +\n                        tissue[i-1][j][k].oxygen_level +\n                        tissue[i][j+1][k].oxygen_level +\n                        tissue[i][j-1][k].oxygen_level +\n                        tissue[i][j][k+1].oxygen_level +\n                        tissue[i][j][k-1].oxygen_level -\n                        6.0 * tissue[i][j][k].oxygen_level\n                    );\n                    \n                    new_oxygen[i][j][k] = tissue[i][j][k].oxygen_level + 0.1 * laplacian;\n                    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulatorC2Ev",
+      "line": 39,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            std::vector<std::vector<Cell>>(TISSUE_SIZE,\n                std::vector<Cell>(TISSUE_SIZE)));\n        \n        // Initialize tissue\n        for (int i = 0; i < TISSUE_SIZE; i++) {\n            for (int j = 0; j < TISSUE_SIZE; j++) {\n                for (int k = 0; k < TISSUE_SIZE; k++) {\n                    tissue[i][j][k] = {NORMAL, 1.0, 1.0, 0.0, 0, true};\n                }\n            }\n        }\n    }\n    \n    void diffuse_nutrients() {\n        std::vector<std::vector<std::vector<double>>> new_oxygen(TISSUE_SIZE,\n            std::vector<std::vector<double>>(TISSUE_SIZE,\n                std::vector<double>(TISSUE_SIZE)));\n        \n        // Oxygen diffusion\n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    double laplacian = (\n                        tissue[i+1][j][k].oxygen_level +\n                        tissue[i-1][j][k].oxygen_level +\n                        tissue[i][j+1][k].oxygen_level +\n                        tissue[i][j-1][k].oxygen_level +\n                        tissue[i][j][k+1].oxygen_level +\n                        tissue[i][j][k-1].oxygen_level -\n                        6.0 * tissue[i][j][k].oxygen_level\n                    );\n                    \n                    new_oxygen[i][j][k] = tissue[i][j][k].oxygen_level + 0.1 * laplacian;\n                    \n                    // Consumption by cells"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulatorC2Ev",
+      "line": 40,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                std::vector<Cell>(TISSUE_SIZE)));\n        \n        // Initialize tissue\n        for (int i = 0; i < TISSUE_SIZE; i++) {\n            for (int j = 0; j < TISSUE_SIZE; j++) {\n                for (int k = 0; k < TISSUE_SIZE; k++) {\n                    tissue[i][j][k] = {NORMAL, 1.0, 1.0, 0.0, 0, true};\n                }\n            }\n        }\n    }\n    \n    void diffuse_nutrients() {\n        std::vector<std::vector<std::vector<double>>> new_oxygen(TISSUE_SIZE,\n            std::vector<std::vector<double>>(TISSUE_SIZE,\n                std::vector<double>(TISSUE_SIZE)));\n        \n        // Oxygen diffusion\n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    double laplacian = (\n                        tissue[i+1][j][k].oxygen_level +\n                        tissue[i-1][j][k].oxygen_level +\n                        tissue[i][j+1][k].oxygen_level +\n                        tissue[i][j-1][k].oxygen_level +\n                        tissue[i][j][k+1].oxygen_level +\n                        tissue[i][j][k-1].oxygen_level -\n                        6.0 * tissue[i][j][k].oxygen_level\n                    );\n                    \n                    new_oxygen[i][j][k] = tissue[i][j][k].oxygen_level + 0.1 * laplacian;\n                    \n                    // Consumption by cells\n                    if (tissue[i][j][k].type == CANCER) {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE6resizeEmRKS6_",
+      "line": 1369,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE6resizeEmRKS6_",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE6resizeEmRKS6_",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE6resizeEmRKS6_",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE6resizeEmRKS6_",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE6resizeEmRKS6_",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE6resizeEmRKS6_",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE6resizeEmRKS6_",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE8__appendEmRKS6_",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE8__appendEmRKS6_",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE8__appendEmRKS6_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE8__appendEmRKS6_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE8__appendEmRKS6_",
+      "line": 935,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE8__appendEmRKS6_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE8__appendEmRKS6_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE8__appendEmRKS6_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE8__appendEmRKS6_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_I4CellNS_9allocatorIS2_EEEENS3_IS5_EEEERNS3_IS7_EEE18__construct_at_endEmRKS7_",
+      "line": 257,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_I4CellNS_9allocatorIS2_EEEENS3_IS5_EEEERNS3_IS7_EEE18__construct_at_endEmRKS7_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_I4CellNS_9allocatorIS2_EEEENS3_IS5_EEEERNS3_IS7_EEE18__construct_at_endEmRKS7_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_I4CellNS_9allocatorIS2_EEEENS3_IS5_EEEERNS3_IS7_EEE18__construct_at_endEmRKS7_",
+      "line": 257,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I4CellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I4CellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I4CellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I4CellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I4CellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorI4CellNS1_IS3_EEEEEEPS5_S7_S7_EET2_RT_T0_T1_S8_",
+      "line": 542,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorI4CellNS1_IS3_EEEEEEPS5_S7_S7_EET2_RT_T0_T1_S8_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorI4CellNS1_IS3_EEEEEEPS5_S7_S7_EET2_RT_T0_T1_S8_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorI4CellNS1_IS3_EEEEEEPS5_S7_S7_EET2_RT_T0_T1_S8_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorI4CellNS1_IS3_EEEEEEPS5_S7_S7_EET2_RT_T0_T1_S8_",
+      "line": 542,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorI4CellNS2_IS4_EEEEEEPS6_EEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorI4CellNS2_IS4_EEEEEEPS6_EEED1B8ne210101Ev",
+      "line": 49,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorI4CellNS2_IS4_EEEEEEPS6_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorI4CellNS2_IS4_EEEEEEPS6_EEED1B8ne210101Ev",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_I4CellNS_9allocatorIS2_EEEENS3_IS5_EEEERNS3_IS7_EEED2Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_I4CellNS_9allocatorIS2_EEEENS3_IS5_EEEERNS3_IS7_EEED2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_I4CellNS_9allocatorIS2_EEEENS3_IS5_EEEERNS3_IS7_EEED2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_I4CellNS_9allocatorIS2_EEEENS3_IS5_EEEERNS3_IS7_EEED2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_I4CellNS_9allocatorIS2_EEEENS3_IS5_EEEERNS3_IS7_EEED2Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_I4CellNS_9allocatorIS2_EEEENS3_IS5_EEEERNS3_IS7_EEED2Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorINS1_I4CellNS_9allocatorIS2_EEEENS3_IS5_EEEERNS3_IS7_EEED2Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I4CellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEEC2B8ne210101EmRKS5_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEEC2B8ne210101EmRKS5_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEEC2B8ne210101EmRKS5_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEEC2B8ne210101EmRKS5_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEEC2B8ne210101EmRKS5_",
+      "line": 935,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEEC2B8ne210101EmRKS5_",
+      "line": 84,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorIdNS1_IdEEEEEEPS4_S6_S6_EET2_RT_T0_T1_S7_",
+      "line": 542,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorIdNS1_IdEEEEEEPS4_S6_S6_EET2_RT_T0_T1_S7_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorIdNS1_IdEEEEEEPS4_S6_S6_EET2_RT_T0_T1_S7_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorIdNS1_IdEEEEEEPS4_S6_S6_EET2_RT_T0_T1_S7_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorIdNS1_IdEEEEEEPS4_S6_S6_EET2_RT_T0_T1_S7_",
+      "line": 542,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorIdNS2_IdEEEEEEPS5_EEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorIdNS2_IdEEEEEEPS5_EEED1B8ne210101Ev",
+      "line": 49,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorIdNS2_IdEEEEEEPS5_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorIdNS2_IdEEEEEEPS5_EEED1B8ne210101Ev",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_IdNS_9allocatorIdEEEENS1_IS3_EEEENS1_IS5_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 103,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    Cell& cell = tissue[i][j][k];\n                    \n                    // Cell death from hypoxia\n                    if (cell.oxygen_level < 0.2 && cell.type != BLOOD_VESSEL) {\n                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;\n                                        break;\n                                    }\n                                }\n                            }\n                        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 109,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 112,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    void simulate_angiogenesis() {\n        // Growth of new blood vessels toward hypoxic regions\n        for (int i = 2; i < TISSUE_SIZE - 2; i++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 144,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    void simulate_angiogenesis() {\n        // Growth of new blood vessels toward hypoxic regions\n        for (int i = 2; i < TISSUE_SIZE - 2; i++) {\n            for (int j = 2; j < TISSUE_SIZE - 2; j++) {\n                for (int k = 2; k < TISSUE_SIZE - 2; k++) {\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        // Check for nearby hypoxic cells\n                        bool hypoxia_nearby = false;\n                        for (int di = -2; di <= 2; di++) {\n                            for (int dj = -2; dj <= 2; dj++) {\n                                for (int dk = -2; dk <= 2; dk++) {\n                                    if (tissue[i+di][j+dj][k+dk].oxygen_level < 0.3 &&\n                                        tissue[i+di][j+dj][k+dk].type == CANCER) {\n                                        hypoxia_nearby = true;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                        \n                        // Sprout new vessel toward hypoxic region\n                        if (hypoxia_nearby && rand() % 100 < 5) {\n                            int di = (rand() % 3) - 1;\n                            int dj = (rand() % 3) - 1;\n                            int dk = (rand() % 3) - 1;\n                            \n                            if (tissue[i+di][j+dj][k+dk].type != BLOOD_VESSEL) {\n                                tissue[i+di][j+dj][k+dk].type = BLOOD_VESSEL;\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 150,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                        // Check for nearby hypoxic cells\n                        bool hypoxia_nearby = false;\n                        for (int di = -2; di <= 2; di++) {\n                            for (int dj = -2; dj <= 2; dj++) {\n                                for (int dk = -2; dk <= 2; dk++) {\n                                    if (tissue[i+di][j+dj][k+dk].oxygen_level < 0.3 &&\n                                        tissue[i+di][j+dj][k+dk].type == CANCER) {\n                                        hypoxia_nearby = true;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                        \n                        // Sprout new vessel toward hypoxic region\n                        if (hypoxia_nearby && rand() % 100 < 5) {\n                            int di = (rand() % 3) - 1;\n                            int dj = (rand() % 3) - 1;\n                            int dk = (rand() % 3) - 1;\n                            \n                            if (tissue[i+di][j+dj][k+dk].type != BLOOD_VESSEL) {\n                                tissue[i+di][j+dj][k+dk].type = BLOOD_VESSEL;\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    TumorSimulator sim;\n    \n    for (int t = 0; t < MAX_TIMESTEPS; t++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulatorC2Ev",
+      "line": 40,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                std::vector<Cell>(TISSUE_SIZE)));\n        \n        // Initialize tissue\n        for (int i = 0; i < TISSUE_SIZE; i++) {\n            for (int j = 0; j < TISSUE_SIZE; j++) {\n                for (int k = 0; k < TISSUE_SIZE; k++) {\n                    tissue[i][j][k] = {NORMAL, 1.0, 1.0, 0.0, 0, true};\n                }\n            }\n        }\n    }\n    \n    void diffuse_nutrients() {\n        std::vector<std::vector<std::vector<double>>> new_oxygen(TISSUE_SIZE,\n            std::vector<std::vector<double>>(TISSUE_SIZE,\n                std::vector<double>(TISSUE_SIZE)));\n        \n        // Oxygen diffusion\n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    double laplacian = (\n                        tissue[i+1][j][k].oxygen_level +\n                        tissue[i-1][j][k].oxygen_level +\n                        tissue[i][j+1][k].oxygen_level +\n                        tissue[i][j-1][k].oxygen_level +\n                        tissue[i][j][k+1].oxygen_level +\n                        tissue[i][j][k-1].oxygen_level -\n                        6.0 * tissue[i][j][k].oxygen_level\n                    );\n                    \n                    new_oxygen[i][j][k] = tissue[i][j][k].oxygen_level + 0.1 * laplacian;\n                    \n                    // Consumption by cells\n                    if (tissue[i][j][k].type == CANCER) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 86,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        }\n        \n        // Update oxygen levels\n        for (int i = 0; i < TISSUE_SIZE; i++) {\n            for (int j = 0; j < TISSUE_SIZE; j++) {\n                for (int k = 0; k < TISSUE_SIZE; k++) {\n                    tissue[i][j][k].oxygen_level = std::max(0.0, \n                        std::min(1.0, new_oxygen[i][j][k]));\n                }\n            }\n        }\n    }\n    \n    void cell_division_and_death() {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    Cell& cell = tissue[i][j][k];\n                    \n                    // Cell death from hypoxia\n                    if (cell.oxygen_level < 0.2 && cell.type != BLOOD_VESSEL) {\n                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 123,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    void simulate_angiogenesis() {\n        // Growth of new blood vessels toward hypoxic regions\n        for (int i = 2; i < TISSUE_SIZE - 2; i++) {\n            for (int j = 2; j < TISSUE_SIZE - 2; j++) {\n                for (int k = 2; k < TISSUE_SIZE - 2; k++) {\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        // Check for nearby hypoxic cells\n                        bool hypoxia_nearby = false;\n                        for (int di = -2; di <= 2; di++) {\n                            for (int dj = -2; dj <= 2; dj++) {\n                                for (int dk = -2; dk <= 2; dk++) {\n                                    if (tissue[i+di][j+dj][k+dk].oxygen_level < 0.3 &&\n                                        tissue[i+di][j+dj][k+dk].type == CANCER) {\n                                        hypoxia_nearby = true;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 53,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        std::vector<std::vector<std::vector<double>>> new_oxygen(TISSUE_SIZE,\n            std::vector<std::vector<double>>(TISSUE_SIZE,\n                std::vector<double>(TISSUE_SIZE)));\n        \n        // Oxygen diffusion\n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    double laplacian = (\n                        tissue[i+1][j][k].oxygen_level +\n                        tissue[i-1][j][k].oxygen_level +\n                        tissue[i][j+1][k].oxygen_level +\n                        tissue[i][j-1][k].oxygen_level +\n                        tissue[i][j][k+1].oxygen_level +\n                        tissue[i][j][k-1].oxygen_level -\n                        6.0 * tissue[i][j][k].oxygen_level\n                    );\n                    \n                    new_oxygen[i][j][k] = tissue[i][j][k].oxygen_level + 0.1 * laplacian;\n                    \n                    // Consumption by cells\n                    if (tissue[i][j][k].type == CANCER) {\n                        new_oxygen[i][j][k] -= 0.05;\n                    } else if (tissue[i][j][k].type == NORMAL) {\n                        new_oxygen[i][j][k] -= 0.02;\n                    }\n                    \n                    // Supply from blood vessels\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        new_oxygen[i][j][k] = 1.0;\n                    }\n                }\n            }\n        }\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 54,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            std::vector<std::vector<double>>(TISSUE_SIZE,\n                std::vector<double>(TISSUE_SIZE)));\n        \n        // Oxygen diffusion\n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    double laplacian = (\n                        tissue[i+1][j][k].oxygen_level +\n                        tissue[i-1][j][k].oxygen_level +\n                        tissue[i][j+1][k].oxygen_level +\n                        tissue[i][j-1][k].oxygen_level +\n                        tissue[i][j][k+1].oxygen_level +\n                        tissue[i][j][k-1].oxygen_level -\n                        6.0 * tissue[i][j][k].oxygen_level\n                    );\n                    \n                    new_oxygen[i][j][k] = tissue[i][j][k].oxygen_level + 0.1 * laplacian;\n                    \n                    // Consumption by cells\n                    if (tissue[i][j][k].type == CANCER) {\n                        new_oxygen[i][j][k] -= 0.05;\n                    } else if (tissue[i][j][k].type == NORMAL) {\n                        new_oxygen[i][j][k] -= 0.02;\n                    }\n                    \n                    // Supply from blood vessels\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        new_oxygen[i][j][k] = 1.0;\n                    }\n                }\n            }\n        }\n        \n        // Update oxygen levels",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 76,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    } else if (tissue[i][j][k].type == NORMAL) {\n                        new_oxygen[i][j][k] -= 0.02;\n                    }\n                    \n                    // Supply from blood vessels\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        new_oxygen[i][j][k] = 1.0;\n                    }\n                }\n            }\n        }\n        \n        // Update oxygen levels\n        for (int i = 0; i < TISSUE_SIZE; i++) {\n            for (int j = 0; j < TISSUE_SIZE; j++) {\n                for (int k = 0; k < TISSUE_SIZE; k++) {\n                    tissue[i][j][k].oxygen_level = std::max(0.0, \n                        std::min(1.0, new_oxygen[i][j][k]));\n                }\n            }\n        }\n    }\n    \n    void cell_division_and_death() {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    Cell& cell = tissue[i][j][k];\n                    \n                    // Cell death from hypoxia\n                    if (cell.oxygen_level < 0.2 && cell.type != BLOOD_VESSEL) {\n                        cell.type = NECROTIC;\n                        continue;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 55,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                std::vector<double>(TISSUE_SIZE)));\n        \n        // Oxygen diffusion\n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    double laplacian = (\n                        tissue[i+1][j][k].oxygen_level +\n                        tissue[i-1][j][k].oxygen_level +\n                        tissue[i][j+1][k].oxygen_level +\n                        tissue[i][j-1][k].oxygen_level +\n                        tissue[i][j][k+1].oxygen_level +\n                        tissue[i][j][k-1].oxygen_level -\n                        6.0 * tissue[i][j][k].oxygen_level\n                    );\n                    \n                    new_oxygen[i][j][k] = tissue[i][j][k].oxygen_level + 0.1 * laplacian;\n                    \n                    // Consumption by cells\n                    if (tissue[i][j][k].type == CANCER) {\n                        new_oxygen[i][j][k] -= 0.05;\n                    } else if (tissue[i][j][k].type == NORMAL) {\n                        new_oxygen[i][j][k] -= 0.02;\n                    }\n                    \n                    // Supply from blood vessels\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        new_oxygen[i][j][k] = 1.0;\n                    }\n                }\n            }\n        }\n        \n        // Update oxygen levels\n        for (int i = 0; i < TISSUE_SIZE; i++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator17diffuse_nutrientsEv",
+      "line": 84,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                }\n            }\n        }\n        \n        // Update oxygen levels\n        for (int i = 0; i < TISSUE_SIZE; i++) {\n            for (int j = 0; j < TISSUE_SIZE; j++) {\n                for (int k = 0; k < TISSUE_SIZE; k++) {\n                    tissue[i][j][k].oxygen_level = std::max(0.0, \n                        std::min(1.0, new_oxygen[i][j][k]));\n                }\n            }\n        }\n    }\n    \n    void cell_division_and_death() {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    Cell& cell = tissue[i][j][k];\n                    \n                    // Cell death from hypoxia\n                    if (cell.oxygen_level < 0.2 && cell.type != BLOOD_VESSEL) {\n                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 97,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    void cell_division_and_death() {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    Cell& cell = tissue[i][j][k];\n                    \n                    // Cell death from hypoxia\n                    if (cell.oxygen_level < 0.2 && cell.type != BLOOD_VESSEL) {\n                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 98,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    void cell_division_and_death() {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    Cell& cell = tissue[i][j][k];\n                    \n                    // Cell death from hypoxia\n                    if (cell.oxygen_level < 0.2 && cell.type != BLOOD_VESSEL) {\n                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 103,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    Cell& cell = tissue[i][j][k];\n                    \n                    // Cell death from hypoxia\n                    if (cell.oxygen_level < 0.2 && cell.type != BLOOD_VESSEL) {\n                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;\n                                        break;\n                                    }\n                                }\n                            }\n                        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 109,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 118,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    void simulate_angiogenesis() {\n        // Growth of new blood vessels toward hypoxic regions\n        for (int i = 2; i < TISSUE_SIZE - 2; i++) {\n            for (int j = 2; j < TISSUE_SIZE - 2; j++) {\n                for (int k = 2; k < TISSUE_SIZE - 2; k++) {\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        // Check for nearby hypoxic cells\n                        bool hypoxia_nearby = false;\n                        for (int di = -2; di <= 2; di++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator23cell_division_and_deathEv",
+      "line": 99,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    void cell_division_and_death() {\n        std::uniform_real_distribution<> dis(0.0, 1.0);\n        \n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    Cell& cell = tissue[i][j][k];\n                    \n                    // Cell death from hypoxia\n                    if (cell.oxygen_level < 0.2 && cell.type != BLOOD_VESSEL) {\n                        cell.type = NECROTIC;\n                        continue;\n                    }\n                    \n                    // Cancer cell division\n                    if (cell.type == CANCER && cell.can_divide) {\n                        cell.division_timer++;\n                        \n                        if (cell.division_timer > 10 && cell.oxygen_level > 0.4) {\n                            // Find empty neighbor\n                            int di[] = {-1, 1, 0, 0, 0, 0};\n                            int dj[] = {0, 0, -1, 1, 0, 0};\n                            int dk[] = {0, 0, 0, 0, -1, 1};\n                            \n                            for (int n = 0; n < 6; n++) {\n                                int ni = i + di[n];\n                                int nj = j + dj[n];\n                                int nk = k + dk[n];\n                                \n                                if (tissue[ni][nj][nk].type == NORMAL) {\n                                    if (dis(gen) < 0.3) {\n                                        tissue[ni][nj][nk].type = CANCER;\n                                        tissue[ni][nj][nk].division_timer = 0;\n                                        cell.division_timer = 0;\n                                        break;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 147,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            for (int j = 2; j < TISSUE_SIZE - 2; j++) {\n                for (int k = 2; k < TISSUE_SIZE - 2; k++) {\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        // Check for nearby hypoxic cells\n                        bool hypoxia_nearby = false;\n                        for (int di = -2; di <= 2; di++) {\n                            for (int dj = -2; dj <= 2; dj++) {\n                                for (int dk = -2; dk <= 2; dk++) {\n                                    if (tissue[i+di][j+dj][k+dk].oxygen_level < 0.3 &&\n                                        tissue[i+di][j+dj][k+dk].type == CANCER) {\n                                        hypoxia_nearby = true;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                        \n                        // Sprout new vessel toward hypoxic region\n                        if (hypoxia_nearby && rand() % 100 < 5) {\n                            int di = (rand() % 3) - 1;\n                            int dj = (rand() % 3) - 1;\n                            int dk = (rand() % 3) - 1;\n                            \n                            if (tissue[i+di][j+dj][k+dk].type != BLOOD_VESSEL) {\n                                tissue[i+di][j+dj][k+dk].type = BLOOD_VESSEL;\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n};\n\nint main() {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 150,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                        // Check for nearby hypoxic cells\n                        bool hypoxia_nearby = false;\n                        for (int di = -2; di <= 2; di++) {\n                            for (int dj = -2; dj <= 2; dj++) {\n                                for (int dk = -2; dk <= 2; dk++) {\n                                    if (tissue[i+di][j+dj][k+dk].oxygen_level < 0.3 &&\n                                        tissue[i+di][j+dj][k+dk].type == CANCER) {\n                                        hypoxia_nearby = true;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                        \n                        // Sprout new vessel toward hypoxic region\n                        if (hypoxia_nearby && rand() % 100 < 5) {\n                            int di = (rand() % 3) - 1;\n                            int dj = (rand() % 3) - 1;\n                            int dk = (rand() % 3) - 1;\n                            \n                            if (tissue[i+di][j+dj][k+dk].type != BLOOD_VESSEL) {\n                                tissue[i+di][j+dj][k+dk].type = BLOOD_VESSEL;\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    TumorSimulator sim;\n    \n    for (int t = 0; t < MAX_TIMESTEPS; t++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        // Check for nearby hypoxic cells\n                        bool hypoxia_nearby = false;\n                        for (int di = -2; di <= 2; di++) {\n                            for (int dj = -2; dj <= 2; dj++) {\n                                for (int dk = -2; dk <= 2; dk++) {\n                                    if (tissue[i+di][j+dj][k+dk].oxygen_level < 0.3 &&\n                                        tissue[i+di][j+dj][k+dk].type == CANCER) {\n                                        hypoxia_nearby = true;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                        \n                        // Sprout new vessel toward hypoxic region\n                        if (hypoxia_nearby && rand() % 100 < 5) {\n                            int di = (rand() % 3) - 1;\n                            int dj = (rand() % 3) - 1;\n                            int dk = (rand() % 3) - 1;\n                            \n                            if (tissue[i+di][j+dj][k+dk].type != BLOOD_VESSEL) {\n                                tissue[i+di][j+dj][k+dk].type = BLOOD_VESSEL;\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    TumorSimulator sim;\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulator21simulate_angiogenesisEv",
+      "line": 148,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                for (int k = 2; k < TISSUE_SIZE - 2; k++) {\n                    if (tissue[i][j][k].type == BLOOD_VESSEL) {\n                        // Check for nearby hypoxic cells\n                        bool hypoxia_nearby = false;\n                        for (int di = -2; di <= 2; di++) {\n                            for (int dj = -2; dj <= 2; dj++) {\n                                for (int dk = -2; dk <= 2; dk++) {\n                                    if (tissue[i+di][j+dj][k+dk].oxygen_level < 0.3 &&\n                                        tissue[i+di][j+dj][k+dk].type == CANCER) {\n                                        hypoxia_nearby = true;\n                                        break;\n                                    }\n                                }\n                            }\n                        }\n                        \n                        // Sprout new vessel toward hypoxic region\n                        if (hypoxia_nearby && rand() % 100 < 5) {\n                            int di = (rand() % 3) - 1;\n                            int dj = (rand() % 3) - 1;\n                            int dk = (rand() % 3) - 1;\n                            \n                            if (tissue[i+di][j+dj][k+dk].type != BLOOD_VESSEL) {\n                                tissue[i+di][j+dj][k+dk].type = BLOOD_VESSEL;\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    TumorSimulator sim;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulatorC2Ev",
+      "line": 38,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        tissue.resize(TISSUE_SIZE,\n            std::vector<std::vector<Cell>>(TISSUE_SIZE,\n                std::vector<Cell>(TISSUE_SIZE)));\n        \n        // Initialize tissue\n        for (int i = 0; i < TISSUE_SIZE; i++) {\n            for (int j = 0; j < TISSUE_SIZE; j++) {\n                for (int k = 0; k < TISSUE_SIZE; k++) {\n                    tissue[i][j][k] = {NORMAL, 1.0, 1.0, 0.0, 0, true};\n                }\n            }\n        }\n    }\n    \n    void diffuse_nutrients() {\n        std::vector<std::vector<std::vector<double>>> new_oxygen(TISSUE_SIZE,\n            std::vector<std::vector<double>>(TISSUE_SIZE,\n                std::vector<double>(TISSUE_SIZE)));\n        \n        // Oxygen diffusion\n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    double laplacian = (\n                        tissue[i+1][j][k].oxygen_level +\n                        tissue[i-1][j][k].oxygen_level +\n                        tissue[i][j+1][k].oxygen_level +\n                        tissue[i][j-1][k].oxygen_level +\n                        tissue[i][j][k+1].oxygen_level +\n                        tissue[i][j][k-1].oxygen_level -\n                        6.0 * tissue[i][j][k].oxygen_level\n                    );\n                    \n                    new_oxygen[i][j][k] = tissue[i][j][k].oxygen_level + 0.1 * laplacian;\n                    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/tumor_growth_simulation.cpp",
+      "function": "_ZN14TumorSimulatorC2Ev",
+      "line": 39,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            std::vector<std::vector<Cell>>(TISSUE_SIZE,\n                std::vector<Cell>(TISSUE_SIZE)));\n        \n        // Initialize tissue\n        for (int i = 0; i < TISSUE_SIZE; i++) {\n            for (int j = 0; j < TISSUE_SIZE; j++) {\n                for (int k = 0; k < TISSUE_SIZE; k++) {\n                    tissue[i][j][k] = {NORMAL, 1.0, 1.0, 0.0, 0, true};\n                }\n            }\n        }\n    }\n    \n    void diffuse_nutrients() {\n        std::vector<std::vector<std::vector<double>>> new_oxygen(TISSUE_SIZE,\n            std::vector<std::vector<double>>(TISSUE_SIZE,\n                std::vector<double>(TISSUE_SIZE)));\n        \n        // Oxygen diffusion\n        for (int i = 1; i < TISSUE_SIZE - 1; i++) {\n            for (int j = 1; j < TISSUE_SIZE - 1; j++) {\n                for (int k = 1; k < TISSUE_SIZE - 1; k++) {\n                    double laplacian = (\n                        tissue[i+1][j][k].oxygen_level +\n                        tissue[i-1][j][k].oxygen_level +\n                        tissue[i][j+1][k].oxygen_level +\n                        tissue[i][j-1][k].oxygen_level +\n                        tissue[i][j][k+1].oxygen_level +\n                        tissue[i][j][k-1].oxygen_level -\n                        6.0 * tissue[i][j][k].oxygen_level\n                    );\n                    \n                    new_oxygen[i][j][k] = tissue[i][j][k].oxygen_level + 0.1 * laplacian;\n                    \n                    // Consumption by cells",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

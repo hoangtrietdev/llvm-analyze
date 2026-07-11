@@ -1,0 +1,424 @@
+{
+  "file": "sample/src/real-world/weather/weather_simulation.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/weather/weather_simulation.cpp",
+    "llvm_initial": 44,
+    "llvm_sys_noise": 35,
+    "llvm_project": 9,
+    "after_filter": 2,
+    "ai_batches": 1,
+    "ai_results": 2,
+    "omp_verified": 0,
+    "total_ms": 609.7,
+    "llvm_ms": 440.0
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/weather_simulation.cpp",
+      "function": "_Z16simulate_weatherRNSt3__16vectorINS0_I11WeatherDataNS_9allocatorIS1_EEEENS2_IS4_EEEE",
+      "line": 17,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    double humidity;\n    double wind_speed;\n};\n\nvoid simulate_weather(std::vector<std::vector<WeatherData>>& grid) {\n    for (int t = 0; t < TIME_STEPS; t++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                // Heat diffusion\n                grid[i][j].temperature = 0.25 * (\n                    grid[i-1][j].temperature + grid[i+1][j].temperature +\n                    grid[i][j-1].temperature + grid[i][j+1].temperature\n                );\n                \n                // Pressure calculation\n                grid[i][j].pressure = grid[i][j].temperature * 0.1 + 1013.25;\n                \n                // Humidity propagation\n                grid[i][j].humidity = std::min(100.0, \n                    grid[i][j].humidity + (grid[i][j].temperature - 20.0) * 0.01);\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<WeatherData>> grid(GRID_SIZE, \n        std::vector<WeatherData>(GRID_SIZE));\n    \n    // Initialize\n    for (int i = 0; i < GRID_SIZE; i++) {\n        for (int j = 0; j < GRID_SIZE; j++) {\n            grid[i][j] = {20.0 + (i + j) * 0.01, 1013.25, 50.0, 5.0};\n        }\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/weather_simulation.cpp",
+      "function": "_Z16simulate_weatherRNSt3__16vectorINS0_I11WeatherDataNS_9allocatorIS1_EEEENS2_IS4_EEEE",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    double wind_speed;\n};\n\nvoid simulate_weather(std::vector<std::vector<WeatherData>>& grid) {\n    for (int t = 0; t < TIME_STEPS; t++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                // Heat diffusion\n                grid[i][j].temperature = 0.25 * (\n                    grid[i-1][j].temperature + grid[i+1][j].temperature +\n                    grid[i][j-1].temperature + grid[i][j+1].temperature\n                );\n                \n                // Pressure calculation\n                grid[i][j].pressure = grid[i][j].temperature * 0.1 + 1013.25;\n                \n                // Humidity propagation\n                grid[i][j].humidity = std::min(100.0, \n                    grid[i][j].humidity + (grid[i][j].temperature - 20.0) * 0.01);\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<WeatherData>> grid(GRID_SIZE, \n        std::vector<WeatherData>(GRID_SIZE));\n    \n    // Initialize\n    for (int i = 0; i < GRID_SIZE; i++) {\n        for (int j = 0; j < GRID_SIZE; j++) {\n            grid[i][j] = {20.0 + (i + j) * 0.01, 1013.25, 50.0, 5.0};\n        }\n    }\n    "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/weather_simulation.cpp",
+      "function": "_Z16simulate_weatherRNSt3__16vectorINS0_I11WeatherDataNS_9allocatorIS1_EEEENS2_IS4_EEEE",
+      "line": 19,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/weather_simulation.cpp",
+      "function": "main",
+      "line": 17,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/weather_simulation.cpp",
+      "function": "main",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/weather_simulation.cpp",
+      "function": "main",
+      "line": 19,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/weather_simulation.cpp",
+      "function": "main",
+      "line": 42,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/weather_simulation.cpp",
+      "function": "main",
+      "line": 43,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I11WeatherDataNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I11WeatherDataNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I11WeatherDataNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I11WeatherDataNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I11WeatherDataNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I11WeatherDataNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I11WeatherDataNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I11WeatherDataNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I11WeatherDataNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I11WeatherDataNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I11WeatherDataNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I11WeatherDataNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I11WeatherDataNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I11WeatherDataNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I11WeatherDataNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__ostream/put_character_sequence.h",
+      "function": "_ZNSt3__124__put_character_sequenceB8ne210101IcNS_11char_traitsIcEEEERNS_13basic_ostreamIT_T0_EES7_PKS4_m",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/ios",
+      "function": "_ZNSt3__124__put_character_sequenceB8ne210101IcNS_11char_traitsIcEEEERNS_13basic_ostreamIT_T0_EES7_PKS4_m",
+      "line": 701,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__ostream/put_character_sequence.h",
+      "function": "_ZNSt3__124__put_character_sequenceB8ne210101IcNS_11char_traitsIcEEEERNS_13basic_ostreamIT_T0_EES7_PKS4_m",
+      "line": 37,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__locale_dir/pad_and_output.h",
+      "function": "_ZNSt3__116__pad_and_outputB8ne210101IcNS_11char_traitsIcEEEENS_19ostreambuf_iteratorIT_T0_EES6_PKS4_S8_S8_RNS_8ios_baseES4_",
+      "line": 51,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__locale_dir/pad_and_output.h",
+      "function": "_ZNSt3__116__pad_and_outputB8ne210101IcNS_11char_traitsIcEEEENS_19ostreambuf_iteratorIT_T0_EES6_PKS4_S8_S8_RNS_8ios_baseES4_",
+      "line": 60,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__locale_dir/pad_and_output.h",
+      "function": "_ZNSt3__116__pad_and_outputB8ne210101IcNS_11char_traitsIcEEEENS_19ostreambuf_iteratorIT_T0_EES6_PKS4_S8_S8_RNS_8ios_baseES4_",
+      "line": 61,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__locale_dir/pad_and_output.h",
+      "function": "_ZNSt3__116__pad_and_outputB8ne210101IcNS_11char_traitsIcEEEENS_19ostreambuf_iteratorIT_T0_EES6_PKS4_S8_S8_RNS_8ios_baseES4_",
+      "line": 66,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__116__pad_and_outputB8ne210101IcNS_11char_traitsIcEEEENS_19ostreambuf_iteratorIT_T0_EES6_PKS4_S8_S8_RNS_8ios_baseES4_",
+      "line": 2596,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__116__pad_and_outputB8ne210101IcNS_11char_traitsIcEEEENS_19ostreambuf_iteratorIT_T0_EES6_PKS4_S8_S8_RNS_8ios_baseES4_",
+      "line": 2599,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__116__pad_and_outputB8ne210101IcNS_11char_traitsIcEEEENS_19ostreambuf_iteratorIT_T0_EES6_PKS4_S8_S8_RNS_8ios_baseES4_",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "unknown",
+      "function": "_ZNSt3__116__pad_and_outputB8ne210101IcNS_11char_traitsIcEEEENS_19ostreambuf_iteratorIT_T0_EES6_PKS4_S8_S8_RNS_8ios_baseES4_",
+      "line": 0,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.57
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__116__pad_and_outputB8ne210101IcNS_11char_traitsIcEEEENS_19ostreambuf_iteratorIT_T0_EES6_PKS4_S8_S8_RNS_8ios_baseES4_",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__locale_dir/pad_and_output.h",
+      "function": "_ZNSt3__116__pad_and_outputB8ne210101IcNS_11char_traitsIcEEEENS_19ostreambuf_iteratorIT_T0_EES6_PKS4_S8_S8_RNS_8ios_baseES4_",
+      "line": 74,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__locale_dir/pad_and_output.h",
+      "function": "_ZNSt3__116__pad_and_outputB8ne210101IcNS_11char_traitsIcEEEENS_19ostreambuf_iteratorIT_T0_EES6_PKS4_S8_S8_RNS_8ios_baseES4_",
+      "line": 75,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/weather_simulation.cpp",
+      "function": "_Z16simulate_weatherRNSt3__16vectorINS0_I11WeatherDataNS_9allocatorIS1_EEEENS2_IS4_EEEE",
+      "line": 17,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    double humidity;\n    double wind_speed;\n};\n\nvoid simulate_weather(std::vector<std::vector<WeatherData>>& grid) {\n    for (int t = 0; t < TIME_STEPS; t++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                // Heat diffusion\n                grid[i][j].temperature = 0.25 * (\n                    grid[i-1][j].temperature + grid[i+1][j].temperature +\n                    grid[i][j-1].temperature + grid[i][j+1].temperature\n                );\n                \n                // Pressure calculation\n                grid[i][j].pressure = grid[i][j].temperature * 0.1 + 1013.25;\n                \n                // Humidity propagation\n                grid[i][j].humidity = std::min(100.0, \n                    grid[i][j].humidity + (grid[i][j].temperature - 20.0) * 0.01);\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<WeatherData>> grid(GRID_SIZE, \n        std::vector<WeatherData>(GRID_SIZE));\n    \n    // Initialize\n    for (int i = 0; i < GRID_SIZE; i++) {\n        for (int j = 0; j < GRID_SIZE; j++) {\n            grid[i][j] = {20.0 + (i + j) * 0.01, 1013.25, 50.0, 5.0};\n        }\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/weather_simulation.cpp",
+      "function": "_Z16simulate_weatherRNSt3__16vectorINS0_I11WeatherDataNS_9allocatorIS1_EEEENS2_IS4_EEEE",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    double wind_speed;\n};\n\nvoid simulate_weather(std::vector<std::vector<WeatherData>>& grid) {\n    for (int t = 0; t < TIME_STEPS; t++) {\n        for (int i = 1; i < GRID_SIZE - 1; i++) {\n            for (int j = 1; j < GRID_SIZE - 1; j++) {\n                // Heat diffusion\n                grid[i][j].temperature = 0.25 * (\n                    grid[i-1][j].temperature + grid[i+1][j].temperature +\n                    grid[i][j-1].temperature + grid[i][j+1].temperature\n                );\n                \n                // Pressure calculation\n                grid[i][j].pressure = grid[i][j].temperature * 0.1 + 1013.25;\n                \n                // Humidity propagation\n                grid[i][j].humidity = std::min(100.0, \n                    grid[i][j].humidity + (grid[i][j].temperature - 20.0) * 0.01);\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<WeatherData>> grid(GRID_SIZE, \n        std::vector<WeatherData>(GRID_SIZE));\n    \n    // Initialize\n    for (int i = 0; i < GRID_SIZE; i++) {\n        for (int j = 0; j < GRID_SIZE; j++) {\n            grid[i][j] = {20.0 + (i + j) * 0.01, 1013.25, 50.0, 5.0};\n        }\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

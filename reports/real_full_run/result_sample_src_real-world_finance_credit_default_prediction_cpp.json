@@ -1,0 +1,621 @@
+{
+  "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+    "llvm_initial": 22,
+    "llvm_sys_noise": 3,
+    "llvm_project": 19,
+    "after_filter": 18,
+    "ai_batches": 2,
+    "ai_results": 18,
+    "omp_verified": 0,
+    "total_ms": 4941.4,
+    "llvm_ms": 386.5
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid trainLogisticRegression(double* features, int* labels, double* weights,\n                             int n_samples, int n_features, int iterations, \n                             double learning_rate, double lambda) {\n    for (int iter = 0; iter < iterations; iter++) {\n        std::vector<double> gradients(n_features, 0.0);\n        \n        for (int i = 0; i < n_samples; i++) {\n            double z = 0.0;\n            for (int j = 0; j < n_features; j++) {\n                z += weights[j] * features[i * n_features + j];\n            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 170,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                             int n_samples, int n_features, int iterations, \n                             double learning_rate, double lambda) {\n    for (int iter = 0; iter < iterations; iter++) {\n        std::vector<double> gradients(n_features, 0.0);\n        \n        for (int i = 0; i < n_samples; i++) {\n            double z = 0.0;\n            for (int j = 0; j < n_features; j++) {\n                z += weights[j] * features[i * n_features + j];\n            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);\n    \n    trainLogisticRegression(features.data(), labels.data(), weights.data(),\n                           n_samples, n_features, 100, 0.01, 0.001);\n    predictDefaultProbability(features.data(), weights.data(), probabilities.data(),\n                             n_samples, n_features);\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    for (int iter = 0; iter < iterations; iter++) {\n        std::vector<double> gradients(n_features, 0.0);\n        \n        for (int i = 0; i < n_samples; i++) {\n            double z = 0.0;\n            for (int j = 0; j < n_features; j++) {\n                z += weights[j] * features[i * n_features + j];\n            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 20,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 13,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    for (int iter = 0; iter < iterations; iter++) {\n        std::vector<double> gradients(n_features, 0.0);\n        \n        for (int i = 0; i < n_samples; i++) {\n            double z = 0.0;\n            for (int j = 0; j < n_features; j++) {\n                z += weights[j] * features[i * n_features + j];\n            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                             int n_samples, int n_features, int iterations, \n                             double learning_rate, double lambda) {\n    for (int iter = 0; iter < iterations; iter++) {\n        std::vector<double> gradients(n_features, 0.0);\n        \n        for (int i = 0; i < n_samples; i++) {\n            double z = 0.0;\n            for (int j = 0; j < n_features; j++) {\n                z += weights[j] * features[i * n_features + j];\n            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 20,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid trainLogisticRegression(double* features, int* labels, double* weights,\n                             int n_samples, int n_features, int iterations, \n                             double learning_rate, double lambda) {\n    for (int iter = 0; iter < iterations; iter++) {\n        std::vector<double> gradients(n_features, 0.0);\n        \n        for (int i = 0; i < n_samples; i++) {\n            double z = 0.0;\n            for (int j = 0; j < n_features; j++) {\n                z += weights[j] * features[i * n_features + j];\n            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 26,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);\n    \n    trainLogisticRegression(features.data(), labels.data(), weights.data(),\n                           n_samples, n_features, 100, 0.01, 0.001);\n    predictDefaultProbability(features.data(), weights.data(), probabilities.data(),\n                             n_samples, n_features);\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z25predictDefaultProbabilityPdS_S_ii",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);\n    \n    trainLogisticRegression(features.data(), labels.data(), weights.data(),\n                           n_samples, n_features, 100, 0.01, 0.001);\n    predictDefaultProbability(features.data(), weights.data(), probabilities.data(),\n                             n_samples, n_features);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z25predictDefaultProbabilityPdS_S_ii",
+      "line": 37,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);\n    \n    trainLogisticRegression(features.data(), labels.data(), weights.data(),\n                           n_samples, n_features, 100, 0.01, 0.001);\n    predictDefaultProbability(features.data(), weights.data(), probabilities.data(),\n                             n_samples, n_features);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z25predictDefaultProbabilityPdS_S_ii",
+      "line": 35,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);\n    \n    trainLogisticRegression(features.data(), labels.data(), weights.data(),\n                           n_samples, n_features, 100, 0.01, 0.001);\n    predictDefaultProbability(features.data(), weights.data(), probabilities.data(),\n                             n_samples, n_features);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z25predictDefaultProbabilityPdS_S_ii",
+      "line": 37,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);\n    \n    trainLogisticRegression(features.data(), labels.data(), weights.data(),\n                           n_samples, n_features, 100, 0.01, 0.001);\n    predictDefaultProbability(features.data(), weights.data(), probabilities.data(),\n                             n_samples, n_features);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "main",
+      "line": 13,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "    for (int iter = 0; iter < iterations; iter++) {\n        std::vector<double> gradients(n_features, 0.0);\n        \n        for (int i = 0; i < n_samples; i++) {\n            double z = 0.0;\n            for (int j = 0; j < n_features; j++) {\n                z += weights[j] * features[i * n_features + j];\n            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "main",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "                             int n_samples, int n_features, int iterations, \n                             double learning_rate, double lambda) {\n    for (int iter = 0; iter < iterations; iter++) {\n        std::vector<double> gradients(n_features, 0.0);\n        \n        for (int i = 0; i < n_samples; i++) {\n            double z = 0.0;\n            for (int j = 0; j < n_features; j++) {\n                z += weights[j] * features[i * n_features + j];\n            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "main",
+      "line": 20,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "main",
+      "line": 8,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "main",
+      "line": 26,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);\n    \n    trainLogisticRegression(features.data(), labels.data(), weights.data(),\n                           n_samples, n_features, 100, 0.01, 0.001);\n    predictDefaultProbability(features.data(), weights.data(), probabilities.data(),\n                             n_samples, n_features);\n    "
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                             int n_samples, int n_features, int iterations, \n                             double learning_rate, double lambda) {\n    for (int iter = 0; iter < iterations; iter++) {\n        std::vector<double> gradients(n_features, 0.0);\n        \n        for (int i = 0; i < n_samples; i++) {\n            double z = 0.0;\n            for (int j = 0; j < n_features; j++) {\n                z += weights[j] * features[i * n_features + j];\n            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);\n    \n    trainLogisticRegression(features.data(), labels.data(), weights.data(),\n                           n_samples, n_features, 100, 0.01, 0.001);\n    predictDefaultProbability(features.data(), weights.data(), probabilities.data(),\n                             n_samples, n_features);\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    for (int iter = 0; iter < iterations; iter++) {\n        std::vector<double> gradients(n_features, 0.0);\n        \n        for (int i = 0; i < n_samples; i++) {\n            double z = 0.0;\n            for (int j = 0; j < n_features; j++) {\n                z += weights[j] * features[i * n_features + j];\n            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                             int n_samples, int n_features, int iterations, \n                             double learning_rate, double lambda) {\n    for (int iter = 0; iter < iterations; iter++) {\n        std::vector<double> gradients(n_features, 0.0);\n        \n        for (int i = 0; i < n_samples; i++) {\n            double z = 0.0;\n            for (int j = 0; j < n_features; j++) {\n                z += weights[j] * features[i * n_features + j];\n            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z25predictDefaultProbabilityPdS_S_ii",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);\n    \n    trainLogisticRegression(features.data(), labels.data(), weights.data(),\n                           n_samples, n_features, 100, 0.01, 0.001);\n    predictDefaultProbability(features.data(), weights.data(), probabilities.data(),\n                             n_samples, n_features);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z25predictDefaultProbabilityPdS_S_ii",
+      "line": 37,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);\n    \n    trainLogisticRegression(features.data(), labels.data(), weights.data(),\n                           n_samples, n_features, 100, 0.01, 0.001);\n    predictDefaultProbability(features.data(), weights.data(), probabilities.data(),\n                             n_samples, n_features);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "main",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "                             int n_samples, int n_features, int iterations, \n                             double learning_rate, double lambda) {\n    for (int iter = 0; iter < iterations; iter++) {\n        std::vector<double> gradients(n_features, 0.0);\n        \n        for (int i = 0; i < n_samples; i++) {\n            double z = 0.0;\n            for (int j = 0; j < n_features; j++) {\n                z += weights[j] * features[i * n_features + j];\n            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 20,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 13,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    for (int iter = 0; iter < iterations; iter++) {\n        std::vector<double> gradients(n_features, 0.0);\n        \n        for (int i = 0; i < n_samples; i++) {\n            double z = 0.0;\n            for (int j = 0; j < n_features; j++) {\n                z += weights[j] * features[i * n_features + j];\n            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 20,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 26,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);\n    \n    trainLogisticRegression(features.data(), labels.data(), weights.data(),\n                           n_samples, n_features, 100, 0.01, 0.001);\n    predictDefaultProbability(features.data(), weights.data(), probabilities.data(),\n                             n_samples, n_features);\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z25predictDefaultProbabilityPdS_S_ii",
+      "line": 35,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);\n    \n    trainLogisticRegression(features.data(), labels.data(), weights.data(),\n                           n_samples, n_features, 100, 0.01, 0.001);\n    predictDefaultProbability(features.data(), weights.data(), probabilities.data(),\n                             n_samples, n_features);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z25predictDefaultProbabilityPdS_S_ii",
+      "line": 37,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);\n    \n    trainLogisticRegression(features.data(), labels.data(), weights.data(),\n                           n_samples, n_features, 100, 0.01, 0.001);\n    predictDefaultProbability(features.data(), weights.data(), probabilities.data(),\n                             n_samples, n_features);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid trainLogisticRegression(double* features, int* labels, double* weights,\n                             int n_samples, int n_features, int iterations, \n                             double learning_rate, double lambda) {\n    for (int iter = 0; iter < iterations; iter++) {\n        std::vector<double> gradients(n_features, 0.0);\n        \n        for (int i = 0; i < n_samples; i++) {\n            double z = 0.0;\n            for (int j = 0; j < n_features; j++) {\n                z += weights[j] * features[i * n_features + j];\n            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "_Z23trainLogisticRegressionPdPiS_iiidd",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid trainLogisticRegression(double* features, int* labels, double* weights,\n                             int n_samples, int n_features, int iterations, \n                             double learning_rate, double lambda) {\n    for (int iter = 0; iter < iterations; iter++) {\n        std::vector<double> gradients(n_features, 0.0);\n        \n        for (int i = 0; i < n_samples; i++) {\n            double z = 0.0;\n            for (int j = 0; j < n_features; j++) {\n                z += weights[j] * features[i * n_features + j];\n            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "main",
+      "line": 13,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "    for (int iter = 0; iter < iterations; iter++) {\n        std::vector<double> gradients(n_features, 0.0);\n        \n        for (int i = 0; i < n_samples; i++) {\n            double z = 0.0;\n            for (int j = 0; j < n_features; j++) {\n                z += weights[j] * features[i * n_features + j];\n            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "The loop has complex operations and function calls, but it's not clear if there are data races or dependencies without further analysis.",
+      "confidence": 0.7,
+      "transformations": [
+        "Apply OpenMP parallel for directive to the outer loop",
+        "Use reduction clause for the gradients vector"
+      ],
+      "tests_recommended": [
+        "Validate the parallelized loop against the sequential version",
+        "Check for data races using a tool like Helgrind"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6000000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "main",
+      "line": 20,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "            }\n            \n            double prediction = 1.0 / (1.0 + exp(-z));\n            double error = prediction - labels[i];\n            \n            for (int j = 0; j < n_features; j++) {\n                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);",
+      "classification": "requires_runtime_check",
+      "reasoning": "The code has function calls and complex operations, and there might be dependencies between iterations of the outer loop.",
+      "confidence": 0.65,
+      "transformations": [
+        "Apply OpenMP parallel for directive to the outer loop",
+        "Use private variables for prediction and error"
+      ],
+      "tests_recommended": [
+        "Validate the parallelized loop against the sequential version",
+        "Check for data races using a tool like Helgrind"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6000000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/credit_default_prediction.cpp",
+      "function": "main",
+      "line": 26,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "                gradients[j] += error * features[i * n_features + j];\n            }\n        }\n        \n        // Update weights with L2 regularization\n        for (int j = 0; j < n_features; j++) {\n            gradients[j] = gradients[j] / n_samples + lambda * weights[j];\n            weights[j] -= learning_rate * gradients[j];\n        }\n    }\n}\n\nvoid predictDefaultProbability(double* features, double* weights, double* probabilities,\n                               int n_samples, int n_features) {\n    for (int i = 0; i < n_samples; i++) {\n        double z = 0.0;\n        for (int j = 0; j < n_features; j++) {\n            z += weights[j] * features[i * n_features + j];\n        }\n        probabilities[i] = 1.0 / (1.0 + exp(-z));\n    }\n}\n\nint main() {\n    const int n_samples = 10000, n_features = 50;\n    std::vector<double> features(n_samples * n_features, 0.5);\n    std::vector<int> labels(n_samples, 0);\n    std::vector<double> weights(n_features, 0.0);\n    std::vector<double> probabilities(n_samples);\n    \n    trainLogisticRegression(features.data(), labels.data(), weights.data(),\n                           n_samples, n_features, 100, 0.01, 0.001);\n    predictDefaultProbability(features.data(), weights.data(), probabilities.data(),\n                             n_samples, n_features);\n    ",
+      "classification": "safe_parallel",
+      "reasoning": "The loop has independent operations and no obvious data races or dependencies.",
+      "confidence": 0.9,
+      "transformations": [
+        "Apply OpenMP parallel for directive to the loop",
+        "Use reduction clause for the gradients vector"
+      ],
+      "tests_recommended": [
+        "Validate the parallelized loop against the sequential version"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6000000000000001
+    }
+  ]
+}

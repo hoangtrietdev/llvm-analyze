@@ -1,0 +1,546 @@
+{
+  "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+    "llvm_initial": 48,
+    "llvm_sys_noise": 37,
+    "llvm_project": 11,
+    "after_filter": 6,
+    "ai_batches": 1,
+    "ai_results": 6,
+    "omp_verified": 0,
+    "total_ms": 540.2,
+    "llvm_ms": 378.4
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 15,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "void kmeans(const std::vector<std::vector<double>>& points,\n           std::vector<std::vector<double>>& centroids,\n           std::vector<int>& labels) {\n    for (int iter = 0; iter < 100; iter++) {\n        // Assign points to clusters\n        for (size_t i = 0; i < points.size(); i++) {\n            double min_dist = std::numeric_limits<double>::max();\n            int best_cluster = 0;\n            \n            for (int k = 0; k < K; k++) {\n                double dist = 0.0;\n                for (int d = 0; d < DIM; d++) {\n                    double diff = points[i][d] - centroids[k][d];\n                    dist += diff * diff;\n                }\n                \n                if (dist < min_dist) {\n                    min_dist = dist;\n                    best_cluster = k;\n                }\n            }\n            \n            labels[i] = best_cluster;\n        }\n        \n        // Update centroids\n        std::vector<std::vector<double>> new_centroids(K, std::vector<double>(DIM, 0.0));\n        std::vector<int> counts(K, 0);\n        \n        for (size_t i = 0; i < points.size(); i++) {\n            int cluster = labels[i];\n            counts[cluster]++;\n            \n            for (int d = 0; d < DIM; d++) {\n                new_centroids[cluster][d] += points[i][d];"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 19,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        // Assign points to clusters\n        for (size_t i = 0; i < points.size(); i++) {\n            double min_dist = std::numeric_limits<double>::max();\n            int best_cluster = 0;\n            \n            for (int k = 0; k < K; k++) {\n                double dist = 0.0;\n                for (int d = 0; d < DIM; d++) {\n                    double diff = points[i][d] - centroids[k][d];\n                    dist += diff * diff;\n                }\n                \n                if (dist < min_dist) {\n                    min_dist = dist;\n                    best_cluster = k;\n                }\n            }\n            \n            labels[i] = best_cluster;\n        }\n        \n        // Update centroids\n        std::vector<std::vector<double>> new_centroids(K, std::vector<double>(DIM, 0.0));\n        std::vector<int> counts(K, 0);\n        \n        for (size_t i = 0; i < points.size(); i++) {\n            int cluster = labels[i];\n            counts[cluster]++;\n            \n            for (int d = 0; d < DIM; d++) {\n                new_centroids[cluster][d] += points[i][d];\n            }\n        }\n        \n        for (int k = 0; k < K; k++) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 21,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 39,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.35
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 39,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 43,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        for (size_t i = 0; i < points.size(); i++) {\n            int cluster = labels[i];\n            counts[cluster]++;\n            \n            for (int d = 0; d < DIM; d++) {\n                new_centroids[cluster][d] += points[i][d];\n            }\n        }\n        \n        for (int k = 0; k < K; k++) {\n            if (counts[k] > 0) {\n                for (int d = 0; d < DIM; d++) {\n                    centroids[k][d] = new_centroids[k][d] / counts[k];\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<double>> points(NUM_POINTS, \n        std::vector<double>(DIM));\n    std::vector<std::vector<double>> centroids(K, \n        std::vector<double>(DIM));\n    std::vector<int> labels(NUM_POINTS);\n    \n    kmeans(points, centroids, labels);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 13,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 49,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                new_centroids[cluster][d] += points[i][d];\n            }\n        }\n        \n        for (int k = 0; k < K; k++) {\n            if (counts[k] > 0) {\n                for (int d = 0; d < DIM; d++) {\n                    centroids[k][d] = new_centroids[k][d] / counts[k];\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<double>> points(NUM_POINTS, \n        std::vector<double>(DIM));\n    std::vector<std::vector<double>> centroids(K, \n        std::vector<double>(DIM));\n    std::vector<int> labels(NUM_POINTS);\n    \n    kmeans(points, centroids, labels);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 50,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n        }\n        \n        for (int k = 0; k < K; k++) {\n            if (counts[k] > 0) {\n                for (int d = 0; d < DIM; d++) {\n                    centroids[k][d] = new_centroids[k][d] / counts[k];\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<double>> points(NUM_POINTS, \n        std::vector<double>(DIM));\n    std::vector<std::vector<double>> centroids(K, \n        std::vector<double>(DIM));\n    std::vector<int> labels(NUM_POINTS);\n    \n    kmeans(points, centroids, labels);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 48,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            for (int d = 0; d < DIM; d++) {\n                new_centroids[cluster][d] += points[i][d];\n            }\n        }\n        \n        for (int k = 0; k < K; k++) {\n            if (counts[k] > 0) {\n                for (int d = 0; d < DIM; d++) {\n                    centroids[k][d] = new_centroids[k][d] / counts[k];\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<double>> points(NUM_POINTS, \n        std::vector<double>(DIM));\n    std::vector<std::vector<double>> centroids(K, \n        std::vector<double>(DIM));\n    std::vector<int> labels(NUM_POINTS);\n    \n    kmeans(points, centroids, labels);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 43,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        for (size_t i = 0; i < points.size(); i++) {\n            int cluster = labels[i];\n            counts[cluster]++;\n            \n            for (int d = 0; d < DIM; d++) {\n                new_centroids[cluster][d] += points[i][d];\n            }\n        }\n        \n        for (int k = 0; k < K; k++) {\n            if (counts[k] > 0) {\n                for (int d = 0; d < DIM; d++) {\n                    centroids[k][d] = new_centroids[k][d] / counts[k];\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<double>> points(NUM_POINTS, \n        std::vector<double>(DIM));\n    std::vector<std::vector<double>> centroids(K, \n        std::vector<double>(DIM));\n    std::vector<int> labels(NUM_POINTS);\n    \n    kmeans(points, centroids, labels);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 49,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                new_centroids[cluster][d] += points[i][d];\n            }\n        }\n        \n        for (int k = 0; k < K; k++) {\n            if (counts[k] > 0) {\n                for (int d = 0; d < DIM; d++) {\n                    centroids[k][d] = new_centroids[k][d] / counts[k];\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<double>> points(NUM_POINTS, \n        std::vector<double>(DIM));\n    std::vector<std::vector<double>> centroids(K, \n        std::vector<double>(DIM));\n    std::vector<int> labels(NUM_POINTS);\n    \n    kmeans(points, centroids, labels);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 50,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n        }\n        \n        for (int k = 0; k < K; k++) {\n            if (counts[k] > 0) {\n                for (int d = 0; d < DIM; d++) {\n                    centroids[k][d] = new_centroids[k][d] / counts[k];\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<double>> points(NUM_POINTS, \n        std::vector<double>(DIM));\n    std::vector<std::vector<double>> centroids(K, \n        std::vector<double>(DIM));\n    std::vector<int> labels(NUM_POINTS);\n    \n    kmeans(points, centroids, labels);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 15,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "void kmeans(const std::vector<std::vector<double>>& points,\n           std::vector<std::vector<double>>& centroids,\n           std::vector<int>& labels) {\n    for (int iter = 0; iter < 100; iter++) {\n        // Assign points to clusters\n        for (size_t i = 0; i < points.size(); i++) {\n            double min_dist = std::numeric_limits<double>::max();\n            int best_cluster = 0;\n            \n            for (int k = 0; k < K; k++) {\n                double dist = 0.0;\n                for (int d = 0; d < DIM; d++) {\n                    double diff = points[i][d] - centroids[k][d];\n                    dist += diff * diff;\n                }\n                \n                if (dist < min_dist) {\n                    min_dist = dist;\n                    best_cluster = k;\n                }\n            }\n            \n            labels[i] = best_cluster;\n        }\n        \n        // Update centroids\n        std::vector<std::vector<double>> new_centroids(K, std::vector<double>(DIM, 0.0));\n        std::vector<int> counts(K, 0);\n        \n        for (size_t i = 0; i < points.size(); i++) {\n            int cluster = labels[i];\n            counts[cluster]++;\n            \n            for (int d = 0; d < DIM; d++) {\n                new_centroids[cluster][d] += points[i][d];",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 19,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        // Assign points to clusters\n        for (size_t i = 0; i < points.size(); i++) {\n            double min_dist = std::numeric_limits<double>::max();\n            int best_cluster = 0;\n            \n            for (int k = 0; k < K; k++) {\n                double dist = 0.0;\n                for (int d = 0; d < DIM; d++) {\n                    double diff = points[i][d] - centroids[k][d];\n                    dist += diff * diff;\n                }\n                \n                if (dist < min_dist) {\n                    min_dist = dist;\n                    best_cluster = k;\n                }\n            }\n            \n            labels[i] = best_cluster;\n        }\n        \n        // Update centroids\n        std::vector<std::vector<double>> new_centroids(K, std::vector<double>(DIM, 0.0));\n        std::vector<int> counts(K, 0);\n        \n        for (size_t i = 0; i < points.size(); i++) {\n            int cluster = labels[i];\n            counts[cluster]++;\n            \n            for (int d = 0; d < DIM; d++) {\n                new_centroids[cluster][d] += points[i][d];\n            }\n        }\n        \n        for (int k = 0; k < K; k++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/clustering_kmeans.cpp",
+      "function": "_Z6kmeansRKNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEERS5_RNS0_IiNS1_IiEEEE",
+      "line": 48,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            for (int d = 0; d < DIM; d++) {\n                new_centroids[cluster][d] += points[i][d];\n            }\n        }\n        \n        for (int k = 0; k < K; k++) {\n            if (counts[k] > 0) {\n                for (int d = 0; d < DIM; d++) {\n                    centroids[k][d] = new_centroids[k][d] / counts[k];\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<double>> points(NUM_POINTS, \n        std::vector<double>(DIM));\n    std::vector<std::vector<double>> centroids(K, \n        std::vector<double>(DIM));\n    std::vector<int> labels(NUM_POINTS);\n    \n    kmeans(points, centroids, labels);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

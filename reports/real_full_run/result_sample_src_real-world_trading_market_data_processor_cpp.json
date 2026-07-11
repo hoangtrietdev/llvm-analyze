@@ -1,0 +1,636 @@
+{
+  "file": "sample/src/real-world/trading/market_data_processor.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/trading/market_data_processor.cpp",
+    "llvm_initial": 71,
+    "llvm_sys_noise": 66,
+    "llvm_project": 5,
+    "after_filter": 2,
+    "ai_batches": 1,
+    "ai_results": 2,
+    "omp_verified": 0,
+    "total_ms": 1060.1,
+    "llvm_ms": 901.1
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/market_data_processor.cpp",
+      "function": "main",
+      "line": 54,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "        \n        return (total_volume > 0) ? total_value / total_volume : 0.0;\n    }\n    \n    void calculate_order_flow_imbalance(std::vector<double>& ofi) {\n        for (size_t i = 1; i < tick_buffer.size(); i++) {\n            double bid_depth_change = tick_buffer[i].bid_volume - tick_buffer[i-1].bid_volume;\n            double ask_depth_change = tick_buffer[i].ask_volume - tick_buffer[i-1].ask_volume;\n            \n            ofi.push_back(bid_depth_change - ask_depth_change);\n        }\n    }\n    \n    void detect_quote_stuffing(int threshold) {\n        std::vector<int> quote_rates(tick_buffer.size());\n        \n        for (size_t i = 100; i < tick_buffer.size(); i++) {\n            int quotes_in_window = 0;\n            long long time_window = 1000000000;  // 1 second in nanoseconds\n            \n            for (size_t j = i; j > 0 && j > i - 100; j--) {\n                if (tick_buffer[i].timestamp_ns - tick_buffer[j].timestamp_ns < time_window) {\n                    quotes_in_window++;\n                } else {\n                    break;\n                }\n            }\n            \n            quote_rates[i] = quotes_in_window;\n        }\n    }\n};\n\nint main() {\n    MarketDataProcessor processor;"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1146,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "main",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "main",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_data_processor.cpp",
+      "function": "main",
+      "line": 54,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "main",
+      "line": 2535,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "main",
+      "line": 2535,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "main",
+      "line": 623,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "main",
+      "line": 623,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "main",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "main",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/market_data_processor.cpp",
+      "function": "_ZN19MarketDataProcessor19process_tick_streamERKNSt3__16vectorI10MarketTickNS0_9allocatorIS2_EEEE",
+      "line": 23,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.52
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZN19MarketDataProcessor19process_tick_streamERKNSt3__16vectorI10MarketTickNS0_9allocatorIS2_EEEE",
+      "line": 1580,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/market_data_processor.cpp",
+      "function": "_ZN19MarketDataProcessor19process_tick_streamERKNSt3__16vectorI10MarketTickNS0_9allocatorIS2_EEEE",
+      "line": 27,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.22000000000000003
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZN19MarketDataProcessor19process_tick_streamERKNSt3__16vectorI10MarketTickNS0_9allocatorIS2_EEEE",
+      "line": 1169,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/market_data_processor.cpp",
+      "function": "_ZN19MarketDataProcessor19process_tick_streamERKNSt3__16vectorI10MarketTickNS0_9allocatorIS2_EEEE",
+      "line": 23,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::deque<MarketTick> tick_buffer;\n    std::vector<double> vwap_cache;\n    \npublic:\n    void process_tick_stream(const std::vector<MarketTick>& ticks) {\n        for (const auto& tick : ticks) {\n            tick_buffer.push_back(tick);\n            \n            // Keep only last 1 million ticks\n            if (tick_buffer.size() > 1000000) {\n                tick_buffer.pop_front();\n            }\n        }\n    }\n    \n    double calculate_microstructure_vwap(int window_size) {\n        if (tick_buffer.size() < static_cast<size_t>(window_size)) {\n            return 0.0;\n        }\n        \n        double total_value = 0.0;\n        int total_volume = 0;\n        \n        auto it = tick_buffer.rbegin();\n        for (int i = 0; i < window_size && it != tick_buffer.rend(); i++, ++it) {\n            double mid_price = (it->bid_price + it->ask_price) / 2.0;\n            int volume = (it->bid_volume + it->ask_volume) / 2;\n            \n            total_value += mid_price * volume;\n            total_volume += volume;\n        }\n        \n        return (total_volume > 0) ? total_value / total_volume : 0.0;\n    }\n    "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19MarketDataProcessorD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeI10MarketTickNS_9allocatorIS1_EEE19__add_back_capacityEv",
+      "line": 2174,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeI10MarketTickNS_9allocatorIS1_EEE19__add_back_capacityEv",
+      "line": 2181,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeI10MarketTickNS_9allocatorIS1_EEE19__add_back_capacityEv",
+      "line": 2184,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__15dequeI10MarketTickNS_9allocatorIS1_EEE19__add_back_capacityEv",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeI10MarketTickNS_9allocatorIS1_EEE19__add_back_capacityEv",
+      "line": 457,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeI10MarketTickNS_9allocatorIS1_EEE19__add_back_capacityEv",
+      "line": 458,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__15dequeI10MarketTickNS_9allocatorIS1_EEE19__add_back_capacityEv",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeI10MarketTickNS_9allocatorIS1_EEE19__add_back_capacityEv",
+      "line": 2205,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeI10MarketTickNS_9allocatorIS1_EEE19__add_back_capacityEv",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeI10MarketTickNS_9allocatorIS1_EEE19__add_back_capacityEv",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/unique_ptr.h",
+      "function": "_ZNSt3__15dequeI10MarketTickNS_9allocatorIS1_EEE19__add_back_capacityEv",
+      "line": 289,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE12emplace_backIJRS2_EEEvDpOT_",
+      "line": 457,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE12emplace_backIJRS2_EEEvDpOT_",
+      "line": 458,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE12emplace_backIJRS2_EEEvDpOT_",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE12emplace_backIJRS2_EEEvDpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE12emplace_backIJRS2_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE12emplace_backIJRS2_EEEvDpOT_",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE12emplace_backIJRS2_EEEvDpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE12emplace_backIJS2_EEEvDpOT_",
+      "line": 457,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE12emplace_backIJS2_EEEvDpOT_",
+      "line": 458,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE12emplace_backIJS2_EEEvDpOT_",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE12emplace_backIJS2_EEEvDpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE12emplace_backIJS2_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE12emplace_backIJS2_EEEvDpOT_",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE12emplace_backIJS2_EEEvDpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE13emplace_frontIJS2_EEEvDpOT_",
+      "line": 434,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE13emplace_frontIJS2_EEEvDpOT_",
+      "line": 435,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE13emplace_frontIJS2_EEEvDpOT_",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE13emplace_frontIJS2_EEEvDpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE13emplace_frontIJS2_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE13emplace_frontIJS2_EEEvDpOT_",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickNS_9allocatorIS2_EEE13emplace_frontIJS2_EEEvDpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickRNS_9allocatorIS2_EEE13emplace_frontIJRS2_EEEvDpOT_",
+      "line": 434,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickRNS_9allocatorIS2_EEE13emplace_frontIJRS2_EEEvDpOT_",
+      "line": 435,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickRNS_9allocatorIS2_EEE13emplace_frontIJRS2_EEEvDpOT_",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickRNS_9allocatorIS2_EEE13emplace_frontIJRS2_EEEvDpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickRNS_9allocatorIS2_EEE13emplace_frontIJRS2_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickRNS_9allocatorIS2_EEE13emplace_frontIJRS2_EEEvDpOT_",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickRNS_9allocatorIS2_EEE13emplace_frontIJRS2_EEEvDpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickRNS_9allocatorIS2_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIP10MarketTickRNS_9allocatorIS2_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeI10MarketTickNS_9allocatorIS1_EEED2B8ne210101Ev",
+      "line": 2535,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeI10MarketTickNS_9allocatorIS1_EEED2B8ne210101Ev",
+      "line": 2535,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeI10MarketTickNS_9allocatorIS1_EEED2B8ne210101Ev",
+      "line": 623,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeI10MarketTickNS_9allocatorIS1_EEED2B8ne210101Ev",
+      "line": 623,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeI10MarketTickNS_9allocatorIS1_EEED2B8ne210101Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeI10MarketTickNS_9allocatorIS1_EEED2B8ne210101Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/market_data_processor.cpp",
+      "function": "_ZN19MarketDataProcessor19process_tick_streamERKNSt3__16vectorI10MarketTickNS0_9allocatorIS2_EEEE",
+      "line": 23,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::deque<MarketTick> tick_buffer;\n    std::vector<double> vwap_cache;\n    \npublic:\n    void process_tick_stream(const std::vector<MarketTick>& ticks) {\n        for (const auto& tick : ticks) {\n            tick_buffer.push_back(tick);\n            \n            // Keep only last 1 million ticks\n            if (tick_buffer.size() > 1000000) {\n                tick_buffer.pop_front();\n            }\n        }\n    }\n    \n    double calculate_microstructure_vwap(int window_size) {\n        if (tick_buffer.size() < static_cast<size_t>(window_size)) {\n            return 0.0;\n        }\n        \n        double total_value = 0.0;\n        int total_volume = 0;\n        \n        auto it = tick_buffer.rbegin();\n        for (int i = 0; i < window_size && it != tick_buffer.rend(); i++, ++it) {\n            double mid_price = (it->bid_price + it->ask_price) / 2.0;\n            int volume = (it->bid_volume + it->ask_volume) / 2;\n            \n            total_value += mid_price * volume;\n            total_volume += volume;\n        }\n        \n        return (total_volume > 0) ? total_value / total_volume : 0.0;\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/market_data_processor.cpp",
+      "function": "main",
+      "line": 54,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "        \n        return (total_volume > 0) ? total_value / total_volume : 0.0;\n    }\n    \n    void calculate_order_flow_imbalance(std::vector<double>& ofi) {\n        for (size_t i = 1; i < tick_buffer.size(); i++) {\n            double bid_depth_change = tick_buffer[i].bid_volume - tick_buffer[i-1].bid_volume;\n            double ask_depth_change = tick_buffer[i].ask_volume - tick_buffer[i-1].ask_volume;\n            \n            ofi.push_back(bid_depth_change - ask_depth_change);\n        }\n    }\n    \n    void detect_quote_stuffing(int threshold) {\n        std::vector<int> quote_rates(tick_buffer.size());\n        \n        for (size_t i = 100; i < tick_buffer.size(); i++) {\n            int quotes_in_window = 0;\n            long long time_window = 1000000000;  // 1 second in nanoseconds\n            \n            for (size_t j = i; j > 0 && j > i - 100; j--) {\n                if (tick_buffer[i].timestamp_ns - tick_buffer[j].timestamp_ns < time_window) {\n                    quotes_in_window++;\n                } else {\n                    break;\n                }\n            }\n            \n            quote_rates[i] = quotes_in_window;\n        }\n    }\n};\n\nint main() {\n    MarketDataProcessor processor;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.78
+    }
+  ]
+}

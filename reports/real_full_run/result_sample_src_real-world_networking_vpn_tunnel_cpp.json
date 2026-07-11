@@ -1,0 +1,1502 @@
+{
+  "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+    "llvm_initial": 161,
+    "llvm_sys_noise": 142,
+    "llvm_project": 19,
+    "after_filter": 8,
+    "ai_batches": 1,
+    "ai_results": 8,
+    "omp_verified": 0,
+    "total_ms": 814.3,
+    "llvm_ms": 577.0
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1360,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 954,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "main",
+      "line": 387,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "main",
+      "line": 387,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    // Generate test packets\n    std::vector<VPNTunnel::Packet> packets;\n    for (int i = 0; i < 1000; i++) {\n        VPNTunnel::Packet pkt;\n        pkt.data.resize(1400);  // MTU\n        for (auto& byte : pkt.data) {\n            byte = rand() % 256;\n        }\n        pkt.srcIP = \"192.168.1.100\";\n        pkt.dstIP = \"10.0.0.5\";\n        pkt.protocol = 6;  // TCP\n        pkt.timestamp = i * 0.001;\n        packets.push_back(pkt);\n    }\n    \n    // Process outbound traffic\n    vpn.processOutbound(packets);\n    \n    // Periodic rekey\n    for (int i = 0; i < 10; i++) {\n        vpn.rekey();\n    }\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "main",
+      "line": 384,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "main",
+      "line": 342,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.35
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "main",
+      "line": 345,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.42000000000000004
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "main",
+      "line": 342,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "    }\n    \n    // Perfect Forward Secrecy - rekey\n    void rekey() {\n        // Generate new keys\n        for (auto& byte : outboundSA.encryptionKey) {\n            byte = rand() % 256;\n        }\n        for (auto& byte : outboundSA.authKey) {\n            byte = rand() % 256;\n        }\n        \n        outboundSA.sequenceNumber = 1;\n        outboundSA.lifetime = 3600;\n    }\n    \n    // NAT traversal\n    struct NATMapping {\n        std::string privateIP;\n        int privatePort;\n        std::string publicIP;\n        int publicPort;\n        uint64_t expiry;\n    };\n    \n    std::vector<NATMapping> natTable;\n    \n    void performNATTraversal() {\n        // STUN-like behavior\n        for (auto& peer : peers) {\n            NATMapping mapping;\n            mapping.privateIP = \"10.0.0.1\";\n            mapping.privatePort = 51820;\n            mapping.publicIP = peer.endpoint;\n            mapping.publicPort = 51820;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "main",
+      "line": 345,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    void rekey() {\n        // Generate new keys\n        for (auto& byte : outboundSA.encryptionKey) {\n            byte = rand() % 256;\n        }\n        for (auto& byte : outboundSA.authKey) {\n            byte = rand() % 256;\n        }\n        \n        outboundSA.sequenceNumber = 1;\n        outboundSA.lifetime = 3600;\n    }\n    \n    // NAT traversal\n    struct NATMapping {\n        std::string privateIP;\n        int privatePort;\n        std::string publicIP;\n        int publicPort;\n        uint64_t expiry;\n    };\n    \n    std::vector<NATMapping> natTable;\n    \n    void performNATTraversal() {\n        // STUN-like behavior\n        for (auto& peer : peers) {\n            NATMapping mapping;\n            mapping.privateIP = \"10.0.0.1\";\n            mapping.privatePort = 51820;\n            mapping.publicIP = peer.endpoint;\n            mapping.publicPort = 51820;\n            mapping.expiry = time(nullptr) + 300;  // 5 minutes\n            \n            natTable.push_back(mapping);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "main",
+      "line": 401,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIhNS_9allocatorIhEEE6resizeEm",
+      "line": 1360,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIhNS_9allocatorIhEEE6resizeEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIhNS_9allocatorIhEEE6resizeEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIhNS_9allocatorIhEEE6resizeEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIhNS_9allocatorIhEEE6resizeEm",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIhNS_9allocatorIhEEE6resizeEm",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN9VPNTunnel6PacketD1Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN9VPNTunnel6PacketD1Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel6PacketD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "_ZN9VPNTunnel15processOutboundERNSt3__16vectorINS_6PacketENS0_9allocatorIS2_EEEE",
+      "line": 307,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.52
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15processOutboundERNSt3__16vectorINS_6PacketENS0_9allocatorIS2_EEEE",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15processOutboundERNSt3__16vectorINS_6PacketENS0_9allocatorIS2_EEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15processOutboundERNSt3__16vectorINS_6PacketENS0_9allocatorIS2_EEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15processOutboundERNSt3__16vectorINS_6PacketENS0_9allocatorIS2_EEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "_ZN9VPNTunnel15processOutboundERNSt3__16vectorINS_6PacketENS0_9allocatorIS2_EEEE",
+      "line": 307,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.52
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15initializeIPsecEv",
+      "line": 1360,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15initializeIPsecEv",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN9VPNTunnel15initializeIPsecEv",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15initializeIPsecEv",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15initializeIPsecEv",
+      "line": 1360,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15initializeIPsecEv",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN9VPNTunnel15initializeIPsecEv",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15initializeIPsecEv",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "_ZN9VPNTunnel15initializeIPsecEv",
+      "line": 66,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        outboundSA.sequenceNumber = 1;\n        outboundSA.lifetime = 3600;  // 1 hour\n        outboundSA.replayWindow = 64;\n        \n        // Generate random keys\n        for (int i = 0; i < 32; i++) {\n            outboundSA.encryptionKey[i] = rand() % 256;\n            outboundSA.authKey[i] = rand() % 256;\n        }\n        \n        inboundSA = outboundSA;\n        inboundSA.spi = rand();\n    }\n    \n    // AES-GCM encryption (simplified)\n    EncryptedPacket aesGcmEncrypt(const Packet& packet, IPsecSA& sa) {\n        EncryptedPacket encrypted;\n        encrypted.sequenceNumber = sa.sequenceNumber++;\n        encrypted.timestamp = packet.timestamp;\n        \n        // Generate random IV\n        encrypted.iv.resize(12);  // 96 bits for GCM\n        for (int i = 0; i < 12; i++) {\n            encrypted.iv[i] = rand() % 256;\n        }\n        \n        // Simulate AES-GCM encryption\n        encrypted.ciphertext.resize(packet.data.size());\n        \n        // XOR with key stream (simplified)\n        for (size_t i = 0; i < packet.data.size(); i++) {\n            int keyIdx = i % sa.encryptionKey.size();\n            encrypted.ciphertext[i] = packet.data[i] ^ \n                                     sa.encryptionKey[keyIdx];\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel10NATMappingENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel10NATMappingENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel10NATMappingENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel10NATMappingENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel10NATMappingENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel6WGPeerENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel6WGPeerENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel6WGPeerENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel7IPsecSAD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel7IPsecSAD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN9VPNTunnel7IPsecSAD1Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIhNS_9allocatorIhEEE18__assign_with_sizeB8ne210101IPhS5_EEvT_T0_l",
+      "line": 1058,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIhNS_9allocatorIhEEE18__assign_with_sizeB8ne210101IPhS5_EEvT_T0_l",
+      "line": 1059,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIhNS_9allocatorIhEEE18__assign_with_sizeB8ne210101IPhS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIhNS_9allocatorIhEEE18__assign_with_sizeB8ne210101IPhS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIhNS_9allocatorIhEEE18__assign_with_sizeB8ne210101IPhS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIhNS_9allocatorIhEEE18__assign_with_sizeB8ne210101IPhS5_EEvT_T0_l",
+      "line": 889,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIhNS_9allocatorIhEEE18__assign_with_sizeB8ne210101IPhS5_EEvT_T0_l",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIhNS_9allocatorIhEEE18__assign_with_sizeB8ne210101IPhS5_EEvT_T0_l",
+      "line": 572,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIhNS_9allocatorIhEEE18__assign_with_sizeB8ne210101IPhS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN9VPNTunnel6WGPeerD2Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel6WGPeerD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel6WGPeerD2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN9VPNTunnel6WGPeerD2Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel6WGPeerD2Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel6WGPeerD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel6WGPeerD2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel13aesGcmEncryptERKNS_6PacketERNS_7IPsecSAE",
+      "line": 1360,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel13aesGcmEncryptERKNS_6PacketERNS_7IPsecSAE",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN9VPNTunnel13aesGcmEncryptERKNS_6PacketERNS_7IPsecSAE",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel13aesGcmEncryptERKNS_6PacketERNS_7IPsecSAE",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "_ZN9VPNTunnel13aesGcmEncryptERKNS_6PacketERNS_7IPsecSAE",
+      "line": 91,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "_ZN9VPNTunnel13aesGcmEncryptERKNS_6PacketERNS_7IPsecSAE",
+      "line": 83,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        encrypted.sequenceNumber = sa.sequenceNumber++;\n        encrypted.timestamp = packet.timestamp;\n        \n        // Generate random IV\n        encrypted.iv.resize(12);  // 96 bits for GCM\n        for (int i = 0; i < 12; i++) {\n            encrypted.iv[i] = rand() % 256;\n        }\n        \n        // Simulate AES-GCM encryption\n        encrypted.ciphertext.resize(packet.data.size());\n        \n        // XOR with key stream (simplified)\n        for (size_t i = 0; i < packet.data.size(); i++) {\n            int keyIdx = i % sa.encryptionKey.size();\n            encrypted.ciphertext[i] = packet.data[i] ^ \n                                     sa.encryptionKey[keyIdx];\n        }\n        \n        // Generate authentication tag (GMAC)\n        encrypted.authTag = computeGMAC(encrypted.ciphertext, \n                                       encrypted.iv, sa.authKey);\n        \n        return encrypted;\n    }\n    \n    Packet aesGcmDecrypt(const EncryptedPacket& encrypted, IPsecSA& sa) {\n        Packet packet;\n        packet.timestamp = encrypted.timestamp;\n        \n        // Verify sequence number (anti-replay)\n        if (!checkReplayWindow(encrypted.sequenceNumber, sa)) {\n            packet.data.clear();  // Reject packet\n            return packet;\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "_ZN9VPNTunnel13aesGcmEncryptERKNS_6PacketERNS_7IPsecSAE",
+      "line": 143,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "_ZN9VPNTunnel13aesGcmEncryptERKNS_6PacketERNS_7IPsecSAE",
+      "line": 144,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "_ZN9VPNTunnel13aesGcmEncryptERKNS_6PacketERNS_7IPsecSAE",
+      "line": 146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "_ZN9VPNTunnel13aesGcmEncryptERKNS_6PacketERNS_7IPsecSAE",
+      "line": 141,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "                                     const std::vector<uint8_t>& key) {\n        // Simplified GMAC computation\n        std::vector<uint8_t> tag(16);  // 128-bit tag\n        \n        // Combine data, IV, and key\n        for (size_t i = 0; i < tag.size(); i++) {\n            uint8_t val = 0;\n            if (i < iv.size()) val ^= iv[i];\n            if (i < key.size()) val ^= key[i];\n            \n            for (size_t j = i; j < data.size(); j += tag.size()) {\n                val ^= data[j];\n            }\n            \n            tag[i] = val;\n        }\n        \n        return tag;\n    }\n    \n    bool verifyTag(const std::vector<uint8_t>& tag1,\n                   const std::vector<uint8_t>& tag2) {\n        if (tag1.size() != tag2.size()) return false;\n        \n        for (size_t i = 0; i < tag1.size(); i++) {\n            if (tag1[i] != tag2[i]) return false;\n        }\n        \n        return true;\n    }\n    \n    bool checkReplayWindow(uint32_t seqNum, IPsecSA& sa) {\n        // Simplified replay window check\n        if (seqNum < sa.sequenceNumber - sa.replayWindow) {\n            return false;  // Too old"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "_ZN9VPNTunnel13aesGcmEncryptERKNS_6PacketERNS_7IPsecSAE",
+      "line": 146,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        for (size_t i = 0; i < tag.size(); i++) {\n            uint8_t val = 0;\n            if (i < iv.size()) val ^= iv[i];\n            if (i < key.size()) val ^= key[i];\n            \n            for (size_t j = i; j < data.size(); j += tag.size()) {\n                val ^= data[j];\n            }\n            \n            tag[i] = val;\n        }\n        \n        return tag;\n    }\n    \n    bool verifyTag(const std::vector<uint8_t>& tag1,\n                   const std::vector<uint8_t>& tag2) {\n        if (tag1.size() != tag2.size()) return false;\n        \n        for (size_t i = 0; i < tag1.size(); i++) {\n            if (tag1[i] != tag2[i]) return false;\n        }\n        \n        return true;\n    }\n    \n    bool checkReplayWindow(uint32_t seqNum, IPsecSA& sa) {\n        // Simplified replay window check\n        if (seqNum < sa.sequenceNumber - sa.replayWindow) {\n            return false;  // Too old\n        }\n        \n        // In real implementation, maintain bitmap of received packets\n        return true;\n    }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "_ZN9VPNTunnel13aesGcmEncryptERKNS_6PacketERNS_7IPsecSAE",
+      "line": 91,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.9299999999999999,
+      "context": "        \n        // Simulate AES-GCM encryption\n        encrypted.ciphertext.resize(packet.data.size());\n        \n        // XOR with key stream (simplified)\n        for (size_t i = 0; i < packet.data.size(); i++) {\n            int keyIdx = i % sa.encryptionKey.size();\n            encrypted.ciphertext[i] = packet.data[i] ^ \n                                     sa.encryptionKey[keyIdx];\n        }\n        \n        // Generate authentication tag (GMAC)\n        encrypted.authTag = computeGMAC(encrypted.ciphertext, \n                                       encrypted.iv, sa.authKey);\n        \n        return encrypted;\n    }\n    \n    Packet aesGcmDecrypt(const EncryptedPacket& encrypted, IPsecSA& sa) {\n        Packet packet;\n        packet.timestamp = encrypted.timestamp;\n        \n        // Verify sequence number (anti-replay)\n        if (!checkReplayWindow(encrypted.sequenceNumber, sa)) {\n            packet.data.clear();  // Reject packet\n            return packet;\n        }\n        \n        // Verify authentication tag\n        auto expectedTag = computeGMAC(encrypted.ciphertext, \n                                      encrypted.iv, sa.authKey);\n        \n        if (!verifyTag(encrypted.authTag, expectedTag)) {\n            packet.data.clear();  // Authentication failed\n            return packet;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel13aesGcmEncryptERKNS_6PacketERNS_7IPsecSAE",
+      "line": 889,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15EncryptedPacketD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15EncryptedPacketD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15EncryptedPacketD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel15EncryptedPacketENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel15EncryptedPacketENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel15EncryptedPacketENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15EncryptedPacketC2ERKS0_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15EncryptedPacketC2ERKS0_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15EncryptedPacketC2ERKS0_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15EncryptedPacketC2ERKS0_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15EncryptedPacketC2ERKS0_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15EncryptedPacketC2ERKS0_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15EncryptedPacketC2ERKS0_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15EncryptedPacketC2ERKS0_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15EncryptedPacketC2ERKS0_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15EncryptedPacketC2ERKS0_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel15EncryptedPacketC2ERKS0_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__134__uninitialized_allocator_relocateB8ne210101INS_9allocatorIN9VPNTunnel15EncryptedPacketEEEPS3_EEvRT_T0_S8_S8_",
+      "line": 625,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__134__uninitialized_allocator_relocateB8ne210101INS_9allocatorIN9VPNTunnel15EncryptedPacketEEEPS3_EEvRT_T0_S8_S8_",
+      "line": 625,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__134__uninitialized_allocator_relocateB8ne210101INS_9allocatorIN9VPNTunnel15EncryptedPacketEEEPS3_EEvRT_T0_S8_S8_",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__134__uninitialized_allocator_relocateB8ne210101INS_9allocatorIN9VPNTunnel15EncryptedPacketEEEPS3_EEvRT_T0_S8_S8_",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__134__uninitialized_allocator_relocateB8ne210101INS_9allocatorIN9VPNTunnel15EncryptedPacketEEEPS3_EEvRT_T0_S8_S8_",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__134__uninitialized_allocator_relocateB8ne210101INS_9allocatorIN9VPNTunnel15EncryptedPacketEEEPS3_EEvRT_T0_S8_S8_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__134__uninitialized_allocator_relocateB8ne210101INS_9allocatorIN9VPNTunnel15EncryptedPacketEEEPS3_EEvRT_T0_S8_S8_",
+      "line": 49,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN9VPNTunnel15EncryptedPacketERNS_9allocatorIS2_EEED2Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferIN9VPNTunnel15EncryptedPacketERNS_9allocatorIS2_EEED2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferIN9VPNTunnel15EncryptedPacketERNS_9allocatorIS2_EEED2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferIN9VPNTunnel15EncryptedPacketERNS_9allocatorIS2_EEED2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN9VPNTunnel15EncryptedPacketERNS_9allocatorIS2_EEED2Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN9VPNTunnel15EncryptedPacketERNS_9allocatorIS2_EEED2Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel15EncryptedPacketENS_9allocatorIS2_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel15EncryptedPacketENS_9allocatorIS2_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel15EncryptedPacketENS_9allocatorIS2_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel15EncryptedPacketENS_9allocatorIS2_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel15EncryptedPacketENS_9allocatorIS2_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel15EncryptedPacketENS_9allocatorIS2_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnelD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnelD2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN9VPNTunnelD2Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN9VPNTunnelD2Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnelD2Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnelD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnelD2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnelD2Ev",
+      "line": 762,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnelD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnelD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN9VPNTunnelD2Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnelD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnelD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN9VPNTunnelD2Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel6PacketENS_9allocatorIS2_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel6PacketENS_9allocatorIS2_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel6PacketENS_9allocatorIS2_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel6PacketENS_9allocatorIS2_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel6PacketENS_9allocatorIS2_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel6PacketENS_9allocatorIS2_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel6PacketENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel6PacketENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIN9VPNTunnel6PacketENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel6PacketC2ERKS0_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel6PacketC2ERKS0_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel6PacketC2ERKS0_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN9VPNTunnel6PacketC2ERKS0_",
+      "line": 1003,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN9VPNTunnel6PacketC2ERKS0_",
+      "line": 1003,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN9VPNTunnel6PacketC2ERKS0_",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN9VPNTunnel6PacketC2ERKS0_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE25__init_copy_ctor_externalEPKcm",
+      "line": 2574,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE25__init_copy_ctor_externalEPKcm",
+      "line": 2578,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE25__init_copy_ctor_externalEPKcm",
+      "line": 228,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__134__uninitialized_allocator_relocateB8ne210101INS_9allocatorIN9VPNTunnel6PacketEEEPS3_EEvRT_T0_S8_S8_",
+      "line": 625,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__134__uninitialized_allocator_relocateB8ne210101INS_9allocatorIN9VPNTunnel6PacketEEEPS3_EEvRT_T0_S8_S8_",
+      "line": 625,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__134__uninitialized_allocator_relocateB8ne210101INS_9allocatorIN9VPNTunnel6PacketEEEPS3_EEvRT_T0_S8_S8_",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__134__uninitialized_allocator_relocateB8ne210101INS_9allocatorIN9VPNTunnel6PacketEEEPS3_EEvRT_T0_S8_S8_",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__134__uninitialized_allocator_relocateB8ne210101INS_9allocatorIN9VPNTunnel6PacketEEEPS3_EEvRT_T0_S8_S8_",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__134__uninitialized_allocator_relocateB8ne210101INS_9allocatorIN9VPNTunnel6PacketEEEPS3_EEvRT_T0_S8_S8_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__134__uninitialized_allocator_relocateB8ne210101INS_9allocatorIN9VPNTunnel6PacketEEEPS3_EEvRT_T0_S8_S8_",
+      "line": 49,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN9VPNTunnel6PacketERNS_9allocatorIS2_EEED2Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__114__split_bufferIN9VPNTunnel6PacketERNS_9allocatorIS2_EEED2Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__114__split_bufferIN9VPNTunnel6PacketERNS_9allocatorIS2_EEED2Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferIN9VPNTunnel6PacketERNS_9allocatorIS2_EEED2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN9VPNTunnel6PacketERNS_9allocatorIS2_EEED2Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN9VPNTunnel6PacketERNS_9allocatorIS2_EEED2Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "main",
+      "line": 387,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    // Generate test packets\n    std::vector<VPNTunnel::Packet> packets;\n    for (int i = 0; i < 1000; i++) {\n        VPNTunnel::Packet pkt;\n        pkt.data.resize(1400);  // MTU\n        for (auto& byte : pkt.data) {\n            byte = rand() % 256;\n        }\n        pkt.srcIP = \"192.168.1.100\";\n        pkt.dstIP = \"10.0.0.5\";\n        pkt.protocol = 6;  // TCP\n        pkt.timestamp = i * 0.001;\n        packets.push_back(pkt);\n    }\n    \n    // Process outbound traffic\n    vpn.processOutbound(packets);\n    \n    // Periodic rekey\n    for (int i = 0; i < 10; i++) {\n        vpn.rekey();\n    }\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "main",
+      "line": 345,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    void rekey() {\n        // Generate new keys\n        for (auto& byte : outboundSA.encryptionKey) {\n            byte = rand() % 256;\n        }\n        for (auto& byte : outboundSA.authKey) {\n            byte = rand() % 256;\n        }\n        \n        outboundSA.sequenceNumber = 1;\n        outboundSA.lifetime = 3600;\n    }\n    \n    // NAT traversal\n    struct NATMapping {\n        std::string privateIP;\n        int privatePort;\n        std::string publicIP;\n        int publicPort;\n        uint64_t expiry;\n    };\n    \n    std::vector<NATMapping> natTable;\n    \n    void performNATTraversal() {\n        // STUN-like behavior\n        for (auto& peer : peers) {\n            NATMapping mapping;\n            mapping.privateIP = \"10.0.0.1\";\n            mapping.privatePort = 51820;\n            mapping.publicIP = peer.endpoint;\n            mapping.publicPort = 51820;\n            mapping.expiry = time(nullptr) + 300;  // 5 minutes\n            \n            natTable.push_back(mapping);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "_ZN9VPNTunnel13aesGcmEncryptERKNS_6PacketERNS_7IPsecSAE",
+      "line": 83,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        encrypted.sequenceNumber = sa.sequenceNumber++;\n        encrypted.timestamp = packet.timestamp;\n        \n        // Generate random IV\n        encrypted.iv.resize(12);  // 96 bits for GCM\n        for (int i = 0; i < 12; i++) {\n            encrypted.iv[i] = rand() % 256;\n        }\n        \n        // Simulate AES-GCM encryption\n        encrypted.ciphertext.resize(packet.data.size());\n        \n        // XOR with key stream (simplified)\n        for (size_t i = 0; i < packet.data.size(); i++) {\n            int keyIdx = i % sa.encryptionKey.size();\n            encrypted.ciphertext[i] = packet.data[i] ^ \n                                     sa.encryptionKey[keyIdx];\n        }\n        \n        // Generate authentication tag (GMAC)\n        encrypted.authTag = computeGMAC(encrypted.ciphertext, \n                                       encrypted.iv, sa.authKey);\n        \n        return encrypted;\n    }\n    \n    Packet aesGcmDecrypt(const EncryptedPacket& encrypted, IPsecSA& sa) {\n        Packet packet;\n        packet.timestamp = encrypted.timestamp;\n        \n        // Verify sequence number (anti-replay)\n        if (!checkReplayWindow(encrypted.sequenceNumber, sa)) {\n            packet.data.clear();  // Reject packet\n            return packet;\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "main",
+      "line": 342,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "    }\n    \n    // Perfect Forward Secrecy - rekey\n    void rekey() {\n        // Generate new keys\n        for (auto& byte : outboundSA.encryptionKey) {\n            byte = rand() % 256;\n        }\n        for (auto& byte : outboundSA.authKey) {\n            byte = rand() % 256;\n        }\n        \n        outboundSA.sequenceNumber = 1;\n        outboundSA.lifetime = 3600;\n    }\n    \n    // NAT traversal\n    struct NATMapping {\n        std::string privateIP;\n        int privatePort;\n        std::string publicIP;\n        int publicPort;\n        uint64_t expiry;\n    };\n    \n    std::vector<NATMapping> natTable;\n    \n    void performNATTraversal() {\n        // STUN-like behavior\n        for (auto& peer : peers) {\n            NATMapping mapping;\n            mapping.privateIP = \"10.0.0.1\";\n            mapping.privatePort = 51820;\n            mapping.publicIP = peer.endpoint;\n            mapping.publicPort = 51820;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.93
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "_ZN9VPNTunnel13aesGcmEncryptERKNS_6PacketERNS_7IPsecSAE",
+      "line": 91,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.9299999999999999,
+      "context": "        \n        // Simulate AES-GCM encryption\n        encrypted.ciphertext.resize(packet.data.size());\n        \n        // XOR with key stream (simplified)\n        for (size_t i = 0; i < packet.data.size(); i++) {\n            int keyIdx = i % sa.encryptionKey.size();\n            encrypted.ciphertext[i] = packet.data[i] ^ \n                                     sa.encryptionKey[keyIdx];\n        }\n        \n        // Generate authentication tag (GMAC)\n        encrypted.authTag = computeGMAC(encrypted.ciphertext, \n                                       encrypted.iv, sa.authKey);\n        \n        return encrypted;\n    }\n    \n    Packet aesGcmDecrypt(const EncryptedPacket& encrypted, IPsecSA& sa) {\n        Packet packet;\n        packet.timestamp = encrypted.timestamp;\n        \n        // Verify sequence number (anti-replay)\n        if (!checkReplayWindow(encrypted.sequenceNumber, sa)) {\n            packet.data.clear();  // Reject packet\n            return packet;\n        }\n        \n        // Verify authentication tag\n        auto expectedTag = computeGMAC(encrypted.ciphertext, \n                                      encrypted.iv, sa.authKey);\n        \n        if (!verifyTag(encrypted.authTag, expectedTag)) {\n            packet.data.clear();  // Authentication failed\n            return packet;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.9299999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "_ZN9VPNTunnel13aesGcmEncryptERKNS_6PacketERNS_7IPsecSAE",
+      "line": 141,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "                                     const std::vector<uint8_t>& key) {\n        // Simplified GMAC computation\n        std::vector<uint8_t> tag(16);  // 128-bit tag\n        \n        // Combine data, IV, and key\n        for (size_t i = 0; i < tag.size(); i++) {\n            uint8_t val = 0;\n            if (i < iv.size()) val ^= iv[i];\n            if (i < key.size()) val ^= key[i];\n            \n            for (size_t j = i; j < data.size(); j += tag.size()) {\n                val ^= data[j];\n            }\n            \n            tag[i] = val;\n        }\n        \n        return tag;\n    }\n    \n    bool verifyTag(const std::vector<uint8_t>& tag1,\n                   const std::vector<uint8_t>& tag2) {\n        if (tag1.size() != tag2.size()) return false;\n        \n        for (size_t i = 0; i < tag1.size(); i++) {\n            if (tag1[i] != tag2[i]) return false;\n        }\n        \n        return true;\n    }\n    \n    bool checkReplayWindow(uint32_t seqNum, IPsecSA& sa) {\n        // Simplified replay window check\n        if (seqNum < sa.sequenceNumber - sa.replayWindow) {\n            return false;  // Too old",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "_ZN9VPNTunnel13aesGcmEncryptERKNS_6PacketERNS_7IPsecSAE",
+      "line": 146,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        for (size_t i = 0; i < tag.size(); i++) {\n            uint8_t val = 0;\n            if (i < iv.size()) val ^= iv[i];\n            if (i < key.size()) val ^= key[i];\n            \n            for (size_t j = i; j < data.size(); j += tag.size()) {\n                val ^= data[j];\n            }\n            \n            tag[i] = val;\n        }\n        \n        return tag;\n    }\n    \n    bool verifyTag(const std::vector<uint8_t>& tag1,\n                   const std::vector<uint8_t>& tag2) {\n        if (tag1.size() != tag2.size()) return false;\n        \n        for (size_t i = 0; i < tag1.size(); i++) {\n            if (tag1[i] != tag2[i]) return false;\n        }\n        \n        return true;\n    }\n    \n    bool checkReplayWindow(uint32_t seqNum, IPsecSA& sa) {\n        // Simplified replay window check\n        if (seqNum < sa.sequenceNumber - sa.replayWindow) {\n            return false;  // Too old\n        }\n        \n        // In real implementation, maintain bitmap of received packets\n        return true;\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/networking/vpn_tunnel.cpp",
+      "function": "_ZN9VPNTunnel15initializeIPsecEv",
+      "line": 66,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        outboundSA.sequenceNumber = 1;\n        outboundSA.lifetime = 3600;  // 1 hour\n        outboundSA.replayWindow = 64;\n        \n        // Generate random keys\n        for (int i = 0; i < 32; i++) {\n            outboundSA.encryptionKey[i] = rand() % 256;\n            outboundSA.authKey[i] = rand() % 256;\n        }\n        \n        inboundSA = outboundSA;\n        inboundSA.spi = rand();\n    }\n    \n    // AES-GCM encryption (simplified)\n    EncryptedPacket aesGcmEncrypt(const Packet& packet, IPsecSA& sa) {\n        EncryptedPacket encrypted;\n        encrypted.sequenceNumber = sa.sequenceNumber++;\n        encrypted.timestamp = packet.timestamp;\n        \n        // Generate random IV\n        encrypted.iv.resize(12);  // 96 bits for GCM\n        for (int i = 0; i < 12; i++) {\n            encrypted.iv[i] = rand() % 256;\n        }\n        \n        // Simulate AES-GCM encryption\n        encrypted.ciphertext.resize(packet.data.size());\n        \n        // XOR with key stream (simplified)\n        for (size_t i = 0; i < packet.data.size(); i++) {\n            int keyIdx = i % sa.encryptionKey.size();\n            encrypted.ciphertext[i] = packet.data[i] ^ \n                                     sa.encryptionKey[keyIdx];\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    }
+  ]
+}

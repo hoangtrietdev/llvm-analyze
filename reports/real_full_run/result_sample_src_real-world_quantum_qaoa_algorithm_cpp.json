@@ -1,0 +1,753 @@
+{
+  "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+    "llvm_initial": 51,
+    "llvm_sys_noise": 33,
+    "llvm_project": 18,
+    "after_filter": 14,
+    "ai_batches": 1,
+    "ai_results": 14,
+    "omp_verified": 0,
+    "total_ms": 1105.8,
+    "llvm_ms": 478.0
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z21applyMixerHamiltonianPNSt3__17complexIdEEdi",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z21applyMixerHamiltonianPNSt3__17complexIdEEdi",
+      "line": 15,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.35
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z21applyMixerHamiltonianPNSt3__17complexIdEEdi",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid applyMixerHamiltonian(Complex* state, double beta, int n_qubits) {\n    int dim = 1 << n_qubits;\n    std::vector<Complex> new_state(dim);\n    \n    for (int i = 0; i < dim; i++) {\n        new_state[i] = 0.0;\n        \n        for (int q = 0; q < n_qubits; q++) {\n            int flipped = i ^ (1 << q);\n            new_state[i] += state[flipped] * Complex(cos(beta), 0) * 0.5;\n            new_state[i] += state[i] * Complex(sin(beta), 0) * 0.5;\n        }\n    }\n    \n    for (int i = 0; i < dim; i++) {\n        state[i] = new_state[i];\n    }\n}\n\nvoid applyProblemHamiltonian(Complex* state, double gamma, double* weights, \n                            int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_Z21applyMixerHamiltonianPNSt3__17complexIdEEdi",
+      "line": 785,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_Z21applyMixerHamiltonianPNSt3__17complexIdEEdi",
+      "line": 785,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_Z21applyMixerHamiltonianPNSt3__17complexIdEEdi",
+      "line": 785,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_Z21applyMixerHamiltonianPNSt3__17complexIdEEdi",
+      "line": 785,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z21applyMixerHamiltonianPNSt3__17complexIdEEdi",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z23applyProblemHamiltonianPNSt3__17complexIdEEdPdPPiii",
+      "line": 31,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid applyProblemHamiltonian(Complex* state, double gamma, double* weights, \n                            int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z23applyProblemHamiltonianPNSt3__17complexIdEEdPdPPiii",
+      "line": 34,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {\n        applyProblemHamiltonian(state, gammas[p], weights, edges, n_edges, n_qubits);\n        applyMixerHamiltonian(state, betas[p], n_qubits);\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_Z23applyProblemHamiltonianPNSt3__17complexIdEEdPdPPiii",
+      "line": 1080,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_Z23applyProblemHamiltonianPNSt3__17complexIdEEdPdPPiii",
+      "line": 785,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_Z23applyProblemHamiltonianPNSt3__17complexIdEEdPdPPiii",
+      "line": 785,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z23applyProblemHamiltonianPNSt3__17complexIdEEdPdPPiii",
+      "line": 31,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid applyProblemHamiltonian(Complex* state, double gamma, double* weights, \n                            int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z23applyProblemHamiltonianPNSt3__17complexIdEEdPdPPiii",
+      "line": 41,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {\n        applyProblemHamiltonian(state, gammas[p], weights, edges, n_edges, n_qubits);\n        applyMixerHamiltonian(state, betas[p], n_qubits);\n    }\n}\n\nint main() {\n    const int n_qubits = 10;\n    const int dim = 1 << n_qubits;\n    const int p_layers = 3;\n    const int n_edges = 20;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z23applyProblemHamiltonianPNSt3__17complexIdEEdPdPPiii",
+      "line": 34,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {\n        applyProblemHamiltonian(state, gammas[p], weights, edges, n_edges, n_qubits);\n        applyMixerHamiltonian(state, betas[p], n_qubits);\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 55,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 60,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {\n        applyProblemHamiltonian(state, gammas[p], weights, edges, n_edges, n_qubits);\n        applyMixerHamiltonian(state, betas[p], n_qubits);\n    }\n}\n\nint main() {\n    const int n_qubits = 10;\n    const int dim = 1 << n_qubits;\n    const int p_layers = 3;\n    const int n_edges = 20;\n    \n    std::vector<Complex> state(dim);\n    std::vector<double> betas(p_layers, 0.5);\n    std::vector<double> gammas(p_layers, 1.0);\n    std::vector<double> weights(n_edges, 1.0);\n    \n    std::vector<std::vector<int>> edge_list(n_edges, std::vector<int>(2));\n    std::vector<int*> edges(n_edges);\n    for (int i = 0; i < n_edges; i++) {\n        edges[i] = edge_list[i].data();\n    }\n    \n    runQAOA(state.data(), betas.data(), gammas.data(), p_layers,\n           weights.data(), edges.data(), n_edges, n_qubits);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 55,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.9299999999999999,
+      "context": "void runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {\n        applyProblemHamiltonian(state, gammas[p], weights, edges, n_edges, n_qubits);\n        applyMixerHamiltonian(state, betas[p], n_qubits);\n    }\n}\n\nint main() {\n    const int n_qubits = 10;\n    const int dim = 1 << n_qubits;\n    const int p_layers = 3;\n    const int n_edges = 20;\n    \n    std::vector<Complex> state(dim);\n    std::vector<double> betas(p_layers, 0.5);\n    std::vector<double> gammas(p_layers, 1.0);\n    std::vector<double> weights(n_edges, 1.0);\n    \n    std::vector<std::vector<int>> edge_list(n_edges, std::vector<int>(2));\n    std::vector<int*> edges(n_edges);\n    for (int i = 0; i < n_edges; i++) {\n        edges[i] = edge_list[i].data();\n    }\n    \n    runQAOA(state.data(), betas.data(), gammas.data(), p_layers,\n           weights.data(), edges.data(), n_edges, n_qubits);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 31,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid applyProblemHamiltonian(Complex* state, double gamma, double* weights, \n                            int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 34,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {\n        applyProblemHamiltonian(state, gammas[p], weights, edges, n_edges, n_qubits);\n        applyMixerHamiltonian(state, betas[p], n_qubits);\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 1080,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 785,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 785,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 31,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid applyProblemHamiltonian(Complex* state, double gamma, double* weights, \n                            int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 41,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {\n        applyProblemHamiltonian(state, gammas[p], weights, edges, n_edges, n_qubits);\n        applyMixerHamiltonian(state, betas[p], n_qubits);\n    }\n}\n\nint main() {\n    const int n_qubits = 10;\n    const int dim = 1 << n_qubits;\n    const int p_layers = 3;\n    const int n_edges = 20;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 34,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {\n        applyProblemHamiltonian(state, gammas[p], weights, edges, n_edges, n_qubits);\n        applyMixerHamiltonian(state, betas[p], n_qubits);\n    }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 60,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "main",
+      "line": 79,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<double> gammas(p_layers, 1.0);\n    std::vector<double> weights(n_edges, 1.0);\n    \n    std::vector<std::vector<int>> edge_list(n_edges, std::vector<int>(2));\n    std::vector<int*> edges(n_edges);\n    for (int i = 0; i < n_edges; i++) {\n        edges[i] = edge_list[i].data();\n    }\n    \n    runQAOA(state.data(), betas.data(), gammas.data(), p_layers,\n           weights.data(), edges.data(), n_edges, n_qubits);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IiNS_9allocatorIiEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IiNS_9allocatorIiEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IiNS_9allocatorIiEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IiNS_9allocatorIiEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IiNS_9allocatorIiEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z23applyProblemHamiltonianPNSt3__17complexIdEEdPdPPiii",
+      "line": 41,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {\n        applyProblemHamiltonian(state, gammas[p], weights, edges, n_edges, n_qubits);\n        applyMixerHamiltonian(state, betas[p], n_qubits);\n    }\n}\n\nint main() {\n    const int n_qubits = 10;\n    const int dim = 1 << n_qubits;\n    const int p_layers = 3;\n    const int n_edges = 20;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 41,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {\n        applyProblemHamiltonian(state, gammas[p], weights, edges, n_edges, n_qubits);\n        applyMixerHamiltonian(state, betas[p], n_qubits);\n    }\n}\n\nint main() {\n    const int n_qubits = 10;\n    const int dim = 1 << n_qubits;\n    const int p_layers = 3;\n    const int n_edges = 20;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "main",
+      "line": 79,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    std::vector<double> gammas(p_layers, 1.0);\n    std::vector<double> weights(n_edges, 1.0);\n    \n    std::vector<std::vector<int>> edge_list(n_edges, std::vector<int>(2));\n    std::vector<int*> edges(n_edges);\n    for (int i = 0; i < n_edges; i++) {\n        edges[i] = edge_list[i].data();\n    }\n    \n    runQAOA(state.data(), betas.data(), gammas.data(), p_layers,\n           weights.data(), edges.data(), n_edges, n_qubits);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 55,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.9299999999999999,
+      "context": "void runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {\n        applyProblemHamiltonian(state, gammas[p], weights, edges, n_edges, n_qubits);\n        applyMixerHamiltonian(state, betas[p], n_qubits);\n    }\n}\n\nint main() {\n    const int n_qubits = 10;\n    const int dim = 1 << n_qubits;\n    const int p_layers = 3;\n    const int n_edges = 20;\n    \n    std::vector<Complex> state(dim);\n    std::vector<double> betas(p_layers, 0.5);\n    std::vector<double> gammas(p_layers, 1.0);\n    std::vector<double> weights(n_edges, 1.0);\n    \n    std::vector<std::vector<int>> edge_list(n_edges, std::vector<int>(2));\n    std::vector<int*> edges(n_edges);\n    for (int i = 0; i < n_edges; i++) {\n        edges[i] = edge_list[i].data();\n    }\n    \n    runQAOA(state.data(), betas.data(), gammas.data(), p_layers,\n           weights.data(), edges.data(), n_edges, n_qubits);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.9299999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z21applyMixerHamiltonianPNSt3__17complexIdEEdi",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid applyMixerHamiltonian(Complex* state, double beta, int n_qubits) {\n    int dim = 1 << n_qubits;\n    std::vector<Complex> new_state(dim);\n    \n    for (int i = 0; i < dim; i++) {\n        new_state[i] = 0.0;\n        \n        for (int q = 0; q < n_qubits; q++) {\n            int flipped = i ^ (1 << q);\n            new_state[i] += state[flipped] * Complex(cos(beta), 0) * 0.5;\n            new_state[i] += state[i] * Complex(sin(beta), 0) * 0.5;\n        }\n    }\n    \n    for (int i = 0; i < dim; i++) {\n        state[i] = new_state[i];\n    }\n}\n\nvoid applyProblemHamiltonian(Complex* state, double gamma, double* weights, \n                            int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z23applyProblemHamiltonianPNSt3__17complexIdEEdPdPPiii",
+      "line": 31,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid applyProblemHamiltonian(Complex* state, double gamma, double* weights, \n                            int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z23applyProblemHamiltonianPNSt3__17complexIdEEdPdPPiii",
+      "line": 34,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {\n        applyProblemHamiltonian(state, gammas[p], weights, edges, n_edges, n_qubits);\n        applyMixerHamiltonian(state, betas[p], n_qubits);\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z23applyProblemHamiltonianPNSt3__17complexIdEEdPdPPiii",
+      "line": 31,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid applyProblemHamiltonian(Complex* state, double gamma, double* weights, \n                            int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z23applyProblemHamiltonianPNSt3__17complexIdEEdPdPPiii",
+      "line": 34,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {\n        applyProblemHamiltonian(state, gammas[p], weights, edges, n_edges, n_qubits);\n        applyMixerHamiltonian(state, betas[p], n_qubits);\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 60,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {\n        applyProblemHamiltonian(state, gammas[p], weights, edges, n_edges, n_qubits);\n        applyMixerHamiltonian(state, betas[p], n_qubits);\n    }\n}\n\nint main() {\n    const int n_qubits = 10;\n    const int dim = 1 << n_qubits;\n    const int p_layers = 3;\n    const int n_edges = 20;\n    \n    std::vector<Complex> state(dim);\n    std::vector<double> betas(p_layers, 0.5);\n    std::vector<double> gammas(p_layers, 1.0);\n    std::vector<double> weights(n_edges, 1.0);\n    \n    std::vector<std::vector<int>> edge_list(n_edges, std::vector<int>(2));\n    std::vector<int*> edges(n_edges);\n    for (int i = 0; i < n_edges; i++) {\n        edges[i] = edge_list[i].data();\n    }\n    \n    runQAOA(state.data(), betas.data(), gammas.data(), p_layers,\n           weights.data(), edges.data(), n_edges, n_qubits);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 31,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid applyProblemHamiltonian(Complex* state, double gamma, double* weights, \n                            int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 34,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {\n        applyProblemHamiltonian(state, gammas[p], weights, edges, n_edges, n_qubits);\n        applyMixerHamiltonian(state, betas[p], n_qubits);\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 31,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid applyProblemHamiltonian(Complex* state, double gamma, double* weights, \n                            int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qaoa_algorithm.cpp",
+      "function": "_Z7runQAOAPNSt3__17complexIdEEPdS3_iS3_PPiii",
+      "line": 34,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        double energy = 0.0;\n        \n        for (int e = 0; e < n_edges; e++) {\n            int u = edges[e][0];\n            int v = edges[e][1];\n            \n            bool bit_u = (i >> u) & 1;\n            bool bit_v = (i >> v) & 1;\n            \n            if (bit_u != bit_v) {\n                energy += weights[e];\n            }\n        }\n        \n        state[i] *= std::exp(Complex(0, -gamma * energy));\n    }\n}\n\nvoid runQAOA(Complex* state, double* betas, double* gammas, int p_layers,\n            double* weights, int** edges, int n_edges, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Initialize in equal superposition\n    for (int i = 0; i < dim; i++) {\n        state[i] = Complex(1.0 / sqrt(dim), 0);\n    }\n    \n    // Apply QAOA layers\n    for (int p = 0; p < p_layers; p++) {\n        applyProblemHamiltonian(state, gammas[p], weights, edges, n_edges, n_qubits);\n        applyMixerHamiltonian(state, betas[p], n_qubits);\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

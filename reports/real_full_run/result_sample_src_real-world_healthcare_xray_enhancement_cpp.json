@@ -1,0 +1,255 @@
+{
+  "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+    "llvm_initial": 14,
+    "llvm_sys_noise": 0,
+    "llvm_project": 14,
+    "after_filter": 5,
+    "ai_batches": 1,
+    "ai_results": 5,
+    "omp_verified": 0,
+    "total_ms": 547.8,
+    "llvm_ms": 354.0
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <vector>\n#include <algorithm>\n#include <cmath>\n\nvoid enhanceXRay(double* image, double* enhanced, int width, int height, int tile_size) {\n    for (int tile_y = 0; tile_y < height; tile_y += tile_size) {\n        for (int tile_x = 0; tile_x < width; tile_x += tile_size) {\n            // Compute histogram for this tile\n            std::vector<int> histogram(256, 0);\n            \n            for (int y = tile_y; y < std::min(tile_y + tile_size, height); y++) {\n                for (int x = tile_x; x < std::min(tile_x + tile_size, width); x++) {\n                    int intensity = std::min(255, (int)(image[y*width + x]));\n                    histogram[intensity]++;\n                }\n            }\n            \n            // Compute cumulative distribution function\n            std::vector<double> cdf(256, 0.0);\n            cdf[0] = histogram[0];\n            for (int i = 1; i < 256; i++) {\n                cdf[i] = cdf[i-1] + histogram[i];\n            }\n            \n            // Normalize CDF\n            double total_pixels = (std::min(tile_y + tile_size, height) - tile_y) *\n                                 (std::min(tile_x + tile_size, width) - tile_x);\n            for (int i = 0; i < 256; i++) {\n                cdf[i] /= total_pixels;\n            }\n            \n            // Apply histogram equalization\n            for (int y = tile_y; y < std::min(tile_y + tile_size, height); y++) {\n                for (int x = tile_x; x < std::min(tile_x + tile_size, width); x++) {\n                    int intensity = std::min(255, (int)(image[y*width + x]));"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <algorithm>\n#include <cmath>\n\nvoid enhanceXRay(double* image, double* enhanced, int width, int height, int tile_size) {\n    for (int tile_y = 0; tile_y < height; tile_y += tile_size) {\n        for (int tile_x = 0; tile_x < width; tile_x += tile_size) {\n            // Compute histogram for this tile\n            std::vector<int> histogram(256, 0);\n            \n            for (int y = tile_y; y < std::min(tile_y + tile_size, height); y++) {\n                for (int x = tile_x; x < std::min(tile_x + tile_size, width); x++) {\n                    int intensity = std::min(255, (int)(image[y*width + x]));\n                    histogram[intensity]++;\n                }\n            }\n            \n            // Compute cumulative distribution function\n            std::vector<double> cdf(256, 0.0);\n            cdf[0] = histogram[0];\n            for (int i = 1; i < 256; i++) {\n                cdf[i] = cdf[i-1] + histogram[i];\n            }\n            \n            // Normalize CDF\n            double total_pixels = (std::min(tile_y + tile_size, height) - tile_y) *\n                                 (std::min(tile_x + tile_size, width) - tile_x);\n            for (int i = 0; i < 256; i++) {\n                cdf[i] /= total_pixels;\n            }\n            \n            // Apply histogram equalization\n            for (int y = tile_y; y < std::min(tile_y + tile_size, height); y++) {\n                for (int x = tile_x; x < std::min(tile_x + tile_size, width); x++) {\n                    int intensity = std::min(255, (int)(image[y*width + x]));\n                    enhanced[y*width + x] = cdf[intensity] * 255.0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <vector>\n#include <algorithm>\n#include <cmath>\n\nvoid enhanceXRay(double* image, double* enhanced, int width, int height, int tile_size) {\n    for (int tile_y = 0; tile_y < height; tile_y += tile_size) {\n        for (int tile_x = 0; tile_x < width; tile_x += tile_size) {\n            // Compute histogram for this tile\n            std::vector<int> histogram(256, 0);\n            \n            for (int y = tile_y; y < std::min(tile_y + tile_size, height); y++) {\n                for (int x = tile_x; x < std::min(tile_x + tile_size, width); x++) {\n                    int intensity = std::min(255, (int)(image[y*width + x]));\n                    histogram[intensity]++;\n                }\n            }\n            \n            // Compute cumulative distribution function\n            std::vector<double> cdf(256, 0.0);\n            cdf[0] = histogram[0];\n            for (int i = 1; i < 256; i++) {\n                cdf[i] = cdf[i-1] + histogram[i];\n            }\n            \n            // Normalize CDF\n            double total_pixels = (std::min(tile_y + tile_size, height) - tile_y) *\n                                 (std::min(tile_x + tile_size, width) - tile_x);\n            for (int i = 0; i < 256; i++) {\n                cdf[i] /= total_pixels;\n            }\n            \n            // Apply histogram equalization\n            for (int y = tile_y; y < std::min(tile_y + tile_size, height); y++) {\n                for (int x = tile_x; x < std::min(tile_x + tile_size, width); x++) {\n                    int intensity = std::min(255, (int)(image[y*width + x]));"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 12,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.24999999999999994
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.32999999999999996
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.32999999999999996
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 13,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.24999999999999994
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 22,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n            \n            // Compute cumulative distribution function\n            std::vector<double> cdf(256, 0.0);\n            cdf[0] = histogram[0];\n            for (int i = 1; i < 256; i++) {\n                cdf[i] = cdf[i-1] + histogram[i];\n            }\n            \n            // Normalize CDF\n            double total_pixels = (std::min(tile_y + tile_size, height) - tile_y) *\n                                 (std::min(tile_x + tile_size, width) - tile_x);\n            for (int i = 0; i < 256; i++) {\n                cdf[i] /= total_pixels;\n            }\n            \n            // Apply histogram equalization\n            for (int y = tile_y; y < std::min(tile_y + tile_size, height); y++) {\n                for (int x = tile_x; x < std::min(tile_x + tile_size, width); x++) {\n                    int intensity = std::min(255, (int)(image[y*width + x]));\n                    enhanced[y*width + x] = cdf[intensity] * 255.0;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int width = 1024, height = 1024;\n    std::vector<double> image(width * height, 128.0);\n    std::vector<double> enhanced(width * height);\n    \n    enhanceXRay(image.data(), enhanced.data(), width, height, 64);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 34,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.32999999999999996
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 29,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n            \n            // Normalize CDF\n            double total_pixels = (std::min(tile_y + tile_size, height) - tile_y) *\n                                 (std::min(tile_x + tile_size, width) - tile_x);\n            for (int i = 0; i < 256; i++) {\n                cdf[i] /= total_pixels;\n            }\n            \n            // Apply histogram equalization\n            for (int y = tile_y; y < std::min(tile_y + tile_size, height); y++) {\n                for (int x = tile_x; x < std::min(tile_x + tile_size, width); x++) {\n                    int intensity = std::min(255, (int)(image[y*width + x]));\n                    enhanced[y*width + x] = cdf[intensity] * 255.0;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int width = 1024, height = 1024;\n    std::vector<double> image(width * height, 128.0);\n    std::vector<double> enhanced(width * height);\n    \n    enhanceXRay(image.data(), enhanced.data(), width, height, 64);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.32999999999999996
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 8,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 34,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.32999999999999996
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 35,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.24999999999999994
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 22,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n            \n            // Compute cumulative distribution function\n            std::vector<double> cdf(256, 0.0);\n            cdf[0] = histogram[0];\n            for (int i = 1; i < 256; i++) {\n                cdf[i] = cdf[i-1] + histogram[i];\n            }\n            \n            // Normalize CDF\n            double total_pixels = (std::min(tile_y + tile_size, height) - tile_y) *\n                                 (std::min(tile_x + tile_size, width) - tile_x);\n            for (int i = 0; i < 256; i++) {\n                cdf[i] /= total_pixels;\n            }\n            \n            // Apply histogram equalization\n            for (int y = tile_y; y < std::min(tile_y + tile_size, height); y++) {\n                for (int x = tile_x; x < std::min(tile_x + tile_size, width); x++) {\n                    int intensity = std::min(255, (int)(image[y*width + x]));\n                    enhanced[y*width + x] = cdf[intensity] * 255.0;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int width = 1024, height = 1024;\n    std::vector<double> image(width * height, 128.0);\n    std::vector<double> enhanced(width * height);\n    \n    enhanceXRay(image.data(), enhanced.data(), width, height, 64);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 29,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n            \n            // Normalize CDF\n            double total_pixels = (std::min(tile_y + tile_size, height) - tile_y) *\n                                 (std::min(tile_x + tile_size, width) - tile_x);\n            for (int i = 0; i < 256; i++) {\n                cdf[i] /= total_pixels;\n            }\n            \n            // Apply histogram equalization\n            for (int y = tile_y; y < std::min(tile_y + tile_size, height); y++) {\n                for (int x = tile_x; x < std::min(tile_x + tile_size, width); x++) {\n                    int intensity = std::min(255, (int)(image[y*width + x]));\n                    enhanced[y*width + x] = cdf[intensity] * 255.0;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    const int width = 1024, height = 1024;\n    std::vector<double> image(width * height, 128.0);\n    std::vector<double> enhanced(width * height);\n    \n    enhanceXRay(image.data(), enhanced.data(), width, height, 64);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <vector>\n#include <algorithm>\n#include <cmath>\n\nvoid enhanceXRay(double* image, double* enhanced, int width, int height, int tile_size) {\n    for (int tile_y = 0; tile_y < height; tile_y += tile_size) {\n        for (int tile_x = 0; tile_x < width; tile_x += tile_size) {\n            // Compute histogram for this tile\n            std::vector<int> histogram(256, 0);\n            \n            for (int y = tile_y; y < std::min(tile_y + tile_size, height); y++) {\n                for (int x = tile_x; x < std::min(tile_x + tile_size, width); x++) {\n                    int intensity = std::min(255, (int)(image[y*width + x]));\n                    histogram[intensity]++;\n                }\n            }\n            \n            // Compute cumulative distribution function\n            std::vector<double> cdf(256, 0.0);\n            cdf[0] = histogram[0];\n            for (int i = 1; i < 256; i++) {\n                cdf[i] = cdf[i-1] + histogram[i];\n            }\n            \n            // Normalize CDF\n            double total_pixels = (std::min(tile_y + tile_size, height) - tile_y) *\n                                 (std::min(tile_x + tile_size, width) - tile_x);\n            for (int i = 0; i < 256; i++) {\n                cdf[i] /= total_pixels;\n            }\n            \n            // Apply histogram equalization\n            for (int y = tile_y; y < std::min(tile_y + tile_size, height); y++) {\n                for (int x = tile_x; x < std::min(tile_x + tile_size, width); x++) {\n                    int intensity = std::min(255, (int)(image[y*width + x]));",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <algorithm>\n#include <cmath>\n\nvoid enhanceXRay(double* image, double* enhanced, int width, int height, int tile_size) {\n    for (int tile_y = 0; tile_y < height; tile_y += tile_size) {\n        for (int tile_x = 0; tile_x < width; tile_x += tile_size) {\n            // Compute histogram for this tile\n            std::vector<int> histogram(256, 0);\n            \n            for (int y = tile_y; y < std::min(tile_y + tile_size, height); y++) {\n                for (int x = tile_x; x < std::min(tile_x + tile_size, width); x++) {\n                    int intensity = std::min(255, (int)(image[y*width + x]));\n                    histogram[intensity]++;\n                }\n            }\n            \n            // Compute cumulative distribution function\n            std::vector<double> cdf(256, 0.0);\n            cdf[0] = histogram[0];\n            for (int i = 1; i < 256; i++) {\n                cdf[i] = cdf[i-1] + histogram[i];\n            }\n            \n            // Normalize CDF\n            double total_pixels = (std::min(tile_y + tile_size, height) - tile_y) *\n                                 (std::min(tile_x + tile_size, width) - tile_x);\n            for (int i = 0; i < 256; i++) {\n                cdf[i] /= total_pixels;\n            }\n            \n            // Apply histogram equalization\n            for (int y = tile_y; y < std::min(tile_y + tile_size, height); y++) {\n                for (int x = tile_x; x < std::min(tile_x + tile_size, width); x++) {\n                    int intensity = std::min(255, (int)(image[y*width + x]));\n                    enhanced[y*width + x] = cdf[intensity] * 255.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/xray_enhancement.cpp",
+      "function": "_Z11enhanceXRayPdS_iii",
+      "line": 7,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <vector>\n#include <algorithm>\n#include <cmath>\n\nvoid enhanceXRay(double* image, double* enhanced, int width, int height, int tile_size) {\n    for (int tile_y = 0; tile_y < height; tile_y += tile_size) {\n        for (int tile_x = 0; tile_x < width; tile_x += tile_size) {\n            // Compute histogram for this tile\n            std::vector<int> histogram(256, 0);\n            \n            for (int y = tile_y; y < std::min(tile_y + tile_size, height); y++) {\n                for (int x = tile_x; x < std::min(tile_x + tile_size, width); x++) {\n                    int intensity = std::min(255, (int)(image[y*width + x]));\n                    histogram[intensity]++;\n                }\n            }\n            \n            // Compute cumulative distribution function\n            std::vector<double> cdf(256, 0.0);\n            cdf[0] = histogram[0];\n            for (int i = 1; i < 256; i++) {\n                cdf[i] = cdf[i-1] + histogram[i];\n            }\n            \n            // Normalize CDF\n            double total_pixels = (std::min(tile_y + tile_size, height) - tile_y) *\n                                 (std::min(tile_x + tile_size, width) - tile_x);\n            for (int i = 0; i < 256; i++) {\n                cdf[i] /= total_pixels;\n            }\n            \n            // Apply histogram equalization\n            for (int y = tile_y; y < std::min(tile_y + tile_size, height); y++) {\n                for (int x = tile_x; x < std::min(tile_x + tile_size, width); x++) {\n                    int intensity = std::min(255, (int)(image[y*width + x]));",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

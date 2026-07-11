@@ -1,0 +1,761 @@
+{
+  "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+    "llvm_initial": 63,
+    "llvm_sys_noise": 45,
+    "llvm_project": 18,
+    "after_filter": 10,
+    "ai_batches": 1,
+    "ai_results": 10,
+    "omp_verified": 0,
+    "total_ms": 1211.4,
+    "llvm_ms": 531.2
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1146,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "main",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "main",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "main",
+      "line": 374,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 2049,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 2049,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 1994,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 1994,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 106,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.7300000000000001,
+      "context": "    bool processStateful(const Packet& pkt, double currentTime) {\n        uint64_t connId = hashConnection(pkt);\n        \n        auto it = connTrack.find(connId);\n        \n        if (it == connTrack.end()) {\n            // New connection\n            if ((pkt.flags & 0x02)) {  // SYN flag\n                ConnectionState conn;\n                conn.srcIP = pkt.srcIP;\n                conn.dstIP = pkt.dstIP;\n                conn.srcPort = pkt.srcPort;\n                conn.dstPort = pkt.dstPort;\n                conn.protocol = pkt.protocol;\n                conn.state = ConnectionState::NEW;\n                conn.lastSeqNum = pkt.seqNum;\n                conn.lastActivity = currentTime;\n                conn.packetsIn = 1;\n                conn.bytesIn = pkt.length;\n                \n                connTrack[connId] = conn;\n                \n                // Check if this new connection is allowed\n                return matchRules(pkt) == FirewallRule::ALLOW;\n            } else {\n                // No SYN, drop packet\n                return false;\n            }\n        } else {\n            // Existing connection\n            auto& conn = it->second;\n            \n            // Update state\n            if (pkt.flags & 0x02) {  // SYN\n                conn.state = ConnectionState::NEW;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 108,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.2300000000000001
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 1591,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 1593,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 1594,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 1601,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 1602,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 1691,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 1677,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 134,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.32999999999999996
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 136,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.32999999999999996
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 137,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.83,
+      "context": "            \n            // Update state\n            if (pkt.flags & 0x02) {  // SYN\n                conn.state = ConnectionState::NEW;\n            } else if (pkt.flags & 0x10) {  // ACK\n                if (conn.state == ConnectionState::NEW) {\n                    conn.state = ConnectionState::ESTABLISHED;\n                }\n            } else if (pkt.flags & 0x01) {  // FIN\n                conn.state = ConnectionState::FIN_WAIT;\n            }\n            \n            // Update statistics\n            conn.lastActivity = currentTime;\n            conn.packetsIn++;\n            conn.bytesIn += pkt.length;\n            conn.lastSeqNum = pkt.seqNum;\n            \n            return true;  // Established connection\n        }\n    }\n    \n    uint64_t hashConnection(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Connection timeout cleanup\n    void cleanupConnections(double currentTime, double timeout = 300.0) {\n        auto it = connTrack.begin();\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 140,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.32999999999999996
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 2049,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 2049,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 1994,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 1994,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 55,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 60,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 60,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        if (blacklist.find(pkt.srcIP) != blacklist.end()) {\n            return FirewallRule::DENY;\n        }\n        \n        // Match against rules in priority order\n        for (auto& rule : rules) {\n            if (matchRule(pkt, rule)) {\n                rule.hitCount++;\n                return rule.action;\n            }\n        }\n        \n        // Default policy: deny\n        return FirewallRule::DENY;\n    }\n    \n    bool matchRule(const Packet& pkt, const FirewallRule& rule) {\n        // Source IP match\n        if ((pkt.srcIP & rule.srcIPMask) != rule.srcIPValue) {\n            return false;\n        }\n        \n        // Destination IP match\n        if ((pkt.dstIP & rule.dstIPMask) != rule.dstIPValue) {\n            return false;\n        }\n        \n        // Protocol match\n        if (rule.protocol != 0 && pkt.protocol != rule.protocol) {\n            return false;\n        }\n        \n        // Source port match\n        if (pkt.srcPort < rule.srcPortMin || pkt.srcPort > rule.srcPortMax) {\n            return false;"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 73,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        return FirewallRule::DENY;\n    }\n    \n    bool matchRule(const Packet& pkt, const FirewallRule& rule) {\n        // Source IP match\n        if ((pkt.srcIP & rule.srcIPMask) != rule.srcIPValue) {\n            return false;\n        }\n        \n        // Destination IP match\n        if ((pkt.dstIP & rule.dstIPMask) != rule.dstIPValue) {\n            return false;\n        }\n        \n        // Protocol match\n        if (rule.protocol != 0 && pkt.protocol != rule.protocol) {\n            return false;\n        }\n        \n        // Source port match\n        if (pkt.srcPort < rule.srcPortMin || pkt.srcPort > rule.srcPortMax) {\n            return false;\n        }\n        \n        // Destination port match\n        if (pkt.dstPort < rule.dstPortMin || pkt.dstPort > rule.dstPortMax) {\n            return false;\n        }\n        \n        return true;\n    }\n    \n    // Stateful packet inspection\n    bool processStateful(const Packet& pkt, double currentTime) {\n        uint64_t connId = hashConnection(pkt);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 78,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        if ((pkt.srcIP & rule.srcIPMask) != rule.srcIPValue) {\n            return false;\n        }\n        \n        // Destination IP match\n        if ((pkt.dstIP & rule.dstIPMask) != rule.dstIPValue) {\n            return false;\n        }\n        \n        // Protocol match\n        if (rule.protocol != 0 && pkt.protocol != rule.protocol) {\n            return false;\n        }\n        \n        // Source port match\n        if (pkt.srcPort < rule.srcPortMin || pkt.srcPort > rule.srcPortMax) {\n            return false;\n        }\n        \n        // Destination port match\n        if (pkt.dstPort < rule.dstPortMin || pkt.dstPort > rule.dstPortMax) {\n            return false;\n        }\n        \n        return true;\n    }\n    \n    // Stateful packet inspection\n    bool processStateful(const Packet& pkt, double currentTime) {\n        uint64_t connId = hashConnection(pkt);\n        \n        auto it = connTrack.find(connId);\n        \n        if (it == connTrack.end()) {\n            // New connection"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 83,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        if ((pkt.dstIP & rule.dstIPMask) != rule.dstIPValue) {\n            return false;\n        }\n        \n        // Protocol match\n        if (rule.protocol != 0 && pkt.protocol != rule.protocol) {\n            return false;\n        }\n        \n        // Source port match\n        if (pkt.srcPort < rule.srcPortMin || pkt.srcPort > rule.srcPortMax) {\n            return false;\n        }\n        \n        // Destination port match\n        if (pkt.dstPort < rule.dstPortMin || pkt.dstPort > rule.dstPortMax) {\n            return false;\n        }\n        \n        return true;\n    }\n    \n    // Stateful packet inspection\n    bool processStateful(const Packet& pkt, double currentTime) {\n        uint64_t connId = hashConnection(pkt);\n        \n        auto it = connTrack.find(connId);\n        \n        if (it == connTrack.end()) {\n            // New connection\n            if ((pkt.flags & 0x02)) {  // SYN flag\n                ConnectionState conn;\n                conn.srcIP = pkt.srcIP;\n                conn.dstIP = pkt.dstIP;\n                conn.srcPort = pkt.srcPort;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 88,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        if (rule.protocol != 0 && pkt.protocol != rule.protocol) {\n            return false;\n        }\n        \n        // Source port match\n        if (pkt.srcPort < rule.srcPortMin || pkt.srcPort > rule.srcPortMax) {\n            return false;\n        }\n        \n        // Destination port match\n        if (pkt.dstPort < rule.dstPortMin || pkt.dstPort > rule.dstPortMax) {\n            return false;\n        }\n        \n        return true;\n    }\n    \n    // Stateful packet inspection\n    bool processStateful(const Packet& pkt, double currentTime) {\n        uint64_t connId = hashConnection(pkt);\n        \n        auto it = connTrack.find(connId);\n        \n        if (it == connTrack.end()) {\n            // New connection\n            if ((pkt.flags & 0x02)) {  // SYN flag\n                ConnectionState conn;\n                conn.srcIP = pkt.srcIP;\n                conn.dstIP = pkt.dstIP;\n                conn.srcPort = pkt.srcPort;\n                conn.dstPort = pkt.dstPort;\n                conn.protocol = pkt.protocol;\n                conn.state = ConnectionState::NEW;\n                conn.lastSeqNum = pkt.seqNum;\n                conn.lastActivity = currentTime;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 61,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// Network Function Virtualization (NFV) - Virtual Firewall\n#include <vector>\n#include <map>\n#include <set>\n#include <cstdint>\n\nclass VirtualFirewall {\npublic:\n    struct Packet {\n        uint32_t srcIP, dstIP;\n        uint16_t srcPort, dstPort;\n        uint8_t protocol;\n        uint8_t flags;\n        uint32_t seqNum;\n        uint16_t length;\n    };\n    \n    struct FirewallRule {\n        enum Action { ALLOW, DENY, LOG };\n        \n        uint32_t srcIPMask, srcIPValue;\n        uint32_t dstIPMask, dstIPValue;\n        uint16_t srcPortMin, srcPortMax;\n        uint16_t dstPortMin, dstPortMax;\n        uint8_t protocol;\n        \n        Action action;\n        int priority;\n        uint64_t hitCount;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 279,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 279,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 281,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 283,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 283,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 290,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 237,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 240,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 256,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 259,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// Network Function Virtualization (NFV) - Virtual Firewall\n#include <vector>\n#include <map>\n#include <set>\n#include <cstdint>\n\nclass VirtualFirewall {\npublic:\n    struct Packet {\n        uint32_t srcIP, dstIP;\n        uint16_t srcPort, dstPort;\n        uint8_t protocol;\n        uint8_t flags;\n        uint32_t seqNum;\n        uint16_t length;\n    };\n    \n    struct FirewallRule {\n        enum Action { ALLOW, DENY, LOG };\n        \n        uint32_t srcIPMask, srcIPValue;\n        uint32_t dstIPMask, dstIPValue;\n        uint16_t srcPortMin, srcPortMax;\n        uint16_t dstPortMin, dstPortMax;\n        uint8_t protocol;\n        \n        Action action;\n        int priority;\n        uint64_t hitCount;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 303,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 303,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 310,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 256,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 259,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 237,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 240,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// Network Function Virtualization (NFV) - Virtual Firewall\n#include <vector>\n#include <map>\n#include <set>\n#include <cstdint>\n\nclass VirtualFirewall {\npublic:\n    struct Packet {\n        uint32_t srcIP, dstIP;\n        uint16_t srcPort, dstPort;\n        uint8_t protocol;\n        uint8_t flags;\n        uint32_t seqNum;\n        uint16_t length;\n    };\n    \n    struct FirewallRule {\n        enum Action { ALLOW, DENY, LOG };\n        \n        uint32_t srcIPMask, srcIPValue;\n        uint32_t dstIPMask, dstIPValue;\n        uint16_t srcPortMin, srcPortMax;\n        uint16_t dstPortMin, dstPortMax;\n        uint8_t protocol;\n        \n        Action action;\n        int priority;\n        uint64_t hitCount;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 279,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15VirtualFirewallD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15VirtualFirewallD2Ev",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeINS_12__value_typeIjNS_3setItNS_4lessItEENS_9allocatorItEEEEEENS_19__map_value_compareIjNS_4pairIKjS7_EENS3_IjEELb1EEENS5_ISC_EEE7destroyEPNS_11__tree_nodeIS8_PvEE",
+      "line": 1449,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeItNS_4lessItEENS_9allocatorItEEE7destroyEPNS_11__tree_nodeItPvEE",
+      "line": 1449,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeINS_12__value_typeIjiEENS_19__map_value_compareIjNS_4pairIKjiEENS_4lessIjEELb1EEENS_9allocatorIS6_EEE7destroyEPNS_11__tree_nodeIS2_PvEE",
+      "line": 1449,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeINS_12__value_typeIjN15VirtualFirewall11RateLimiterEEENS_19__map_value_compareIjNS_4pairIKjS3_EENS_4lessIjEELb1EEENS_9allocatorIS8_EEE7destroyEPNS_11__tree_nodeIS4_PvEE",
+      "line": 1449,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeIjNS_4lessIjEENS_9allocatorIjEEE7destroyEPNS_11__tree_nodeIjPvEE",
+      "line": 1449,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeINS_12__value_typeIyN15VirtualFirewall15ConnectionStateEEENS_19__map_value_compareIyNS_4pairIKyS3_EENS_4lessIyEELb1EEENS_9allocatorIS8_EEE7destroyEPNS_11__tree_nodeIS4_PvEE",
+      "line": 1449,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 73,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        return FirewallRule::DENY;\n    }\n    \n    bool matchRule(const Packet& pkt, const FirewallRule& rule) {\n        // Source IP match\n        if ((pkt.srcIP & rule.srcIPMask) != rule.srcIPValue) {\n            return false;\n        }\n        \n        // Destination IP match\n        if ((pkt.dstIP & rule.dstIPMask) != rule.dstIPValue) {\n            return false;\n        }\n        \n        // Protocol match\n        if (rule.protocol != 0 && pkt.protocol != rule.protocol) {\n            return false;\n        }\n        \n        // Source port match\n        if (pkt.srcPort < rule.srcPortMin || pkt.srcPort > rule.srcPortMax) {\n            return false;\n        }\n        \n        // Destination port match\n        if (pkt.dstPort < rule.dstPortMin || pkt.dstPort > rule.dstPortMax) {\n            return false;\n        }\n        \n        return true;\n    }\n    \n    // Stateful packet inspection\n    bool processStateful(const Packet& pkt, double currentTime) {\n        uint64_t connId = hashConnection(pkt);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 78,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        if ((pkt.srcIP & rule.srcIPMask) != rule.srcIPValue) {\n            return false;\n        }\n        \n        // Destination IP match\n        if ((pkt.dstIP & rule.dstIPMask) != rule.dstIPValue) {\n            return false;\n        }\n        \n        // Protocol match\n        if (rule.protocol != 0 && pkt.protocol != rule.protocol) {\n            return false;\n        }\n        \n        // Source port match\n        if (pkt.srcPort < rule.srcPortMin || pkt.srcPort > rule.srcPortMax) {\n            return false;\n        }\n        \n        // Destination port match\n        if (pkt.dstPort < rule.dstPortMin || pkt.dstPort > rule.dstPortMax) {\n            return false;\n        }\n        \n        return true;\n    }\n    \n    // Stateful packet inspection\n    bool processStateful(const Packet& pkt, double currentTime) {\n        uint64_t connId = hashConnection(pkt);\n        \n        auto it = connTrack.find(connId);\n        \n        if (it == connTrack.end()) {\n            // New connection",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 83,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        if ((pkt.dstIP & rule.dstIPMask) != rule.dstIPValue) {\n            return false;\n        }\n        \n        // Protocol match\n        if (rule.protocol != 0 && pkt.protocol != rule.protocol) {\n            return false;\n        }\n        \n        // Source port match\n        if (pkt.srcPort < rule.srcPortMin || pkt.srcPort > rule.srcPortMax) {\n            return false;\n        }\n        \n        // Destination port match\n        if (pkt.dstPort < rule.dstPortMin || pkt.dstPort > rule.dstPortMax) {\n            return false;\n        }\n        \n        return true;\n    }\n    \n    // Stateful packet inspection\n    bool processStateful(const Packet& pkt, double currentTime) {\n        uint64_t connId = hashConnection(pkt);\n        \n        auto it = connTrack.find(connId);\n        \n        if (it == connTrack.end()) {\n            // New connection\n            if ((pkt.flags & 0x02)) {  // SYN flag\n                ConnectionState conn;\n                conn.srcIP = pkt.srcIP;\n                conn.dstIP = pkt.dstIP;\n                conn.srcPort = pkt.srcPort;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 88,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        if (rule.protocol != 0 && pkt.protocol != rule.protocol) {\n            return false;\n        }\n        \n        // Source port match\n        if (pkt.srcPort < rule.srcPortMin || pkt.srcPort > rule.srcPortMax) {\n            return false;\n        }\n        \n        // Destination port match\n        if (pkt.dstPort < rule.dstPortMin || pkt.dstPort > rule.dstPortMax) {\n            return false;\n        }\n        \n        return true;\n    }\n    \n    // Stateful packet inspection\n    bool processStateful(const Packet& pkt, double currentTime) {\n        uint64_t connId = hashConnection(pkt);\n        \n        auto it = connTrack.find(connId);\n        \n        if (it == connTrack.end()) {\n            // New connection\n            if ((pkt.flags & 0x02)) {  // SYN flag\n                ConnectionState conn;\n                conn.srcIP = pkt.srcIP;\n                conn.dstIP = pkt.dstIP;\n                conn.srcPort = pkt.srcPort;\n                conn.dstPort = pkt.dstPort;\n                conn.protocol = pkt.protocol;\n                conn.state = ConnectionState::NEW;\n                conn.lastSeqNum = pkt.seqNum;\n                conn.lastActivity = currentTime;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 60,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        if (blacklist.find(pkt.srcIP) != blacklist.end()) {\n            return FirewallRule::DENY;\n        }\n        \n        // Match against rules in priority order\n        for (auto& rule : rules) {\n            if (matchRule(pkt, rule)) {\n                rule.hitCount++;\n                return rule.action;\n            }\n        }\n        \n        // Default policy: deny\n        return FirewallRule::DENY;\n    }\n    \n    bool matchRule(const Packet& pkt, const FirewallRule& rule) {\n        // Source IP match\n        if ((pkt.srcIP & rule.srcIPMask) != rule.srcIPValue) {\n            return false;\n        }\n        \n        // Destination IP match\n        if ((pkt.dstIP & rule.dstIPMask) != rule.dstIPValue) {\n            return false;\n        }\n        \n        // Protocol match\n        if (rule.protocol != 0 && pkt.protocol != rule.protocol) {\n            return false;\n        }\n        \n        // Source port match\n        if (pkt.srcPort < rule.srcPortMin || pkt.srcPort > rule.srcPortMax) {\n            return false;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 137,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.83,
+      "context": "            \n            // Update state\n            if (pkt.flags & 0x02) {  // SYN\n                conn.state = ConnectionState::NEW;\n            } else if (pkt.flags & 0x10) {  // ACK\n                if (conn.state == ConnectionState::NEW) {\n                    conn.state = ConnectionState::ESTABLISHED;\n                }\n            } else if (pkt.flags & 0x01) {  // FIN\n                conn.state = ConnectionState::FIN_WAIT;\n            }\n            \n            // Update statistics\n            conn.lastActivity = currentTime;\n            conn.packetsIn++;\n            conn.bytesIn += pkt.length;\n            conn.lastSeqNum = pkt.seqNum;\n            \n            return true;  // Established connection\n        }\n    }\n    \n    uint64_t hashConnection(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Connection timeout cleanup\n    void cleanupConnections(double currentTime, double timeout = 300.0) {\n        auto it = connTrack.begin();\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.83
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/virtual_firewall.cpp",
+      "function": "_ZN15VirtualFirewall15processStatefulERKNS_6PacketEd",
+      "line": 106,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.7300000000000001,
+      "context": "    bool processStateful(const Packet& pkt, double currentTime) {\n        uint64_t connId = hashConnection(pkt);\n        \n        auto it = connTrack.find(connId);\n        \n        if (it == connTrack.end()) {\n            // New connection\n            if ((pkt.flags & 0x02)) {  // SYN flag\n                ConnectionState conn;\n                conn.srcIP = pkt.srcIP;\n                conn.dstIP = pkt.dstIP;\n                conn.srcPort = pkt.srcPort;\n                conn.dstPort = pkt.dstPort;\n                conn.protocol = pkt.protocol;\n                conn.state = ConnectionState::NEW;\n                conn.lastSeqNum = pkt.seqNum;\n                conn.lastActivity = currentTime;\n                conn.packetsIn = 1;\n                conn.bytesIn = pkt.length;\n                \n                connTrack[connId] = conn;\n                \n                // Check if this new connection is allowed\n                return matchRules(pkt) == FirewallRule::ALLOW;\n            } else {\n                // No SYN, drop packet\n                return false;\n            }\n        } else {\n            // Existing connection\n            auto& conn = it->second;\n            \n            // Update state\n            if (pkt.flags & 0x02) {  // SYN\n                conn.state = ConnectionState::NEW;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZN15VirtualFirewall10matchRulesERKNS_6PacketE",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// Network Function Virtualization (NFV) - Virtual Firewall\n#include <vector>\n#include <map>\n#include <set>\n#include <cstdint>\n\nclass VirtualFirewall {\npublic:\n    struct Packet {\n        uint32_t srcIP, dstIP;\n        uint16_t srcPort, dstPort;\n        uint8_t protocol;\n        uint8_t flags;\n        uint32_t seqNum;\n        uint16_t length;\n    };\n    \n    struct FirewallRule {\n        enum Action { ALLOW, DENY, LOG };\n        \n        uint32_t srcIPMask, srcIPValue;\n        uint32_t dstIPMask, dstIPValue;\n        uint16_t srcPortMin, srcPortMax;\n        uint16_t dstPortMin, dstPortMax;\n        uint8_t protocol;\n        \n        Action action;\n        int priority;\n        uint64_t hitCount;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.65
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// Network Function Virtualization (NFV) - Virtual Firewall\n#include <vector>\n#include <map>\n#include <set>\n#include <cstdint>\n\nclass VirtualFirewall {\npublic:\n    struct Packet {\n        uint32_t srcIP, dstIP;\n        uint16_t srcPort, dstPort;\n        uint8_t protocol;\n        uint8_t flags;\n        uint32_t seqNum;\n        uint16_t length;\n    };\n    \n    struct FirewallRule {\n        enum Action { ALLOW, DENY, LOG };\n        \n        uint32_t srcIPMask, srcIPValue;\n        uint32_t dstIPMask, dstIPValue;\n        uint16_t srcPortMin, srcPortMax;\n        uint16_t dstPortMin, dstPortMax;\n        uint8_t protocol;\n        \n        Action action;\n        int priority;\n        uint64_t hitCount;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.65
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// Network Function Virtualization (NFV) - Virtual Firewall\n#include <vector>\n#include <map>\n#include <set>\n#include <cstdint>\n\nclass VirtualFirewall {\npublic:\n    struct Packet {\n        uint32_t srcIP, dstIP;\n        uint16_t srcPort, dstPort;\n        uint8_t protocol;\n        uint8_t flags;\n        uint32_t seqNum;\n        uint16_t length;\n    };\n    \n    struct FirewallRule {\n        enum Action { ALLOW, DENY, LOG };\n        \n        uint32_t srcIPMask, srcIPValue;\n        uint32_t dstIPMask, dstIPValue;\n        uint16_t srcPortMin, srcPortMax;\n        uint16_t dstPortMin, dstPortMax;\n        uint8_t protocol;\n        \n        Action action;\n        int priority;\n        uint64_t hitCount;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.65
+    }
+  ]
+}

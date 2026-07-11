@@ -1,0 +1,172 @@
+{
+  "file": "sample/src/real-world/trading/market_maker.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/trading/market_maker.cpp",
+    "llvm_initial": 10,
+    "llvm_sys_noise": 3,
+    "llvm_project": 7,
+    "after_filter": 3,
+    "ai_batches": 1,
+    "ai_results": 3,
+    "omp_verified": 0,
+    "total_ms": 573.3,
+    "llvm_ms": 397.6
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/market_maker.cpp",
+      "function": "main",
+      "line": 183,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.30000000000000004
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/market_maker.cpp",
+      "function": "_ZN11MarketMaker15simulateSessionERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 147,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/market_maker.cpp",
+      "function": "_ZN11MarketMaker15simulateSessionERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 115,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.17000000000000004
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_maker.cpp",
+      "function": "_ZN11MarketMaker15simulateSessionERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 123,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        \n        base.bidPrice -= skew;\n        base.askPrice -= skew;\n        \n        // Adjust sizes\n        if (state.position > 0) {\n            base.askSize *= 2;  // More aggressive on sell side\n            base.bidSize /= 2;\n        } else {\n            base.bidSize *= 2;  // More aggressive on buy side\n            base.askSize /= 2;\n        }\n        \n        return base;\n    }\n    \n    // Simulate market making session\n    struct SessionStats {\n        double pnl;\n        int totalTrades;\n        double avgSpread;\n        double maxInventory;\n    };\n    \n    SessionStats simulateSession(const std::vector<double>& midPrices, \n                                int ticksPerUpdate) {\n        \n        SessionStats stats = {0, 0, 0, 0};\n        \n        for (size_t t = 0; t < midPrices.size(); t += ticksPerUpdate) {\n            double timeRemaining = 1.0 - static_cast<double>(t) / midPrices.size();\n            \n            Quote quote = computeOptimalQuotes(midPrices[t], timeRemaining);\n            quote = applyInventorySkew(quote);\n            "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_maker.cpp",
+      "function": "_ZN11MarketMaker15simulateSessionERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 159,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "            \n            // Simulate fills (simplified)\n            bool bidFill = (midPrices[t] - quote.bidPrice) < 0.05;\n            bool askFill = (quote.askPrice - midPrices[t]) < 0.05;\n            \n            if (bidFill) {\n                updateInventory(true, quote.bidSize, quote.bidPrice);\n                stats.totalTrades++;\n            }\n            if (askFill) {\n                updateInventory(false, quote.askSize, quote.askPrice);\n                stats.totalTrades++;\n            }\n            \n            stats.maxInventory = std::max(stats.maxInventory, \n                                         static_cast<double>(std::abs(state.position)));\n        }\n        \n        stats.avgSpread /= (midPrices.size() / ticksPerUpdate);\n        stats.pnl = state.cash + state.position * midPrices.back();\n        \n        return stats;\n    }\n};\n\nint main() {\n    MarketMaker mm(0.2, 0.1);\n    \n    std::vector<double> midPrices(10000);\n    for (size_t i = 0; i < midPrices.size(); i++) {\n        midPrices[i] = 100.0 + 0.001 * std::sin(i * 0.01);\n    }\n    \n    auto stats = mm.simulateSession(midPrices, 10);\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_maker.cpp",
+      "function": "_ZN11MarketMaker15simulateSessionERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 163,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            \n            if (bidFill) {\n                updateInventory(true, quote.bidSize, quote.bidPrice);\n                stats.totalTrades++;\n            }\n            if (askFill) {\n                updateInventory(false, quote.askSize, quote.askPrice);\n                stats.totalTrades++;\n            }\n            \n            stats.maxInventory = std::max(stats.maxInventory, \n                                         static_cast<double>(std::abs(state.position)));\n        }\n        \n        stats.avgSpread /= (midPrices.size() / ticksPerUpdate);\n        stats.pnl = state.cash + state.position * midPrices.back();\n        \n        return stats;\n    }\n};\n\nint main() {\n    MarketMaker mm(0.2, 0.1);\n    \n    std::vector<double> midPrices(10000);\n    for (size_t i = 0; i < midPrices.size(); i++) {\n        midPrices[i] = 100.0 + 0.001 * std::sin(i * 0.01);\n    }\n    \n    auto stats = mm.simulateSession(midPrices, 10);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/market_maker.cpp",
+      "function": "_ZN11MarketMaker15simulateSessionERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 147,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_maker.cpp",
+      "function": "_ZN11MarketMaker15simulateSessionERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 159,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "            \n            // Simulate fills (simplified)\n            bool bidFill = (midPrices[t] - quote.bidPrice) < 0.05;\n            bool askFill = (quote.askPrice - midPrices[t]) < 0.05;\n            \n            if (bidFill) {\n                updateInventory(true, quote.bidSize, quote.bidPrice);\n                stats.totalTrades++;\n            }\n            if (askFill) {\n                updateInventory(false, quote.askSize, quote.askPrice);\n                stats.totalTrades++;\n            }\n            \n            stats.maxInventory = std::max(stats.maxInventory, \n                                         static_cast<double>(std::abs(state.position)));\n        }\n        \n        stats.avgSpread /= (midPrices.size() / ticksPerUpdate);\n        stats.pnl = state.cash + state.position * midPrices.back();\n        \n        return stats;\n    }\n};\n\nint main() {\n    MarketMaker mm(0.2, 0.1);\n    \n    std::vector<double> midPrices(10000);\n    for (size_t i = 0; i < midPrices.size(); i++) {\n        midPrices[i] = 100.0 + 0.001 * std::sin(i * 0.01);\n    }\n    \n    auto stats = mm.simulateSession(midPrices, 10);\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_maker.cpp",
+      "function": "_ZN11MarketMaker15simulateSessionERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 123,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        \n        base.bidPrice -= skew;\n        base.askPrice -= skew;\n        \n        // Adjust sizes\n        if (state.position > 0) {\n            base.askSize *= 2;  // More aggressive on sell side\n            base.bidSize /= 2;\n        } else {\n            base.bidSize *= 2;  // More aggressive on buy side\n            base.askSize /= 2;\n        }\n        \n        return base;\n    }\n    \n    // Simulate market making session\n    struct SessionStats {\n        double pnl;\n        int totalTrades;\n        double avgSpread;\n        double maxInventory;\n    };\n    \n    SessionStats simulateSession(const std::vector<double>& midPrices, \n                                int ticksPerUpdate) {\n        \n        SessionStats stats = {0, 0, 0, 0};\n        \n        for (size_t t = 0; t < midPrices.size(); t += ticksPerUpdate) {\n            double timeRemaining = 1.0 - static_cast<double>(t) / midPrices.size();\n            \n            Quote quote = computeOptimalQuotes(midPrices[t], timeRemaining);\n            quote = applyInventorySkew(quote);\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/market_maker.cpp",
+      "function": "_ZN11MarketMaker15simulateSessionERKNSt3__16vectorIdNS0_9allocatorIdEEEEi",
+      "line": 163,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            \n            if (bidFill) {\n                updateInventory(true, quote.bidSize, quote.bidPrice);\n                stats.totalTrades++;\n            }\n            if (askFill) {\n                updateInventory(false, quote.askSize, quote.askPrice);\n                stats.totalTrades++;\n            }\n            \n            stats.maxInventory = std::max(stats.maxInventory, \n                                         static_cast<double>(std::abs(state.position)));\n        }\n        \n        stats.avgSpread /= (midPrices.size() / ticksPerUpdate);\n        stats.pnl = state.cash + state.position * midPrices.back();\n        \n        return stats;\n    }\n};\n\nint main() {\n    MarketMaker mm(0.2, 0.1);\n    \n    std::vector<double> midPrices(10000);\n    for (size_t i = 0; i < midPrices.size(); i++) {\n        midPrices[i] = 100.0 + 0.001 * std::sin(i * 0.01);\n    }\n    \n    auto stats = mm.simulateSession(midPrices, 10);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

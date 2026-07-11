@@ -1,0 +1,1237 @@
+{
+  "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+    "llvm_initial": 46,
+    "llvm_sys_noise": 0,
+    "llvm_project": 46,
+    "after_filter": 36,
+    "ai_batches": 3,
+    "ai_results": 36,
+    "omp_verified": 0,
+    "total_ms": 9047.2,
+    "llvm_ms": 422.5
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z16ellipticCurveAddR7G1PointS0_S0_x",
+      "line": 14,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z16ellipticCurveAddR7G1PointS0_S0_x",
+      "line": 18,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z16ellipticCurveAddR7G1PointS0_S0_x",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z16ellipticCurveAddR7G1PointS0_S0_x",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z14scalarMultiplyR7G1PointxS0_x",
+      "line": 45,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.47
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z14scalarMultiplyR7G1PointxS0_x",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.55
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z14scalarMultiplyR7G1PointxS0_x",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z14scalarMultiplyR7G1PointxS0_x",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z14scalarMultiplyR7G1PointxS0_x",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z14scalarMultiplyR7G1PointxS0_x",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z14scalarMultiplyR7G1PointxS0_x",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z14scalarMultiplyR7G1PointxS0_x",
+      "line": 45,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.55
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z19generateR1CSWitnessPiS_S_S_ii",
+      "line": 57,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,\n                        int n_constraints, int n_variables) {\n    // Verify R1CS constraints: A * witness \u25e6 B * witness = C * witness\n    for (int i = 0; i < n_constraints; i++) {\n        long long a_sum = 0, b_sum = 0, c_sum = 0;\n        \n        for (int j = 0; j < n_variables; j++) {\n            a_sum += A[i * n_variables + j] * witness[j];\n            b_sum += B[i * n_variables + j] * witness[j];\n            c_sum += C[i * n_variables + j] * witness[j];\n        }\n        \n        // Check constraint satisfaction\n        if (a_sum * b_sum != c_sum) {\n            witness[0] = -1; // Invalid witness\n            return;\n        }\n    }\n}\n\nvoid zksnarkProve(G1Point* crs_g1, G2Point* crs_g2, int* witness,\n                 int n_variables, G1Point& proof_A, G1Point& proof_B_g1,\n                 G2Point& proof_B_g2, G1Point& proof_C, long long p) {\n    // Compute proof elements\n    proof_A = {0, 0};\n    proof_B_g1 = {0, 0};\n    proof_C = {0, 0};\n    \n    for (int i = 0; i < n_variables; i++) {\n        G1Point temp_A, temp_C;\n        scalarMultiply(crs_g1[i], witness[i], temp_A, p);\n        scalarMultiply(crs_g1[n_variables + i], witness[i], temp_C, p);\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z19generateR1CSWitnessPiS_S_S_ii",
+      "line": 57,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,\n                        int n_constraints, int n_variables) {\n    // Verify R1CS constraints: A * witness \u25e6 B * witness = C * witness\n    for (int i = 0; i < n_constraints; i++) {\n        long long a_sum = 0, b_sum = 0, c_sum = 0;\n        \n        for (int j = 0; j < n_variables; j++) {\n            a_sum += A[i * n_variables + j] * witness[j];\n            b_sum += B[i * n_variables + j] * witness[j];\n            c_sum += C[i * n_variables + j] * witness[j];\n        }\n        \n        // Check constraint satisfaction\n        if (a_sum * b_sum != c_sum) {\n            witness[0] = -1; // Invalid witness\n            return;\n        }\n    }\n}\n\nvoid zksnarkProve(G1Point* crs_g1, G2Point* crs_g2, int* witness,\n                 int n_variables, G1Point& proof_A, G1Point& proof_B_g1,\n                 G2Point& proof_B_g2, G1Point& proof_C, long long p) {\n    // Compute proof elements\n    proof_A = {0, 0};\n    proof_B_g1 = {0, 0};\n    proof_C = {0, 0};\n    \n    for (int i = 0; i < n_variables; i++) {\n        G1Point temp_A, temp_C;\n        scalarMultiply(crs_g1[i], witness[i], temp_A, p);\n        scalarMultiply(crs_g1[n_variables + i], witness[i], temp_C, p);\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z19generateR1CSWitnessPiS_S_S_ii",
+      "line": 60,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                        int n_constraints, int n_variables) {\n    // Verify R1CS constraints: A * witness \u25e6 B * witness = C * witness\n    for (int i = 0; i < n_constraints; i++) {\n        long long a_sum = 0, b_sum = 0, c_sum = 0;\n        \n        for (int j = 0; j < n_variables; j++) {\n            a_sum += A[i * n_variables + j] * witness[j];\n            b_sum += B[i * n_variables + j] * witness[j];\n            c_sum += C[i * n_variables + j] * witness[j];\n        }\n        \n        // Check constraint satisfaction\n        if (a_sum * b_sum != c_sum) {\n            witness[0] = -1; // Invalid witness\n            return;\n        }\n    }\n}\n\nvoid zksnarkProve(G1Point* crs_g1, G2Point* crs_g2, int* witness,\n                 int n_variables, G1Point& proof_A, G1Point& proof_B_g1,\n                 G2Point& proof_B_g2, G1Point& proof_C, long long p) {\n    // Compute proof elements\n    proof_A = {0, 0};\n    proof_B_g1 = {0, 0};\n    proof_C = {0, 0};\n    \n    for (int i = 0; i < n_variables; i++) {\n        G1Point temp_A, temp_C;\n        scalarMultiply(crs_g1[i], witness[i], temp_A, p);\n        scalarMultiply(crs_g1[n_variables + i], witness[i], temp_C, p);\n        \n        ellipticCurveAdd(proof_A, temp_A, proof_A, p);\n        ellipticCurveAdd(proof_C, temp_C, proof_C, p);\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z19generateR1CSWitnessPiS_S_S_ii",
+      "line": 67,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "            b_sum += B[i * n_variables + j] * witness[j];\n            c_sum += C[i * n_variables + j] * witness[j];\n        }\n        \n        // Check constraint satisfaction\n        if (a_sum * b_sum != c_sum) {\n            witness[0] = -1; // Invalid witness\n            return;\n        }\n    }\n}\n\nvoid zksnarkProve(G1Point* crs_g1, G2Point* crs_g2, int* witness,\n                 int n_variables, G1Point& proof_A, G1Point& proof_B_g1,\n                 G2Point& proof_B_g2, G1Point& proof_C, long long p) {\n    // Compute proof elements\n    proof_A = {0, 0};\n    proof_B_g1 = {0, 0};\n    proof_C = {0, 0};\n    \n    for (int i = 0; i < n_variables; i++) {\n        G1Point temp_A, temp_C;\n        scalarMultiply(crs_g1[i], witness[i], temp_A, p);\n        scalarMultiply(crs_g1[n_variables + i], witness[i], temp_C, p);\n        \n        ellipticCurveAdd(proof_A, temp_A, proof_A, p);\n        ellipticCurveAdd(proof_C, temp_C, proof_C, p);\n    }\n}\n\nbool zksnarkVerify(G1Point& proof_A, G2Point& proof_B, G1Point& proof_C,\n                  G1Point* vk_g1, G2Point* vk_g2, int* public_inputs,\n                  int n_public, long long p) {\n    // Simplified pairing check: e(A, B) = e(C, G2)\n    // In practice, use actual pairing computation"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z19generateR1CSWitnessPiS_S_S_ii",
+      "line": 60,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                        int n_constraints, int n_variables) {\n    // Verify R1CS constraints: A * witness \u25e6 B * witness = C * witness\n    for (int i = 0; i < n_constraints; i++) {\n        long long a_sum = 0, b_sum = 0, c_sum = 0;\n        \n        for (int j = 0; j < n_variables; j++) {\n            a_sum += A[i * n_variables + j] * witness[j];\n            b_sum += B[i * n_variables + j] * witness[j];\n            c_sum += C[i * n_variables + j] * witness[j];\n        }\n        \n        // Check constraint satisfaction\n        if (a_sum * b_sum != c_sum) {\n            witness[0] = -1; // Invalid witness\n            return;\n        }\n    }\n}\n\nvoid zksnarkProve(G1Point* crs_g1, G2Point* crs_g2, int* witness,\n                 int n_variables, G1Point& proof_A, G1Point& proof_B_g1,\n                 G2Point& proof_B_g2, G1Point& proof_C, long long p) {\n    // Compute proof elements\n    proof_A = {0, 0};\n    proof_B_g1 = {0, 0};\n    proof_C = {0, 0};\n    \n    for (int i = 0; i < n_variables; i++) {\n        G1Point temp_A, temp_C;\n        scalarMultiply(crs_g1[i], witness[i], temp_A, p);\n        scalarMultiply(crs_g1[n_variables + i], witness[i], temp_C, p);\n        \n        ellipticCurveAdd(proof_A, temp_A, proof_A, p);\n        ellipticCurveAdd(proof_C, temp_C, proof_C, p);\n    }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 82,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 45,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,\n                        int n_constraints, int n_variables) {\n    // Verify R1CS constraints: A * witness \u25e6 B * witness = C * witness\n    for (int i = 0; i < n_constraints; i++) {\n        long long a_sum = 0, b_sum = 0, c_sum = 0;\n        \n        for (int j = 0; j < n_variables; j++) {\n            a_sum += A[i * n_variables + j] * witness[j];\n            b_sum += B[i * n_variables + j] * witness[j];\n            c_sum += C[i * n_variables + j] * witness[j];\n        }\n        \n        // Check constraint satisfaction\n        if (a_sum * b_sum != c_sum) {\n            witness[0] = -1; // Invalid witness\n            return;\n        }\n    }\n}\n\nvoid zksnarkProve(G1Point* crs_g1, G2Point* crs_g2, int* witness,"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.55
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 45,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.55
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 45,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.55
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.55
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 45,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.55
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 82,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    // Compute proof elements\n    proof_A = {0, 0};\n    proof_B_g1 = {0, 0};\n    proof_C = {0, 0};\n    \n    for (int i = 0; i < n_variables; i++) {\n        G1Point temp_A, temp_C;\n        scalarMultiply(crs_g1[i], witness[i], temp_A, p);\n        scalarMultiply(crs_g1[n_variables + i], witness[i], temp_C, p);\n        \n        ellipticCurveAdd(proof_A, temp_A, proof_A, p);\n        ellipticCurveAdd(proof_C, temp_C, proof_C, p);\n    }\n}\n\nbool zksnarkVerify(G1Point& proof_A, G2Point& proof_B, G1Point& proof_C,\n                  G1Point* vk_g1, G2Point* vk_g2, int* public_inputs,\n                  int n_public, long long p) {\n    // Simplified pairing check: e(A, B) = e(C, G2)\n    // In practice, use actual pairing computation\n    \n    G1Point vk_sum = {0, 0};\n    for (int i = 0; i < n_public; i++) {\n        G1Point temp;\n        scalarMultiply(vk_g1[i], public_inputs[i], temp, p);\n        ellipticCurveAdd(vk_sum, temp, vk_sum, p);\n    }\n    \n    // Verify pairing equation (simplified)\n    return true; // Actual pairing verification would go here\n}\n\nint main() {\n    const int n_variables = 100, n_constraints = 50, n_public = 10;\n    // Simplified prime for demonstration (real zkSNARKs use 254-bit BN128 curve)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "main",
+      "line": 57,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "main",
+      "line": 67,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "            b_sum += B[i * n_variables + j] * witness[j];\n            c_sum += C[i * n_variables + j] * witness[j];\n        }\n        \n        // Check constraint satisfaction\n        if (a_sum * b_sum != c_sum) {\n            witness[0] = -1; // Invalid witness\n            return;\n        }\n    }\n}\n\nvoid zksnarkProve(G1Point* crs_g1, G2Point* crs_g2, int* witness,\n                 int n_variables, G1Point& proof_A, G1Point& proof_B_g1,\n                 G2Point& proof_B_g2, G1Point& proof_C, long long p) {\n    // Compute proof elements\n    proof_A = {0, 0};\n    proof_B_g1 = {0, 0};\n    proof_C = {0, 0};\n    \n    for (int i = 0; i < n_variables; i++) {\n        G1Point temp_A, temp_C;\n        scalarMultiply(crs_g1[i], witness[i], temp_A, p);\n        scalarMultiply(crs_g1[n_variables + i], witness[i], temp_C, p);\n        \n        ellipticCurveAdd(proof_A, temp_A, proof_A, p);\n        ellipticCurveAdd(proof_C, temp_C, proof_C, p);\n    }\n}\n\nbool zksnarkVerify(G1Point& proof_A, G2Point& proof_B, G1Point& proof_C,\n                  G1Point* vk_g1, G2Point* vk_g2, int* public_inputs,\n                  int n_public, long long p) {\n    // Simplified pairing check: e(A, B) = e(C, G2)\n    // In practice, use actual pairing computation"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "main",
+      "line": 60,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                        int n_constraints, int n_variables) {\n    // Verify R1CS constraints: A * witness \u25e6 B * witness = C * witness\n    for (int i = 0; i < n_constraints; i++) {\n        long long a_sum = 0, b_sum = 0, c_sum = 0;\n        \n        for (int j = 0; j < n_variables; j++) {\n            a_sum += A[i * n_variables + j] * witness[j];\n            b_sum += B[i * n_variables + j] * witness[j];\n            c_sum += C[i * n_variables + j] * witness[j];\n        }\n        \n        // Check constraint satisfaction\n        if (a_sum * b_sum != c_sum) {\n            witness[0] = -1; // Invalid witness\n            return;\n        }\n    }\n}\n\nvoid zksnarkProve(G1Point* crs_g1, G2Point* crs_g2, int* witness,\n                 int n_variables, G1Point& proof_A, G1Point& proof_B_g1,\n                 G2Point& proof_B_g2, G1Point& proof_C, long long p) {\n    // Compute proof elements\n    proof_A = {0, 0};\n    proof_B_g1 = {0, 0};\n    proof_C = {0, 0};\n    \n    for (int i = 0; i < n_variables; i++) {\n        G1Point temp_A, temp_C;\n        scalarMultiply(crs_g1[i], witness[i], temp_A, p);\n        scalarMultiply(crs_g1[n_variables + i], witness[i], temp_C, p);\n        \n        ellipticCurveAdd(proof_A, temp_A, proof_A, p);\n        ellipticCurveAdd(proof_C, temp_C, proof_C, p);\n    }"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z16ellipticCurveAddR7G1PointS0_S0_x",
+      "line": 14,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z16ellipticCurveAddR7G1PointS0_S0_x",
+      "line": 18,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z19generateR1CSWitnessPiS_S_S_ii",
+      "line": 60,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                        int n_constraints, int n_variables) {\n    // Verify R1CS constraints: A * witness \u25e6 B * witness = C * witness\n    for (int i = 0; i < n_constraints; i++) {\n        long long a_sum = 0, b_sum = 0, c_sum = 0;\n        \n        for (int j = 0; j < n_variables; j++) {\n            a_sum += A[i * n_variables + j] * witness[j];\n            b_sum += B[i * n_variables + j] * witness[j];\n            c_sum += C[i * n_variables + j] * witness[j];\n        }\n        \n        // Check constraint satisfaction\n        if (a_sum * b_sum != c_sum) {\n            witness[0] = -1; // Invalid witness\n            return;\n        }\n    }\n}\n\nvoid zksnarkProve(G1Point* crs_g1, G2Point* crs_g2, int* witness,\n                 int n_variables, G1Point& proof_A, G1Point& proof_B_g1,\n                 G2Point& proof_B_g2, G1Point& proof_C, long long p) {\n    // Compute proof elements\n    proof_A = {0, 0};\n    proof_B_g1 = {0, 0};\n    proof_C = {0, 0};\n    \n    for (int i = 0; i < n_variables; i++) {\n        G1Point temp_A, temp_C;\n        scalarMultiply(crs_g1[i], witness[i], temp_A, p);\n        scalarMultiply(crs_g1[n_variables + i], witness[i], temp_C, p);\n        \n        ellipticCurveAdd(proof_A, temp_A, proof_A, p);\n        ellipticCurveAdd(proof_C, temp_C, proof_C, p);\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 45,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,\n                        int n_constraints, int n_variables) {\n    // Verify R1CS constraints: A * witness \u25e6 B * witness = C * witness\n    for (int i = 0; i < n_constraints; i++) {\n        long long a_sum = 0, b_sum = 0, c_sum = 0;\n        \n        for (int j = 0; j < n_variables; j++) {\n            a_sum += A[i * n_variables + j] * witness[j];\n            b_sum += B[i * n_variables + j] * witness[j];\n            c_sum += C[i * n_variables + j] * witness[j];\n        }\n        \n        // Check constraint satisfaction\n        if (a_sum * b_sum != c_sum) {\n            witness[0] = -1; // Invalid witness\n            return;\n        }\n    }\n}\n\nvoid zksnarkProve(G1Point* crs_g1, G2Point* crs_g2, int* witness,",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "main",
+      "line": 60,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                        int n_constraints, int n_variables) {\n    // Verify R1CS constraints: A * witness \u25e6 B * witness = C * witness\n    for (int i = 0; i < n_constraints; i++) {\n        long long a_sum = 0, b_sum = 0, c_sum = 0;\n        \n        for (int j = 0; j < n_variables; j++) {\n            a_sum += A[i * n_variables + j] * witness[j];\n            b_sum += B[i * n_variables + j] * witness[j];\n            c_sum += C[i * n_variables + j] * witness[j];\n        }\n        \n        // Check constraint satisfaction\n        if (a_sum * b_sum != c_sum) {\n            witness[0] = -1; // Invalid witness\n            return;\n        }\n    }\n}\n\nvoid zksnarkProve(G1Point* crs_g1, G2Point* crs_g2, int* witness,\n                 int n_variables, G1Point& proof_A, G1Point& proof_B_g1,\n                 G2Point& proof_B_g2, G1Point& proof_C, long long p) {\n    // Compute proof elements\n    proof_A = {0, 0};\n    proof_B_g1 = {0, 0};\n    proof_C = {0, 0};\n    \n    for (int i = 0; i < n_variables; i++) {\n        G1Point temp_A, temp_C;\n        scalarMultiply(crs_g1[i], witness[i], temp_A, p);\n        scalarMultiply(crs_g1[n_variables + i], witness[i], temp_C, p);\n        \n        ellipticCurveAdd(proof_A, temp_A, proof_A, p);\n        ellipticCurveAdd(proof_C, temp_C, proof_C, p);\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z19generateR1CSWitnessPiS_S_S_ii",
+      "line": 67,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "            b_sum += B[i * n_variables + j] * witness[j];\n            c_sum += C[i * n_variables + j] * witness[j];\n        }\n        \n        // Check constraint satisfaction\n        if (a_sum * b_sum != c_sum) {\n            witness[0] = -1; // Invalid witness\n            return;\n        }\n    }\n}\n\nvoid zksnarkProve(G1Point* crs_g1, G2Point* crs_g2, int* witness,\n                 int n_variables, G1Point& proof_A, G1Point& proof_B_g1,\n                 G2Point& proof_B_g2, G1Point& proof_C, long long p) {\n    // Compute proof elements\n    proof_A = {0, 0};\n    proof_B_g1 = {0, 0};\n    proof_C = {0, 0};\n    \n    for (int i = 0; i < n_variables; i++) {\n        G1Point temp_A, temp_C;\n        scalarMultiply(crs_g1[i], witness[i], temp_A, p);\n        scalarMultiply(crs_g1[n_variables + i], witness[i], temp_C, p);\n        \n        ellipticCurveAdd(proof_A, temp_A, proof_A, p);\n        ellipticCurveAdd(proof_C, temp_C, proof_C, p);\n    }\n}\n\nbool zksnarkVerify(G1Point& proof_A, G2Point& proof_B, G1Point& proof_C,\n                  G1Point* vk_g1, G2Point* vk_g2, int* public_inputs,\n                  int n_public, long long p) {\n    // Simplified pairing check: e(A, B) = e(C, G2)\n    // In practice, use actual pairing computation",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "main",
+      "line": 67,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "            b_sum += B[i * n_variables + j] * witness[j];\n            c_sum += C[i * n_variables + j] * witness[j];\n        }\n        \n        // Check constraint satisfaction\n        if (a_sum * b_sum != c_sum) {\n            witness[0] = -1; // Invalid witness\n            return;\n        }\n    }\n}\n\nvoid zksnarkProve(G1Point* crs_g1, G2Point* crs_g2, int* witness,\n                 int n_variables, G1Point& proof_A, G1Point& proof_B_g1,\n                 G2Point& proof_B_g2, G1Point& proof_C, long long p) {\n    // Compute proof elements\n    proof_A = {0, 0};\n    proof_B_g1 = {0, 0};\n    proof_C = {0, 0};\n    \n    for (int i = 0; i < n_variables; i++) {\n        G1Point temp_A, temp_C;\n        scalarMultiply(crs_g1[i], witness[i], temp_A, p);\n        scalarMultiply(crs_g1[n_variables + i], witness[i], temp_C, p);\n        \n        ellipticCurveAdd(proof_A, temp_A, proof_A, p);\n        ellipticCurveAdd(proof_C, temp_C, proof_C, p);\n    }\n}\n\nbool zksnarkVerify(G1Point& proof_A, G2Point& proof_B, G1Point& proof_C,\n                  G1Point* vk_g1, G2Point* vk_g2, int* public_inputs,\n                  int n_public, long long p) {\n    // Simplified pairing check: e(A, B) = e(C, G2)\n    // In practice, use actual pairing computation",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z16ellipticCurveAddR7G1PointS0_S0_x",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z16ellipticCurveAddR7G1PointS0_S0_x",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z14scalarMultiplyR7G1PointxS0_x",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z14scalarMultiplyR7G1PointxS0_x",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z14scalarMultiplyR7G1PointxS0_x",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z14scalarMultiplyR7G1PointxS0_x",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z14scalarMultiplyR7G1PointxS0_x",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z19generateR1CSWitnessPiS_S_S_ii",
+      "line": 57,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,\n                        int n_constraints, int n_variables) {\n    // Verify R1CS constraints: A * witness \u25e6 B * witness = C * witness\n    for (int i = 0; i < n_constraints; i++) {\n        long long a_sum = 0, b_sum = 0, c_sum = 0;\n        \n        for (int j = 0; j < n_variables; j++) {\n            a_sum += A[i * n_variables + j] * witness[j];\n            b_sum += B[i * n_variables + j] * witness[j];\n            c_sum += C[i * n_variables + j] * witness[j];\n        }\n        \n        // Check constraint satisfaction\n        if (a_sum * b_sum != c_sum) {\n            witness[0] = -1; // Invalid witness\n            return;\n        }\n    }\n}\n\nvoid zksnarkProve(G1Point* crs_g1, G2Point* crs_g2, int* witness,\n                 int n_variables, G1Point& proof_A, G1Point& proof_B_g1,\n                 G2Point& proof_B_g2, G1Point& proof_C, long long p) {\n    // Compute proof elements\n    proof_A = {0, 0};\n    proof_B_g1 = {0, 0};\n    proof_C = {0, 0};\n    \n    for (int i = 0; i < n_variables; i++) {\n        G1Point temp_A, temp_C;\n        scalarMultiply(crs_g1[i], witness[i], temp_A, p);\n        scalarMultiply(crs_g1[n_variables + i], witness[i], temp_C, p);\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z19generateR1CSWitnessPiS_S_S_ii",
+      "line": 57,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,\n                        int n_constraints, int n_variables) {\n    // Verify R1CS constraints: A * witness \u25e6 B * witness = C * witness\n    for (int i = 0; i < n_constraints; i++) {\n        long long a_sum = 0, b_sum = 0, c_sum = 0;\n        \n        for (int j = 0; j < n_variables; j++) {\n            a_sum += A[i * n_variables + j] * witness[j];\n            b_sum += B[i * n_variables + j] * witness[j];\n            c_sum += C[i * n_variables + j] * witness[j];\n        }\n        \n        // Check constraint satisfaction\n        if (a_sum * b_sum != c_sum) {\n            witness[0] = -1; // Invalid witness\n            return;\n        }\n    }\n}\n\nvoid zksnarkProve(G1Point* crs_g1, G2Point* crs_g2, int* witness,\n                 int n_variables, G1Point& proof_A, G1Point& proof_B_g1,\n                 G2Point& proof_B_g2, G1Point& proof_C, long long p) {\n    // Compute proof elements\n    proof_A = {0, 0};\n    proof_B_g1 = {0, 0};\n    proof_C = {0, 0};\n    \n    for (int i = 0; i < n_variables; i++) {\n        G1Point temp_A, temp_C;\n        scalarMultiply(crs_g1[i], witness[i], temp_A, p);\n        scalarMultiply(crs_g1[n_variables + i], witness[i], temp_C, p);\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z19generateR1CSWitnessPiS_S_S_ii",
+      "line": 60,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                        int n_constraints, int n_variables) {\n    // Verify R1CS constraints: A * witness \u25e6 B * witness = C * witness\n    for (int i = 0; i < n_constraints; i++) {\n        long long a_sum = 0, b_sum = 0, c_sum = 0;\n        \n        for (int j = 0; j < n_variables; j++) {\n            a_sum += A[i * n_variables + j] * witness[j];\n            b_sum += B[i * n_variables + j] * witness[j];\n            c_sum += C[i * n_variables + j] * witness[j];\n        }\n        \n        // Check constraint satisfaction\n        if (a_sum * b_sum != c_sum) {\n            witness[0] = -1; // Invalid witness\n            return;\n        }\n    }\n}\n\nvoid zksnarkProve(G1Point* crs_g1, G2Point* crs_g2, int* witness,\n                 int n_variables, G1Point& proof_A, G1Point& proof_B_g1,\n                 G2Point& proof_B_g2, G1Point& proof_C, long long p) {\n    // Compute proof elements\n    proof_A = {0, 0};\n    proof_B_g1 = {0, 0};\n    proof_C = {0, 0};\n    \n    for (int i = 0; i < n_variables; i++) {\n        G1Point temp_A, temp_C;\n        scalarMultiply(crs_g1[i], witness[i], temp_A, p);\n        scalarMultiply(crs_g1[n_variables + i], witness[i], temp_C, p);\n        \n        ellipticCurveAdd(proof_A, temp_A, proof_A, p);\n        ellipticCurveAdd(proof_C, temp_C, proof_C, p);\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,",
+      "classification": "not_parallel",
+      "reasoning": "The code has conditional branches that may be a loop, but it does not exhibit obvious parallelism. The lambda calculation depends on the values of a.x and a.y, which may introduce data dependencies.",
+      "confidence": 0.8,
+      "transformations": [
+        "None recommended due to potential data dependencies"
+      ],
+      "tests_recommended": [
+        "Unit tests for elliptic curve operations"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "struct G2Point {\n    long long x[2], y[2];\n};\n\nvoid ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;",
+      "classification": "not_parallel",
+      "reasoning": "The code is performing a conditional check and assignment, which is a sequential operation. There is no obvious parallelism in this code snippet.",
+      "confidence": 0.9,
+      "transformations": [
+        "None recommended due to sequential nature"
+      ],
+      "tests_recommended": [
+        "Unit tests for elliptic curve operations"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void ellipticCurveAdd(G1Point& a, G1Point& b, G1Point& result, long long p) {\n    if (a.x == 0 && a.y == 0) {\n        result = b;\n        return;\n    }\n    if (b.x == 0 && b.y == 0) {\n        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);",
+      "classification": "not_parallel",
+      "reasoning": "The code has conditional branches that may be a loop, but it does not exhibit obvious parallelism. The result assignment depends on the values of a.x, a.y, b.x, and b.y, which may introduce data dependencies.",
+      "confidence": 0.8,
+      "transformations": [
+        "None recommended due to potential data dependencies"
+      ],
+      "tests_recommended": [
+        "Unit tests for elliptic curve operations"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        result = a;\n        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n",
+      "classification": "not_parallel",
+      "reasoning": "The code has conditional branches that may be a loop, but it does not exhibit obvious parallelism. The lambda calculation depends on the values of a.x and a.y, which may introduce data dependencies.",
+      "confidence": 0.8,
+      "transformations": [
+        "None recommended due to potential data dependencies"
+      ],
+      "tests_recommended": [
+        "Unit tests for elliptic curve operations"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return;\n    }\n    \n    long long lambda;\n    if (a.x == b.x) {\n        if (a.y == b.y) {\n            // Point doubling\n            lambda = (3 * a.x * a.x) / (2 * a.y) % p;\n        } else {\n            // Points are inverse, result is infinity\n            result = {0, 0};\n            return;\n        }\n    } else {\n        lambda = (b.y - a.y) / (b.x - a.x) % p;\n    }\n    \n    result.x = (lambda * lambda - a.x - b.x) % p;\n    result.y = (lambda * (a.x - result.x) - a.y) % p;\n}\n\nvoid scalarMultiply(G1Point& point, long long scalar, G1Point& result, long long p) {\n    result = {0, 0};\n    G1Point temp = point;\n    \n    while (scalar > 0) {\n        if (scalar & 1) {\n            ellipticCurveAdd(result, temp, result, p);\n        }\n        ellipticCurveAdd(temp, temp, temp, p);\n        scalar >>= 1;\n    }\n}\n\nvoid generateR1CSWitness(int* A, int* B, int* C, int* witness,",
+      "classification": "not_parallel",
+      "reasoning": "The code has conditional branches that may be a loop, but it does not exhibit obvious parallelism. The lambda calculation depends on the values of a.x and a.y, which may introduce data dependencies.",
+      "confidence": 0.8,
+      "transformations": [
+        "None recommended due to potential data dependencies"
+      ],
+      "tests_recommended": [
+        "Unit tests for elliptic curve operations"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/zksnark_prover.cpp",
+      "function": "_Z12zksnarkProveP7G1PointP7G2PointPiiRS_S4_RS1_S4_x",
+      "line": 82,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    // Compute proof elements\n    proof_A = {0, 0};\n    proof_B_g1 = {0, 0};\n    proof_C = {0, 0};\n    \n    for (int i = 0; i < n_variables; i++) {\n        G1Point temp_A, temp_C;\n        scalarMultiply(crs_g1[i], witness[i], temp_A, p);\n        scalarMultiply(crs_g1[n_variables + i], witness[i], temp_C, p);\n        \n        ellipticCurveAdd(proof_A, temp_A, proof_A, p);\n        ellipticCurveAdd(proof_C, temp_C, proof_C, p);\n    }\n}\n\nbool zksnarkVerify(G1Point& proof_A, G2Point& proof_B, G1Point& proof_C,\n                  G1Point* vk_g1, G2Point* vk_g2, int* public_inputs,\n                  int n_public, long long p) {\n    // Simplified pairing check: e(A, B) = e(C, G2)\n    // In practice, use actual pairing computation\n    \n    G1Point vk_sum = {0, 0};\n    for (int i = 0; i < n_public; i++) {\n        G1Point temp;\n        scalarMultiply(vk_g1[i], public_inputs[i], temp, p);\n        ellipticCurveAdd(vk_sum, temp, vk_sum, p);\n    }\n    \n    // Verify pairing equation (simplified)\n    return true; // Actual pairing verification would go here\n}\n\nint main() {\n    const int n_variables = 100, n_constraints = 50, n_public = 10;\n    // Simplified prime for demonstration (real zkSNARKs use 254-bit BN128 curve)",
+      "classification": "safe_parallel",
+      "reasoning": "The code has a loop that can be parallelized, and the operations inside the loop are independent. The loop iterates over a range of variables, and each iteration performs a scalar multiplication.",
+      "confidence": 0.85,
+      "transformations": [
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Unit tests for parallel elliptic curve operations"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

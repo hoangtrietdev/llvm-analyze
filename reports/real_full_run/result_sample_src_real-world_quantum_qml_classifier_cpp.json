@@ -1,0 +1,1024 @@
+{
+  "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+    "llvm_initial": 103,
+    "llvm_sys_noise": 76,
+    "llvm_project": 27,
+    "after_filter": 7,
+    "ai_batches": 1,
+    "ai_results": 7,
+    "omp_verified": 0,
+    "total_ms": 969.8,
+    "llvm_ms": 510.7
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "main",
+      "line": 103,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.20000000000000004
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "main",
+      "line": 107,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        for (size_t i = 0; i < inputs.size(); i++) {\n            int predicted = classify(inputs[i]);\n            int actual = labels[i];\n            \n            if (predicted != actual) {\n                // Update weights for correct class\n                for (auto& w : weights[actual]) {\n                    w += learningRate * 0.1;\n                }\n                \n                // Penalize incorrect class\n                for (auto& w : weights[predicted]) {\n                    w -= learningRate * 0.1;\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    QuantumClassifier qc(4, 2);\n    \n    std::vector<std::vector<double>> data(100, std::vector<double>(4, 0.5));\n    std::vector<int> labels(100, 0);\n    \n    qc.trainBatch(data, labels, 0.01);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "main",
+      "line": 109,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "main",
+      "line": 114,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "main",
+      "line": 109,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            int predicted = classify(inputs[i]);\n            int actual = labels[i];\n            \n            if (predicted != actual) {\n                // Update weights for correct class\n                for (auto& w : weights[actual]) {\n                    w += learningRate * 0.1;\n                }\n                \n                // Penalize incorrect class\n                for (auto& w : weights[predicted]) {\n                    w -= learningRate * 0.1;\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    QuantumClassifier qc(4, 2);\n    \n    std::vector<std::vector<double>> data(100, std::vector<double>(4, 0.5));\n    std::vector<int> labels(100, 0);\n    \n    qc.trainBatch(data, labels, 0.01);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "main",
+      "line": 114,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                for (auto& w : weights[actual]) {\n                    w += learningRate * 0.1;\n                }\n                \n                // Penalize incorrect class\n                for (auto& w : weights[predicted]) {\n                    w -= learningRate * 0.1;\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    QuantumClassifier qc(4, 2);\n    \n    std::vector<std::vector<double>> data(100, std::vector<double>(4, 0.5));\n    std::vector<int> labels(100, 0);\n    \n    qc.trainBatch(data, labels, 0.01);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "main",
+      "line": 103,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifierD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifierD1Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifierD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifierD1Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifierC2Eii",
+      "line": 149,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifierC2Eii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifierC2Eii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifierC2Eii",
+      "line": 1369,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifierC2Eii",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifierC2Eii",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifierC2Eii",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifierC2Eii",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifierC2Eii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifierC2Eii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 257,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifier8classifyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 149,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifier8classifyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier8classifyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 84,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int classify(const std::vector<double>& input) {\n        auto encoded = encodeData(input);\n        \n        std::vector<double> classScores(numClasses);\n        \n        for (int c = 0; c < numClasses; c++) {\n            auto state = applyVariationalCircuit(encoded, weights[c]);\n            \n            // Measure expectation value\n            classScores[c] = 0.0;\n            for (size_t i = 0; i < state.size(); i++) {\n                classScores[c] += std::norm(state[i]) * (i % 2 == 0 ? 1.0 : -1.0);\n            }\n        }\n        \n        // Return class with highest score\n        return std::max_element(classScores.begin(), classScores.end()) - \n               classScores.begin();\n    }\n    \n    // Train on batch\n    void trainBatch(const std::vector<std::vector<double>>& inputs,\n                   const std::vector<int>& labels, double learningRate) {\n        \n        for (size_t i = 0; i < inputs.size(); i++) {\n            int predicted = classify(inputs[i]);\n            int actual = labels[i];\n            \n            if (predicted != actual) {\n                // Update weights for correct class\n                for (auto& w : weights[actual]) {\n                    w += learningRate * 0.1;\n                }\n                \n                // Penalize incorrect class"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/max_element.h",
+      "function": "_ZN17QuantumClassifier8classifyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 29,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/max_element.h",
+      "function": "_ZN17QuantumClassifier8classifyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 31,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifier8classifyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier8classifyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 89,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "        for (int c = 0; c < numClasses; c++) {\n            auto state = applyVariationalCircuit(encoded, weights[c]);\n            \n            // Measure expectation value\n            classScores[c] = 0.0;\n            for (size_t i = 0; i < state.size(); i++) {\n                classScores[c] += std::norm(state[i]) * (i % 2 == 0 ? 1.0 : -1.0);\n            }\n        }\n        \n        // Return class with highest score\n        return std::max_element(classScores.begin(), classScores.end()) - \n               classScores.begin();\n    }\n    \n    // Train on batch\n    void trainBatch(const std::vector<std::vector<double>>& inputs,\n                   const std::vector<int>& labels, double learningRate) {\n        \n        for (size_t i = 0; i < inputs.size(); i++) {\n            int predicted = classify(inputs[i]);\n            int actual = labels[i];\n            \n            if (predicted != actual) {\n                // Update weights for correct class\n                for (auto& w : weights[actual]) {\n                    w += learningRate * 0.1;\n                }\n                \n                // Penalize incorrect class\n                for (auto& w : weights[predicted]) {\n                    w -= learningRate * 0.1;\n                }\n            }\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifier8classifyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier8classifyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 84,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifier8classifyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN17QuantumClassifier8classifyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 971,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN17QuantumClassifier8classifyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 973,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier8classifyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 89,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.35
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifier8classifyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifier8classifyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifier10encodeDataERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 572,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier10encodeDataERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 26,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.35
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifier10encodeDataERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier10encodeDataERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier10encodeDataERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier10encodeDataERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 31,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        for (int q = 0; q < numQubits && q < static_cast<int>(data.size()); q++) {\n            double angle = data[q] * M_PI;\n            \n            // Apply RY rotation\n            for (int i = 0; i < stateSize; i++) {\n                if (!((i >> q) & 1)) {\n                    int j = i | (1 << q);\n                    Complex temp = state[i];\n                    state[i] = std::cos(angle/2) * temp;\n                    state[j] = std::sin(angle/2) * temp;\n                }\n            }\n        }\n        \n        return state;\n    }\n    \n    // Variational quantum circuit\n    std::vector<Complex> applyVariationalCircuit(\n        const std::vector<Complex>& inputState,\n        const std::vector<double>& params) {\n        \n        std::vector<Complex> state = inputState;\n        int paramIdx = 0;\n        \n        // Layer 1: Parameterized rotations\n        for (int q = 0; q < numQubits; q++) {\n            double theta = params[paramIdx++];\n            // Apply rotation (simplified)\n            for (size_t i = 0; i < state.size(); i++) {\n                if ((i >> q) & 1) {\n                    state[i] *= std::exp(Complex(0, theta));\n                }\n            }\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier10encodeDataERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 30,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        // Angle encoding\n        for (int q = 0; q < numQubits && q < static_cast<int>(data.size()); q++) {\n            double angle = data[q] * M_PI;\n            \n            // Apply RY rotation\n            for (int i = 0; i < stateSize; i++) {\n                if (!((i >> q) & 1)) {\n                    int j = i | (1 << q);\n                    Complex temp = state[i];\n                    state[i] = std::cos(angle/2) * temp;\n                    state[j] = std::sin(angle/2) * temp;\n                }\n            }\n        }\n        \n        return state;\n    }\n    \n    // Variational quantum circuit\n    std::vector<Complex> applyVariationalCircuit(\n        const std::vector<Complex>& inputState,\n        const std::vector<double>& params) {\n        \n        std::vector<Complex> state = inputState;\n        int paramIdx = 0;\n        \n        // Layer 1: Parameterized rotations\n        for (int q = 0; q < numQubits; q++) {\n            double theta = params[paramIdx++];\n            // Apply rotation (simplified)\n            for (size_t i = 0; i < state.size(); i++) {\n                if ((i >> q) & 1) {\n                    state[i] *= std::exp(Complex(0, theta));\n                }\n            }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifier23applyVariationalCircuitERKNSt3__16vectorINS0_7complexIdEENS0_9allocatorIS3_EEEERKNS1_IdNS4_IdEEEE",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifier23applyVariationalCircuitERKNSt3__16vectorINS0_7complexIdEENS0_9allocatorIS3_EEEERKNS1_IdNS4_IdEEEE",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17QuantumClassifier23applyVariationalCircuitERKNSt3__16vectorINS0_7complexIdEENS0_9allocatorIS3_EEEERKNS1_IdNS4_IdEEEE",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier23applyVariationalCircuitERKNSt3__16vectorINS0_7complexIdEENS0_9allocatorIS3_EEEERKNS1_IdNS4_IdEEEE",
+      "line": 52,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier23applyVariationalCircuitERKNSt3__16vectorINS0_7complexIdEENS0_9allocatorIS3_EEEERKNS1_IdNS4_IdEEEE",
+      "line": 63,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier23applyVariationalCircuitERKNSt3__16vectorINS0_7complexIdEENS0_9allocatorIS3_EEEERKNS1_IdNS4_IdEEEE",
+      "line": 55,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier23applyVariationalCircuitERKNSt3__16vectorINS0_7complexIdEENS0_9allocatorIS3_EEEERKNS1_IdNS4_IdEEEE",
+      "line": 52,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier23applyVariationalCircuitERKNSt3__16vectorINS0_7complexIdEENS0_9allocatorIS3_EEEERKNS1_IdNS4_IdEEEE",
+      "line": 56,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN17QuantumClassifier23applyVariationalCircuitERKNSt3__16vectorINS0_7complexIdEENS0_9allocatorIS3_EEEERKNS1_IdNS4_IdEEEE",
+      "line": 785,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN17QuantumClassifier23applyVariationalCircuitERKNSt3__16vectorINS0_7complexIdEENS0_9allocatorIS3_EEEERKNS1_IdNS4_IdEEEE",
+      "line": 785,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier23applyVariationalCircuitERKNSt3__16vectorINS0_7complexIdEENS0_9allocatorIS3_EEEERKNS1_IdNS4_IdEEEE",
+      "line": 55,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier23applyVariationalCircuitERKNSt3__16vectorINS0_7complexIdEENS0_9allocatorIS3_EEEERKNS1_IdNS4_IdEEEE",
+      "line": 65,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier23applyVariationalCircuitERKNSt3__16vectorINS0_7complexIdEENS0_9allocatorIS3_EEEERKNS1_IdNS4_IdEEEE",
+      "line": 63,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier23applyVariationalCircuitERKNSt3__16vectorINS0_7complexIdEENS0_9allocatorIS3_EEEERKNS1_IdNS4_IdEEEE",
+      "line": 66,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier23applyVariationalCircuitERKNSt3__16vectorINS0_7complexIdEENS0_9allocatorIS3_EEEERKNS1_IdNS4_IdEEEE",
+      "line": 68,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier23applyVariationalCircuitERKNSt3__16vectorINS0_7complexIdEENS0_9allocatorIS3_EEEERKNS1_IdNS4_IdEEEE",
+      "line": 65,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "main",
+      "line": 107,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        for (size_t i = 0; i < inputs.size(); i++) {\n            int predicted = classify(inputs[i]);\n            int actual = labels[i];\n            \n            if (predicted != actual) {\n                // Update weights for correct class\n                for (auto& w : weights[actual]) {\n                    w += learningRate * 0.1;\n                }\n                \n                // Penalize incorrect class\n                for (auto& w : weights[predicted]) {\n                    w -= learningRate * 0.1;\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    QuantumClassifier qc(4, 2);\n    \n    std::vector<std::vector<double>> data(100, std::vector<double>(4, 0.5));\n    std::vector<int> labels(100, 0);\n    \n    qc.trainBatch(data, labels, 0.01);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "main",
+      "line": 109,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            int predicted = classify(inputs[i]);\n            int actual = labels[i];\n            \n            if (predicted != actual) {\n                // Update weights for correct class\n                for (auto& w : weights[actual]) {\n                    w += learningRate * 0.1;\n                }\n                \n                // Penalize incorrect class\n                for (auto& w : weights[predicted]) {\n                    w -= learningRate * 0.1;\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    QuantumClassifier qc(4, 2);\n    \n    std::vector<std::vector<double>> data(100, std::vector<double>(4, 0.5));\n    std::vector<int> labels(100, 0);\n    \n    qc.trainBatch(data, labels, 0.01);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "main",
+      "line": 114,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                for (auto& w : weights[actual]) {\n                    w += learningRate * 0.1;\n                }\n                \n                // Penalize incorrect class\n                for (auto& w : weights[predicted]) {\n                    w -= learningRate * 0.1;\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    QuantumClassifier qc(4, 2);\n    \n    std::vector<std::vector<double>> data(100, std::vector<double>(4, 0.5));\n    std::vector<int> labels(100, 0);\n    \n    qc.trainBatch(data, labels, 0.01);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier8classifyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 89,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "        for (int c = 0; c < numClasses; c++) {\n            auto state = applyVariationalCircuit(encoded, weights[c]);\n            \n            // Measure expectation value\n            classScores[c] = 0.0;\n            for (size_t i = 0; i < state.size(); i++) {\n                classScores[c] += std::norm(state[i]) * (i % 2 == 0 ? 1.0 : -1.0);\n            }\n        }\n        \n        // Return class with highest score\n        return std::max_element(classScores.begin(), classScores.end()) - \n               classScores.begin();\n    }\n    \n    // Train on batch\n    void trainBatch(const std::vector<std::vector<double>>& inputs,\n                   const std::vector<int>& labels, double learningRate) {\n        \n        for (size_t i = 0; i < inputs.size(); i++) {\n            int predicted = classify(inputs[i]);\n            int actual = labels[i];\n            \n            if (predicted != actual) {\n                // Update weights for correct class\n                for (auto& w : weights[actual]) {\n                    w += learningRate * 0.1;\n                }\n                \n                // Penalize incorrect class\n                for (auto& w : weights[predicted]) {\n                    w -= learningRate * 0.1;\n                }\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.93
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier10encodeDataERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 31,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        for (int q = 0; q < numQubits && q < static_cast<int>(data.size()); q++) {\n            double angle = data[q] * M_PI;\n            \n            // Apply RY rotation\n            for (int i = 0; i < stateSize; i++) {\n                if (!((i >> q) & 1)) {\n                    int j = i | (1 << q);\n                    Complex temp = state[i];\n                    state[i] = std::cos(angle/2) * temp;\n                    state[j] = std::sin(angle/2) * temp;\n                }\n            }\n        }\n        \n        return state;\n    }\n    \n    // Variational quantum circuit\n    std::vector<Complex> applyVariationalCircuit(\n        const std::vector<Complex>& inputState,\n        const std::vector<double>& params) {\n        \n        std::vector<Complex> state = inputState;\n        int paramIdx = 0;\n        \n        // Layer 1: Parameterized rotations\n        for (int q = 0; q < numQubits; q++) {\n            double theta = params[paramIdx++];\n            // Apply rotation (simplified)\n            for (size_t i = 0; i < state.size(); i++) {\n                if ((i >> q) & 1) {\n                    state[i] *= std::exp(Complex(0, theta));\n                }\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier10encodeDataERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 30,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        // Angle encoding\n        for (int q = 0; q < numQubits && q < static_cast<int>(data.size()); q++) {\n            double angle = data[q] * M_PI;\n            \n            // Apply RY rotation\n            for (int i = 0; i < stateSize; i++) {\n                if (!((i >> q) & 1)) {\n                    int j = i | (1 << q);\n                    Complex temp = state[i];\n                    state[i] = std::cos(angle/2) * temp;\n                    state[j] = std::sin(angle/2) * temp;\n                }\n            }\n        }\n        \n        return state;\n    }\n    \n    // Variational quantum circuit\n    std::vector<Complex> applyVariationalCircuit(\n        const std::vector<Complex>& inputState,\n        const std::vector<double>& params) {\n        \n        std::vector<Complex> state = inputState;\n        int paramIdx = 0;\n        \n        // Layer 1: Parameterized rotations\n        for (int q = 0; q < numQubits; q++) {\n            double theta = params[paramIdx++];\n            // Apply rotation (simplified)\n            for (size_t i = 0; i < state.size(); i++) {\n                if ((i >> q) & 1) {\n                    state[i] *= std::exp(Complex(0, theta));\n                }\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/qml_classifier.cpp",
+      "function": "_ZN17QuantumClassifier8classifyERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 84,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int classify(const std::vector<double>& input) {\n        auto encoded = encodeData(input);\n        \n        std::vector<double> classScores(numClasses);\n        \n        for (int c = 0; c < numClasses; c++) {\n            auto state = applyVariationalCircuit(encoded, weights[c]);\n            \n            // Measure expectation value\n            classScores[c] = 0.0;\n            for (size_t i = 0; i < state.size(); i++) {\n                classScores[c] += std::norm(state[i]) * (i % 2 == 0 ? 1.0 : -1.0);\n            }\n        }\n        \n        // Return class with highest score\n        return std::max_element(classScores.begin(), classScores.end()) - \n               classScores.begin();\n    }\n    \n    // Train on batch\n    void trainBatch(const std::vector<std::vector<double>>& inputs,\n                   const std::vector<int>& labels, double learningRate) {\n        \n        for (size_t i = 0; i < inputs.size(); i++) {\n            int predicted = classify(inputs[i]);\n            int actual = labels[i];\n            \n            if (predicted != actual) {\n                // Update weights for correct class\n                for (auto& w : weights[actual]) {\n                    w += learningRate * 0.1;\n                }\n                \n                // Penalize incorrect class",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

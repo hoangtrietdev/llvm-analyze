@@ -1,0 +1,968 @@
+{
+  "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+    "llvm_initial": 72,
+    "llvm_sys_noise": 51,
+    "llvm_project": 21,
+    "after_filter": 16,
+    "ai_batches": 2,
+    "ai_results": 16,
+    "omp_verified": 0,
+    "total_ms": 3924.1,
+    "llvm_ms": 480.3
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "main",
+      "line": 112,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.20000000000000004
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "main",
+      "line": 112,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "    \n    // Install new flow\n    void installFlow(const FlowEntry& entry) {\n        // Insert in priority order\n        auto it = flowTable.begin();\n        while (it != flowTable.end() && it->priority > entry.priority) {\n            ++it;\n        }\n        flowTable.insert(it, entry);\n        \n        // Clear cache\n        flowCache.clear();\n    }\n    \n    // Remove flow\n    void removeFlow(int idx) {\n        if (idx >= 0 && idx < static_cast<int>(flowTable.size())) {\n            flowTable.erase(flowTable.begin() + idx);\n            flowCache.clear();\n        }\n    }\n    \n    // Flow table aggregation\n    void aggregateFlows() {\n        std::map<uint32_t, FlowEntry> aggregated;\n        \n        for (const auto& entry : flowTable) {\n            uint32_t key = (entry.srcIP >> 24) << 24;  // /24 subnet\n            \n            if (aggregated.find(key) == aggregated.end()) {\n                aggregated[key] = entry;\n            } else {\n                aggregated[key].packetCount += entry.packetCount;\n                aggregated[key].byteCount += entry.byteCount;\n            }"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "main",
+      "line": 112,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "    \n    // Install new flow\n    void installFlow(const FlowEntry& entry) {\n        // Insert in priority order\n        auto it = flowTable.begin();\n        while (it != flowTable.end() && it->priority > entry.priority) {\n            ++it;\n        }\n        flowTable.insert(it, entry);\n        \n        // Clear cache\n        flowCache.clear();\n    }\n    \n    // Remove flow\n    void removeFlow(int idx) {\n        if (idx >= 0 && idx < static_cast<int>(flowTable.size())) {\n            flowTable.erase(flowTable.begin() + idx);\n            flowCache.clear();\n        }\n    }\n    \n    // Flow table aggregation\n    void aggregateFlows() {\n        std::map<uint32_t, FlowEntry> aggregated;\n        \n        for (const auto& entry : flowTable) {\n            uint32_t key = (entry.srcIP >> 24) << 24;  // /24 subnet\n            \n            if (aggregated.find(key) == aggregated.end()) {\n                aggregated[key] = entry;\n            } else {\n                aggregated[key].packetCount += entry.packetCount;\n                aggregated[key].byteCount += entry.byteCount;\n            }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "main",
+      "line": 82,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "main",
+      "line": 87,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);\n                        break;\n                    case FlowEntry::DROP:\n                        break;\n                    case FlowEntry::CONTROLLER:\n                        sendToController(pkt);\n                        break;\n                    case FlowEntry::MODIFY:\n                        modifyPacket(pkt, entry);\n                        forwardPacket(pkt, entry.outputPort);\n                        break;\n                }\n            } else {\n                // Table miss - send to controller\n                sendToController(pkt);\n            }\n        }\n    }\n    \n    // Install new flow\n    void installFlow(const FlowEntry& entry) {\n        // Insert in priority order\n        auto it = flowTable.begin();\n        while (it != flowTable.end() && it->priority > entry.priority) {\n            ++it;\n        }\n        flowTable.insert(it, entry);\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "main",
+      "line": 79,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13SDNControllerD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13SDNControllerD1Ev",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13SDNController9FlowEntryENS_9allocatorIS2_EEE6insertENS_11__wrap_iterIPKS2_EERS7_",
+      "line": 1199,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13SDNController9FlowEntryENS_9allocatorIS2_EEE6insertENS_11__wrap_iterIPKS2_EERS7_",
+      "line": 1200,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13SDNController9FlowEntryENS_9allocatorIS2_EEE6insertENS_11__wrap_iterIPKS2_EERS7_",
+      "line": 1188,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIN13SDNController9FlowEntryENS_9allocatorIS2_EEE6insertENS_11__wrap_iterIPKS2_EERS7_",
+      "line": 228,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13SDNController9FlowEntryENS_9allocatorIS2_EEE6insertENS_11__wrap_iterIPKS2_EERS7_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN13SDNController9FlowEntryENS_9allocatorIS2_EEE6insertENS_11__wrap_iterIPKS2_EERS7_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIN13SDNController9FlowEntryENS_9allocatorIS2_EEE6insertENS_11__wrap_iterIPKS2_EERS7_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN13SDNController9FlowEntryENS_9allocatorIS2_EEE6insertENS_11__wrap_iterIPKS2_EERS7_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN13SDNController9FlowEntryERNS_9allocatorIS2_EEE12emplace_backIJRKS2_EEEvDpOT_",
+      "line": 457,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN13SDNController9FlowEntryERNS_9allocatorIS2_EEE12emplace_backIJRKS2_EEEvDpOT_",
+      "line": 458,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__114__split_bufferIN13SDNController9FlowEntryERNS_9allocatorIS2_EEE12emplace_backIJRKS2_EEEvDpOT_",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIN13SDNController9FlowEntryERNS_9allocatorIS2_EEE12emplace_backIJRKS2_EEEvDpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN13SDNController9FlowEntryERNS_9allocatorIS2_EEE12emplace_backIJRKS2_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN13SDNController9FlowEntryERNS_9allocatorIS2_EEE12emplace_backIJRKS2_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN13SDNController9FlowEntryERNS_9allocatorIS2_EEE12emplace_backIJRKS2_EEEvDpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN13SDNController9FlowEntryERNS_9allocatorIS2_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN13SDNController9FlowEntryERNS_9allocatorIS2_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeINS_12__value_typeIyiEENS_19__map_value_compareIyNS_4pairIKyiEENS_4lessIyEELb1EEENS_9allocatorIS6_EEE7destroyEPNS_11__tree_nodeIS2_PvEE",
+      "line": 1449,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 2049,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 2049,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 1994,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 1994,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 43,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 48,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "        if (it != flowCache.end()) {\n            return it->second;\n        }\n        \n        // Linear search through flow table (sorted by priority)\n        for (size_t i = 0; i < flowTable.size(); i++) {\n            if (matchEntry(pkt, flowTable[i])) {\n                flowCache[hash] = i;\n                return i;\n            }\n        }\n        \n        return -1;  // No match found\n    }\n    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 59,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        return -1;  // No match found\n    }\n    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 59,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        return -1;  // No match found\n    }\n    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 60,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return -1;  // No match found\n    }\n    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 60,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        return -1;  // No match found\n    }\n    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 61,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);\n                        break;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 61,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);\n                        break;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 62,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);\n                        break;\n                    case FlowEntry::DROP:"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 62,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);\n                        break;\n                    case FlowEntry::DROP:"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 63,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);\n                        break;\n                    case FlowEntry::DROP:\n                        break;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 63,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);\n                        break;\n                    case FlowEntry::DROP:\n                        break;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 1591,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 1593,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 1594,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 1601,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 1602,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 1691,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 1677,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 48,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 279,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 279,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 281,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 283,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 283,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 290,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 237,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 240,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 256,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 259,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// Software-Defined Networking (SDN) Flow Table Processing\n#include <vector>\n#include <map>\n#include <cstring>\n#include <cstdint>\n\nclass SDNController {\npublic:\n    struct FlowEntry {\n        uint64_t matchFields;  // Bitmap of fields to match\n        uint32_t srcIP, dstIP;\n        uint16_t srcPort, dstPort;\n        uint8_t protocol;\n        \n        uint32_t priority;\n        uint64_t packetCount;\n        uint64_t byteCount;\n        \n        enum Action { FORWARD, DROP, CONTROLLER, MODIFY };\n        Action action;\n        int outputPort;\n    };\n    \n    struct Packet {\n        uint32_t srcIP, dstIP;\n        uint16_t srcPort, dstPort;\n        uint8_t protocol;\n        uint16_t length;\n        uint8_t* payload;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 303,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 303,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 310,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 256,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 259,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 237,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 240,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// Software-Defined Networking (SDN) Flow Table Processing\n#include <vector>\n#include <map>\n#include <cstring>\n#include <cstdint>\n\nclass SDNController {\npublic:\n    struct FlowEntry {\n        uint64_t matchFields;  // Bitmap of fields to match\n        uint32_t srcIP, dstIP;\n        uint16_t srcPort, dstPort;\n        uint8_t protocol;\n        \n        uint32_t priority;\n        uint64_t packetCount;\n        uint64_t byteCount;\n        \n        enum Action { FORWARD, DROP, CONTROLLER, MODIFY };\n        Action action;\n        int outputPort;\n    };\n    \n    struct Packet {\n        uint32_t srcIP, dstIP;\n        uint16_t srcPort, dstPort;\n        uint8_t protocol;\n        uint16_t length;\n        uint8_t* payload;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 279,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "main",
+      "line": 87,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);\n                        break;\n                    case FlowEntry::DROP:\n                        break;\n                    case FlowEntry::CONTROLLER:\n                        sendToController(pkt);\n                        break;\n                    case FlowEntry::MODIFY:\n                        modifyPacket(pkt, entry);\n                        forwardPacket(pkt, entry.outputPort);\n                        break;\n                }\n            } else {\n                // Table miss - send to controller\n                sendToController(pkt);\n            }\n        }\n    }\n    \n    // Install new flow\n    void installFlow(const FlowEntry& entry) {\n        // Insert in priority order\n        auto it = flowTable.begin();\n        while (it != flowTable.end() && it->priority > entry.priority) {\n            ++it;\n        }\n        flowTable.insert(it, entry);\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 59,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        return -1;  // No match found\n    }\n    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 59,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        return -1;  // No match found\n    }\n    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 60,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        return -1;  // No match found\n    }\n    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 61,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);\n                        break;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 62,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);\n                        break;\n                    case FlowEntry::DROP:",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 63,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);\n                        break;\n                    case FlowEntry::DROP:\n                        break;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 48,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "        if (it != flowCache.end()) {\n            return it->second;\n        }\n        \n        // Linear search through flow table (sorted by priority)\n        for (size_t i = 0; i < flowTable.size(); i++) {\n            if (matchEntry(pkt, flowTable[i])) {\n                flowCache[hash] = i;\n                return i;\n            }\n        }\n        \n        return -1;  // No match found\n    }\n    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.93
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "main",
+      "line": 112,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "    \n    // Install new flow\n    void installFlow(const FlowEntry& entry) {\n        // Insert in priority order\n        auto it = flowTable.begin();\n        while (it != flowTable.end() && it->priority > entry.priority) {\n            ++it;\n        }\n        flowTable.insert(it, entry);\n        \n        // Clear cache\n        flowCache.clear();\n    }\n    \n    // Remove flow\n    void removeFlow(int idx) {\n        if (idx >= 0 && idx < static_cast<int>(flowTable.size())) {\n            flowTable.erase(flowTable.begin() + idx);\n            flowCache.clear();\n        }\n    }\n    \n    // Flow table aggregation\n    void aggregateFlows() {\n        std::map<uint32_t, FlowEntry> aggregated;\n        \n        for (const auto& entry : flowTable) {\n            uint32_t key = (entry.srcIP >> 24) << 24;  // /24 subnet\n            \n            if (aggregated.find(key) == aggregated.end()) {\n                aggregated[key] = entry;\n            } else {\n                aggregated[key].packetCount += entry.packetCount;\n                aggregated[key].byteCount += entry.byteCount;\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.78
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "main",
+      "line": 112,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "    \n    // Install new flow\n    void installFlow(const FlowEntry& entry) {\n        // Insert in priority order\n        auto it = flowTable.begin();\n        while (it != flowTable.end() && it->priority > entry.priority) {\n            ++it;\n        }\n        flowTable.insert(it, entry);\n        \n        // Clear cache\n        flowCache.clear();\n    }\n    \n    // Remove flow\n    void removeFlow(int idx) {\n        if (idx >= 0 && idx < static_cast<int>(flowTable.size())) {\n            flowTable.erase(flowTable.begin() + idx);\n            flowCache.clear();\n        }\n    }\n    \n    // Flow table aggregation\n    void aggregateFlows() {\n        std::map<uint32_t, FlowEntry> aggregated;\n        \n        for (const auto& entry : flowTable) {\n            uint32_t key = (entry.srcIP >> 24) << 24;  // /24 subnet\n            \n            if (aggregated.find(key) == aggregated.end()) {\n                aggregated[key] = entry;\n            } else {\n                aggregated[key].packetCount += entry.packetCount;\n                aggregated[key].byteCount += entry.byteCount;\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.78
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// Software-Defined Networking (SDN) Flow Table Processing\n#include <vector>\n#include <map>\n#include <cstring>\n#include <cstdint>\n\nclass SDNController {\npublic:\n    struct FlowEntry {\n        uint64_t matchFields;  // Bitmap of fields to match\n        uint32_t srcIP, dstIP;\n        uint16_t srcPort, dstPort;\n        uint8_t protocol;\n        \n        uint32_t priority;\n        uint64_t packetCount;\n        uint64_t byteCount;\n        \n        enum Action { FORWARD, DROP, CONTROLLER, MODIFY };\n        Action action;\n        int outputPort;\n    };\n    \n    struct Packet {\n        uint32_t srcIP, dstIP;\n        uint16_t srcPort, dstPort;\n        uint8_t protocol;\n        uint16_t length;\n        uint8_t* payload;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.65
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "_ZNSt3__127__tree_balance_after_insertB8ne210101IPNS_16__tree_node_baseIPvEEEEvT_S5_",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.65,
+      "context": "// Software-Defined Networking (SDN) Flow Table Processing\n#include <vector>\n#include <map>\n#include <cstring>\n#include <cstdint>\n\nclass SDNController {\npublic:\n    struct FlowEntry {\n        uint64_t matchFields;  // Bitmap of fields to match\n        uint32_t srcIP, dstIP;\n        uint16_t srcPort, dstPort;\n        uint8_t protocol;\n        \n        uint32_t priority;\n        uint64_t packetCount;\n        uint64_t byteCount;\n        \n        enum Action { FORWARD, DROP, CONTROLLER, MODIFY };\n        Action action;\n        int outputPort;\n    };\n    \n    struct Packet {\n        uint32_t srcIP, dstIP;\n        uint16_t srcPort, dstPort;\n        uint8_t protocol;\n        uint16_t length;\n        uint8_t* payload;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.65
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 60,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return -1;  // No match found\n    }\n    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 61,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);\n                        break;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 62,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);\n                        break;\n                    case FlowEntry::DROP:",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/sdn_flow_table.cpp",
+      "function": "_ZN13SDNController9matchFlowERKNS_6PacketE",
+      "line": 63,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    bool matchEntry(const Packet& pkt, const FlowEntry& entry) {\n        if ((entry.matchFields & 0x1) && pkt.srcIP != entry.srcIP) return false;\n        if ((entry.matchFields & 0x2) && pkt.dstIP != entry.dstIP) return false;\n        if ((entry.matchFields & 0x4) && pkt.srcPort != entry.srcPort) return false;\n        if ((entry.matchFields & 0x8) && pkt.dstPort != entry.dstPort) return false;\n        if ((entry.matchFields & 0x10) && pkt.protocol != entry.protocol) return false;\n        \n        return true;\n    }\n    \n    uint64_t hashPacket(const Packet& pkt) {\n        uint64_t hash = pkt.srcIP;\n        hash ^= (uint64_t)pkt.dstIP << 32;\n        hash ^= (uint64_t)pkt.srcPort << 16;\n        hash ^= (uint64_t)pkt.dstPort;\n        hash ^= (uint64_t)pkt.protocol << 48;\n        return hash;\n    }\n    \n    // Process batch of packets\n    void processBatch(std::vector<Packet>& packets) {\n        for (auto& pkt : packets) {\n            int flowIdx = matchFlow(pkt);\n            \n            if (flowIdx >= 0) {\n                auto& entry = flowTable[flowIdx];\n                entry.packetCount++;\n                entry.byteCount += pkt.length;\n                \n                switch (entry.action) {\n                    case FlowEntry::FORWARD:\n                        forwardPacket(pkt, entry.outputPort);\n                        break;\n                    case FlowEntry::DROP:\n                        break;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

@@ -1,0 +1,1296 @@
+{
+  "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+    "llvm_initial": 70,
+    "llvm_sys_noise": 35,
+    "llvm_project": 35,
+    "after_filter": 31,
+    "ai_batches": 3,
+    "ai_results": 31,
+    "omp_verified": 0,
+    "total_ms": 7031.7,
+    "llvm_ms": 394.6
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1360,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "main",
+      "line": 226,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 184,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return netTOA;\n    }\n    \n    // Adjust temperatures to achieve equilibrium\n    void radiativeConvectiveEquilibrium(int maxIter) {\n        for (int iter = 0; iter < maxIter; iter++) {\n            std::vector<double> wavelengths;\n            for (double wl = 0.2; wl < 50.0; wl += 1.0) {\n                wavelengths.push_back(wl);\n            }\n            \n            auto flux = solveTwoStream(wavelengths);\n            \n            // Update temperatures based on heating rates\n            for (int k = 0; k < nLayers; k++) {\n                atmosphere[k].temperature += 0.01 * flux.heating[k];\n            }\n            \n            // Convective adjustment\n            applyConvectiveAdjustment();\n        }\n    }\n    \n    // Moist convective adjustment\n    void applyConvectiveAdjustment() {\n        double lapseRate = 6.5;  // K/km\n        \n        for (int k = 0; k < nLayers - 1; k++) {\n            double dT = atmosphere[k+1].temperature - atmosphere[k].temperature;\n            double dz = 1.0;  // km (approximate)\n            \n            double actualLapse = -dT / dz;\n            \n            if (actualLapse > lapseRate) {\n                // Adjust to critical lapse rate"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 193,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n            \n            auto flux = solveTwoStream(wavelengths);\n            \n            // Update temperatures based on heating rates\n            for (int k = 0; k < nLayers; k++) {\n                atmosphere[k].temperature += 0.01 * flux.heating[k];\n            }\n            \n            // Convective adjustment\n            applyConvectiveAdjustment();\n        }\n    }\n    \n    // Moist convective adjustment\n    void applyConvectiveAdjustment() {\n        double lapseRate = 6.5;  // K/km\n        \n        for (int k = 0; k < nLayers - 1; k++) {\n            double dT = atmosphere[k+1].temperature - atmosphere[k].temperature;\n            double dz = 1.0;  // km (approximate)\n            \n            double actualLapse = -dT / dz;\n            \n            if (actualLapse > lapseRate) {\n                // Adjust to critical lapse rate\n                double adjustment = (actualLapse - lapseRate) * dz / 2;\n                atmosphere[k].temperature += adjustment;\n                atmosphere[k+1].temperature -= adjustment;\n            }\n        }\n    }\n};\n\nint main() {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 186,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    // Adjust temperatures to achieve equilibrium\n    void radiativeConvectiveEquilibrium(int maxIter) {\n        for (int iter = 0; iter < maxIter; iter++) {\n            std::vector<double> wavelengths;\n            for (double wl = 0.2; wl < 50.0; wl += 1.0) {\n                wavelengths.push_back(wl);\n            }\n            \n            auto flux = solveTwoStream(wavelengths);\n            \n            // Update temperatures based on heating rates\n            for (int k = 0; k < nLayers; k++) {\n                atmosphere[k].temperature += 0.01 * flux.heating[k];\n            }\n            \n            // Convective adjustment\n            applyConvectiveAdjustment();\n        }\n    }\n    \n    // Moist convective adjustment\n    void applyConvectiveAdjustment() {\n        double lapseRate = 6.5;  // K/km\n        \n        for (int k = 0; k < nLayers - 1; k++) {\n            double dT = atmosphere[k+1].temperature - atmosphere[k].temperature;\n            double dz = 1.0;  // km (approximate)\n            \n            double actualLapse = -dT / dz;\n            \n            if (actualLapse > lapseRate) {\n                // Adjust to critical lapse rate\n                double adjustment = (actualLapse - lapseRate) * dz / 2;\n                atmosphere[k].temperature += adjustment;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    // Moist convective adjustment\n    void applyConvectiveAdjustment() {\n        double lapseRate = 6.5;  // K/km\n        \n        for (int k = 0; k < nLayers - 1; k++) {\n            double dT = atmosphere[k+1].temperature - atmosphere[k].temperature;\n            double dz = 1.0;  // km (approximate)\n            \n            double actualLapse = -dT / dz;\n            \n            if (actualLapse > lapseRate) {\n                // Adjust to critical lapse rate\n                double adjustment = (actualLapse - lapseRate) * dz / 2;\n                atmosphere[k].temperature += adjustment;\n                atmosphere[k+1].temperature -= adjustment;\n            }\n        }\n    }\n};\n\nint main() {\n    RadiativeTransfer rt(50);\n    \n    // Initialize atmosphere\n    for (int k = 0; k < 50; k++) {\n        rt.atmosphere[k].temperature = 288 - 6.5 * k;\n        rt.atmosphere[k].pressure = 1000 * std::exp(-k / 7.0);\n        rt.atmosphere[k].waterVapor = 10 * std::exp(-k / 2.0);\n        rt.atmosphere[k].co2 = 400;\n        rt.atmosphere[k].ozone = (k > 15 && k < 30) ? 3.0 : 0.1;\n        rt.atmosphere[k].cloudCover = (k > 5 && k < 10) ? 0.5 : 0.0;\n        rt.atmosphere[k].cloudOpticalDepth = 10.0;\n    }\n    "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 212,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            double dT = atmosphere[k+1].temperature - atmosphere[k].temperature;\n            double dz = 1.0;  // km (approximate)\n            \n            double actualLapse = -dT / dz;\n            \n            if (actualLapse > lapseRate) {\n                // Adjust to critical lapse rate\n                double adjustment = (actualLapse - lapseRate) * dz / 2;\n                atmosphere[k].temperature += adjustment;\n                atmosphere[k+1].temperature -= adjustment;\n            }\n        }\n    }\n};\n\nint main() {\n    RadiativeTransfer rt(50);\n    \n    // Initialize atmosphere\n    for (int k = 0; k < 50; k++) {\n        rt.atmosphere[k].temperature = 288 - 6.5 * k;\n        rt.atmosphere[k].pressure = 1000 * std::exp(-k / 7.0);\n        rt.atmosphere[k].waterVapor = 10 * std::exp(-k / 2.0);\n        rt.atmosphere[k].co2 = 400;\n        rt.atmosphere[k].ozone = (k > 15 && k < 30) ? 3.0 : 0.1;\n        rt.atmosphere[k].cloudCover = (k > 5 && k < 10) ? 0.5 : 0.0;\n        rt.atmosphere[k].cloudOpticalDepth = 10.0;\n    }\n    \n    rt.surfaceTemperature = 288;\n    rt.radiativeConvectiveEquilibrium(100);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    // Moist convective adjustment\n    void applyConvectiveAdjustment() {\n        double lapseRate = 6.5;  // K/km\n        \n        for (int k = 0; k < nLayers - 1; k++) {\n            double dT = atmosphere[k+1].temperature - atmosphere[k].temperature;\n            double dz = 1.0;  // km (approximate)\n            \n            double actualLapse = -dT / dz;\n            \n            if (actualLapse > lapseRate) {\n                // Adjust to critical lapse rate\n                double adjustment = (actualLapse - lapseRate) * dz / 2;\n                atmosphere[k].temperature += adjustment;\n                atmosphere[k+1].temperature -= adjustment;\n            }\n        }\n    }\n};\n\nint main() {\n    RadiativeTransfer rt(50);\n    \n    // Initialize atmosphere\n    for (int k = 0; k < 50; k++) {\n        rt.atmosphere[k].temperature = 288 - 6.5 * k;\n        rt.atmosphere[k].pressure = 1000 * std::exp(-k / 7.0);\n        rt.atmosphere[k].waterVapor = 10 * std::exp(-k / 2.0);\n        rt.atmosphere[k].co2 = 400;\n        rt.atmosphere[k].ozone = (k > 15 && k < 30) ? 3.0 : 0.1;\n        rt.atmosphere[k].cloudCover = (k > 5 && k < 10) ? 0.5 : 0.0;\n        rt.atmosphere[k].cloudOpticalDepth = 10.0;\n    }\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 184,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 193,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN17RadiativeTransfer5LayerENS_9allocatorIS2_EEE8__appendEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN17RadiativeTransfer5LayerENS_9allocatorIS2_EEE8__appendEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN17RadiativeTransfer5LayerENS_9allocatorIS2_EEE8__appendEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN17RadiativeTransfer5LayerENS_9allocatorIS2_EEE8__appendEm",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIN17RadiativeTransfer5LayerENS_9allocatorIS2_EEE8__appendEm",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN17RadiativeTransfer5LayerENS_9allocatorIS2_EEE8__appendEm",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17RadiativeTransfer14solveTwoStreamERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 1360,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17RadiativeTransfer14solveTwoStreamERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17RadiativeTransfer14solveTwoStreamERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 1360,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17RadiativeTransfer14solveTwoStreamERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17RadiativeTransfer14solveTwoStreamERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 1360,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17RadiativeTransfer14solveTwoStreamERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer14solveTwoStreamERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 53,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.47
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer14solveTwoStreamERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 65,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                solveLongwaveFlux(wl, flux);\n            }\n        }\n        \n        // Compute heating rates\n        for (int k = 0; k < nLayers; k++) {\n            double netFlux = (flux.upward[k] - flux.upward[k+1]) +\n                           (flux.downward[k+1] - flux.downward[k]);\n            \n            double dp = (k == 0) ? atmosphere[k].pressure :\n                       atmosphere[k].pressure - atmosphere[k-1].pressure;\n            \n            flux.heating[k] = netFlux / (dp * 100);  // K/day\n        }\n        \n        return flux;\n    }\n    \n    // Shortwave radiation\n    void solveShortwaveFlux(double wavelength, RadiationFlux& flux) {\n        double solarFlux = 1361.0;  // Solar constant\n        \n        // Top of atmosphere\n        flux.downward[nLayers] = solarFlux;\n        flux.upward[nLayers] = 0.0;\n        \n        // Propagate downward\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double reflection = computeReflection(k);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission;\n            flux.upward[k+1] += flux.downward[k+1] * reflection;\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer14solveTwoStreamERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 55,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        flux.downward.resize(nLayers + 1);\n        flux.heating.resize(nLayers);\n        \n        for (double wl : wavelengths) {\n            // Shortwave (solar) radiation\n            if (wl < 4.0) {\n                solveShortwaveFlux(wl, flux);\n            }\n            // Longwave (thermal) radiation\n            else {\n                solveLongwaveFlux(wl, flux);\n            }\n        }\n        \n        // Compute heating rates\n        for (int k = 0; k < nLayers; k++) {\n            double netFlux = (flux.upward[k] - flux.upward[k+1]) +\n                           (flux.downward[k+1] - flux.downward[k]);\n            \n            double dp = (k == 0) ? atmosphere[k].pressure :\n                       atmosphere[k].pressure - atmosphere[k-1].pressure;\n            \n            flux.heating[k] = netFlux / (dp * 100);  // K/day\n        }\n        \n        return flux;\n    }\n    \n    // Shortwave radiation\n    void solveShortwaveFlux(double wavelength, RadiationFlux& flux) {\n        double solarFlux = 1361.0;  // Solar constant\n        \n        // Top of atmosphere\n        flux.downward[nLayers] = solarFlux;\n        flux.upward[nLayers] = 0.0;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer14solveTwoStreamERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 53,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        RadiationFlux flux;\n        flux.upward.resize(nLayers + 1);\n        flux.downward.resize(nLayers + 1);\n        flux.heating.resize(nLayers);\n        \n        for (double wl : wavelengths) {\n            // Shortwave (solar) radiation\n            if (wl < 4.0) {\n                solveShortwaveFlux(wl, flux);\n            }\n            // Longwave (thermal) radiation\n            else {\n                solveLongwaveFlux(wl, flux);\n            }\n        }\n        \n        // Compute heating rates\n        for (int k = 0; k < nLayers; k++) {\n            double netFlux = (flux.upward[k] - flux.upward[k+1]) +\n                           (flux.downward[k+1] - flux.downward[k]);\n            \n            double dp = (k == 0) ? atmosphere[k].pressure :\n                       atmosphere[k].pressure - atmosphere[k-1].pressure;\n            \n            flux.heating[k] = netFlux / (dp * 100);  // K/day\n        }\n        \n        return flux;\n    }\n    \n    // Shortwave radiation\n    void solveShortwaveFlux(double wavelength, RadiationFlux& flux) {\n        double solarFlux = 1361.0;  // Solar constant\n        \n        // Top of atmosphere"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer14solveTwoStreamERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 69,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        // Compute heating rates\n        for (int k = 0; k < nLayers; k++) {\n            double netFlux = (flux.upward[k] - flux.upward[k+1]) +\n                           (flux.downward[k+1] - flux.downward[k]);\n            \n            double dp = (k == 0) ? atmosphere[k].pressure :\n                       atmosphere[k].pressure - atmosphere[k-1].pressure;\n            \n            flux.heating[k] = netFlux / (dp * 100);  // K/day\n        }\n        \n        return flux;\n    }\n    \n    // Shortwave radiation\n    void solveShortwaveFlux(double wavelength, RadiationFlux& flux) {\n        double solarFlux = 1361.0;  // Solar constant\n        \n        // Top of atmosphere\n        flux.downward[nLayers] = solarFlux;\n        flux.upward[nLayers] = 0.0;\n        \n        // Propagate downward\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double reflection = computeReflection(k);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission;\n            flux.upward[k+1] += flux.downward[k+1] * reflection;\n        }\n        \n        // Surface reflection\n        flux.upward[0] = flux.downward[0] * surfaceAlbedo;\n        "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer14solveTwoStreamERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 65,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                solveLongwaveFlux(wl, flux);\n            }\n        }\n        \n        // Compute heating rates\n        for (int k = 0; k < nLayers; k++) {\n            double netFlux = (flux.upward[k] - flux.upward[k+1]) +\n                           (flux.downward[k+1] - flux.downward[k]);\n            \n            double dp = (k == 0) ? atmosphere[k].pressure :\n                       atmosphere[k].pressure - atmosphere[k-1].pressure;\n            \n            flux.heating[k] = netFlux / (dp * 100);  // K/day\n        }\n        \n        return flux;\n    }\n    \n    // Shortwave radiation\n    void solveShortwaveFlux(double wavelength, RadiationFlux& flux) {\n        double solarFlux = 1361.0;  // Solar constant\n        \n        // Top of atmosphere\n        flux.downward[nLayers] = solarFlux;\n        flux.upward[nLayers] = 0.0;\n        \n        // Propagate downward\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double reflection = computeReflection(k);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission;\n            flux.upward[k+1] += flux.downward[k+1] * reflection;\n        }"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17RadiativeTransfer13RadiationFluxD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17RadiativeTransfer13RadiationFluxD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN17RadiativeTransfer13RadiationFluxD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 87,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        // Top of atmosphere\n        flux.downward[nLayers] = solarFlux;\n        flux.upward[nLayers] = 0.0;\n        \n        // Propagate downward\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double reflection = computeReflection(k);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission;\n            flux.upward[k+1] += flux.downward[k+1] * reflection;\n        }\n        \n        // Surface reflection\n        flux.upward[0] = flux.downward[0] * surfaceAlbedo;\n        \n        // Propagate upward\n        for (int k = 1; k <= nLayers; k++) {\n            double tau = computeOpticalDepth(k-1, wavelength);\n            double transmission = std::exp(-tau);\n            \n            flux.upward[k] += flux.upward[k-1] * transmission;\n        }\n    }\n    \n    // Longwave radiation\n    void solveLongwaveFlux(double wavelength, RadiationFlux& flux) {\n        // Upward from surface\n        flux.upward[0] = planck(wavelength, surfaceTemperature);\n        \n        // Upward propagation\n        for (int k = 0; k < nLayers; k++) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 100,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Surface reflection\n        flux.upward[0] = flux.downward[0] * surfaceAlbedo;\n        \n        // Propagate upward\n        for (int k = 1; k <= nLayers; k++) {\n            double tau = computeOpticalDepth(k-1, wavelength);\n            double transmission = std::exp(-tau);\n            \n            flux.upward[k] += flux.upward[k-1] * transmission;\n        }\n    }\n    \n    // Longwave radiation\n    void solveLongwaveFlux(double wavelength, RadiationFlux& flux) {\n        // Upward from surface\n        flux.upward[0] = planck(wavelength, surfaceTemperature);\n        \n        // Upward propagation\n        for (int k = 0; k < nLayers; k++) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double emission = planck(wavelength, atmosphere[k].temperature);\n            \n            flux.upward[k+1] = flux.upward[k] * transmission + \n                              emission * (1 - transmission);\n        }\n        \n        // Downward from TOA\n        flux.downward[nLayers] = 0.0;\n        \n        // Downward propagation\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 142,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    // Optical depth calculation\n    double computeOpticalDepth(int layer, double wavelength) {\n        double tau = 0.0;\n        \n        // Water vapor absorption\n        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 147,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);\n        }\n        \n        auto flux = solveTwoStream(wavelengths);\n        \n        // Net at TOA"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 152,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);\n        }\n        \n        auto flux = solveTwoStream(wavelengths);\n        \n        // Net at TOA\n        double netTOA = flux.upward[nLayers] - flux.downward[nLayers];\n        \n        return netTOA;\n    }\n    "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 87,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        // Top of atmosphere\n        flux.downward[nLayers] = solarFlux;\n        flux.upward[nLayers] = 0.0;\n        \n        // Propagate downward\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double reflection = computeReflection(k);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission;\n            flux.upward[k+1] += flux.downward[k+1] * reflection;\n        }\n        \n        // Surface reflection\n        flux.upward[0] = flux.downward[0] * surfaceAlbedo;\n        \n        // Propagate upward\n        for (int k = 1; k <= nLayers; k++) {\n            double tau = computeOpticalDepth(k-1, wavelength);\n            double transmission = std::exp(-tau);\n            \n            flux.upward[k] += flux.upward[k-1] * transmission;\n        }\n    }\n    \n    // Longwave radiation\n    void solveLongwaveFlux(double wavelength, RadiationFlux& flux) {\n        // Upward from surface\n        flux.upward[0] = planck(wavelength, surfaceTemperature);\n        \n        // Upward propagation\n        for (int k = 0; k < nLayers; k++) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 142,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    // Optical depth calculation\n    double computeOpticalDepth(int layer, double wavelength) {\n        double tau = 0.0;\n        \n        // Water vapor absorption\n        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 147,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);\n        }\n        \n        auto flux = solveTwoStream(wavelengths);\n        \n        // Net at TOA"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 152,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);\n        }\n        \n        auto flux = solveTwoStream(wavelengths);\n        \n        // Net at TOA\n        double netTOA = flux.upward[nLayers] - flux.downward[nLayers];\n        \n        return netTOA;\n    }\n    "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        \n        // Surface reflection\n        flux.upward[0] = flux.downward[0] * surfaceAlbedo;\n        \n        // Propagate upward\n        for (int k = 1; k <= nLayers; k++) {\n            double tau = computeOpticalDepth(k-1, wavelength);\n            double transmission = std::exp(-tau);\n            \n            flux.upward[k] += flux.upward[k-1] * transmission;\n        }\n    }\n    \n    // Longwave radiation\n    void solveLongwaveFlux(double wavelength, RadiationFlux& flux) {\n        // Upward from surface\n        flux.upward[0] = planck(wavelength, surfaceTemperature);\n        \n        // Upward propagation\n        for (int k = 0; k < nLayers; k++) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double emission = planck(wavelength, atmosphere[k].temperature);\n            \n            flux.upward[k+1] = flux.upward[k] * transmission + \n                              emission * (1 - transmission);\n        }\n        \n        // Downward from TOA\n        flux.downward[nLayers] = 0.0;\n        \n        // Downward propagation\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 114,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    void solveLongwaveFlux(double wavelength, RadiationFlux& flux) {\n        // Upward from surface\n        flux.upward[0] = planck(wavelength, surfaceTemperature);\n        \n        // Upward propagation\n        for (int k = 0; k < nLayers; k++) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double emission = planck(wavelength, atmosphere[k].temperature);\n            \n            flux.upward[k+1] = flux.upward[k] * transmission + \n                              emission * (1 - transmission);\n        }\n        \n        // Downward from TOA\n        flux.downward[nLayers] = 0.0;\n        \n        // Downward propagation\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double emission = planck(wavelength, atmosphere[k].temperature);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission + \n                              emission * (1 - transmission);\n        }\n    }\n    \n    // Optical depth calculation\n    double computeOpticalDepth(int layer, double wavelength) {\n        double tau = 0.0;\n        \n        // Water vapor absorption\n        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 127,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Downward from TOA\n        flux.downward[nLayers] = 0.0;\n        \n        // Downward propagation\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double emission = planck(wavelength, atmosphere[k].temperature);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission + \n                              emission * (1 - transmission);\n        }\n    }\n    \n    // Optical depth calculation\n    double computeOpticalDepth(int layer, double wavelength) {\n        double tau = 0.0;\n        \n        // Water vapor absorption\n        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 142,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    // Optical depth calculation\n    double computeOpticalDepth(int layer, double wavelength) {\n        double tau = 0.0;\n        \n        // Water vapor absorption\n        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 147,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);\n        }\n        \n        auto flux = solveTwoStream(wavelengths);\n        \n        // Net at TOA"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 152,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);\n        }\n        \n        auto flux = solveTwoStream(wavelengths);\n        \n        // Net at TOA\n        double netTOA = flux.upward[nLayers] - flux.downward[nLayers];\n        \n        return netTOA;\n    }\n    "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 114,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    void solveLongwaveFlux(double wavelength, RadiationFlux& flux) {\n        // Upward from surface\n        flux.upward[0] = planck(wavelength, surfaceTemperature);\n        \n        // Upward propagation\n        for (int k = 0; k < nLayers; k++) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double emission = planck(wavelength, atmosphere[k].temperature);\n            \n            flux.upward[k+1] = flux.upward[k] * transmission + \n                              emission * (1 - transmission);\n        }\n        \n        // Downward from TOA\n        flux.downward[nLayers] = 0.0;\n        \n        // Downward propagation\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double emission = planck(wavelength, atmosphere[k].temperature);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission + \n                              emission * (1 - transmission);\n        }\n    }\n    \n    // Optical depth calculation\n    double computeOpticalDepth(int layer, double wavelength) {\n        double tau = 0.0;\n        \n        // Water vapor absorption\n        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 142,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    // Optical depth calculation\n    double computeOpticalDepth(int layer, double wavelength) {\n        double tau = 0.0;\n        \n        // Water vapor absorption\n        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 147,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);\n        }\n        \n        auto flux = solveTwoStream(wavelengths);\n        \n        // Net at TOA"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 152,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);\n        }\n        \n        auto flux = solveTwoStream(wavelengths);\n        \n        // Net at TOA\n        double netTOA = flux.upward[nLayers] - flux.downward[nLayers];\n        \n        return netTOA;\n    }\n    "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 127,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        \n        // Downward from TOA\n        flux.downward[nLayers] = 0.0;\n        \n        // Downward propagation\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double emission = planck(wavelength, atmosphere[k].temperature);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission + \n                              emission * (1 - transmission);\n        }\n    }\n    \n    // Optical depth calculation\n    double computeOpticalDepth(int layer, double wavelength) {\n        double tau = 0.0;\n        \n        // Water vapor absorption\n        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 212,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            double dT = atmosphere[k+1].temperature - atmosphere[k].temperature;\n            double dz = 1.0;  // km (approximate)\n            \n            double actualLapse = -dT / dz;\n            \n            if (actualLapse > lapseRate) {\n                // Adjust to critical lapse rate\n                double adjustment = (actualLapse - lapseRate) * dz / 2;\n                atmosphere[k].temperature += adjustment;\n                atmosphere[k+1].temperature -= adjustment;\n            }\n        }\n    }\n};\n\nint main() {\n    RadiativeTransfer rt(50);\n    \n    // Initialize atmosphere\n    for (int k = 0; k < 50; k++) {\n        rt.atmosphere[k].temperature = 288 - 6.5 * k;\n        rt.atmosphere[k].pressure = 1000 * std::exp(-k / 7.0);\n        rt.atmosphere[k].waterVapor = 10 * std::exp(-k / 2.0);\n        rt.atmosphere[k].co2 = 400;\n        rt.atmosphere[k].ozone = (k > 15 && k < 30) ? 3.0 : 0.1;\n        rt.atmosphere[k].cloudCover = (k > 5 && k < 10) ? 0.5 : 0.0;\n        rt.atmosphere[k].cloudOpticalDepth = 10.0;\n    }\n    \n    rt.surfaceTemperature = 288;\n    rt.radiativeConvectiveEquilibrium(100);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer14solveTwoStreamERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 53,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        RadiationFlux flux;\n        flux.upward.resize(nLayers + 1);\n        flux.downward.resize(nLayers + 1);\n        flux.heating.resize(nLayers);\n        \n        for (double wl : wavelengths) {\n            // Shortwave (solar) radiation\n            if (wl < 4.0) {\n                solveShortwaveFlux(wl, flux);\n            }\n            // Longwave (thermal) radiation\n            else {\n                solveLongwaveFlux(wl, flux);\n            }\n        }\n        \n        // Compute heating rates\n        for (int k = 0; k < nLayers; k++) {\n            double netFlux = (flux.upward[k] - flux.upward[k+1]) +\n                           (flux.downward[k+1] - flux.downward[k]);\n            \n            double dp = (k == 0) ? atmosphere[k].pressure :\n                       atmosphere[k].pressure - atmosphere[k-1].pressure;\n            \n            flux.heating[k] = netFlux / (dp * 100);  // K/day\n        }\n        \n        return flux;\n    }\n    \n    // Shortwave radiation\n    void solveShortwaveFlux(double wavelength, RadiationFlux& flux) {\n        double solarFlux = 1361.0;  // Solar constant\n        \n        // Top of atmosphere",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer14solveTwoStreamERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 69,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        // Compute heating rates\n        for (int k = 0; k < nLayers; k++) {\n            double netFlux = (flux.upward[k] - flux.upward[k+1]) +\n                           (flux.downward[k+1] - flux.downward[k]);\n            \n            double dp = (k == 0) ? atmosphere[k].pressure :\n                       atmosphere[k].pressure - atmosphere[k-1].pressure;\n            \n            flux.heating[k] = netFlux / (dp * 100);  // K/day\n        }\n        \n        return flux;\n    }\n    \n    // Shortwave radiation\n    void solveShortwaveFlux(double wavelength, RadiationFlux& flux) {\n        double solarFlux = 1361.0;  // Solar constant\n        \n        // Top of atmosphere\n        flux.downward[nLayers] = solarFlux;\n        flux.upward[nLayers] = 0.0;\n        \n        // Propagate downward\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double reflection = computeReflection(k);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission;\n            flux.upward[k+1] += flux.downward[k+1] * reflection;\n        }\n        \n        // Surface reflection\n        flux.upward[0] = flux.downward[0] * surfaceAlbedo;\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer14solveTwoStreamERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 65,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                solveLongwaveFlux(wl, flux);\n            }\n        }\n        \n        // Compute heating rates\n        for (int k = 0; k < nLayers; k++) {\n            double netFlux = (flux.upward[k] - flux.upward[k+1]) +\n                           (flux.downward[k+1] - flux.downward[k]);\n            \n            double dp = (k == 0) ? atmosphere[k].pressure :\n                       atmosphere[k].pressure - atmosphere[k-1].pressure;\n            \n            flux.heating[k] = netFlux / (dp * 100);  // K/day\n        }\n        \n        return flux;\n    }\n    \n    // Shortwave radiation\n    void solveShortwaveFlux(double wavelength, RadiationFlux& flux) {\n        double solarFlux = 1361.0;  // Solar constant\n        \n        // Top of atmosphere\n        flux.downward[nLayers] = solarFlux;\n        flux.upward[nLayers] = 0.0;\n        \n        // Propagate downward\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double reflection = computeReflection(k);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission;\n            flux.upward[k+1] += flux.downward[k+1] * reflection;\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 87,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        // Top of atmosphere\n        flux.downward[nLayers] = solarFlux;\n        flux.upward[nLayers] = 0.0;\n        \n        // Propagate downward\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double reflection = computeReflection(k);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission;\n            flux.upward[k+1] += flux.downward[k+1] * reflection;\n        }\n        \n        // Surface reflection\n        flux.upward[0] = flux.downward[0] * surfaceAlbedo;\n        \n        // Propagate upward\n        for (int k = 1; k <= nLayers; k++) {\n            double tau = computeOpticalDepth(k-1, wavelength);\n            double transmission = std::exp(-tau);\n            \n            flux.upward[k] += flux.upward[k-1] * transmission;\n        }\n    }\n    \n    // Longwave radiation\n    void solveLongwaveFlux(double wavelength, RadiationFlux& flux) {\n        // Upward from surface\n        flux.upward[0] = planck(wavelength, surfaceTemperature);\n        \n        // Upward propagation\n        for (int k = 0; k < nLayers; k++) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 100,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Surface reflection\n        flux.upward[0] = flux.downward[0] * surfaceAlbedo;\n        \n        // Propagate upward\n        for (int k = 1; k <= nLayers; k++) {\n            double tau = computeOpticalDepth(k-1, wavelength);\n            double transmission = std::exp(-tau);\n            \n            flux.upward[k] += flux.upward[k-1] * transmission;\n        }\n    }\n    \n    // Longwave radiation\n    void solveLongwaveFlux(double wavelength, RadiationFlux& flux) {\n        // Upward from surface\n        flux.upward[0] = planck(wavelength, surfaceTemperature);\n        \n        // Upward propagation\n        for (int k = 0; k < nLayers; k++) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double emission = planck(wavelength, atmosphere[k].temperature);\n            \n            flux.upward[k+1] = flux.upward[k] * transmission + \n                              emission * (1 - transmission);\n        }\n        \n        // Downward from TOA\n        flux.downward[nLayers] = 0.0;\n        \n        // Downward propagation\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 127,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Downward from TOA\n        flux.downward[nLayers] = 0.0;\n        \n        // Downward propagation\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double emission = planck(wavelength, atmosphere[k].temperature);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission + \n                              emission * (1 - transmission);\n        }\n    }\n    \n    // Optical depth calculation\n    double computeOpticalDepth(int layer, double wavelength) {\n        double tau = 0.0;\n        \n        // Water vapor absorption\n        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer14solveTwoStreamERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 65,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                solveLongwaveFlux(wl, flux);\n            }\n        }\n        \n        // Compute heating rates\n        for (int k = 0; k < nLayers; k++) {\n            double netFlux = (flux.upward[k] - flux.upward[k+1]) +\n                           (flux.downward[k+1] - flux.downward[k]);\n            \n            double dp = (k == 0) ? atmosphere[k].pressure :\n                       atmosphere[k].pressure - atmosphere[k-1].pressure;\n            \n            flux.heating[k] = netFlux / (dp * 100);  // K/day\n        }\n        \n        return flux;\n    }\n    \n    // Shortwave radiation\n    void solveShortwaveFlux(double wavelength, RadiationFlux& flux) {\n        double solarFlux = 1361.0;  // Solar constant\n        \n        // Top of atmosphere\n        flux.downward[nLayers] = solarFlux;\n        flux.upward[nLayers] = 0.0;\n        \n        // Propagate downward\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double reflection = computeReflection(k);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission;\n            flux.upward[k+1] += flux.downward[k+1] * reflection;\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 87,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        // Top of atmosphere\n        flux.downward[nLayers] = solarFlux;\n        flux.upward[nLayers] = 0.0;\n        \n        // Propagate downward\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double reflection = computeReflection(k);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission;\n            flux.upward[k+1] += flux.downward[k+1] * reflection;\n        }\n        \n        // Surface reflection\n        flux.upward[0] = flux.downward[0] * surfaceAlbedo;\n        \n        // Propagate upward\n        for (int k = 1; k <= nLayers; k++) {\n            double tau = computeOpticalDepth(k-1, wavelength);\n            double transmission = std::exp(-tau);\n            \n            flux.upward[k] += flux.upward[k-1] * transmission;\n        }\n    }\n    \n    // Longwave radiation\n    void solveLongwaveFlux(double wavelength, RadiationFlux& flux) {\n        // Upward from surface\n        flux.upward[0] = planck(wavelength, surfaceTemperature);\n        \n        // Upward propagation\n        for (int k = 0; k < nLayers; k++) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        \n        // Surface reflection\n        flux.upward[0] = flux.downward[0] * surfaceAlbedo;\n        \n        // Propagate upward\n        for (int k = 1; k <= nLayers; k++) {\n            double tau = computeOpticalDepth(k-1, wavelength);\n            double transmission = std::exp(-tau);\n            \n            flux.upward[k] += flux.upward[k-1] * transmission;\n        }\n    }\n    \n    // Longwave radiation\n    void solveLongwaveFlux(double wavelength, RadiationFlux& flux) {\n        // Upward from surface\n        flux.upward[0] = planck(wavelength, surfaceTemperature);\n        \n        // Upward propagation\n        for (int k = 0; k < nLayers; k++) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double emission = planck(wavelength, atmosphere[k].temperature);\n            \n            flux.upward[k+1] = flux.upward[k] * transmission + \n                              emission * (1 - transmission);\n        }\n        \n        // Downward from TOA\n        flux.downward[nLayers] = 0.0;\n        \n        // Downward propagation\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 114,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    void solveLongwaveFlux(double wavelength, RadiationFlux& flux) {\n        // Upward from surface\n        flux.upward[0] = planck(wavelength, surfaceTemperature);\n        \n        // Upward propagation\n        for (int k = 0; k < nLayers; k++) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double emission = planck(wavelength, atmosphere[k].temperature);\n            \n            flux.upward[k+1] = flux.upward[k] * transmission + \n                              emission * (1 - transmission);\n        }\n        \n        // Downward from TOA\n        flux.downward[nLayers] = 0.0;\n        \n        // Downward propagation\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double emission = planck(wavelength, atmosphere[k].temperature);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission + \n                              emission * (1 - transmission);\n        }\n    }\n    \n    // Optical depth calculation\n    double computeOpticalDepth(int layer, double wavelength) {\n        double tau = 0.0;\n        \n        // Water vapor absorption\n        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 114,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    void solveLongwaveFlux(double wavelength, RadiationFlux& flux) {\n        // Upward from surface\n        flux.upward[0] = planck(wavelength, surfaceTemperature);\n        \n        // Upward propagation\n        for (int k = 0; k < nLayers; k++) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double emission = planck(wavelength, atmosphere[k].temperature);\n            \n            flux.upward[k+1] = flux.upward[k] * transmission + \n                              emission * (1 - transmission);\n        }\n        \n        // Downward from TOA\n        flux.downward[nLayers] = 0.0;\n        \n        // Downward propagation\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double emission = planck(wavelength, atmosphere[k].temperature);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission + \n                              emission * (1 - transmission);\n        }\n    }\n    \n    // Optical depth calculation\n    double computeOpticalDepth(int layer, double wavelength) {\n        double tau = 0.0;\n        \n        // Water vapor absorption\n        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 127,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        \n        // Downward from TOA\n        flux.downward[nLayers] = 0.0;\n        \n        // Downward propagation\n        for (int k = nLayers - 1; k >= 0; k--) {\n            double tau = computeOpticalDepth(k, wavelength);\n            double transmission = std::exp(-tau);\n            double emission = planck(wavelength, atmosphere[k].temperature);\n            \n            flux.downward[k] = flux.downward[k+1] * transmission + \n                              emission * (1 - transmission);\n        }\n    }\n    \n    // Optical depth calculation\n    double computeOpticalDepth(int layer, double wavelength) {\n        double tau = 0.0;\n        \n        // Water vapor absorption\n        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 184,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        return netTOA;\n    }\n    \n    // Adjust temperatures to achieve equilibrium\n    void radiativeConvectiveEquilibrium(int maxIter) {\n        for (int iter = 0; iter < maxIter; iter++) {\n            std::vector<double> wavelengths;\n            for (double wl = 0.2; wl < 50.0; wl += 1.0) {\n                wavelengths.push_back(wl);\n            }\n            \n            auto flux = solveTwoStream(wavelengths);\n            \n            // Update temperatures based on heating rates\n            for (int k = 0; k < nLayers; k++) {\n                atmosphere[k].temperature += 0.01 * flux.heating[k];\n            }\n            \n            // Convective adjustment\n            applyConvectiveAdjustment();\n        }\n    }\n    \n    // Moist convective adjustment\n    void applyConvectiveAdjustment() {\n        double lapseRate = 6.5;  // K/km\n        \n        for (int k = 0; k < nLayers - 1; k++) {\n            double dT = atmosphere[k+1].temperature - atmosphere[k].temperature;\n            double dz = 1.0;  // km (approximate)\n            \n            double actualLapse = -dT / dz;\n            \n            if (actualLapse > lapseRate) {\n                // Adjust to critical lapse rate",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 193,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n            \n            auto flux = solveTwoStream(wavelengths);\n            \n            // Update temperatures based on heating rates\n            for (int k = 0; k < nLayers; k++) {\n                atmosphere[k].temperature += 0.01 * flux.heating[k];\n            }\n            \n            // Convective adjustment\n            applyConvectiveAdjustment();\n        }\n    }\n    \n    // Moist convective adjustment\n    void applyConvectiveAdjustment() {\n        double lapseRate = 6.5;  // K/km\n        \n        for (int k = 0; k < nLayers - 1; k++) {\n            double dT = atmosphere[k+1].temperature - atmosphere[k].temperature;\n            double dz = 1.0;  // km (approximate)\n            \n            double actualLapse = -dT / dz;\n            \n            if (actualLapse > lapseRate) {\n                // Adjust to critical lapse rate\n                double adjustment = (actualLapse - lapseRate) * dz / 2;\n                atmosphere[k].temperature += adjustment;\n                atmosphere[k+1].temperature -= adjustment;\n            }\n        }\n    }\n};\n\nint main() {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 186,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    // Adjust temperatures to achieve equilibrium\n    void radiativeConvectiveEquilibrium(int maxIter) {\n        for (int iter = 0; iter < maxIter; iter++) {\n            std::vector<double> wavelengths;\n            for (double wl = 0.2; wl < 50.0; wl += 1.0) {\n                wavelengths.push_back(wl);\n            }\n            \n            auto flux = solveTwoStream(wavelengths);\n            \n            // Update temperatures based on heating rates\n            for (int k = 0; k < nLayers; k++) {\n                atmosphere[k].temperature += 0.01 * flux.heating[k];\n            }\n            \n            // Convective adjustment\n            applyConvectiveAdjustment();\n        }\n    }\n    \n    // Moist convective adjustment\n    void applyConvectiveAdjustment() {\n        double lapseRate = 6.5;  // K/km\n        \n        for (int k = 0; k < nLayers - 1; k++) {\n            double dT = atmosphere[k+1].temperature - atmosphere[k].temperature;\n            double dz = 1.0;  // km (approximate)\n            \n            double actualLapse = -dT / dz;\n            \n            if (actualLapse > lapseRate) {\n                // Adjust to critical lapse rate\n                double adjustment = (actualLapse - lapseRate) * dz / 2;\n                atmosphere[k].temperature += adjustment;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    // Moist convective adjustment\n    void applyConvectiveAdjustment() {\n        double lapseRate = 6.5;  // K/km\n        \n        for (int k = 0; k < nLayers - 1; k++) {\n            double dT = atmosphere[k+1].temperature - atmosphere[k].temperature;\n            double dz = 1.0;  // km (approximate)\n            \n            double actualLapse = -dT / dz;\n            \n            if (actualLapse > lapseRate) {\n                // Adjust to critical lapse rate\n                double adjustment = (actualLapse - lapseRate) * dz / 2;\n                atmosphere[k].temperature += adjustment;\n                atmosphere[k+1].temperature -= adjustment;\n            }\n        }\n    }\n};\n\nint main() {\n    RadiativeTransfer rt(50);\n    \n    // Initialize atmosphere\n    for (int k = 0; k < 50; k++) {\n        rt.atmosphere[k].temperature = 288 - 6.5 * k;\n        rt.atmosphere[k].pressure = 1000 * std::exp(-k / 7.0);\n        rt.atmosphere[k].waterVapor = 10 * std::exp(-k / 2.0);\n        rt.atmosphere[k].co2 = 400;\n        rt.atmosphere[k].ozone = (k > 15 && k < 30) ? 3.0 : 0.1;\n        rt.atmosphere[k].cloudCover = (k > 5 && k < 10) ? 0.5 : 0.0;\n        rt.atmosphere[k].cloudOpticalDepth = 10.0;\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer30radiativeConvectiveEquilibriumEi",
+      "line": 206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    // Moist convective adjustment\n    void applyConvectiveAdjustment() {\n        double lapseRate = 6.5;  // K/km\n        \n        for (int k = 0; k < nLayers - 1; k++) {\n            double dT = atmosphere[k+1].temperature - atmosphere[k].temperature;\n            double dz = 1.0;  // km (approximate)\n            \n            double actualLapse = -dT / dz;\n            \n            if (actualLapse > lapseRate) {\n                // Adjust to critical lapse rate\n                double adjustment = (actualLapse - lapseRate) * dz / 2;\n                atmosphere[k].temperature += adjustment;\n                atmosphere[k+1].temperature -= adjustment;\n            }\n        }\n    }\n};\n\nint main() {\n    RadiativeTransfer rt(50);\n    \n    // Initialize atmosphere\n    for (int k = 0; k < 50; k++) {\n        rt.atmosphere[k].temperature = 288 - 6.5 * k;\n        rt.atmosphere[k].pressure = 1000 * std::exp(-k / 7.0);\n        rt.atmosphere[k].waterVapor = 10 * std::exp(-k / 2.0);\n        rt.atmosphere[k].co2 = 400;\n        rt.atmosphere[k].ozone = (k > 15 && k < 30) ? 3.0 : 0.1;\n        rt.atmosphere[k].cloudCover = (k > 5 && k < 10) ? 0.5 : 0.0;\n        rt.atmosphere[k].cloudOpticalDepth = 10.0;\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer14solveTwoStreamERKNSt3__16vectorIdNS0_9allocatorIdEEEE",
+      "line": 55,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        flux.downward.resize(nLayers + 1);\n        flux.heating.resize(nLayers);\n        \n        for (double wl : wavelengths) {\n            // Shortwave (solar) radiation\n            if (wl < 4.0) {\n                solveShortwaveFlux(wl, flux);\n            }\n            // Longwave (thermal) radiation\n            else {\n                solveLongwaveFlux(wl, flux);\n            }\n        }\n        \n        // Compute heating rates\n        for (int k = 0; k < nLayers; k++) {\n            double netFlux = (flux.upward[k] - flux.upward[k+1]) +\n                           (flux.downward[k+1] - flux.downward[k]);\n            \n            double dp = (k == 0) ? atmosphere[k].pressure :\n                       atmosphere[k].pressure - atmosphere[k-1].pressure;\n            \n            flux.heating[k] = netFlux / (dp * 100);  // K/day\n        }\n        \n        return flux;\n    }\n    \n    // Shortwave radiation\n    void solveShortwaveFlux(double wavelength, RadiationFlux& flux) {\n        double solarFlux = 1361.0;  // Solar constant\n        \n        // Top of atmosphere\n        flux.downward[nLayers] = solarFlux;\n        flux.upward[nLayers] = 0.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 142,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    // Optical depth calculation\n    double computeOpticalDepth(int layer, double wavelength) {\n        double tau = 0.0;\n        \n        // Water vapor absorption\n        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 147,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);\n        }\n        \n        auto flux = solveTwoStream(wavelengths);\n        \n        // Net at TOA",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 152,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);\n        }\n        \n        auto flux = solveTwoStream(wavelengths);\n        \n        // Net at TOA\n        double netTOA = flux.upward[nLayers] - flux.downward[nLayers];\n        \n        return netTOA;\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 142,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    // Optical depth calculation\n    double computeOpticalDepth(int layer, double wavelength) {\n        double tau = 0.0;\n        \n        // Water vapor absorption\n        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 147,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);\n        }\n        \n        auto flux = solveTwoStream(wavelengths);\n        \n        // Net at TOA",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer18solveShortwaveFluxEdRNS_13RadiationFluxE",
+      "line": 152,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);\n        }\n        \n        auto flux = solveTwoStream(wavelengths);\n        \n        // Net at TOA\n        double netTOA = flux.upward[nLayers] - flux.downward[nLayers];\n        \n        return netTOA;\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 142,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    // Optical depth calculation\n    double computeOpticalDepth(int layer, double wavelength) {\n        double tau = 0.0;\n        \n        // Water vapor absorption\n        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 147,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);\n        }\n        \n        auto flux = solveTwoStream(wavelengths);\n        \n        // Net at TOA",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 152,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);\n        }\n        \n        auto flux = solveTwoStream(wavelengths);\n        \n        // Net at TOA\n        double netTOA = flux.upward[nLayers] - flux.downward[nLayers];\n        \n        return netTOA;\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 142,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    // Optical depth calculation\n    double computeOpticalDepth(int layer, double wavelength) {\n        double tau = 0.0;\n        \n        // Water vapor absorption\n        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 147,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (wavelength > 5.0 && wavelength < 8.0) {\n            tau += atmosphere[layer].waterVapor * 0.1;\n        }\n        \n        // CO2 absorption\n        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);\n        }\n        \n        auto flux = solveTwoStream(wavelengths);\n        \n        // Net at TOA",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/radiative_transfer.cpp",
+      "function": "_ZN17RadiativeTransfer17solveLongwaveFluxEdRNS_13RadiationFluxE",
+      "line": 152,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        if (wavelength > 13.0 && wavelength < 17.0) {\n            tau += atmosphere[layer].co2 * 0.05;\n        }\n        \n        // Ozone absorption\n        if (wavelength < 0.3) {\n            tau += atmosphere[layer].ozone * 0.2;\n        }\n        \n        // Cloud optical depth\n        tau += atmosphere[layer].cloudCover * atmosphere[layer].cloudOpticalDepth;\n        \n        return tau;\n    }\n    \n    // Cloud reflection\n    double computeReflection(int layer) {\n        return atmosphere[layer].cloudCover * 0.5;\n    }\n    \n    // Compute net radiation balance\n    double computeRadiativeBalance() {\n        std::vector<double> wavelengths;\n        for (double wl = 0.2; wl < 50.0; wl += 0.5) {\n            wavelengths.push_back(wl);\n        }\n        \n        auto flux = solveTwoStream(wavelengths);\n        \n        // Net at TOA\n        double netTOA = flux.upward[nLayers] - flux.downward[nLayers];\n        \n        return netTOA;\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

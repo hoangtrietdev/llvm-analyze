@@ -1,0 +1,1029 @@
+{
+  "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+    "llvm_initial": 36,
+    "llvm_sys_noise": 0,
+    "llvm_project": 36,
+    "after_filter": 29,
+    "ai_batches": 2,
+    "ai_results": 29,
+    "omp_verified": 4,
+    "total_ms": 6859.7,
+    "llvm_ms": 380.9
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "           int in_d, int in_h, int in_w, int in_c, int out_c, int k_size) {\n    int out_d = in_d - k_size + 1;\n    int out_h = in_h - k_size + 1;\n    int out_w = in_w - k_size + 1;\n    \n    for (int oc = 0; oc < out_c; oc++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_d = in_d - k_size + 1;\n    int out_h = in_h - k_size + 1;\n    int out_w = in_w - k_size + 1;\n    \n    for (int oc = 0; oc < out_c; oc++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,\n              int channels, int pool_size) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_h = in_h - k_size + 1;\n    int out_w = in_w - k_size + 1;\n    \n    for (int oc = 0; oc < out_c; oc++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,\n              int channels, int pool_size) {\n    int out_d = depth / pool_size;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "           int in_d, int in_h, int in_w, int in_c, int out_c, int k_size) {\n    int out_d = in_d - k_size + 1;\n    int out_h = in_h - k_size + 1;\n    int out_w = in_w - k_size + 1;\n    \n    for (int oc = 0; oc < out_c; oc++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_w = in_w - k_size + 1;\n    \n    for (int oc = 0; oc < out_c; oc++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,\n              int channels, int pool_size) {\n    int out_d = depth / pool_size;\n    int out_h = height / pool_size;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_d = in_d - k_size + 1;\n    int out_h = in_h - k_size + 1;\n    int out_w = in_w - k_size + 1;\n    \n    for (int oc = 0; oc < out_c; oc++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,\n              int channels, int pool_size) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 17,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,\n              int channels, int pool_size) {\n    int out_d = depth / pool_size;\n    int out_h = height / pool_size;\n    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_h = in_h - k_size + 1;\n    int out_w = in_w - k_size + 1;\n    \n    for (int oc = 0; oc < out_c; oc++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,\n              int channels, int pool_size) {\n    int out_d = depth / pool_size;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 14,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    int out_w = in_w - k_size + 1;\n    \n    for (int oc = 0; oc < out_c; oc++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,\n              int channels, int pool_size) {\n    int out_d = depth / pool_size;\n    int out_h = height / pool_size;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 17,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,\n              int channels, int pool_size) {\n    int out_d = depth / pool_size;\n    int out_h = height / pool_size;\n    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 19,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 20,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.44999999999999996
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "              int channels, int pool_size) {\n    int out_d = depth / pool_size;\n    int out_h = height / pool_size;\n    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 47,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_d = depth / pool_size;\n    int out_h = height / pool_size;\n    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 48,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_h = height / pool_size;\n    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "              int channels, int pool_size) {\n    int out_d = depth / pool_size;\n    int out_h = height / pool_size;\n    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 47,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_d = depth / pool_size;\n    int out_h = height / pool_size;\n    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 52,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 48,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_h = height / pool_size;\n    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 49,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 52,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 53,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 54,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z10upsample3DPdS_iiiii",
+      "line": 77,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;\n                    \n                    int in_idx = c*depth*height*width + in_d*height*width + in_h*width + in_w;\n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    \n                    output[out_idx] = input[in_idx];\n                }\n            }\n        }\n    }\n}\n\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z10upsample3DPdS_iiiii",
+      "line": 78,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;\n                    \n                    int in_idx = c*depth*height*width + in_d*height*width + in_h*width + in_w;\n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    \n                    output[out_idx] = input[in_idx];\n                }\n            }\n        }\n    }\n}\n\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}\n"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z10upsample3DPdS_iiiii",
+      "line": 79,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;\n                    \n                    int in_idx = c*depth*height*width + in_d*height*width + in_h*width + in_w;\n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    \n                    output[out_idx] = input[in_idx];\n                }\n            }\n        }\n    }\n}\n\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}\n\nint main() {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z10upsample3DPdS_iiiii",
+      "line": 77,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;\n                    \n                    int in_idx = c*depth*height*width + in_d*height*width + in_h*width + in_w;\n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    \n                    output[out_idx] = input[in_idx];\n                }\n            }\n        }\n    }\n}\n\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z10upsample3DPdS_iiiii",
+      "line": 80,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;\n                    \n                    int in_idx = c*depth*height*width + in_d*height*width + in_h*width + in_w;\n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    \n                    output[out_idx] = input[in_idx];\n                }\n            }\n        }\n    }\n}\n\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}\n\nint main() {\n    const int depth = 64, height = 64, width = 64;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z10upsample3DPdS_iiiii",
+      "line": 78,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;\n                    \n                    int in_idx = c*depth*height*width + in_d*height*width + in_h*width + in_w;\n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    \n                    output[out_idx] = input[in_idx];\n                }\n            }\n        }\n    }\n}\n\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}\n"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z10upsample3DPdS_iiiii",
+      "line": 79,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;\n                    \n                    int in_idx = c*depth*height*width + in_d*height*width + in_h*width + in_w;\n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    \n                    output[out_idx] = input[in_idx];\n                }\n            }\n        }\n    }\n}\n\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}\n\nint main() {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z10upsample3DPdS_iiiii",
+      "line": 80,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;\n                    \n                    int in_idx = c*depth*height*width + in_d*height*width + in_h*width + in_w;\n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    \n                    output[out_idx] = input[in_idx];\n                }\n            }\n        }\n    }\n}\n\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}\n\nint main() {\n    const int depth = 64, height = 64, width = 64;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z15diceCoefficientPiS_iRd",
+      "line": 99,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}\n\nint main() {\n    const int depth = 64, height = 64, width = 64;\n    const int n_classes = 4; // Background, necrosis, edema, enhancing tumor\n    \n    std::vector<double> mri_scan(depth * height * width, 100.0);\n    std::vector<double> features1(32 * depth * height * width);\n    std::vector<double> features2(64 * depth/2 * height/2 * width/2);\n    std::vector<double> upsampled(32 * depth * height * width);\n    std::vector<int> segmentation(depth * height * width);\n    \n    std::vector<double> kernel1(32 * 1 * 3 * 3 * 3, 0.1);\n    std::vector<double> kernel2(64 * 32 * 3 * 3 * 3, 0.1);\n    \n    // Encoder\n    conv3D(mri_scan.data(), kernel1.data(), features1.data(),\n          depth, height, width, 1, 32, 3);\n    \n    maxPool3D(features1.data(), features2.data(), depth-2, height-2, width-2, 32, 2);\n    \n    // Decoder\n    upsample3D(features2.data(), upsampled.data(), depth/2-1, height/2-1, width/2-1, 32, 2);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z15diceCoefficientPiS_iRd",
+      "line": 99,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}\n\nint main() {\n    const int depth = 64, height = 64, width = 64;\n    const int n_classes = 4; // Background, necrosis, edema, enhancing tumor\n    \n    std::vector<double> mri_scan(depth * height * width, 100.0);\n    std::vector<double> features1(32 * depth * height * width);\n    std::vector<double> features2(64 * depth/2 * height/2 * width/2);\n    std::vector<double> upsampled(32 * depth * height * width);\n    std::vector<int> segmentation(depth * height * width);\n    \n    std::vector<double> kernel1(32 * 1 * 3 * 3 * 3, 0.1);\n    std::vector<double> kernel2(64 * 32 * 3 * 3 * 3, 0.1);\n    \n    // Encoder\n    conv3D(mri_scan.data(), kernel1.data(), features1.data(),\n          depth, height, width, 1, 32, 3);\n    \n    maxPool3D(features1.data(), features2.data(), depth-2, height-2, width-2, 32, 2);\n    \n    // Decoder\n    upsample3D(features2.data(), upsampled.data(), depth/2-1, height/2-1, width/2-1, 32, 2);"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 14,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    int out_w = in_w - k_size + 1;\n    \n    for (int oc = 0; oc < out_c; oc++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,\n              int channels, int pool_size) {\n    int out_d = depth / pool_size;\n    int out_h = height / pool_size;",
+      "classification": "safe_parallel",
+      "reasoning": "The code has independent operations within the nested loops, making it suitable for parallelization. The array access with arithmetic operations is also a good candidate for SIMD.",
+      "confidence": 0.9,
+      "transformations": [
+        "OpenMP parallel for loops",
+        "SIMD instructions"
+      ],
+      "tests_recommended": [
+        "Loop iteration count validation",
+        "Data integrity checks"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 49,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {",
+      "classification": "safe_parallel",
+      "reasoning": "Similar to candidate 1, the code has independent operations within the nested loops, making it suitable for parallelization. The array access with arithmetic operations is also a good candidate for SIMD.",
+      "confidence": 0.9,
+      "transformations": [
+        "OpenMP parallel for loops",
+        "SIMD instructions"
+      ],
+      "tests_recommended": [
+        "Loop iteration count validation",
+        "Data integrity checks"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 54,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;",
+      "classification": "requires_runtime_check",
+      "reasoning": "The code has a nested loop structure with dependencies between iterations. Runtime checks are necessary to ensure correct parallelization.",
+      "confidence": 0.8,
+      "transformations": [
+        "OpenMP parallel for loops with dependency checking"
+      ],
+      "tests_recommended": [
+        "Dependency checking validation",
+        "Data integrity checks"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z10upsample3DPdS_iiiii",
+      "line": 80,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;\n                    \n                    int in_idx = c*depth*height*width + in_d*height*width + in_h*width + in_w;\n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    \n                    output[out_idx] = input[in_idx];\n                }\n            }\n        }\n    }\n}\n\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}\n\nint main() {\n    const int depth = 64, height = 64, width = 64;",
+      "classification": "safe_parallel",
+      "reasoning": "The code has independent operations within the nested loops, making it suitable for parallelization. The array access with arithmetic operations is also a good candidate for SIMD.",
+      "confidence": 0.9,
+      "transformations": [
+        "OpenMP parallel for loops",
+        "SIMD instructions"
+      ],
+      "tests_recommended": [
+        "Loop iteration count validation",
+        "Data integrity checks"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z15diceCoefficientPiS_iRd",
+      "line": 99,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}\n\nint main() {\n    const int depth = 64, height = 64, width = 64;\n    const int n_classes = 4; // Background, necrosis, edema, enhancing tumor\n    \n    std::vector<double> mri_scan(depth * height * width, 100.0);\n    std::vector<double> features1(32 * depth * height * width);\n    std::vector<double> features2(64 * depth/2 * height/2 * width/2);\n    std::vector<double> upsampled(32 * depth * height * width);\n    std::vector<int> segmentation(depth * height * width);\n    \n    std::vector<double> kernel1(32 * 1 * 3 * 3 * 3, 0.1);\n    std::vector<double> kernel2(64 * 32 * 3 * 3 * 3, 0.1);\n    \n    // Encoder\n    conv3D(mri_scan.data(), kernel1.data(), features1.data(),\n          depth, height, width, 1, 32, 3);\n    \n    maxPool3D(features1.data(), features2.data(), depth-2, height-2, width-2, 32, 2);\n    \n    // Decoder\n    upsample3D(features2.data(), upsampled.data(), depth/2-1, height/2-1, width/2-1, 32, 2);",
+      "classification": "safe_parallel",
+      "reasoning": "The code has independent operations within the loop, making it suitable for parallelization.",
+      "confidence": 0.85,
+      "transformations": [
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Loop iteration count validation",
+        "Data integrity checks"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z15diceCoefficientPiS_iRd",
+      "line": 99,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}\n\nint main() {\n    const int depth = 64, height = 64, width = 64;\n    const int n_classes = 4; // Background, necrosis, edema, enhancing tumor\n    \n    std::vector<double> mri_scan(depth * height * width, 100.0);\n    std::vector<double> features1(32 * depth * height * width);\n    std::vector<double> features2(64 * depth/2 * height/2 * width/2);\n    std::vector<double> upsampled(32 * depth * height * width);\n    std::vector<int> segmentation(depth * height * width);\n    \n    std::vector<double> kernel1(32 * 1 * 3 * 3 * 3, 0.1);\n    std::vector<double> kernel2(64 * 32 * 3 * 3 * 3, 0.1);\n    \n    // Encoder\n    conv3D(mri_scan.data(), kernel1.data(), features1.data(),\n          depth, height, width, 1, 32, 3);\n    \n    maxPool3D(features1.data(), features2.data(), depth-2, height-2, width-2, 32, 2);\n    \n    // Decoder\n    upsample3D(features2.data(), upsampled.data(), depth/2-1, height/2-1, width/2-1, 32, 2);",
+      "classification": "safe_parallel",
+      "reasoning": "The code has independent operations within the loop, making it suitable for parallelization.",
+      "confidence": 0.85,
+      "transformations": [
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Loop iteration count validation",
+        "Data integrity checks"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "           int in_d, int in_h, int in_w, int in_c, int out_c, int k_size) {\n    int out_d = in_d - k_size + 1;\n    int out_h = in_h - k_size + 1;\n    int out_w = in_w - k_size + 1;\n    \n    for (int oc = 0; oc < out_c; oc++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,",
+      "classification": "requires_runtime_check",
+      "reasoning": "The code has a conditional branch that may be a loop, requiring runtime checks to ensure correct parallelization.",
+      "confidence": 0.8,
+      "transformations": [
+        "OpenMP parallel for loop with dependency checking"
+      ],
+      "tests_recommended": [
+        "Dependency checking validation",
+        "Data integrity checks"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_d = in_d - k_size + 1;\n    int out_h = in_h - k_size + 1;\n    int out_w = in_w - k_size + 1;\n    \n    for (int oc = 0; oc < out_c; oc++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,\n              int channels, int pool_size) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "The code has a conditional branch that may be a loop, requiring runtime checks to ensure correct parallelization.",
+      "confidence": 0.8,
+      "transformations": [
+        "OpenMP parallel for loop with dependency checking"
+      ],
+      "tests_recommended": [
+        "Dependency checking validation",
+        "Data integrity checks"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_h = in_h - k_size + 1;\n    int out_w = in_w - k_size + 1;\n    \n    for (int oc = 0; oc < out_c; oc++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,\n              int channels, int pool_size) {\n    int out_d = depth / pool_size;",
+      "classification": "requires_runtime_check",
+      "reasoning": "The code has a conditional branch that may be a loop, requiring runtime checks to ensure correct parallelization.",
+      "confidence": 0.8,
+      "transformations": [
+        "OpenMP parallel for loop with dependency checking"
+      ],
+      "tests_recommended": [
+        "Dependency checking validation",
+        "Data integrity checks"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "           int in_d, int in_h, int in_w, int in_c, int out_c, int k_size) {\n    int out_d = in_d - k_size + 1;\n    int out_h = in_h - k_size + 1;\n    int out_w = in_w - k_size + 1;\n    \n    for (int oc = 0; oc < out_c; oc++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,",
+      "classification": "requires_runtime_check",
+      "reasoning": "The code has a conditional branch that may be a loop, requiring runtime checks to ensure correct parallelization.",
+      "confidence": 0.8,
+      "transformations": [
+        "OpenMP parallel for loop with dependency checking"
+      ],
+      "tests_recommended": [
+        "Dependency checking validation",
+        "Data integrity checks"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_w = in_w - k_size + 1;\n    \n    for (int oc = 0; oc < out_c; oc++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,\n              int channels, int pool_size) {\n    int out_d = depth / pool_size;\n    int out_h = height / pool_size;",
+      "classification": "safe_parallel",
+      "reasoning": "The code has independent operations within the nested loops, making it suitable for parallelization.",
+      "confidence": 0.9,
+      "transformations": [
+        "OpenMP parallel for loops"
+      ],
+      "tests_recommended": [
+        "Loop iteration count validation",
+        "Data integrity checks"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_d = in_d - k_size + 1;\n    int out_h = in_h - k_size + 1;\n    int out_w = in_w - k_size + 1;\n    \n    for (int oc = 0; oc < out_c; oc++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,\n              int channels, int pool_size) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "The code has a conditional branch that may be a loop, requiring runtime checks to ensure correct parallelization.",
+      "confidence": 0.8,
+      "transformations": [
+        "OpenMP parallel for loop with dependency checking"
+      ],
+      "tests_recommended": [
+        "Dependency checking validation",
+        "Data integrity checks"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 17,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,\n              int channels, int pool_size) {\n    int out_d = depth / pool_size;\n    int out_h = height / pool_size;\n    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {",
+      "classification": "safe_parallel",
+      "reasoning": "The code has independent operations within the nested loops, making it suitable for parallelization.",
+      "confidence": 0.9,
+      "transformations": [
+        "OpenMP parallel for loops"
+      ],
+      "tests_recommended": [
+        "Loop iteration count validation",
+        "Data integrity checks"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_h = in_h - k_size + 1;\n    int out_w = in_w - k_size + 1;\n    \n    for (int oc = 0; oc < out_c; oc++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,\n              int channels, int pool_size) {\n    int out_d = depth / pool_size;",
+      "classification": "requires_runtime_check",
+      "reasoning": "The code has a conditional branch that may be a loop, requiring runtime checks to ensure correct parallelization.",
+      "confidence": 0.8,
+      "transformations": [
+        "OpenMP parallel for loop with dependency checking"
+      ],
+      "tests_recommended": [
+        "Dependency checking validation",
+        "Data integrity checks"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z6conv3DPdS_S_iiiiii",
+      "line": 17,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double sum = 0.0;\n                    \n                    for (int ic = 0; ic < in_c; ic++) {\n                        for (int kd = 0; kd < k_size; kd++) {\n                            for (int kh = 0; kh < k_size; kh++) {\n                                for (int kw = 0; kw < k_size; kw++) {\n                                    int in_idx = ic*in_d*in_h*in_w + (d+kd)*in_h*in_w + \n                                                (h+kh)*in_w + (w+kw);\n                                    int k_idx = oc*in_c*k_size*k_size*k_size + \n                                               ic*k_size*k_size*k_size + \n                                               kd*k_size*k_size + kh*k_size + kw;\n                                    sum += input[in_idx] * kernel[k_idx];\n                                }\n                            }\n                        }\n                    }\n                    \n                    int out_idx = oc*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = std::max(0.0, sum); // ReLU\n                }\n            }\n        }\n    }\n}\n\nvoid maxPool3D(double* input, double* output, int depth, int height, int width,\n              int channels, int pool_size) {\n    int out_d = depth / pool_size;\n    int out_h = height / pool_size;\n    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {",
+      "classification": "safe_parallel",
+      "reasoning": "The code has independent operations within the nested loops, making it suitable for parallelization.",
+      "confidence": 0.9,
+      "transformations": [
+        "OpenMP parallel for loops"
+      ],
+      "tests_recommended": [
+        "Loop iteration count validation",
+        "Data integrity checks"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "              int channels, int pool_size) {\n    int out_d = depth / pool_size;\n    int out_h = height / pool_size;\n    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 47,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_d = depth / pool_size;\n    int out_h = height / pool_size;\n    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 48,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_h = height / pool_size;\n    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "              int channels, int pool_size) {\n    int out_d = depth / pool_size;\n    int out_h = height / pool_size;\n    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 47,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_d = depth / pool_size;\n    int out_h = height / pool_size;\n    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z9maxPool3DPdS_iiiii",
+      "line": 48,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_h = height / pool_size;\n    int out_w = width / pool_size;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    double max_val = -1e9;\n                    \n                    for (int pd = 0; pd < pool_size; pd++) {\n                        for (int ph = 0; ph < pool_size; ph++) {\n                            for (int pw = 0; pw < pool_size; pw++) {\n                                int in_idx = c*depth*height*width + \n                                           (d*pool_size+pd)*height*width + \n                                           (h*pool_size+ph)*width + (w*pool_size+pw);\n                                max_val = std::max(max_val, input[in_idx]);\n                            }\n                        }\n                    }\n                    \n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    output[out_idx] = max_val;\n                }\n            }\n        }\n    }\n}\n\nvoid upsample3D(double* input, double* output, int depth, int height, int width,\n               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z10upsample3DPdS_iiiii",
+      "line": 77,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;\n                    \n                    int in_idx = c*depth*height*width + in_d*height*width + in_h*width + in_w;\n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    \n                    output[out_idx] = input[in_idx];\n                }\n            }\n        }\n    }\n}\n\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z10upsample3DPdS_iiiii",
+      "line": 78,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;\n                    \n                    int in_idx = c*depth*height*width + in_d*height*width + in_h*width + in_w;\n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    \n                    output[out_idx] = input[in_idx];\n                }\n            }\n        }\n    }\n}\n\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z10upsample3DPdS_iiiii",
+      "line": 79,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;\n                    \n                    int in_idx = c*depth*height*width + in_d*height*width + in_h*width + in_w;\n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    \n                    output[out_idx] = input[in_idx];\n                }\n            }\n        }\n    }\n}\n\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}\n\nint main() {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z10upsample3DPdS_iiiii",
+      "line": 77,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "               int channels, int factor) {\n    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;\n                    \n                    int in_idx = c*depth*height*width + in_d*height*width + in_h*width + in_w;\n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    \n                    output[out_idx] = input[in_idx];\n                }\n            }\n        }\n    }\n}\n\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z10upsample3DPdS_iiiii",
+      "line": 80,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;\n                    \n                    int in_idx = c*depth*height*width + in_d*height*width + in_h*width + in_w;\n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    \n                    output[out_idx] = input[in_idx];\n                }\n            }\n        }\n    }\n}\n\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}\n\nint main() {\n    const int depth = 64, height = 64, width = 64;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z10upsample3DPdS_iiiii",
+      "line": 78,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_d = depth * factor;\n    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;\n                    \n                    int in_idx = c*depth*height*width + in_d*height*width + in_h*width + in_w;\n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    \n                    output[out_idx] = input[in_idx];\n                }\n            }\n        }\n    }\n}\n\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/brain_tumor_segmentation.cpp",
+      "function": "_Z10upsample3DPdS_iiiii",
+      "line": 79,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    int out_h = height * factor;\n    int out_w = width * factor;\n    \n    for (int c = 0; c < channels; c++) {\n        for (int d = 0; d < out_d; d++) {\n            for (int h = 0; h < out_h; h++) {\n                for (int w = 0; w < out_w; w++) {\n                    int in_d = d / factor;\n                    int in_h = h / factor;\n                    int in_w = w / factor;\n                    \n                    int in_idx = c*depth*height*width + in_d*height*width + in_h*width + in_w;\n                    int out_idx = c*out_d*out_h*out_w + d*out_h*out_w + h*out_w + w;\n                    \n                    output[out_idx] = input[in_idx];\n                }\n            }\n        }\n    }\n}\n\nvoid diceCoefficient(int* prediction, int* ground_truth, int size, double& dice) {\n    int intersection = 0;\n    int pred_sum = 0, gt_sum = 0;\n    \n    for (int i = 0; i < size; i++) {\n        intersection += prediction[i] * ground_truth[i];\n        pred_sum += prediction[i];\n        gt_sum += ground_truth[i];\n    }\n    \n    dice = 2.0 * intersection / (pred_sum + gt_sum + 1e-10);\n}\n\nint main() {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

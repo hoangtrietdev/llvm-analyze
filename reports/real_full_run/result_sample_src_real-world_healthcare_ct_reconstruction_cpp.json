@@ -1,0 +1,918 @@
+{
+  "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+    "llvm_initial": 40,
+    "llvm_sys_noise": 11,
+    "llvm_project": 29,
+    "after_filter": 25,
+    "ai_batches": 2,
+    "ai_results": 25,
+    "omp_verified": 0,
+    "total_ms": 3981.3,
+    "llvm_ms": 363.0
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14radonTransformPdS_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "#define M_PI 3.14159265358979323846\n#endif\n\nvoid radonTransform(double* image, double* sinogram, int width, int height,\n                   int n_angles) {\n    for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n        double theta = M_PI * angle_idx / n_angles;\n        double cos_theta = cos(theta);\n        double sin_theta = sin(theta);\n        \n        for (int t = -width; t < width; t++) {\n            double sum = 0.0;\n            \n            // Integrate along line perpendicular to theta\n            for (int s = -width; s < width; s++) {\n                double x = t * cos_theta - s * sin_theta + width/2;\n                double y = t * sin_theta + s * cos_theta + height/2;\n                \n                if (x >= 0 && x < width-1 && y >= 0 && y < height-1) {\n                    int x0 = (int)x, y0 = (int)y;\n                    double dx = x - x0, dy = y - y0;\n                    \n                    // Bilinear interpolation\n                    double val = (1-dx)*(1-dy)*image[y0*width + x0] +\n                                dx*(1-dy)*image[y0*width + (x0+1)] +\n                                (1-dx)*dy*image[(y0+1)*width + x0] +\n                                dx*dy*image[(y0+1)*width + (x0+1)];\n                    sum += val;\n                }\n            }\n            \n            sinogram[angle_idx * (2*width) + (t + width)] = sum;\n        }\n    }\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14radonTransformPdS_iii",
+      "line": 16,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n        double theta = M_PI * angle_idx / n_angles;\n        double cos_theta = cos(theta);\n        double sin_theta = sin(theta);\n        \n        for (int t = -width; t < width; t++) {\n            double sum = 0.0;\n            \n            // Integrate along line perpendicular to theta\n            for (int s = -width; s < width; s++) {\n                double x = t * cos_theta - s * sin_theta + width/2;\n                double y = t * sin_theta + s * cos_theta + height/2;\n                \n                if (x >= 0 && x < width-1 && y >= 0 && y < height-1) {\n                    int x0 = (int)x, y0 = (int)y;\n                    double dx = x - x0, dy = y - y0;\n                    \n                    // Bilinear interpolation\n                    double val = (1-dx)*(1-dy)*image[y0*width + x0] +\n                                dx*(1-dy)*image[y0*width + (x0+1)] +\n                                (1-dx)*dy*image[(y0+1)*width + x0] +\n                                dx*dy*image[(y0+1)*width + (x0+1)];\n                    sum += val;\n                }\n            }\n            \n            sinogram[angle_idx * (2*width) + (t + width)] = sum;\n        }\n    }\n}\n\nvoid ramLakFilter(double* sinogram, int n_projections, int n_detectors) {\n    std::vector<double> filter(n_detectors);\n    \n    // Create Ram-Lak filter in frequency domain"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14radonTransformPdS_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "#define M_PI 3.14159265358979323846\n#endif\n\nvoid radonTransform(double* image, double* sinogram, int width, int height,\n                   int n_angles) {\n    for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n        double theta = M_PI * angle_idx / n_angles;\n        double cos_theta = cos(theta);\n        double sin_theta = sin(theta);\n        \n        for (int t = -width; t < width; t++) {\n            double sum = 0.0;\n            \n            // Integrate along line perpendicular to theta\n            for (int s = -width; s < width; s++) {\n                double x = t * cos_theta - s * sin_theta + width/2;\n                double y = t * sin_theta + s * cos_theta + height/2;\n                \n                if (x >= 0 && x < width-1 && y >= 0 && y < height-1) {\n                    int x0 = (int)x, y0 = (int)y;\n                    double dx = x - x0, dy = y - y0;\n                    \n                    // Bilinear interpolation\n                    double val = (1-dx)*(1-dy)*image[y0*width + x0] +\n                                dx*(1-dy)*image[y0*width + (x0+1)] +\n                                (1-dx)*dy*image[(y0+1)*width + x0] +\n                                dx*dy*image[(y0+1)*width + (x0+1)];\n                    sum += val;\n                }\n            }\n            \n            sinogram[angle_idx * (2*width) + (t + width)] = sum;\n        }\n    }\n}"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14radonTransformPdS_iii",
+      "line": 16,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n        double theta = M_PI * angle_idx / n_angles;\n        double cos_theta = cos(theta);\n        double sin_theta = sin(theta);\n        \n        for (int t = -width; t < width; t++) {\n            double sum = 0.0;\n            \n            // Integrate along line perpendicular to theta\n            for (int s = -width; s < width; s++) {\n                double x = t * cos_theta - s * sin_theta + width/2;\n                double y = t * sin_theta + s * cos_theta + height/2;\n                \n                if (x >= 0 && x < width-1 && y >= 0 && y < height-1) {\n                    int x0 = (int)x, y0 = (int)y;\n                    double dx = x - x0, dy = y - y0;\n                    \n                    // Bilinear interpolation\n                    double val = (1-dx)*(1-dy)*image[y0*width + x0] +\n                                dx*(1-dy)*image[y0*width + (x0+1)] +\n                                (1-dx)*dy*image[(y0+1)*width + x0] +\n                                dx*dy*image[(y0+1)*width + (x0+1)];\n                    sum += val;\n                }\n            }\n            \n            sinogram[angle_idx * (2*width) + (t + width)] = sum;\n        }\n    }\n}\n\nvoid ramLakFilter(double* sinogram, int n_projections, int n_detectors) {\n    std::vector<double> filter(n_detectors);\n    \n    // Create Ram-Lak filter in frequency domain"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14radonTransformPdS_iii",
+      "line": 24,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "            // Integrate along line perpendicular to theta\n            for (int s = -width; s < width; s++) {\n                double x = t * cos_theta - s * sin_theta + width/2;\n                double y = t * sin_theta + s * cos_theta + height/2;\n                \n                if (x >= 0 && x < width-1 && y >= 0 && y < height-1) {\n                    int x0 = (int)x, y0 = (int)y;\n                    double dx = x - x0, dy = y - y0;\n                    \n                    // Bilinear interpolation\n                    double val = (1-dx)*(1-dy)*image[y0*width + x0] +\n                                dx*(1-dy)*image[y0*width + (x0+1)] +\n                                (1-dx)*dy*image[(y0+1)*width + x0] +\n                                dx*dy*image[(y0+1)*width + (x0+1)];\n                    sum += val;\n                }\n            }\n            \n            sinogram[angle_idx * (2*width) + (t + width)] = sum;\n        }\n    }\n}\n\nvoid ramLakFilter(double* sinogram, int n_projections, int n_detectors) {\n    std::vector<double> filter(n_detectors);\n    \n    // Create Ram-Lak filter in frequency domain\n    for (int i = 0; i < n_detectors; i++) {\n        double freq = (double)(i - n_detectors/2) / n_detectors;\n        filter[i] = abs(freq);\n    }\n    \n    // Apply filter to each projection\n    for (int proj = 0; proj < n_projections; proj++) {\n        std::vector<double> fft_real(n_detectors), fft_imag(n_detectors);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14radonTransformPdS_iii",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "            // Integrate along line perpendicular to theta\n            for (int s = -width; s < width; s++) {\n                double x = t * cos_theta - s * sin_theta + width/2;\n                double y = t * sin_theta + s * cos_theta + height/2;\n                \n                if (x >= 0 && x < width-1 && y >= 0 && y < height-1) {\n                    int x0 = (int)x, y0 = (int)y;\n                    double dx = x - x0, dy = y - y0;\n                    \n                    // Bilinear interpolation\n                    double val = (1-dx)*(1-dy)*image[y0*width + x0] +\n                                dx*(1-dy)*image[y0*width + (x0+1)] +\n                                (1-dx)*dy*image[(y0+1)*width + x0] +\n                                dx*dy*image[(y0+1)*width + (x0+1)];\n                    sum += val;\n                }\n            }\n            \n            sinogram[angle_idx * (2*width) + (t + width)] = sum;\n        }\n    }\n}\n\nvoid ramLakFilter(double* sinogram, int n_projections, int n_detectors) {\n    std::vector<double> filter(n_detectors);\n    \n    // Create Ram-Lak filter in frequency domain\n    for (int i = 0; i < n_detectors; i++) {\n        double freq = (double)(i - n_detectors/2) / n_detectors;\n        filter[i] = abs(freq);\n    }\n    \n    // Apply filter to each projection\n    for (int proj = 0; proj < n_projections; proj++) {\n        std::vector<double> fft_real(n_detectors), fft_imag(n_detectors);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14radonTransformPdS_iii",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "        \n        for (int t = -width; t < width; t++) {\n            double sum = 0.0;\n            \n            // Integrate along line perpendicular to theta\n            for (int s = -width; s < width; s++) {\n                double x = t * cos_theta - s * sin_theta + width/2;\n                double y = t * sin_theta + s * cos_theta + height/2;\n                \n                if (x >= 0 && x < width-1 && y >= 0 && y < height-1) {\n                    int x0 = (int)x, y0 = (int)y;\n                    double dx = x - x0, dy = y - y0;\n                    \n                    // Bilinear interpolation\n                    double val = (1-dx)*(1-dy)*image[y0*width + x0] +\n                                dx*(1-dy)*image[y0*width + (x0+1)] +\n                                (1-dx)*dy*image[(y0+1)*width + x0] +\n                                dx*dy*image[(y0+1)*width + (x0+1)];\n                    sum += val;\n                }\n            }\n            \n            sinogram[angle_idx * (2*width) + (t + width)] = sum;\n        }\n    }\n}\n\nvoid ramLakFilter(double* sinogram, int n_projections, int n_detectors) {\n    std::vector<double> filter(n_detectors);\n    \n    // Create Ram-Lak filter in frequency domain\n    for (int i = 0; i < n_detectors; i++) {\n        double freq = (double)(i - n_detectors/2) / n_detectors;\n        filter[i] = abs(freq);\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid ramLakFilter(double* sinogram, int n_projections, int n_detectors) {\n    std::vector<double> filter(n_detectors);\n    \n    // Create Ram-Lak filter in frequency domain\n    for (int i = 0; i < n_detectors; i++) {\n        double freq = (double)(i - n_detectors/2) / n_detectors;\n        filter[i] = abs(freq);\n    }\n    \n    // Apply filter to each projection\n    for (int proj = 0; proj < n_projections; proj++) {\n        std::vector<double> fft_real(n_detectors), fft_imag(n_detectors);\n        \n        // Simple DFT (in practice, use FFT)\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] = 0.0;\n            fft_imag[k] = 0.0;\n            \n            for (int n = 0; n < n_detectors; n++) {\n                double angle = -2.0 * M_PI * k * n / n_detectors;\n                fft_real[k] += sinogram[proj * n_detectors + n] * cos(angle);\n                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 52,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        double freq = (double)(i - n_detectors/2) / n_detectors;\n        filter[i] = abs(freq);\n    }\n    \n    // Apply filter to each projection\n    for (int proj = 0; proj < n_projections; proj++) {\n        std::vector<double> fft_real(n_detectors), fft_imag(n_detectors);\n        \n        // Simple DFT (in practice, use FFT)\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] = 0.0;\n            fft_imag[k] = 0.0;\n            \n            for (int n = 0; n < n_detectors; n++) {\n                double angle = -2.0 * M_PI * k * n / n_detectors;\n                fft_real[k] += sinogram[proj * n_detectors + n] * cos(angle);\n                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 46,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "\nvoid ramLakFilter(double* sinogram, int n_projections, int n_detectors) {\n    std::vector<double> filter(n_detectors);\n    \n    // Create Ram-Lak filter in frequency domain\n    for (int i = 0; i < n_detectors; i++) {\n        double freq = (double)(i - n_detectors/2) / n_detectors;\n        filter[i] = abs(freq);\n    }\n    \n    // Apply filter to each projection\n    for (int proj = 0; proj < n_projections; proj++) {\n        std::vector<double> fft_real(n_detectors), fft_imag(n_detectors);\n        \n        // Simple DFT (in practice, use FFT)\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] = 0.0;\n            fft_imag[k] = 0.0;\n            \n            for (int n = 0; n < n_detectors; n++) {\n                double angle = -2.0 * M_PI * k * n / n_detectors;\n                fft_real[k] += sinogram[proj * n_detectors + n] * cos(angle);\n                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 56,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    // Apply filter to each projection\n    for (int proj = 0; proj < n_projections; proj++) {\n        std::vector<double> fft_real(n_detectors), fft_imag(n_detectors);\n        \n        // Simple DFT (in practice, use FFT)\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] = 0.0;\n            fft_imag[k] = 0.0;\n            \n            for (int n = 0; n < n_detectors; n++) {\n                double angle = -2.0 * M_PI * k * n / n_detectors;\n                fft_real[k] += sinogram[proj * n_detectors + n] * cos(angle);\n                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            \n            sinogram[proj * n_detectors + n] = sum / n_detectors;\n        }\n    }\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 68,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            \n            sinogram[proj * n_detectors + n] = sum / n_detectors;\n        }\n    }\n}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 56,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    // Apply filter to each projection\n    for (int proj = 0; proj < n_projections; proj++) {\n        std::vector<double> fft_real(n_detectors), fft_imag(n_detectors);\n        \n        // Simple DFT (in practice, use FFT)\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] = 0.0;\n            fft_imag[k] = 0.0;\n            \n            for (int n = 0; n < n_detectors; n++) {\n                double angle = -2.0 * M_PI * k * n / n_detectors;\n                fft_real[k] += sinogram[proj * n_detectors + n] * cos(angle);\n                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            \n            sinogram[proj * n_detectors + n] = sum / n_detectors;\n        }\n    }\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 60,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        // Simple DFT (in practice, use FFT)\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] = 0.0;\n            fft_imag[k] = 0.0;\n            \n            for (int n = 0; n < n_detectors; n++) {\n                double angle = -2.0 * M_PI * k * n / n_detectors;\n                fft_real[k] += sinogram[proj * n_detectors + n] * cos(angle);\n                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            \n            sinogram[proj * n_detectors + n] = sum / n_detectors;\n        }\n    }\n}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 74,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            \n            sinogram[proj * n_detectors + n] = sum / n_detectors;\n        }\n    }\n}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 68,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            \n            sinogram[proj * n_detectors + n] = sum / n_detectors;\n        }\n    }\n}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 52,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        double freq = (double)(i - n_detectors/2) / n_detectors;\n        filter[i] = abs(freq);\n    }\n    \n    // Apply filter to each projection\n    for (int proj = 0; proj < n_projections; proj++) {\n        std::vector<double> fft_real(n_detectors), fft_imag(n_detectors);\n        \n        // Simple DFT (in practice, use FFT)\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] = 0.0;\n            fft_imag[k] = 0.0;\n            \n            for (int n = 0; n < n_detectors; n++) {\n                double angle = -2.0 * M_PI * k * n / n_detectors;\n                fft_real[k] += sinogram[proj * n_detectors + n] * cos(angle);\n                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 74,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            \n            sinogram[proj * n_detectors + n] = sum / n_detectors;\n        }\n    }\n}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 77,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            \n            sinogram[proj * n_detectors + n] = sum / n_detectors;\n        }\n    }\n}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];\n                }\n            }\n            "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14backProjectionPdS_iii",
+      "line": 89,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];\n                }\n            }\n            \n            image[y * width + x] = sum * M_PI / n_angles;\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, n_angles = 180;\n    std::vector<double> phantom(width * height, 0.0);\n    std::vector<double> sinogram(n_angles * 2 * width);\n    std::vector<double> reconstruction(width * height);\n    \n    // Create Shepp-Logan phantom"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14backProjectionPdS_iii",
+      "line": 90,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];\n                }\n            }\n            \n            image[y * width + x] = sum * M_PI / n_angles;\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, n_angles = 180;\n    std::vector<double> phantom(width * height, 0.0);\n    std::vector<double> sinogram(n_angles * 2 * width);\n    std::vector<double> reconstruction(width * height);\n    \n    // Create Shepp-Logan phantom\n    for (int y = 0; y < height; y++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14backProjectionPdS_iii",
+      "line": 93,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];\n                }\n            }\n            \n            image[y * width + x] = sum * M_PI / n_angles;\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, n_angles = 180;\n    std::vector<double> phantom(width * height, 0.0);\n    std::vector<double> sinogram(n_angles * 2 * width);\n    std::vector<double> reconstruction(width * height);\n    \n    // Create Shepp-Logan phantom\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double dx = (x - width/2.0) / width * 2;\n            double dy = (y - height/2.0) / height * 2;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14backProjectionPdS_iii",
+      "line": 89,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];\n                }\n            }\n            \n            image[y * width + x] = sum * M_PI / n_angles;\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, n_angles = 180;\n    std::vector<double> phantom(width * height, 0.0);\n    std::vector<double> sinogram(n_angles * 2 * width);\n    std::vector<double> reconstruction(width * height);\n    \n    // Create Shepp-Logan phantom"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14backProjectionPdS_iii",
+      "line": 90,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];\n                }\n            }\n            \n            image[y * width + x] = sum * M_PI / n_angles;\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, n_angles = 180;\n    std::vector<double> phantom(width * height, 0.0);\n    std::vector<double> sinogram(n_angles * 2 * width);\n    std::vector<double> reconstruction(width * height);\n    \n    // Create Shepp-Logan phantom\n    for (int y = 0; y < height; y++) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14backProjectionPdS_iii",
+      "line": 102,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14backProjectionPdS_iii",
+      "line": 93,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];\n                }\n            }\n            \n            image[y * width + x] = sum * M_PI / n_angles;\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, n_angles = 180;\n    std::vector<double> phantom(width * height, 0.0);\n    std::vector<double> sinogram(n_angles * 2 * width);\n    std::vector<double> reconstruction(width * height);\n    \n    // Create Shepp-Logan phantom\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double dx = (x - width/2.0) / width * 2;\n            double dy = (y - height/2.0) / height * 2;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "main",
+      "line": 119,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "main",
+      "line": 123,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.4
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "main",
+      "line": 120,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14radonTransformPdS_iii",
+      "line": 16,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n        double theta = M_PI * angle_idx / n_angles;\n        double cos_theta = cos(theta);\n        double sin_theta = sin(theta);\n        \n        for (int t = -width; t < width; t++) {\n            double sum = 0.0;\n            \n            // Integrate along line perpendicular to theta\n            for (int s = -width; s < width; s++) {\n                double x = t * cos_theta - s * sin_theta + width/2;\n                double y = t * sin_theta + s * cos_theta + height/2;\n                \n                if (x >= 0 && x < width-1 && y >= 0 && y < height-1) {\n                    int x0 = (int)x, y0 = (int)y;\n                    double dx = x - x0, dy = y - y0;\n                    \n                    // Bilinear interpolation\n                    double val = (1-dx)*(1-dy)*image[y0*width + x0] +\n                                dx*(1-dy)*image[y0*width + (x0+1)] +\n                                (1-dx)*dy*image[(y0+1)*width + x0] +\n                                dx*dy*image[(y0+1)*width + (x0+1)];\n                    sum += val;\n                }\n            }\n            \n            sinogram[angle_idx * (2*width) + (t + width)] = sum;\n        }\n    }\n}\n\nvoid ramLakFilter(double* sinogram, int n_projections, int n_detectors) {\n    std::vector<double> filter(n_detectors);\n    \n    // Create Ram-Lak filter in frequency domain",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 68,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            \n            sinogram[proj * n_detectors + n] = sum / n_detectors;\n        }\n    }\n}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 74,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            \n            sinogram[proj * n_detectors + n] = sum / n_detectors;\n        }\n    }\n}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14backProjectionPdS_iii",
+      "line": 90,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];\n                }\n            }\n            \n            image[y * width + x] = sum * M_PI / n_angles;\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, n_angles = 180;\n    std::vector<double> phantom(width * height, 0.0);\n    std::vector<double> sinogram(n_angles * 2 * width);\n    std::vector<double> reconstruction(width * height);\n    \n    // Create Shepp-Logan phantom\n    for (int y = 0; y < height; y++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid ramLakFilter(double* sinogram, int n_projections, int n_detectors) {\n    std::vector<double> filter(n_detectors);\n    \n    // Create Ram-Lak filter in frequency domain\n    for (int i = 0; i < n_detectors; i++) {\n        double freq = (double)(i - n_detectors/2) / n_detectors;\n        filter[i] = abs(freq);\n    }\n    \n    // Apply filter to each projection\n    for (int proj = 0; proj < n_projections; proj++) {\n        std::vector<double> fft_real(n_detectors), fft_imag(n_detectors);\n        \n        // Simple DFT (in practice, use FFT)\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] = 0.0;\n            fft_imag[k] = 0.0;\n            \n            for (int n = 0; n < n_detectors; n++) {\n                double angle = -2.0 * M_PI * k * n / n_detectors;\n                fft_real[k] += sinogram[proj * n_detectors + n] * cos(angle);\n                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 56,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    // Apply filter to each projection\n    for (int proj = 0; proj < n_projections; proj++) {\n        std::vector<double> fft_real(n_detectors), fft_imag(n_detectors);\n        \n        // Simple DFT (in practice, use FFT)\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] = 0.0;\n            fft_imag[k] = 0.0;\n            \n            for (int n = 0; n < n_detectors; n++) {\n                double angle = -2.0 * M_PI * k * n / n_detectors;\n                fft_real[k] += sinogram[proj * n_detectors + n] * cos(angle);\n                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            \n            sinogram[proj * n_detectors + n] = sum / n_detectors;\n        }\n    }\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 68,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            \n            sinogram[proj * n_detectors + n] = sum / n_detectors;\n        }\n    }\n}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 56,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    // Apply filter to each projection\n    for (int proj = 0; proj < n_projections; proj++) {\n        std::vector<double> fft_real(n_detectors), fft_imag(n_detectors);\n        \n        // Simple DFT (in practice, use FFT)\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] = 0.0;\n            fft_imag[k] = 0.0;\n            \n            for (int n = 0; n < n_detectors; n++) {\n                double angle = -2.0 * M_PI * k * n / n_detectors;\n                fft_real[k] += sinogram[proj * n_detectors + n] * cos(angle);\n                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            \n            sinogram[proj * n_detectors + n] = sum / n_detectors;\n        }\n    }\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14radonTransformPdS_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "#define M_PI 3.14159265358979323846\n#endif\n\nvoid radonTransform(double* image, double* sinogram, int width, int height,\n                   int n_angles) {\n    for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n        double theta = M_PI * angle_idx / n_angles;\n        double cos_theta = cos(theta);\n        double sin_theta = sin(theta);\n        \n        for (int t = -width; t < width; t++) {\n            double sum = 0.0;\n            \n            // Integrate along line perpendicular to theta\n            for (int s = -width; s < width; s++) {\n                double x = t * cos_theta - s * sin_theta + width/2;\n                double y = t * sin_theta + s * cos_theta + height/2;\n                \n                if (x >= 0 && x < width-1 && y >= 0 && y < height-1) {\n                    int x0 = (int)x, y0 = (int)y;\n                    double dx = x - x0, dy = y - y0;\n                    \n                    // Bilinear interpolation\n                    double val = (1-dx)*(1-dy)*image[y0*width + x0] +\n                                dx*(1-dy)*image[y0*width + (x0+1)] +\n                                (1-dx)*dy*image[(y0+1)*width + x0] +\n                                dx*dy*image[(y0+1)*width + (x0+1)];\n                    sum += val;\n                }\n            }\n            \n            sinogram[angle_idx * (2*width) + (t + width)] = sum;\n        }\n    }\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14radonTransformPdS_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "#define M_PI 3.14159265358979323846\n#endif\n\nvoid radonTransform(double* image, double* sinogram, int width, int height,\n                   int n_angles) {\n    for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n        double theta = M_PI * angle_idx / n_angles;\n        double cos_theta = cos(theta);\n        double sin_theta = sin(theta);\n        \n        for (int t = -width; t < width; t++) {\n            double sum = 0.0;\n            \n            // Integrate along line perpendicular to theta\n            for (int s = -width; s < width; s++) {\n                double x = t * cos_theta - s * sin_theta + width/2;\n                double y = t * sin_theta + s * cos_theta + height/2;\n                \n                if (x >= 0 && x < width-1 && y >= 0 && y < height-1) {\n                    int x0 = (int)x, y0 = (int)y;\n                    double dx = x - x0, dy = y - y0;\n                    \n                    // Bilinear interpolation\n                    double val = (1-dx)*(1-dy)*image[y0*width + x0] +\n                                dx*(1-dy)*image[y0*width + (x0+1)] +\n                                (1-dx)*dy*image[(y0+1)*width + x0] +\n                                dx*dy*image[(y0+1)*width + (x0+1)];\n                    sum += val;\n                }\n            }\n            \n            sinogram[angle_idx * (2*width) + (t + width)] = sum;\n        }\n    }\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14radonTransformPdS_iii",
+      "line": 24,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "            // Integrate along line perpendicular to theta\n            for (int s = -width; s < width; s++) {\n                double x = t * cos_theta - s * sin_theta + width/2;\n                double y = t * sin_theta + s * cos_theta + height/2;\n                \n                if (x >= 0 && x < width-1 && y >= 0 && y < height-1) {\n                    int x0 = (int)x, y0 = (int)y;\n                    double dx = x - x0, dy = y - y0;\n                    \n                    // Bilinear interpolation\n                    double val = (1-dx)*(1-dy)*image[y0*width + x0] +\n                                dx*(1-dy)*image[y0*width + (x0+1)] +\n                                (1-dx)*dy*image[(y0+1)*width + x0] +\n                                dx*dy*image[(y0+1)*width + (x0+1)];\n                    sum += val;\n                }\n            }\n            \n            sinogram[angle_idx * (2*width) + (t + width)] = sum;\n        }\n    }\n}\n\nvoid ramLakFilter(double* sinogram, int n_projections, int n_detectors) {\n    std::vector<double> filter(n_detectors);\n    \n    // Create Ram-Lak filter in frequency domain\n    for (int i = 0; i < n_detectors; i++) {\n        double freq = (double)(i - n_detectors/2) / n_detectors;\n        filter[i] = abs(freq);\n    }\n    \n    // Apply filter to each projection\n    for (int proj = 0; proj < n_projections; proj++) {\n        std::vector<double> fft_real(n_detectors), fft_imag(n_detectors);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14radonTransformPdS_iii",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "        \n        for (int t = -width; t < width; t++) {\n            double sum = 0.0;\n            \n            // Integrate along line perpendicular to theta\n            for (int s = -width; s < width; s++) {\n                double x = t * cos_theta - s * sin_theta + width/2;\n                double y = t * sin_theta + s * cos_theta + height/2;\n                \n                if (x >= 0 && x < width-1 && y >= 0 && y < height-1) {\n                    int x0 = (int)x, y0 = (int)y;\n                    double dx = x - x0, dy = y - y0;\n                    \n                    // Bilinear interpolation\n                    double val = (1-dx)*(1-dy)*image[y0*width + x0] +\n                                dx*(1-dy)*image[y0*width + (x0+1)] +\n                                (1-dx)*dy*image[(y0+1)*width + x0] +\n                                dx*dy*image[(y0+1)*width + (x0+1)];\n                    sum += val;\n                }\n            }\n            \n            sinogram[angle_idx * (2*width) + (t + width)] = sum;\n        }\n    }\n}\n\nvoid ramLakFilter(double* sinogram, int n_projections, int n_detectors) {\n    std::vector<double> filter(n_detectors);\n    \n    // Create Ram-Lak filter in frequency domain\n    for (int i = 0; i < n_detectors; i++) {\n        double freq = (double)(i - n_detectors/2) / n_detectors;\n        filter[i] = abs(freq);\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 46,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "\nvoid ramLakFilter(double* sinogram, int n_projections, int n_detectors) {\n    std::vector<double> filter(n_detectors);\n    \n    // Create Ram-Lak filter in frequency domain\n    for (int i = 0; i < n_detectors; i++) {\n        double freq = (double)(i - n_detectors/2) / n_detectors;\n        filter[i] = abs(freq);\n    }\n    \n    // Apply filter to each projection\n    for (int proj = 0; proj < n_projections; proj++) {\n        std::vector<double> fft_real(n_detectors), fft_imag(n_detectors);\n        \n        // Simple DFT (in practice, use FFT)\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] = 0.0;\n            fft_imag[k] = 0.0;\n            \n            for (int n = 0; n < n_detectors; n++) {\n                double angle = -2.0 * M_PI * k * n / n_detectors;\n                fft_real[k] += sinogram[proj * n_detectors + n] * cos(angle);\n                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 60,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        // Simple DFT (in practice, use FFT)\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] = 0.0;\n            fft_imag[k] = 0.0;\n            \n            for (int n = 0; n < n_detectors; n++) {\n                double angle = -2.0 * M_PI * k * n / n_detectors;\n                fft_real[k] += sinogram[proj * n_detectors + n] * cos(angle);\n                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            \n            sinogram[proj * n_detectors + n] = sum / n_detectors;\n        }\n    }\n}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 77,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            \n            sinogram[proj * n_detectors + n] = sum / n_detectors;\n        }\n    }\n}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];\n                }\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 52,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        double freq = (double)(i - n_detectors/2) / n_detectors;\n        filter[i] = abs(freq);\n    }\n    \n    // Apply filter to each projection\n    for (int proj = 0; proj < n_projections; proj++) {\n        std::vector<double> fft_real(n_detectors), fft_imag(n_detectors);\n        \n        // Simple DFT (in practice, use FFT)\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] = 0.0;\n            fft_imag[k] = 0.0;\n            \n            for (int n = 0; n < n_detectors; n++) {\n                double angle = -2.0 * M_PI * k * n / n_detectors;\n                fft_real[k] += sinogram[proj * n_detectors + n] * cos(angle);\n                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 74,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            \n            sinogram[proj * n_detectors + n] = sum / n_detectors;\n        }\n    }\n}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z12ramLakFilterPdii",
+      "line": 52,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        double freq = (double)(i - n_detectors/2) / n_detectors;\n        filter[i] = abs(freq);\n    }\n    \n    // Apply filter to each projection\n    for (int proj = 0; proj < n_projections; proj++) {\n        std::vector<double> fft_real(n_detectors), fft_imag(n_detectors);\n        \n        // Simple DFT (in practice, use FFT)\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] = 0.0;\n            fft_imag[k] = 0.0;\n            \n            for (int n = 0; n < n_detectors; n++) {\n                double angle = -2.0 * M_PI * k * n / n_detectors;\n                fft_real[k] += sinogram[proj * n_detectors + n] * cos(angle);\n                fft_imag[k] += sinogram[proj * n_detectors + n] * sin(angle);\n            }\n        }\n        \n        // Multiply by filter\n        for (int k = 0; k < n_detectors; k++) {\n            fft_real[k] *= filter[k];\n            fft_imag[k] *= filter[k];\n        }\n        \n        // Inverse DFT\n        for (int n = 0; n < n_detectors; n++) {\n            double sum = 0.0;\n            \n            for (int k = 0; k < n_detectors; k++) {\n                double angle = 2.0 * M_PI * k * n / n_detectors;\n                sum += fft_real[k] * cos(angle) - fft_imag[k] * sin(angle);\n            }\n            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14backProjectionPdS_iii",
+      "line": 89,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];\n                }\n            }\n            \n            image[y * width + x] = sum * M_PI / n_angles;\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, n_angles = 180;\n    std::vector<double> phantom(width * height, 0.0);\n    std::vector<double> sinogram(n_angles * 2 * width);\n    std::vector<double> reconstruction(width * height);\n    \n    // Create Shepp-Logan phantom",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14backProjectionPdS_iii",
+      "line": 90,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];\n                }\n            }\n            \n            image[y * width + x] = sum * M_PI / n_angles;\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, n_angles = 180;\n    std::vector<double> phantom(width * height, 0.0);\n    std::vector<double> sinogram(n_angles * 2 * width);\n    std::vector<double> reconstruction(width * height);\n    \n    // Create Shepp-Logan phantom\n    for (int y = 0; y < height; y++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14backProjectionPdS_iii",
+      "line": 93,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];\n                }\n            }\n            \n            image[y * width + x] = sum * M_PI / n_angles;\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, n_angles = 180;\n    std::vector<double> phantom(width * height, 0.0);\n    std::vector<double> sinogram(n_angles * 2 * width);\n    std::vector<double> reconstruction(width * height);\n    \n    // Create Shepp-Logan phantom\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double dx = (x - width/2.0) / width * 2;\n            double dy = (y - height/2.0) / height * 2;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14backProjectionPdS_iii",
+      "line": 89,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n}\n\nvoid backProjection(double* sinogram, double* image, int width, int height,\n                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];\n                }\n            }\n            \n            image[y * width + x] = sum * M_PI / n_angles;\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, n_angles = 180;\n    std::vector<double> phantom(width * height, 0.0);\n    std::vector<double> sinogram(n_angles * 2 * width);\n    std::vector<double> reconstruction(width * height);\n    \n    // Create Shepp-Logan phantom",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14backProjectionPdS_iii",
+      "line": 93,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                   int n_angles) {\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double sum = 0.0;\n            \n            for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n                double theta = M_PI * angle_idx / n_angles;\n                \n                double x_centered = x - width/2.0;\n                double y_centered = y - height/2.0;\n                \n                double t = x_centered * cos(theta) + y_centered * sin(theta);\n                int detector_idx = (int)(t + width);\n                \n                if (detector_idx >= 0 && detector_idx < 2*width) {\n                    sum += sinogram[angle_idx * (2*width) + detector_idx];\n                }\n            }\n            \n            image[y * width + x] = sum * M_PI / n_angles;\n        }\n    }\n}\n\nint main() {\n    const int width = 512, height = 512, n_angles = 180;\n    std::vector<double> phantom(width * height, 0.0);\n    std::vector<double> sinogram(n_angles * 2 * width);\n    std::vector<double> reconstruction(width * height);\n    \n    // Create Shepp-Logan phantom\n    for (int y = 0; y < height; y++) {\n        for (int x = 0; x < width; x++) {\n            double dx = (x - width/2.0) / width * 2;\n            double dy = (y - height/2.0) / height * 2;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14radonTransformPdS_iii",
+      "line": 16,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    for (int angle_idx = 0; angle_idx < n_angles; angle_idx++) {\n        double theta = M_PI * angle_idx / n_angles;\n        double cos_theta = cos(theta);\n        double sin_theta = sin(theta);\n        \n        for (int t = -width; t < width; t++) {\n            double sum = 0.0;\n            \n            // Integrate along line perpendicular to theta\n            for (int s = -width; s < width; s++) {\n                double x = t * cos_theta - s * sin_theta + width/2;\n                double y = t * sin_theta + s * cos_theta + height/2;\n                \n                if (x >= 0 && x < width-1 && y >= 0 && y < height-1) {\n                    int x0 = (int)x, y0 = (int)y;\n                    double dx = x - x0, dy = y - y0;\n                    \n                    // Bilinear interpolation\n                    double val = (1-dx)*(1-dy)*image[y0*width + x0] +\n                                dx*(1-dy)*image[y0*width + (x0+1)] +\n                                (1-dx)*dy*image[(y0+1)*width + x0] +\n                                dx*dy*image[(y0+1)*width + (x0+1)];\n                    sum += val;\n                }\n            }\n            \n            sinogram[angle_idx * (2*width) + (t + width)] = sum;\n        }\n    }\n}\n\nvoid ramLakFilter(double* sinogram, int n_projections, int n_detectors) {\n    std::vector<double> filter(n_detectors);\n    \n    // Create Ram-Lak filter in frequency domain",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ct_reconstruction.cpp",
+      "function": "_Z14radonTransformPdS_iii",
+      "line": 24,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "            // Integrate along line perpendicular to theta\n            for (int s = -width; s < width; s++) {\n                double x = t * cos_theta - s * sin_theta + width/2;\n                double y = t * sin_theta + s * cos_theta + height/2;\n                \n                if (x >= 0 && x < width-1 && y >= 0 && y < height-1) {\n                    int x0 = (int)x, y0 = (int)y;\n                    double dx = x - x0, dy = y - y0;\n                    \n                    // Bilinear interpolation\n                    double val = (1-dx)*(1-dy)*image[y0*width + x0] +\n                                dx*(1-dy)*image[y0*width + (x0+1)] +\n                                (1-dx)*dy*image[(y0+1)*width + x0] +\n                                dx*dy*image[(y0+1)*width + (x0+1)];\n                    sum += val;\n                }\n            }\n            \n            sinogram[angle_idx * (2*width) + (t + width)] = sum;\n        }\n    }\n}\n\nvoid ramLakFilter(double* sinogram, int n_projections, int n_detectors) {\n    std::vector<double> filter(n_detectors);\n    \n    // Create Ram-Lak filter in frequency domain\n    for (int i = 0; i < n_detectors; i++) {\n        double freq = (double)(i - n_detectors/2) / n_detectors;\n        filter[i] = abs(freq);\n    }\n    \n    // Apply filter to each projection\n    for (int proj = 0; proj < n_projections; proj++) {\n        std::vector<double> fft_real(n_detectors), fft_imag(n_detectors);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    }
+  ]
+}

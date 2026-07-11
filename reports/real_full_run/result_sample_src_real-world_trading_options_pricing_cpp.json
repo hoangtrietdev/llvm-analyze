@@ -1,0 +1,863 @@
+{
+  "file": "sample/src/real-world/trading/options_pricing.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/trading/options_pricing.cpp",
+    "llvm_initial": 64,
+    "llvm_sys_noise": 40,
+    "llvm_project": 24,
+    "after_filter": 14,
+    "ai_batches": 1,
+    "ai_results": 14,
+    "omp_verified": 0,
+    "total_ms": 776.3,
+    "llvm_ms": 448.2
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN16OptionsAnalytics17blackScholesPriceERKNS_6OptionERKNS_10MarketDataE",
+      "line": 3587,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics17blackScholesPriceERKNS_6OptionERKNS_10MarketDataE",
+      "line": 46,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN16OptionsAnalytics14calculateDeltaERKNS_6OptionERKNS_10MarketDataE",
+      "line": 3587,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics14calculateDeltaERKNS_6OptionERKNS_10MarketDataE",
+      "line": 67,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        double sigma = market.volatility;\n        \n        double d1 = (std::log(S / K) + (r - q + 0.5 * sigma * sigma) * T) / \n                   (sigma * std::sqrt(T));\n        \n        if (option.type == \"call\") {\n            return std::exp(-q * T) * normalCDF(d1);\n        } else {\n            return -std::exp(-q * T) * normalCDF(-d1);\n        }\n    }\n    \n    // Gamma: d\u00b2V/dS\u00b2\n    double calculateGamma(const Option& option, const MarketData& market) {\n        double S = market.spot;\n        double K = option.strike;\n        double T = option.expiry;\n        double r = market.riskFreeRate;\n        double q = market.dividendYield;\n        double sigma = market.volatility;\n        \n        double d1 = (std::log(S / K) + (r - q + 0.5 * sigma * sigma) * T) / \n                   (sigma * std::sqrt(T));\n        \n        return normalPDF(d1) * std::exp(-q * T) / (S * sigma * std::sqrt(T));\n    }\n    \n    // Vega: dV/d\u03c3\n    double calculateVega(const Option& option, const MarketData& market) {\n        double S = market.spot;\n        double K = option.strike;\n        double T = option.expiry;\n        double r = market.riskFreeRate;\n        double q = market.dividendYield;\n        double sigma = market.volatility;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN16OptionsAnalytics14calculateThetaERKNS_6OptionERKNS_10MarketDataE",
+      "line": 3587,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics14calculateThetaERKNS_6OptionERKNS_10MarketDataE",
+      "line": 120,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        double d2 = d1 - sigma * std::sqrt(T);\n        \n        double term1 = -S * normalPDF(d1) * sigma * std::exp(-q * T) / \n                      (2.0 * std::sqrt(T));\n        \n        if (option.type == \"call\") {\n            double term2 = q * S * normalCDF(d1) * std::exp(-q * T);\n            double term3 = -r * K * std::exp(-r * T) * normalCDF(d2);\n            return term1 - term2 + term3;\n        } else {\n            double term2 = q * S * normalCDF(-d1) * std::exp(-q * T);\n            double term3 = r * K * std::exp(-r * T) * normalCDF(-d2);\n            return term1 + term2 - term3;\n        }\n    }\n    \n    // Rho: dV/dr\n    double calculateRho(const Option& option, const MarketData& market) {\n        double S = market.spot;\n        double K = option.strike;\n        double T = option.expiry;\n        double r = market.riskFreeRate;\n        double q = market.dividendYield;\n        double sigma = market.volatility;\n        \n        double d1 = (std::log(S / K) + (r - q + 0.5 * sigma * sigma) * T) / \n                   (sigma * std::sqrt(T));\n        double d2 = d1 - sigma * std::sqrt(T);\n        \n        if (option.type == \"call\") {\n            return K * T * std::exp(-r * T) * normalCDF(d2);\n        } else {\n            return -K * T * std::exp(-r * T) * normalCDF(-d2);\n        }\n    }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN16OptionsAnalytics12calculateRhoERKNS_6OptionERKNS_10MarketDataE",
+      "line": 3587,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12calculateRhoERKNS_6OptionERKNS_10MarketDataE",
+      "line": 144,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        \n        double d1 = (std::log(S / K) + (r - q + 0.5 * sigma * sigma) * T) / \n                   (sigma * std::sqrt(T));\n        double d2 = d1 - sigma * std::sqrt(T);\n        \n        if (option.type == \"call\") {\n            return K * T * std::exp(-r * T) * normalCDF(d2);\n        } else {\n            return -K * T * std::exp(-r * T) * normalCDF(-d2);\n        }\n    }\n    \n    // Implied volatility using Newton-Raphson\n    double impliedVolatility(const Option& option, const MarketData& market, \n                            double marketPrice) {\n        double sigma = 0.3;  // Initial guess\n        double tolerance = 1e-6;\n        int maxIterations = 100;\n        \n        for (int i = 0; i < maxIterations; i++) {\n            MarketData tempMarket = market;\n            tempMarket.volatility = sigma;\n            \n            double price = blackScholesPrice(option, tempMarket);\n            double vega = calculateVega(option, tempMarket);\n            \n            if (std::abs(vega) < 1e-10) break;\n            \n            double diff = marketPrice - price;\n            \n            if (std::abs(diff) < tolerance) {\n                return sigma;\n            }\n            \n            sigma += diff / vega;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics17impliedVolatilityERKNS_6OptionERKNS_10MarketDataEd",
+      "line": 158,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                            double marketPrice) {\n        double sigma = 0.3;  // Initial guess\n        double tolerance = 1e-6;\n        int maxIterations = 100;\n        \n        for (int i = 0; i < maxIterations; i++) {\n            MarketData tempMarket = market;\n            tempMarket.volatility = sigma;\n            \n            double price = blackScholesPrice(option, tempMarket);\n            double vega = calculateVega(option, tempMarket);\n            \n            if (std::abs(vega) < 1e-10) break;\n            \n            double diff = marketPrice - price;\n            \n            if (std::abs(diff) < tolerance) {\n                return sigma;\n            }\n            \n            sigma += diff / vega;\n            \n            // Keep sigma positive\n            if (sigma < 0.01) sigma = 0.01;\n            if (sigma > 5.0) sigma = 5.0;\n        }\n        \n        return sigma;\n    }\n    \n    // Binomial tree for American options\n    double binomialTree(const Option& option, const MarketData& market, int steps) {\n        double S = market.spot;\n        double K = option.strike;\n        double T = option.expiry;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics17impliedVolatilityERKNS_6OptionERKNS_10MarketDataEd",
+      "line": 165,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics17impliedVolatilityERKNS_6OptionERKNS_10MarketDataEd",
+      "line": 169,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.17000000000000004
+    },
+    {
+      "candidate_type": "risky",
+      "file": "unknown",
+      "function": "_ZN16OptionsAnalytics17impliedVolatilityERKNS_6OptionERKNS_10MarketDataEd",
+      "line": 0,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.57
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 149,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 199,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 199,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        double d = 1.0 / u;\n        double p = (std::exp((r - q) * dt) - d) / (u - d);\n        \n        // Build stock price tree\n        std::vector<std::vector<double>> stockPrices(steps + 1);\n        for (int i = 0; i <= steps; i++) {\n            stockPrices[i].resize(i + 1);\n            for (int j = 0; j <= i; j++) {\n                stockPrices[i][j] = S * std::pow(u, j) * std::pow(d, i - j);\n            }\n        }\n        \n        // Calculate option values at maturity\n        std::vector<double> optionValues(steps + 1);\n        for (int j = 0; j <= steps; j++) {\n            double St = stockPrices[steps][j];\n            if (option.type == \"call\") {\n                optionValues[j] = std::max(St - K, 0.0);\n            } else {\n                optionValues[j] = std::max(K - St, 0.0);\n            }\n        }\n        \n        // Backward induction\n        for (int i = steps - 1; i >= 0; i--) {\n            for (int j = 0; j <= i; j++) {\n                // European value\n                double holdValue = std::exp(-r * dt) * \n                                  (p * optionValues[j + 1] + (1 - p) * optionValues[j]);\n                \n                // Exercise value\n                double St = stockPrices[i][j];\n                double exerciseValue;\n                if (option.type == \"call\") {\n                    exerciseValue = std::max(St - K, 0.0);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 208,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "            }\n        }\n        \n        // Calculate option values at maturity\n        std::vector<double> optionValues(steps + 1);\n        for (int j = 0; j <= steps; j++) {\n            double St = stockPrices[steps][j];\n            if (option.type == \"call\") {\n                optionValues[j] = std::max(St - K, 0.0);\n            } else {\n                optionValues[j] = std::max(K - St, 0.0);\n            }\n        }\n        \n        // Backward induction\n        for (int i = steps - 1; i >= 0; i--) {\n            for (int j = 0; j <= i; j++) {\n                // European value\n                double holdValue = std::exp(-r * dt) * \n                                  (p * optionValues[j + 1] + (1 - p) * optionValues[j]);\n                \n                // Exercise value\n                double St = stockPrices[i][j];\n                double exerciseValue;\n                if (option.type == \"call\") {\n                    exerciseValue = std::max(St - K, 0.0);\n                } else {\n                    exerciseValue = std::max(K - St, 0.0);\n                }\n                \n                // American option: max of hold vs exercise\n                if (option.style == \"american\") {\n                    optionValues[j] = std::max(holdValue, exerciseValue);\n                } else {\n                    optionValues[j] = holdValue;"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 1360,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 201,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 218,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                optionValues[j] = std::max(K - St, 0.0);\n            }\n        }\n        \n        // Backward induction\n        for (int i = steps - 1; i >= 0; i--) {\n            for (int j = 0; j <= i; j++) {\n                // European value\n                double holdValue = std::exp(-r * dt) * \n                                  (p * optionValues[j + 1] + (1 - p) * optionValues[j]);\n                \n                // Exercise value\n                double St = stockPrices[i][j];\n                double exerciseValue;\n                if (option.type == \"call\") {\n                    exerciseValue = std::max(St - K, 0.0);\n                } else {\n                    exerciseValue = std::max(K - St, 0.0);\n                }\n                \n                // American option: max of hold vs exercise\n                if (option.style == \"american\") {\n                    optionValues[j] = std::max(holdValue, exerciseValue);\n                } else {\n                    optionValues[j] = holdValue;\n                }\n            }\n        }\n        \n        return optionValues[0];\n    }\n    \n    // Monte Carlo for exotic options\n    double monteCarloPrice(const Option& option, const MarketData& market, \n                          int numPaths, int numSteps) {"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 3587,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 210,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        \n        // Calculate option values at maturity\n        std::vector<double> optionValues(steps + 1);\n        for (int j = 0; j <= steps; j++) {\n            double St = stockPrices[steps][j];\n            if (option.type == \"call\") {\n                optionValues[j] = std::max(St - K, 0.0);\n            } else {\n                optionValues[j] = std::max(K - St, 0.0);\n            }\n        }\n        \n        // Backward induction\n        for (int i = steps - 1; i >= 0; i--) {\n            for (int j = 0; j <= i; j++) {\n                // European value\n                double holdValue = std::exp(-r * dt) * \n                                  (p * optionValues[j + 1] + (1 - p) * optionValues[j]);\n                \n                // Exercise value\n                double St = stockPrices[i][j];\n                double exerciseValue;\n                if (option.type == \"call\") {\n                    exerciseValue = std::max(St - K, 0.0);\n                } else {\n                    exerciseValue = std::max(K - St, 0.0);\n                }\n                \n                // American option: max of hold vs exercise\n                if (option.style == \"american\") {\n                    optionValues[j] = std::max(holdValue, exerciseValue);\n                } else {\n                    optionValues[j] = holdValue;\n                }\n            }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 208,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n        }\n        \n        // Calculate option values at maturity\n        std::vector<double> optionValues(steps + 1);\n        for (int j = 0; j <= steps; j++) {\n            double St = stockPrices[steps][j];\n            if (option.type == \"call\") {\n                optionValues[j] = std::max(St - K, 0.0);\n            } else {\n                optionValues[j] = std::max(K - St, 0.0);\n            }\n        }\n        \n        // Backward induction\n        for (int i = steps - 1; i >= 0; i--) {\n            for (int j = 0; j <= i; j++) {\n                // European value\n                double holdValue = std::exp(-r * dt) * \n                                  (p * optionValues[j + 1] + (1 - p) * optionValues[j]);\n                \n                // Exercise value\n                double St = stockPrices[i][j];\n                double exerciseValue;\n                if (option.type == \"call\") {\n                    exerciseValue = std::max(St - K, 0.0);\n                } else {\n                    exerciseValue = std::max(K - St, 0.0);\n                }\n                \n                // American option: max of hold vs exercise\n                if (option.style == \"american\") {\n                    optionValues[j] = std::max(holdValue, exerciseValue);\n                } else {\n                    optionValues[j] = holdValue;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 218,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                optionValues[j] = std::max(K - St, 0.0);\n            }\n        }\n        \n        // Backward induction\n        for (int i = steps - 1; i >= 0; i--) {\n            for (int j = 0; j <= i; j++) {\n                // European value\n                double holdValue = std::exp(-r * dt) * \n                                  (p * optionValues[j + 1] + (1 - p) * optionValues[j]);\n                \n                // Exercise value\n                double St = stockPrices[i][j];\n                double exerciseValue;\n                if (option.type == \"call\") {\n                    exerciseValue = std::max(St - K, 0.0);\n                } else {\n                    exerciseValue = std::max(K - St, 0.0);\n                }\n                \n                // American option: max of hold vs exercise\n                if (option.style == \"american\") {\n                    optionValues[j] = std::max(holdValue, exerciseValue);\n                } else {\n                    optionValues[j] = holdValue;\n                }\n            }\n        }\n        \n        return optionValues[0];\n    }\n    \n    // Monte Carlo for exotic options\n    double monteCarloPrice(const Option& option, const MarketData& market, \n                          int numPaths, int numSteps) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 3587,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 227,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 3587,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 234,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                } else {\n                    exerciseValue = std::max(K - St, 0.0);\n                }\n                \n                // American option: max of hold vs exercise\n                if (option.style == \"american\") {\n                    optionValues[j] = std::max(holdValue, exerciseValue);\n                } else {\n                    optionValues[j] = holdValue;\n                }\n            }\n        }\n        \n        return optionValues[0];\n    }\n    \n    // Monte Carlo for exotic options\n    double monteCarloPrice(const Option& option, const MarketData& market, \n                          int numPaths, int numSteps) {\n        double S = market.spot;\n        double K = option.strike;\n        double T = option.expiry;\n        double r = market.riskFreeRate;\n        double q = market.dividendYield;\n        double sigma = market.volatility;\n        \n        double dt = T / numSteps;\n        double discount = std::exp(-r * T);\n        \n        std::mt19937 rng(42);\n        std::normal_distribution<double> normal(0.0, 1.0);\n        \n        double sumPayoffs = 0.0;\n        \n        for (int path = 0; path < numPaths; path++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 219,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n        }\n        \n        // Backward induction\n        for (int i = steps - 1; i >= 0; i--) {\n            for (int j = 0; j <= i; j++) {\n                // European value\n                double holdValue = std::exp(-r * dt) * \n                                  (p * optionValues[j + 1] + (1 - p) * optionValues[j]);\n                \n                // Exercise value\n                double St = stockPrices[i][j];\n                double exerciseValue;\n                if (option.type == \"call\") {\n                    exerciseValue = std::max(St - K, 0.0);\n                } else {\n                    exerciseValue = std::max(K - St, 0.0);\n                }\n                \n                // American option: max of hold vs exercise\n                if (option.style == \"american\") {\n                    optionValues[j] = std::max(holdValue, exerciseValue);\n                } else {\n                    optionValues[j] = holdValue;\n                }\n            }\n        }\n        \n        return optionValues[0];\n    }\n    \n    // Monte Carlo for exotic options\n    double monteCarloPrice(const Option& option, const MarketData& market, \n                          int numPaths, int numSteps) {\n        double S = market.spot;"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "_ZN16OptionsAnalytics15monteCarloPriceERKNS_6OptionERKNS_10MarketDataEii",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics15monteCarloPriceERKNS_6OptionERKNS_10MarketDataEii",
+      "line": 263,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics15monteCarloPriceERKNS_6OptionERKNS_10MarketDataEii",
+      "line": 266,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        double sumPayoffs = 0.0;\n        \n        for (int path = 0; path < numPaths; path++) {\n            double St = S;\n            \n            for (int step = 0; step < numSteps; step++) {\n                double z = normal(rng);\n                St *= std::exp((r - q - 0.5 * sigma * sigma) * dt + \n                              sigma * std::sqrt(dt) * z);\n            }\n            \n            // Calculate payoff\n            double payoff;\n            if (option.type == \"call\") {\n                payoff = std::max(St - K, 0.0);\n            } else {\n                payoff = std::max(K - St, 0.0);\n            }\n            \n            sumPayoffs += payoff;\n        }\n        \n        return discount * sumPayoffs / numPaths;\n    }\n    \n    // Asian option (arithmetic average)\n    double asianOptionPrice(const Option& option, const MarketData& market, \n                           int numPaths, int numSteps) {\n        double S = market.spot;\n        double K = option.strike;\n        double T = option.expiry;\n        double r = market.riskFreeRate;\n        double q = market.dividendYield;\n        double sigma = market.volatility;\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN16OptionsAnalytics15monteCarloPriceERKNS_6OptionERKNS_10MarketDataEii",
+      "line": 3587,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics15monteCarloPriceERKNS_6OptionERKNS_10MarketDataEii",
+      "line": 274,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics15monteCarloPriceERKNS_6OptionERKNS_10MarketDataEii",
+      "line": 266,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics15monteCarloPriceERKNS_6OptionERKNS_10MarketDataEii",
+      "line": 263,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        std::mt19937 rng(42);\n        std::normal_distribution<double> normal(0.0, 1.0);\n        \n        double sumPayoffs = 0.0;\n        \n        for (int path = 0; path < numPaths; path++) {\n            double St = S;\n            \n            for (int step = 0; step < numSteps; step++) {\n                double z = normal(rng);\n                St *= std::exp((r - q - 0.5 * sigma * sigma) * dt + \n                              sigma * std::sqrt(dt) * z);\n            }\n            \n            // Calculate payoff\n            double payoff;\n            if (option.type == \"call\") {\n                payoff = std::max(St - K, 0.0);\n            } else {\n                payoff = std::max(K - St, 0.0);\n            }\n            \n            sumPayoffs += payoff;\n        }\n        \n        return discount * sumPayoffs / numPaths;\n    }\n    \n    // Asian option (arithmetic average)\n    double asianOptionPrice(const Option& option, const MarketData& market, \n                           int numPaths, int numSteps) {\n        double S = market.spot;\n        double K = option.strike;\n        double T = option.expiry;\n        double r = market.riskFreeRate;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN16OptionsAnalytics6OptionD1Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN16OptionsAnalytics6OptionD1Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IdNS_9allocatorIdEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/normal_distribution.h",
+      "function": "_ZNSt3__119normal_distributionIdEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEdRT_RKNS1_10param_typeE",
+      "line": 113,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/normal_distribution.h",
+      "function": "_ZNSt3__119normal_distributionIdEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEdRT_RKNS1_10param_typeE",
+      "line": 125,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 208,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n        }\n        \n        // Calculate option values at maturity\n        std::vector<double> optionValues(steps + 1);\n        for (int j = 0; j <= steps; j++) {\n            double St = stockPrices[steps][j];\n            if (option.type == \"call\") {\n                optionValues[j] = std::max(St - K, 0.0);\n            } else {\n                optionValues[j] = std::max(K - St, 0.0);\n            }\n        }\n        \n        // Backward induction\n        for (int i = steps - 1; i >= 0; i--) {\n            for (int j = 0; j <= i; j++) {\n                // European value\n                double holdValue = std::exp(-r * dt) * \n                                  (p * optionValues[j + 1] + (1 - p) * optionValues[j]);\n                \n                // Exercise value\n                double St = stockPrices[i][j];\n                double exerciseValue;\n                if (option.type == \"call\") {\n                    exerciseValue = std::max(St - K, 0.0);\n                } else {\n                    exerciseValue = std::max(K - St, 0.0);\n                }\n                \n                // American option: max of hold vs exercise\n                if (option.style == \"american\") {\n                    optionValues[j] = std::max(holdValue, exerciseValue);\n                } else {\n                    optionValues[j] = holdValue;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 208,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "            }\n        }\n        \n        // Calculate option values at maturity\n        std::vector<double> optionValues(steps + 1);\n        for (int j = 0; j <= steps; j++) {\n            double St = stockPrices[steps][j];\n            if (option.type == \"call\") {\n                optionValues[j] = std::max(St - K, 0.0);\n            } else {\n                optionValues[j] = std::max(K - St, 0.0);\n            }\n        }\n        \n        // Backward induction\n        for (int i = steps - 1; i >= 0; i--) {\n            for (int j = 0; j <= i; j++) {\n                // European value\n                double holdValue = std::exp(-r * dt) * \n                                  (p * optionValues[j + 1] + (1 - p) * optionValues[j]);\n                \n                // Exercise value\n                double St = stockPrices[i][j];\n                double exerciseValue;\n                if (option.type == \"call\") {\n                    exerciseValue = std::max(St - K, 0.0);\n                } else {\n                    exerciseValue = std::max(K - St, 0.0);\n                }\n                \n                // American option: max of hold vs exercise\n                if (option.style == \"american\") {\n                    optionValues[j] = std::max(holdValue, exerciseValue);\n                } else {\n                    optionValues[j] = holdValue;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 210,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        \n        // Calculate option values at maturity\n        std::vector<double> optionValues(steps + 1);\n        for (int j = 0; j <= steps; j++) {\n            double St = stockPrices[steps][j];\n            if (option.type == \"call\") {\n                optionValues[j] = std::max(St - K, 0.0);\n            } else {\n                optionValues[j] = std::max(K - St, 0.0);\n            }\n        }\n        \n        // Backward induction\n        for (int i = steps - 1; i >= 0; i--) {\n            for (int j = 0; j <= i; j++) {\n                // European value\n                double holdValue = std::exp(-r * dt) * \n                                  (p * optionValues[j + 1] + (1 - p) * optionValues[j]);\n                \n                // Exercise value\n                double St = stockPrices[i][j];\n                double exerciseValue;\n                if (option.type == \"call\") {\n                    exerciseValue = std::max(St - K, 0.0);\n                } else {\n                    exerciseValue = std::max(K - St, 0.0);\n                }\n                \n                // American option: max of hold vs exercise\n                if (option.style == \"american\") {\n                    optionValues[j] = std::max(holdValue, exerciseValue);\n                } else {\n                    optionValues[j] = holdValue;\n                }\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 234,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                } else {\n                    exerciseValue = std::max(K - St, 0.0);\n                }\n                \n                // American option: max of hold vs exercise\n                if (option.style == \"american\") {\n                    optionValues[j] = std::max(holdValue, exerciseValue);\n                } else {\n                    optionValues[j] = holdValue;\n                }\n            }\n        }\n        \n        return optionValues[0];\n    }\n    \n    // Monte Carlo for exotic options\n    double monteCarloPrice(const Option& option, const MarketData& market, \n                          int numPaths, int numSteps) {\n        double S = market.spot;\n        double K = option.strike;\n        double T = option.expiry;\n        double r = market.riskFreeRate;\n        double q = market.dividendYield;\n        double sigma = market.volatility;\n        \n        double dt = T / numSteps;\n        double discount = std::exp(-r * T);\n        \n        std::mt19937 rng(42);\n        std::normal_distribution<double> normal(0.0, 1.0);\n        \n        double sumPayoffs = 0.0;\n        \n        for (int path = 0; path < numPaths; path++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics17impliedVolatilityERKNS_6OptionERKNS_10MarketDataEd",
+      "line": 158,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                            double marketPrice) {\n        double sigma = 0.3;  // Initial guess\n        double tolerance = 1e-6;\n        int maxIterations = 100;\n        \n        for (int i = 0; i < maxIterations; i++) {\n            MarketData tempMarket = market;\n            tempMarket.volatility = sigma;\n            \n            double price = blackScholesPrice(option, tempMarket);\n            double vega = calculateVega(option, tempMarket);\n            \n            if (std::abs(vega) < 1e-10) break;\n            \n            double diff = marketPrice - price;\n            \n            if (std::abs(diff) < tolerance) {\n                return sigma;\n            }\n            \n            sigma += diff / vega;\n            \n            // Keep sigma positive\n            if (sigma < 0.01) sigma = 0.01;\n            if (sigma > 5.0) sigma = 5.0;\n        }\n        \n        return sigma;\n    }\n    \n    // Binomial tree for American options\n    double binomialTree(const Option& option, const MarketData& market, int steps) {\n        double S = market.spot;\n        double K = option.strike;\n        double T = option.expiry;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 199,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        double d = 1.0 / u;\n        double p = (std::exp((r - q) * dt) - d) / (u - d);\n        \n        // Build stock price tree\n        std::vector<std::vector<double>> stockPrices(steps + 1);\n        for (int i = 0; i <= steps; i++) {\n            stockPrices[i].resize(i + 1);\n            for (int j = 0; j <= i; j++) {\n                stockPrices[i][j] = S * std::pow(u, j) * std::pow(d, i - j);\n            }\n        }\n        \n        // Calculate option values at maturity\n        std::vector<double> optionValues(steps + 1);\n        for (int j = 0; j <= steps; j++) {\n            double St = stockPrices[steps][j];\n            if (option.type == \"call\") {\n                optionValues[j] = std::max(St - K, 0.0);\n            } else {\n                optionValues[j] = std::max(K - St, 0.0);\n            }\n        }\n        \n        // Backward induction\n        for (int i = steps - 1; i >= 0; i--) {\n            for (int j = 0; j <= i; j++) {\n                // European value\n                double holdValue = std::exp(-r * dt) * \n                                  (p * optionValues[j + 1] + (1 - p) * optionValues[j]);\n                \n                // Exercise value\n                double St = stockPrices[i][j];\n                double exerciseValue;\n                if (option.type == \"call\") {\n                    exerciseValue = std::max(St - K, 0.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 218,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                optionValues[j] = std::max(K - St, 0.0);\n            }\n        }\n        \n        // Backward induction\n        for (int i = steps - 1; i >= 0; i--) {\n            for (int j = 0; j <= i; j++) {\n                // European value\n                double holdValue = std::exp(-r * dt) * \n                                  (p * optionValues[j + 1] + (1 - p) * optionValues[j]);\n                \n                // Exercise value\n                double St = stockPrices[i][j];\n                double exerciseValue;\n                if (option.type == \"call\") {\n                    exerciseValue = std::max(St - K, 0.0);\n                } else {\n                    exerciseValue = std::max(K - St, 0.0);\n                }\n                \n                // American option: max of hold vs exercise\n                if (option.style == \"american\") {\n                    optionValues[j] = std::max(holdValue, exerciseValue);\n                } else {\n                    optionValues[j] = holdValue;\n                }\n            }\n        }\n        \n        return optionValues[0];\n    }\n    \n    // Monte Carlo for exotic options\n    double monteCarloPrice(const Option& option, const MarketData& market, \n                          int numPaths, int numSteps) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 218,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                optionValues[j] = std::max(K - St, 0.0);\n            }\n        }\n        \n        // Backward induction\n        for (int i = steps - 1; i >= 0; i--) {\n            for (int j = 0; j <= i; j++) {\n                // European value\n                double holdValue = std::exp(-r * dt) * \n                                  (p * optionValues[j + 1] + (1 - p) * optionValues[j]);\n                \n                // Exercise value\n                double St = stockPrices[i][j];\n                double exerciseValue;\n                if (option.type == \"call\") {\n                    exerciseValue = std::max(St - K, 0.0);\n                } else {\n                    exerciseValue = std::max(K - St, 0.0);\n                }\n                \n                // American option: max of hold vs exercise\n                if (option.style == \"american\") {\n                    optionValues[j] = std::max(holdValue, exerciseValue);\n                } else {\n                    optionValues[j] = holdValue;\n                }\n            }\n        }\n        \n        return optionValues[0];\n    }\n    \n    // Monte Carlo for exotic options\n    double monteCarloPrice(const Option& option, const MarketData& market, \n                          int numPaths, int numSteps) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12binomialTreeERKNS_6OptionERKNS_10MarketDataEi",
+      "line": 219,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n        }\n        \n        // Backward induction\n        for (int i = steps - 1; i >= 0; i--) {\n            for (int j = 0; j <= i; j++) {\n                // European value\n                double holdValue = std::exp(-r * dt) * \n                                  (p * optionValues[j + 1] + (1 - p) * optionValues[j]);\n                \n                // Exercise value\n                double St = stockPrices[i][j];\n                double exerciseValue;\n                if (option.type == \"call\") {\n                    exerciseValue = std::max(St - K, 0.0);\n                } else {\n                    exerciseValue = std::max(K - St, 0.0);\n                }\n                \n                // American option: max of hold vs exercise\n                if (option.style == \"american\") {\n                    optionValues[j] = std::max(holdValue, exerciseValue);\n                } else {\n                    optionValues[j] = holdValue;\n                }\n            }\n        }\n        \n        return optionValues[0];\n    }\n    \n    // Monte Carlo for exotic options\n    double monteCarloPrice(const Option& option, const MarketData& market, \n                          int numPaths, int numSteps) {\n        double S = market.spot;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics15monteCarloPriceERKNS_6OptionERKNS_10MarketDataEii",
+      "line": 266,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        double sumPayoffs = 0.0;\n        \n        for (int path = 0; path < numPaths; path++) {\n            double St = S;\n            \n            for (int step = 0; step < numSteps; step++) {\n                double z = normal(rng);\n                St *= std::exp((r - q - 0.5 * sigma * sigma) * dt + \n                              sigma * std::sqrt(dt) * z);\n            }\n            \n            // Calculate payoff\n            double payoff;\n            if (option.type == \"call\") {\n                payoff = std::max(St - K, 0.0);\n            } else {\n                payoff = std::max(K - St, 0.0);\n            }\n            \n            sumPayoffs += payoff;\n        }\n        \n        return discount * sumPayoffs / numPaths;\n    }\n    \n    // Asian option (arithmetic average)\n    double asianOptionPrice(const Option& option, const MarketData& market, \n                           int numPaths, int numSteps) {\n        double S = market.spot;\n        double K = option.strike;\n        double T = option.expiry;\n        double r = market.riskFreeRate;\n        double q = market.dividendYield;\n        double sigma = market.volatility;\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics15monteCarloPriceERKNS_6OptionERKNS_10MarketDataEii",
+      "line": 263,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        std::mt19937 rng(42);\n        std::normal_distribution<double> normal(0.0, 1.0);\n        \n        double sumPayoffs = 0.0;\n        \n        for (int path = 0; path < numPaths; path++) {\n            double St = S;\n            \n            for (int step = 0; step < numSteps; step++) {\n                double z = normal(rng);\n                St *= std::exp((r - q - 0.5 * sigma * sigma) * dt + \n                              sigma * std::sqrt(dt) * z);\n            }\n            \n            // Calculate payoff\n            double payoff;\n            if (option.type == \"call\") {\n                payoff = std::max(St - K, 0.0);\n            } else {\n                payoff = std::max(K - St, 0.0);\n            }\n            \n            sumPayoffs += payoff;\n        }\n        \n        return discount * sumPayoffs / numPaths;\n    }\n    \n    // Asian option (arithmetic average)\n    double asianOptionPrice(const Option& option, const MarketData& market, \n                           int numPaths, int numSteps) {\n        double S = market.spot;\n        double K = option.strike;\n        double T = option.expiry;\n        double r = market.riskFreeRate;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics14calculateDeltaERKNS_6OptionERKNS_10MarketDataE",
+      "line": 67,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        double sigma = market.volatility;\n        \n        double d1 = (std::log(S / K) + (r - q + 0.5 * sigma * sigma) * T) / \n                   (sigma * std::sqrt(T));\n        \n        if (option.type == \"call\") {\n            return std::exp(-q * T) * normalCDF(d1);\n        } else {\n            return -std::exp(-q * T) * normalCDF(-d1);\n        }\n    }\n    \n    // Gamma: d\u00b2V/dS\u00b2\n    double calculateGamma(const Option& option, const MarketData& market) {\n        double S = market.spot;\n        double K = option.strike;\n        double T = option.expiry;\n        double r = market.riskFreeRate;\n        double q = market.dividendYield;\n        double sigma = market.volatility;\n        \n        double d1 = (std::log(S / K) + (r - q + 0.5 * sigma * sigma) * T) / \n                   (sigma * std::sqrt(T));\n        \n        return normalPDF(d1) * std::exp(-q * T) / (S * sigma * std::sqrt(T));\n    }\n    \n    // Vega: dV/d\u03c3\n    double calculateVega(const Option& option, const MarketData& market) {\n        double S = market.spot;\n        double K = option.strike;\n        double T = option.expiry;\n        double r = market.riskFreeRate;\n        double q = market.dividendYield;\n        double sigma = market.volatility;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics14calculateThetaERKNS_6OptionERKNS_10MarketDataE",
+      "line": 120,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        double d2 = d1 - sigma * std::sqrt(T);\n        \n        double term1 = -S * normalPDF(d1) * sigma * std::exp(-q * T) / \n                      (2.0 * std::sqrt(T));\n        \n        if (option.type == \"call\") {\n            double term2 = q * S * normalCDF(d1) * std::exp(-q * T);\n            double term3 = -r * K * std::exp(-r * T) * normalCDF(d2);\n            return term1 - term2 + term3;\n        } else {\n            double term2 = q * S * normalCDF(-d1) * std::exp(-q * T);\n            double term3 = r * K * std::exp(-r * T) * normalCDF(-d2);\n            return term1 + term2 - term3;\n        }\n    }\n    \n    // Rho: dV/dr\n    double calculateRho(const Option& option, const MarketData& market) {\n        double S = market.spot;\n        double K = option.strike;\n        double T = option.expiry;\n        double r = market.riskFreeRate;\n        double q = market.dividendYield;\n        double sigma = market.volatility;\n        \n        double d1 = (std::log(S / K) + (r - q + 0.5 * sigma * sigma) * T) / \n                   (sigma * std::sqrt(T));\n        double d2 = d1 - sigma * std::sqrt(T);\n        \n        if (option.type == \"call\") {\n            return K * T * std::exp(-r * T) * normalCDF(d2);\n        } else {\n            return -K * T * std::exp(-r * T) * normalCDF(-d2);\n        }\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/options_pricing.cpp",
+      "function": "_ZN16OptionsAnalytics12calculateRhoERKNS_6OptionERKNS_10MarketDataE",
+      "line": 144,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "        \n        double d1 = (std::log(S / K) + (r - q + 0.5 * sigma * sigma) * T) / \n                   (sigma * std::sqrt(T));\n        double d2 = d1 - sigma * std::sqrt(T);\n        \n        if (option.type == \"call\") {\n            return K * T * std::exp(-r * T) * normalCDF(d2);\n        } else {\n            return -K * T * std::exp(-r * T) * normalCDF(-d2);\n        }\n    }\n    \n    // Implied volatility using Newton-Raphson\n    double impliedVolatility(const Option& option, const MarketData& market, \n                            double marketPrice) {\n        double sigma = 0.3;  // Initial guess\n        double tolerance = 1e-6;\n        int maxIterations = 100;\n        \n        for (int i = 0; i < maxIterations; i++) {\n            MarketData tempMarket = market;\n            tempMarket.volatility = sigma;\n            \n            double price = blackScholesPrice(option, tempMarket);\n            double vega = calculateVega(option, tempMarket);\n            \n            if (std::abs(vega) < 1e-10) break;\n            \n            double diff = marketPrice - price;\n            \n            if (std::abs(diff) < tolerance) {\n                return sigma;\n            }\n            \n            sigma += diff / vega;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    }
+  ]
+}

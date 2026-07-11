@@ -1,0 +1,1050 @@
+{
+  "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+    "llvm_initial": 105,
+    "llvm_sys_noise": 90,
+    "llvm_project": 15,
+    "after_filter": 8,
+    "ai_batches": 1,
+    "ai_results": 8,
+    "omp_verified": 0,
+    "total_ms": 817.6,
+    "llvm_ms": 584.9
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "main",
+      "line": 139,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "main",
+      "line": 86,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "        }\n    }\n    \n    void solve_max_cut_problem(const std::vector<std::vector<int>>& graph) {\n        // Convert graph to Ising model\n        for (size_t i = 0; i < graph.size(); i++) {\n            for (size_t j = i + 1; j < graph[i].size(); j++) {\n                if (graph[i][j] == 1) {\n                    coupling_matrix[i][j] = -0.5;  // Minimize energy = maximize cut\n                    coupling_matrix[j][i] = -0.5;\n                }\n            }\n        }\n        \n        simulated_quantum_annealing();\n    }\n    \n    void solve_traveling_salesman(const std::vector<std::vector<double>>& distances) {\n        int n_cities = distances.size();\n        \n        // QUBO formulation of TSP\n        // Each city-position pair is a qubit\n        for (int city1 = 0; city1 < n_cities; city1++) {\n            for (int pos1 = 0; pos1 < n_cities; pos1++) {\n                int qubit1 = city1 * n_cities + pos1;\n                \n                for (int city2 = 0; city2 < n_cities; city2++) {\n                    for (int pos2 = 0; pos2 < n_cities; pos2++) {\n                        int qubit2 = city2 * n_cities + pos2;\n                        \n                        if (qubit1 < NUM_QUBITS && qubit2 < NUM_QUBITS) {\n                            // Distance cost\n                            if (city1 != city2 && pos2 == (pos1 + 1) % n_cities) {\n                                coupling_matrix[qubit1][qubit2] = distances[city1][city2];\n                            }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "main",
+      "line": 86,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "main",
+      "line": 87,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "    }\n    \n    void solve_max_cut_problem(const std::vector<std::vector<int>>& graph) {\n        // Convert graph to Ising model\n        for (size_t i = 0; i < graph.size(); i++) {\n            for (size_t j = i + 1; j < graph[i].size(); j++) {\n                if (graph[i][j] == 1) {\n                    coupling_matrix[i][j] = -0.5;  // Minimize energy = maximize cut\n                    coupling_matrix[j][i] = -0.5;\n                }\n            }\n        }\n        \n        simulated_quantum_annealing();\n    }\n    \n    void solve_traveling_salesman(const std::vector<std::vector<double>>& distances) {\n        int n_cities = distances.size();\n        \n        // QUBO formulation of TSP\n        // Each city-position pair is a qubit\n        for (int city1 = 0; city1 < n_cities; city1++) {\n            for (int pos1 = 0; pos1 < n_cities; pos1++) {\n                int qubit1 = city1 * n_cities + pos1;\n                \n                for (int city2 = 0; city2 < n_cities; city2++) {\n                    for (int pos2 = 0; pos2 < n_cities; pos2++) {\n                        int qubit2 = city2 * n_cities + pos2;\n                        \n                        if (qubit1 < NUM_QUBITS && qubit2 < NUM_QUBITS) {\n                            // Distance cost\n                            if (city1 != city2 && pos2 == (pos1 + 1) % n_cities) {\n                                coupling_matrix[qubit1][qubit2] = distances[city1][city2];\n                            }\n                            "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "main",
+      "line": 88,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "    \n    void solve_max_cut_problem(const std::vector<std::vector<int>>& graph) {\n        // Convert graph to Ising model\n        for (size_t i = 0; i < graph.size(); i++) {\n            for (size_t j = i + 1; j < graph[i].size(); j++) {\n                if (graph[i][j] == 1) {\n                    coupling_matrix[i][j] = -0.5;  // Minimize energy = maximize cut\n                    coupling_matrix[j][i] = -0.5;\n                }\n            }\n        }\n        \n        simulated_quantum_annealing();\n    }\n    \n    void solve_traveling_salesman(const std::vector<std::vector<double>>& distances) {\n        int n_cities = distances.size();\n        \n        // QUBO formulation of TSP\n        // Each city-position pair is a qubit\n        for (int city1 = 0; city1 < n_cities; city1++) {\n            for (int pos1 = 0; pos1 < n_cities; pos1++) {\n                int qubit1 = city1 * n_cities + pos1;\n                \n                for (int city2 = 0; city2 < n_cities; city2++) {\n                    for (int pos2 = 0; pos2 < n_cities; pos2++) {\n                        int qubit2 = city2 * n_cities + pos2;\n                        \n                        if (qubit1 < NUM_QUBITS && qubit2 < NUM_QUBITS) {\n                            // Distance cost\n                            if (city1 != city2 && pos2 == (pos1 + 1) % n_cities) {\n                                coupling_matrix[qubit1][qubit2] = distances[city1][city2];\n                            }\n                            \n                            // Constraints"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "main",
+      "line": 87,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "main",
+      "line": 140,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "main",
+      "line": 141,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "main",
+      "line": 140,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerD1Ev",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerD1Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerD1Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 1360,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 1369,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 1369,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 25,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        coupling_matrix.resize(NUM_QUBITS, std::vector<double>(NUM_QUBITS, 0.0));\n        local_fields.resize(NUM_QUBITS, 0.0);\n        \n        // Random initialization\n        std::uniform_int_distribution<> spin_dis(0, 1);\n        for (int i = 0; i < NUM_QUBITS; i++) {\n            spin_config[i] = (spin_dis(gen) == 0) ? -1 : 1;\n        }\n    }\n    \n    double calculate_energy() {\n        double energy = 0.0;\n        \n        // Interaction terms\n        for (int i = 0; i < NUM_QUBITS; i++) {\n            for (int j = i + 1; j < NUM_QUBITS; j++) {\n                energy += coupling_matrix[i][j] * spin_config[i] * spin_config[j];\n            }\n        }\n        \n        // Local field terms\n        for (int i = 0; i < NUM_QUBITS; i++) {\n            energy += local_fields[i] * spin_config[i];\n        }\n        \n        return energy;\n    }\n    \n    void simulated_quantum_annealing() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        std::uniform_int_distribution<> qubit_dis(0, NUM_QUBITS - 1);\n        \n        for (int step = 0; step < ANNEAL_STEPS; step++) {\n            // Temperature schedule\n            double temperature = 10.0 * (1.0 - static_cast<double>(step) / ANNEAL_STEPS);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE8__appendEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE8__appendEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE8__appendEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE8__appendEm",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE8__appendEm",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE8__appendEm",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 257,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEmRKd",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEmRKd",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEmRKd",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEmRKd",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEmRKd",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEmRKd",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEmRKd",
+      "line": 257,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEmRKd",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/uniform_int_distribution.h",
+      "function": "_ZNSt3__124uniform_int_distributionIiEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEiRT_RKNS1_10param_typeE",
+      "line": 215,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/uniform_int_distribution.h",
+      "function": "_ZNSt3__124uniform_int_distributionIiEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEiRT_RKNS1_10param_typeE",
+      "line": 219,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/uniform_int_distribution.h",
+      "function": "_ZNSt3__124uniform_int_distributionIiEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEiRT_RKNS1_10param_typeE",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "_ZN15QuantumAnnealer27simulated_quantum_annealingEv",
+      "line": 52,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    void simulated_quantum_annealing() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        std::uniform_int_distribution<> qubit_dis(0, NUM_QUBITS - 1);\n        \n        for (int step = 0; step < ANNEAL_STEPS; step++) {\n            // Temperature schedule\n            double temperature = 10.0 * (1.0 - static_cast<double>(step) / ANNEAL_STEPS);\n            \n            // Transverse field strength (quantum tunneling effect)\n            double gamma = 5.0 * (1.0 - static_cast<double>(step) / ANNEAL_STEPS);\n            \n            // Try to flip random qubits\n            for (int attempt = 0; attempt < NUM_QUBITS / 10; attempt++) {\n                int qubit = qubit_dis(gen);\n                \n                // Calculate energy change\n                double delta_E = 0.0;\n                for (int j = 0; j < NUM_QUBITS; j++) {\n                    if (j != qubit) {\n                        delta_E += 2.0 * coupling_matrix[qubit][j] * \n                                  spin_config[qubit] * spin_config[j];\n                    }\n                }\n                delta_E += 2.0 * local_fields[qubit] * spin_config[qubit];\n                \n                // Metropolis criterion with quantum tunneling\n                double acceptance_prob = exp(-delta_E / temperature);\n                acceptance_prob += gamma * 0.1;  // Quantum tunneling contribution\n                \n                if (prob_dis(gen) < acceptance_prob) {\n                    spin_config[qubit] *= -1;\n                }\n            }\n        }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "_ZN15QuantumAnnealer27simulated_quantum_annealingEv",
+      "line": 77,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.35
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "_ZN15QuantumAnnealer27simulated_quantum_annealingEv",
+      "line": 66,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                int qubit = qubit_dis(gen);\n                \n                // Calculate energy change\n                double delta_E = 0.0;\n                for (int j = 0; j < NUM_QUBITS; j++) {\n                    if (j != qubit) {\n                        delta_E += 2.0 * coupling_matrix[qubit][j] * \n                                  spin_config[qubit] * spin_config[j];\n                    }\n                }\n                delta_E += 2.0 * local_fields[qubit] * spin_config[qubit];\n                \n                // Metropolis criterion with quantum tunneling\n                double acceptance_prob = exp(-delta_E / temperature);\n                acceptance_prob += gamma * 0.1;  // Quantum tunneling contribution\n                \n                if (prob_dis(gen) < acceptance_prob) {\n                    spin_config[qubit] *= -1;\n                }\n            }\n        }\n    }\n    \n    void solve_max_cut_problem(const std::vector<std::vector<int>>& graph) {\n        // Convert graph to Ising model\n        for (size_t i = 0; i < graph.size(); i++) {\n            for (size_t j = i + 1; j < graph[i].size(); j++) {\n                if (graph[i][j] == 1) {\n                    coupling_matrix[i][j] = -0.5;  // Minimize energy = maximize cut\n                    coupling_matrix[j][i] = -0.5;\n                }\n            }\n        }\n        \n        simulated_quantum_annealing();"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "_ZN15QuantumAnnealer27simulated_quantum_annealingEv",
+      "line": 65,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "            for (int attempt = 0; attempt < NUM_QUBITS / 10; attempt++) {\n                int qubit = qubit_dis(gen);\n                \n                // Calculate energy change\n                double delta_E = 0.0;\n                for (int j = 0; j < NUM_QUBITS; j++) {\n                    if (j != qubit) {\n                        delta_E += 2.0 * coupling_matrix[qubit][j] * \n                                  spin_config[qubit] * spin_config[j];\n                    }\n                }\n                delta_E += 2.0 * local_fields[qubit] * spin_config[qubit];\n                \n                // Metropolis criterion with quantum tunneling\n                double acceptance_prob = exp(-delta_E / temperature);\n                acceptance_prob += gamma * 0.1;  // Quantum tunneling contribution\n                \n                if (prob_dis(gen) < acceptance_prob) {\n                    spin_config[qubit] *= -1;\n                }\n            }\n        }\n    }\n    \n    void solve_max_cut_problem(const std::vector<std::vector<int>>& graph) {\n        // Convert graph to Ising model\n        for (size_t i = 0; i < graph.size(); i++) {\n            for (size_t j = i + 1; j < graph[i].size(); j++) {\n                if (graph[i][j] == 1) {\n                    coupling_matrix[i][j] = -0.5;  // Minimize energy = maximize cut\n                    coupling_matrix[j][i] = -0.5;\n                }\n            }\n        }\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "_ZN15QuantumAnnealer27simulated_quantum_annealingEv",
+      "line": 60,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            \n            // Transverse field strength (quantum tunneling effect)\n            double gamma = 5.0 * (1.0 - static_cast<double>(step) / ANNEAL_STEPS);\n            \n            // Try to flip random qubits\n            for (int attempt = 0; attempt < NUM_QUBITS / 10; attempt++) {\n                int qubit = qubit_dis(gen);\n                \n                // Calculate energy change\n                double delta_E = 0.0;\n                for (int j = 0; j < NUM_QUBITS; j++) {\n                    if (j != qubit) {\n                        delta_E += 2.0 * coupling_matrix[qubit][j] * \n                                  spin_config[qubit] * spin_config[j];\n                    }\n                }\n                delta_E += 2.0 * local_fields[qubit] * spin_config[qubit];\n                \n                // Metropolis criterion with quantum tunneling\n                double acceptance_prob = exp(-delta_E / temperature);\n                acceptance_prob += gamma * 0.1;  // Quantum tunneling contribution\n                \n                if (prob_dis(gen) < acceptance_prob) {\n                    spin_config[qubit] *= -1;\n                }\n            }\n        }\n    }\n    \n    void solve_max_cut_problem(const std::vector<std::vector<int>>& graph) {\n        // Convert graph to Ising model\n        for (size_t i = 0; i < graph.size(); i++) {\n            for (size_t j = i + 1; j < graph[i].size(); j++) {\n                if (graph[i][j] == 1) {\n                    coupling_matrix[i][j] = -0.5;  // Minimize energy = maximize cut"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEEC2B8ne210101EmRKS3_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IiNS_9allocatorIiEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IiNS_9allocatorIiEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IiNS_9allocatorIiEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IiNS_9allocatorIiEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IiNS_9allocatorIiEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "_ZN15QuantumAnnealerC2Ev",
+      "line": 25,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        coupling_matrix.resize(NUM_QUBITS, std::vector<double>(NUM_QUBITS, 0.0));\n        local_fields.resize(NUM_QUBITS, 0.0);\n        \n        // Random initialization\n        std::uniform_int_distribution<> spin_dis(0, 1);\n        for (int i = 0; i < NUM_QUBITS; i++) {\n            spin_config[i] = (spin_dis(gen) == 0) ? -1 : 1;\n        }\n    }\n    \n    double calculate_energy() {\n        double energy = 0.0;\n        \n        // Interaction terms\n        for (int i = 0; i < NUM_QUBITS; i++) {\n            for (int j = i + 1; j < NUM_QUBITS; j++) {\n                energy += coupling_matrix[i][j] * spin_config[i] * spin_config[j];\n            }\n        }\n        \n        // Local field terms\n        for (int i = 0; i < NUM_QUBITS; i++) {\n            energy += local_fields[i] * spin_config[i];\n        }\n        \n        return energy;\n    }\n    \n    void simulated_quantum_annealing() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        std::uniform_int_distribution<> qubit_dis(0, NUM_QUBITS - 1);\n        \n        for (int step = 0; step < ANNEAL_STEPS; step++) {\n            // Temperature schedule\n            double temperature = 10.0 * (1.0 - static_cast<double>(step) / ANNEAL_STEPS);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "main",
+      "line": 86,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "        }\n    }\n    \n    void solve_max_cut_problem(const std::vector<std::vector<int>>& graph) {\n        // Convert graph to Ising model\n        for (size_t i = 0; i < graph.size(); i++) {\n            for (size_t j = i + 1; j < graph[i].size(); j++) {\n                if (graph[i][j] == 1) {\n                    coupling_matrix[i][j] = -0.5;  // Minimize energy = maximize cut\n                    coupling_matrix[j][i] = -0.5;\n                }\n            }\n        }\n        \n        simulated_quantum_annealing();\n    }\n    \n    void solve_traveling_salesman(const std::vector<std::vector<double>>& distances) {\n        int n_cities = distances.size();\n        \n        // QUBO formulation of TSP\n        // Each city-position pair is a qubit\n        for (int city1 = 0; city1 < n_cities; city1++) {\n            for (int pos1 = 0; pos1 < n_cities; pos1++) {\n                int qubit1 = city1 * n_cities + pos1;\n                \n                for (int city2 = 0; city2 < n_cities; city2++) {\n                    for (int pos2 = 0; pos2 < n_cities; pos2++) {\n                        int qubit2 = city2 * n_cities + pos2;\n                        \n                        if (qubit1 < NUM_QUBITS && qubit2 < NUM_QUBITS) {\n                            // Distance cost\n                            if (city1 != city2 && pos2 == (pos1 + 1) % n_cities) {\n                                coupling_matrix[qubit1][qubit2] = distances[city1][city2];\n                            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.78
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "main",
+      "line": 87,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "    }\n    \n    void solve_max_cut_problem(const std::vector<std::vector<int>>& graph) {\n        // Convert graph to Ising model\n        for (size_t i = 0; i < graph.size(); i++) {\n            for (size_t j = i + 1; j < graph[i].size(); j++) {\n                if (graph[i][j] == 1) {\n                    coupling_matrix[i][j] = -0.5;  // Minimize energy = maximize cut\n                    coupling_matrix[j][i] = -0.5;\n                }\n            }\n        }\n        \n        simulated_quantum_annealing();\n    }\n    \n    void solve_traveling_salesman(const std::vector<std::vector<double>>& distances) {\n        int n_cities = distances.size();\n        \n        // QUBO formulation of TSP\n        // Each city-position pair is a qubit\n        for (int city1 = 0; city1 < n_cities; city1++) {\n            for (int pos1 = 0; pos1 < n_cities; pos1++) {\n                int qubit1 = city1 * n_cities + pos1;\n                \n                for (int city2 = 0; city2 < n_cities; city2++) {\n                    for (int pos2 = 0; pos2 < n_cities; pos2++) {\n                        int qubit2 = city2 * n_cities + pos2;\n                        \n                        if (qubit1 < NUM_QUBITS && qubit2 < NUM_QUBITS) {\n                            // Distance cost\n                            if (city1 != city2 && pos2 == (pos1 + 1) % n_cities) {\n                                coupling_matrix[qubit1][qubit2] = distances[city1][city2];\n                            }\n                            ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.78
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "main",
+      "line": 88,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "    \n    void solve_max_cut_problem(const std::vector<std::vector<int>>& graph) {\n        // Convert graph to Ising model\n        for (size_t i = 0; i < graph.size(); i++) {\n            for (size_t j = i + 1; j < graph[i].size(); j++) {\n                if (graph[i][j] == 1) {\n                    coupling_matrix[i][j] = -0.5;  // Minimize energy = maximize cut\n                    coupling_matrix[j][i] = -0.5;\n                }\n            }\n        }\n        \n        simulated_quantum_annealing();\n    }\n    \n    void solve_traveling_salesman(const std::vector<std::vector<double>>& distances) {\n        int n_cities = distances.size();\n        \n        // QUBO formulation of TSP\n        // Each city-position pair is a qubit\n        for (int city1 = 0; city1 < n_cities; city1++) {\n            for (int pos1 = 0; pos1 < n_cities; pos1++) {\n                int qubit1 = city1 * n_cities + pos1;\n                \n                for (int city2 = 0; city2 < n_cities; city2++) {\n                    for (int pos2 = 0; pos2 < n_cities; pos2++) {\n                        int qubit2 = city2 * n_cities + pos2;\n                        \n                        if (qubit1 < NUM_QUBITS && qubit2 < NUM_QUBITS) {\n                            // Distance cost\n                            if (city1 != city2 && pos2 == (pos1 + 1) % n_cities) {\n                                coupling_matrix[qubit1][qubit2] = distances[city1][city2];\n                            }\n                            \n                            // Constraints",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.78
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "_ZN15QuantumAnnealer27simulated_quantum_annealingEv",
+      "line": 66,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                int qubit = qubit_dis(gen);\n                \n                // Calculate energy change\n                double delta_E = 0.0;\n                for (int j = 0; j < NUM_QUBITS; j++) {\n                    if (j != qubit) {\n                        delta_E += 2.0 * coupling_matrix[qubit][j] * \n                                  spin_config[qubit] * spin_config[j];\n                    }\n                }\n                delta_E += 2.0 * local_fields[qubit] * spin_config[qubit];\n                \n                // Metropolis criterion with quantum tunneling\n                double acceptance_prob = exp(-delta_E / temperature);\n                acceptance_prob += gamma * 0.1;  // Quantum tunneling contribution\n                \n                if (prob_dis(gen) < acceptance_prob) {\n                    spin_config[qubit] *= -1;\n                }\n            }\n        }\n    }\n    \n    void solve_max_cut_problem(const std::vector<std::vector<int>>& graph) {\n        // Convert graph to Ising model\n        for (size_t i = 0; i < graph.size(); i++) {\n            for (size_t j = i + 1; j < graph[i].size(); j++) {\n                if (graph[i][j] == 1) {\n                    coupling_matrix[i][j] = -0.5;  // Minimize energy = maximize cut\n                    coupling_matrix[j][i] = -0.5;\n                }\n            }\n        }\n        \n        simulated_quantum_annealing();",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "_ZN15QuantumAnnealer27simulated_quantum_annealingEv",
+      "line": 65,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "            for (int attempt = 0; attempt < NUM_QUBITS / 10; attempt++) {\n                int qubit = qubit_dis(gen);\n                \n                // Calculate energy change\n                double delta_E = 0.0;\n                for (int j = 0; j < NUM_QUBITS; j++) {\n                    if (j != qubit) {\n                        delta_E += 2.0 * coupling_matrix[qubit][j] * \n                                  spin_config[qubit] * spin_config[j];\n                    }\n                }\n                delta_E += 2.0 * local_fields[qubit] * spin_config[qubit];\n                \n                // Metropolis criterion with quantum tunneling\n                double acceptance_prob = exp(-delta_E / temperature);\n                acceptance_prob += gamma * 0.1;  // Quantum tunneling contribution\n                \n                if (prob_dis(gen) < acceptance_prob) {\n                    spin_config[qubit] *= -1;\n                }\n            }\n        }\n    }\n    \n    void solve_max_cut_problem(const std::vector<std::vector<int>>& graph) {\n        // Convert graph to Ising model\n        for (size_t i = 0; i < graph.size(); i++) {\n            for (size_t j = i + 1; j < graph[i].size(); j++) {\n                if (graph[i][j] == 1) {\n                    coupling_matrix[i][j] = -0.5;  // Minimize energy = maximize cut\n                    coupling_matrix[j][i] = -0.5;\n                }\n            }\n        }\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "_ZN15QuantumAnnealer27simulated_quantum_annealingEv",
+      "line": 52,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    void simulated_quantum_annealing() {\n        std::uniform_real_distribution<> prob_dis(0.0, 1.0);\n        std::uniform_int_distribution<> qubit_dis(0, NUM_QUBITS - 1);\n        \n        for (int step = 0; step < ANNEAL_STEPS; step++) {\n            // Temperature schedule\n            double temperature = 10.0 * (1.0 - static_cast<double>(step) / ANNEAL_STEPS);\n            \n            // Transverse field strength (quantum tunneling effect)\n            double gamma = 5.0 * (1.0 - static_cast<double>(step) / ANNEAL_STEPS);\n            \n            // Try to flip random qubits\n            for (int attempt = 0; attempt < NUM_QUBITS / 10; attempt++) {\n                int qubit = qubit_dis(gen);\n                \n                // Calculate energy change\n                double delta_E = 0.0;\n                for (int j = 0; j < NUM_QUBITS; j++) {\n                    if (j != qubit) {\n                        delta_E += 2.0 * coupling_matrix[qubit][j] * \n                                  spin_config[qubit] * spin_config[j];\n                    }\n                }\n                delta_E += 2.0 * local_fields[qubit] * spin_config[qubit];\n                \n                // Metropolis criterion with quantum tunneling\n                double acceptance_prob = exp(-delta_E / temperature);\n                acceptance_prob += gamma * 0.1;  // Quantum tunneling contribution\n                \n                if (prob_dis(gen) < acceptance_prob) {\n                    spin_config[qubit] *= -1;\n                }\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_annealing.cpp",
+      "function": "_ZN15QuantumAnnealer27simulated_quantum_annealingEv",
+      "line": 60,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            \n            // Transverse field strength (quantum tunneling effect)\n            double gamma = 5.0 * (1.0 - static_cast<double>(step) / ANNEAL_STEPS);\n            \n            // Try to flip random qubits\n            for (int attempt = 0; attempt < NUM_QUBITS / 10; attempt++) {\n                int qubit = qubit_dis(gen);\n                \n                // Calculate energy change\n                double delta_E = 0.0;\n                for (int j = 0; j < NUM_QUBITS; j++) {\n                    if (j != qubit) {\n                        delta_E += 2.0 * coupling_matrix[qubit][j] * \n                                  spin_config[qubit] * spin_config[j];\n                    }\n                }\n                delta_E += 2.0 * local_fields[qubit] * spin_config[qubit];\n                \n                // Metropolis criterion with quantum tunneling\n                double acceptance_prob = exp(-delta_E / temperature);\n                acceptance_prob += gamma * 0.1;  // Quantum tunneling contribution\n                \n                if (prob_dis(gen) < acceptance_prob) {\n                    spin_config[qubit] *= -1;\n                }\n            }\n        }\n    }\n    \n    void solve_max_cut_problem(const std::vector<std::vector<int>>& graph) {\n        // Convert graph to Ising model\n        for (size_t i = 0; i < graph.size(); i++) {\n            for (size_t j = i + 1; j < graph[i].size(); j++) {\n                if (graph[i][j] == 1) {\n                    coupling_matrix[i][j] = -0.5;  // Minimize energy = maximize cut",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

@@ -1,0 +1,464 @@
+{
+  "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+    "llvm_initial": 18,
+    "llvm_sys_noise": 3,
+    "llvm_project": 15,
+    "after_filter": 13,
+    "ai_batches": 1,
+    "ai_results": 13,
+    "omp_verified": 0,
+    "total_ms": 562.1,
+    "llvm_ms": 346.8
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z17testCointegrationPdS_iRdS0_",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid testCointegration(double* series1, double* series2, int n, double& beta, double& test_stat) {\n    // Estimate cointegration coefficient\n    double sum_xy = 0.0, sum_xx = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        sum_xy += series1[i] * series2[i];\n        sum_xx += series1[i] * series1[i];\n    }\n    \n    beta = sum_xy / sum_xx;\n    \n    // Compute residuals\n    std::vector<double> residuals(n);\n    for (int i = 0; i < n; i++) {\n        residuals[i] = series2[i] - beta * series1[i];\n    }\n    \n    // Augmented Dickey-Fuller test on residuals\n    double rho = 0.0, var = 0.0;\n    for (int i = 1; i < n; i++) {\n        rho += residuals[i] * residuals[i-1];\n        var += residuals[i-1] * residuals[i-1];\n    }\n    \n    test_stat = (rho / var - 1.0) * sqrt(var);\n}\n\nvoid generateTradingSignals(double* spread, double* signals, int n, double entry_z, double exit_z) {\n    double mean = 0.0, std_dev = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z17testCointegrationPdS_iRdS0_",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z17testCointegrationPdS_iRdS0_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z17testCointegrationPdS_iRdS0_",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    \n    beta = sum_xy / sum_xx;\n    \n    // Compute residuals\n    std::vector<double> residuals(n);\n    for (int i = 0; i < n; i++) {\n        residuals[i] = series2[i] - beta * series1[i];\n    }\n    \n    // Augmented Dickey-Fuller test on residuals\n    double rho = 0.0, var = 0.0;\n    for (int i = 1; i < n; i++) {\n        rho += residuals[i] * residuals[i-1];\n        var += residuals[i-1] * residuals[i-1];\n    }\n    \n    test_stat = (rho / var - 1.0) * sqrt(var);\n}\n\nvoid generateTradingSignals(double* spread, double* signals, int n, double entry_z, double exit_z) {\n    double mean = 0.0, std_dev = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;\n    \n    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z17testCointegrationPdS_iRdS0_",
+      "line": 9,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "\nvoid testCointegration(double* series1, double* series2, int n, double& beta, double& test_stat) {\n    // Estimate cointegration coefficient\n    double sum_xy = 0.0, sum_xx = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        sum_xy += series1[i] * series2[i];\n        sum_xx += series1[i] * series1[i];\n    }\n    \n    beta = sum_xy / sum_xx;\n    \n    // Compute residuals\n    std::vector<double> residuals(n);\n    for (int i = 0; i < n; i++) {\n        residuals[i] = series2[i] - beta * series1[i];\n    }\n    \n    // Augmented Dickey-Fuller test on residuals\n    double rho = 0.0, var = 0.0;\n    for (int i = 1; i < n; i++) {\n        rho += residuals[i] * residuals[i-1];\n        var += residuals[i-1] * residuals[i-1];\n    }\n    \n    test_stat = (rho / var - 1.0) * sqrt(var);\n}\n\nvoid generateTradingSignals(double* spread, double* signals, int n, double entry_z, double exit_z) {\n    double mean = 0.0, std_dev = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z17testCointegrationPdS_iRdS0_",
+      "line": 24,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        residuals[i] = series2[i] - beta * series1[i];\n    }\n    \n    // Augmented Dickey-Fuller test on residuals\n    double rho = 0.0, var = 0.0;\n    for (int i = 1; i < n; i++) {\n        rho += residuals[i] * residuals[i-1];\n        var += residuals[i-1] * residuals[i-1];\n    }\n    \n    test_stat = (rho / var - 1.0) * sqrt(var);\n}\n\nvoid generateTradingSignals(double* spread, double* signals, int n, double entry_z, double exit_z) {\n    double mean = 0.0, std_dev = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;\n    \n    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z17testCointegrationPdS_iRdS0_",
+      "line": 18,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    \n    beta = sum_xy / sum_xx;\n    \n    // Compute residuals\n    std::vector<double> residuals(n);\n    for (int i = 0; i < n; i++) {\n        residuals[i] = series2[i] - beta * series1[i];\n    }\n    \n    // Augmented Dickey-Fuller test on residuals\n    double rho = 0.0, var = 0.0;\n    for (int i = 1; i < n; i++) {\n        rho += residuals[i] * residuals[i-1];\n        var += residuals[i-1] * residuals[i-1];\n    }\n    \n    test_stat = (rho / var - 1.0) * sqrt(var);\n}\n\nvoid generateTradingSignals(double* spread, double* signals, int n, double entry_z, double exit_z) {\n    double mean = 0.0, std_dev = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;\n    \n    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z17testCointegrationPdS_iRdS0_",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z17testCointegrationPdS_iRdS0_",
+      "line": 24,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        residuals[i] = series2[i] - beta * series1[i];\n    }\n    \n    // Augmented Dickey-Fuller test on residuals\n    double rho = 0.0, var = 0.0;\n    for (int i = 1; i < n; i++) {\n        rho += residuals[i] * residuals[i-1];\n        var += residuals[i-1] * residuals[i-1];\n    }\n    \n    test_stat = (rho / var - 1.0) * sqrt(var);\n}\n\nvoid generateTradingSignals(double* spread, double* signals, int n, double entry_z, double exit_z) {\n    double mean = 0.0, std_dev = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;\n    \n    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z22generateTradingSignalsPdS_idd",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "}\n\nvoid generateTradingSignals(double* spread, double* signals, int n, double entry_z, double exit_z) {\n    double mean = 0.0, std_dev = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;\n    \n    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> series1(n, 100.0);\n    std::vector<double> series2(n, 105.0);\n    std::vector<double> spread(n);\n    std::vector<double> signals(n);\n    \n    double beta, test_stat;\n    testCointegration(series1.data(), series2.data(), n, beta, test_stat);\n    \n    for (int i = 0; i < n; i++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z22generateTradingSignalsPdS_idd",
+      "line": 40,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;\n    \n    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> series1(n, 100.0);\n    std::vector<double> series2(n, 105.0);\n    std::vector<double> spread(n);\n    std::vector<double> signals(n);\n    \n    double beta, test_stat;\n    testCointegration(series1.data(), series2.data(), n, beta, test_stat);\n    \n    for (int i = 0; i < n; i++) {\n        spread[i] = series2[i] - beta * series1[i];\n    }\n    \n    generateTradingSignals(spread.data(), signals.data(), n, 2.0, 0.5);\n    "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z22generateTradingSignalsPdS_idd",
+      "line": 35,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "}\n\nvoid generateTradingSignals(double* spread, double* signals, int n, double entry_z, double exit_z) {\n    double mean = 0.0, std_dev = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;\n    \n    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> series1(n, 100.0);\n    std::vector<double> series2(n, 105.0);\n    std::vector<double> spread(n);\n    std::vector<double> signals(n);\n    \n    double beta, test_stat;\n    testCointegration(series1.data(), series2.data(), n, beta, test_stat);\n    \n    for (int i = 0; i < n; i++) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z22generateTradingSignalsPdS_idd",
+      "line": 45,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> series1(n, 100.0);\n    std::vector<double> series2(n, 105.0);\n    std::vector<double> spread(n);\n    std::vector<double> signals(n);\n    \n    double beta, test_stat;\n    testCointegration(series1.data(), series2.data(), n, beta, test_stat);\n    \n    for (int i = 0; i < n; i++) {\n        spread[i] = series2[i] - beta * series1[i];\n    }\n    \n    generateTradingSignals(spread.data(), signals.data(), n, 2.0, 0.5);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z22generateTradingSignalsPdS_idd",
+      "line": 40,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;\n    \n    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> series1(n, 100.0);\n    std::vector<double> series2(n, 105.0);\n    std::vector<double> spread(n);\n    std::vector<double> signals(n);\n    \n    double beta, test_stat;\n    testCointegration(series1.data(), series2.data(), n, beta, test_stat);\n    \n    for (int i = 0; i < n; i++) {\n        spread[i] = series2[i] - beta * series1[i];\n    }\n    \n    generateTradingSignals(spread.data(), signals.data(), n, 2.0, 0.5);\n    "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z22generateTradingSignalsPdS_idd",
+      "line": 48,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.73,
+      "context": "    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> series1(n, 100.0);\n    std::vector<double> series2(n, 105.0);\n    std::vector<double> spread(n);\n    std::vector<double> signals(n);\n    \n    double beta, test_stat;\n    testCointegration(series1.data(), series2.data(), n, beta, test_stat);\n    \n    for (int i = 0; i < n; i++) {\n        spread[i] = series2[i] - beta * series1[i];\n    }\n    \n    generateTradingSignals(spread.data(), signals.data(), n, 2.0, 0.5);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z22generateTradingSignalsPdS_idd",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.23000000000000007
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z22generateTradingSignalsPdS_idd",
+      "line": 50,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.15000000000000008
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z22generateTradingSignalsPdS_idd",
+      "line": 45,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> series1(n, 100.0);\n    std::vector<double> series2(n, 105.0);\n    std::vector<double> spread(n);\n    std::vector<double> signals(n);\n    \n    double beta, test_stat;\n    testCointegration(series1.data(), series2.data(), n, beta, test_stat);\n    \n    for (int i = 0; i < n; i++) {\n        spread[i] = series2[i] - beta * series1[i];\n    }\n    \n    generateTradingSignals(spread.data(), signals.data(), n, 2.0, 0.5);\n    \n    return 0;\n}"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z17testCointegrationPdS_iRdS0_",
+      "line": 24,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        residuals[i] = series2[i] - beta * series1[i];\n    }\n    \n    // Augmented Dickey-Fuller test on residuals\n    double rho = 0.0, var = 0.0;\n    for (int i = 1; i < n; i++) {\n        rho += residuals[i] * residuals[i-1];\n        var += residuals[i-1] * residuals[i-1];\n    }\n    \n    test_stat = (rho / var - 1.0) * sqrt(var);\n}\n\nvoid generateTradingSignals(double* spread, double* signals, int n, double entry_z, double exit_z) {\n    double mean = 0.0, std_dev = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;\n    \n    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z22generateTradingSignalsPdS_idd",
+      "line": 35,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "}\n\nvoid generateTradingSignals(double* spread, double* signals, int n, double entry_z, double exit_z) {\n    double mean = 0.0, std_dev = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;\n    \n    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> series1(n, 100.0);\n    std::vector<double> series2(n, 105.0);\n    std::vector<double> spread(n);\n    std::vector<double> signals(n);\n    \n    double beta, test_stat;\n    testCointegration(series1.data(), series2.data(), n, beta, test_stat);\n    \n    for (int i = 0; i < n; i++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z17testCointegrationPdS_iRdS0_",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid testCointegration(double* series1, double* series2, int n, double& beta, double& test_stat) {\n    // Estimate cointegration coefficient\n    double sum_xy = 0.0, sum_xx = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        sum_xy += series1[i] * series2[i];\n        sum_xx += series1[i] * series1[i];\n    }\n    \n    beta = sum_xy / sum_xx;\n    \n    // Compute residuals\n    std::vector<double> residuals(n);\n    for (int i = 0; i < n; i++) {\n        residuals[i] = series2[i] - beta * series1[i];\n    }\n    \n    // Augmented Dickey-Fuller test on residuals\n    double rho = 0.0, var = 0.0;\n    for (int i = 1; i < n; i++) {\n        rho += residuals[i] * residuals[i-1];\n        var += residuals[i-1] * residuals[i-1];\n    }\n    \n    test_stat = (rho / var - 1.0) * sqrt(var);\n}\n\nvoid generateTradingSignals(double* spread, double* signals, int n, double entry_z, double exit_z) {\n    double mean = 0.0, std_dev = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z17testCointegrationPdS_iRdS0_",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    \n    beta = sum_xy / sum_xx;\n    \n    // Compute residuals\n    std::vector<double> residuals(n);\n    for (int i = 0; i < n; i++) {\n        residuals[i] = series2[i] - beta * series1[i];\n    }\n    \n    // Augmented Dickey-Fuller test on residuals\n    double rho = 0.0, var = 0.0;\n    for (int i = 1; i < n; i++) {\n        rho += residuals[i] * residuals[i-1];\n        var += residuals[i-1] * residuals[i-1];\n    }\n    \n    test_stat = (rho / var - 1.0) * sqrt(var);\n}\n\nvoid generateTradingSignals(double* spread, double* signals, int n, double entry_z, double exit_z) {\n    double mean = 0.0, std_dev = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;\n    \n    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z22generateTradingSignalsPdS_idd",
+      "line": 40,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;\n    \n    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> series1(n, 100.0);\n    std::vector<double> series2(n, 105.0);\n    std::vector<double> spread(n);\n    std::vector<double> signals(n);\n    \n    double beta, test_stat;\n    testCointegration(series1.data(), series2.data(), n, beta, test_stat);\n    \n    for (int i = 0; i < n; i++) {\n        spread[i] = series2[i] - beta * series1[i];\n    }\n    \n    generateTradingSignals(spread.data(), signals.data(), n, 2.0, 0.5);\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z22generateTradingSignalsPdS_idd",
+      "line": 45,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> series1(n, 100.0);\n    std::vector<double> series2(n, 105.0);\n    std::vector<double> spread(n);\n    std::vector<double> signals(n);\n    \n    double beta, test_stat;\n    testCointegration(series1.data(), series2.data(), n, beta, test_stat);\n    \n    for (int i = 0; i < n; i++) {\n        spread[i] = series2[i] - beta * series1[i];\n    }\n    \n    generateTradingSignals(spread.data(), signals.data(), n, 2.0, 0.5);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z22generateTradingSignalsPdS_idd",
+      "line": 48,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.73,
+      "context": "    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> series1(n, 100.0);\n    std::vector<double> series2(n, 105.0);\n    std::vector<double> spread(n);\n    std::vector<double> signals(n);\n    \n    double beta, test_stat;\n    testCointegration(series1.data(), series2.data(), n, beta, test_stat);\n    \n    for (int i = 0; i < n; i++) {\n        spread[i] = series2[i] - beta * series1[i];\n    }\n    \n    generateTradingSignals(spread.data(), signals.data(), n, 2.0, 0.5);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.73
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z17testCointegrationPdS_iRdS0_",
+      "line": 9,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "\nvoid testCointegration(double* series1, double* series2, int n, double& beta, double& test_stat) {\n    // Estimate cointegration coefficient\n    double sum_xy = 0.0, sum_xx = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        sum_xy += series1[i] * series2[i];\n        sum_xx += series1[i] * series1[i];\n    }\n    \n    beta = sum_xy / sum_xx;\n    \n    // Compute residuals\n    std::vector<double> residuals(n);\n    for (int i = 0; i < n; i++) {\n        residuals[i] = series2[i] - beta * series1[i];\n    }\n    \n    // Augmented Dickey-Fuller test on residuals\n    double rho = 0.0, var = 0.0;\n    for (int i = 1; i < n; i++) {\n        rho += residuals[i] * residuals[i-1];\n        var += residuals[i-1] * residuals[i-1];\n    }\n    \n    test_stat = (rho / var - 1.0) * sqrt(var);\n}\n\nvoid generateTradingSignals(double* spread, double* signals, int n, double entry_z, double exit_z) {\n    double mean = 0.0, std_dev = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z17testCointegrationPdS_iRdS0_",
+      "line": 18,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    \n    beta = sum_xy / sum_xx;\n    \n    // Compute residuals\n    std::vector<double> residuals(n);\n    for (int i = 0; i < n; i++) {\n        residuals[i] = series2[i] - beta * series1[i];\n    }\n    \n    // Augmented Dickey-Fuller test on residuals\n    double rho = 0.0, var = 0.0;\n    for (int i = 1; i < n; i++) {\n        rho += residuals[i] * residuals[i-1];\n        var += residuals[i-1] * residuals[i-1];\n    }\n    \n    test_stat = (rho / var - 1.0) * sqrt(var);\n}\n\nvoid generateTradingSignals(double* spread, double* signals, int n, double entry_z, double exit_z) {\n    double mean = 0.0, std_dev = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;\n    \n    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z17testCointegrationPdS_iRdS0_",
+      "line": 24,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        residuals[i] = series2[i] - beta * series1[i];\n    }\n    \n    // Augmented Dickey-Fuller test on residuals\n    double rho = 0.0, var = 0.0;\n    for (int i = 1; i < n; i++) {\n        rho += residuals[i] * residuals[i-1];\n        var += residuals[i-1] * residuals[i-1];\n    }\n    \n    test_stat = (rho / var - 1.0) * sqrt(var);\n}\n\nvoid generateTradingSignals(double* spread, double* signals, int n, double entry_z, double exit_z) {\n    double mean = 0.0, std_dev = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;\n    \n    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z22generateTradingSignalsPdS_idd",
+      "line": 45,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> series1(n, 100.0);\n    std::vector<double> series2(n, 105.0);\n    std::vector<double> spread(n);\n    std::vector<double> signals(n);\n    \n    double beta, test_stat;\n    testCointegration(series1.data(), series2.data(), n, beta, test_stat);\n    \n    for (int i = 0; i < n; i++) {\n        spread[i] = series2[i] - beta * series1[i];\n    }\n    \n    generateTradingSignals(spread.data(), signals.data(), n, 2.0, 0.5);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z22generateTradingSignalsPdS_idd",
+      "line": 40,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;\n    \n    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> series1(n, 100.0);\n    std::vector<double> series2(n, 105.0);\n    std::vector<double> spread(n);\n    std::vector<double> signals(n);\n    \n    double beta, test_stat;\n    testCointegration(series1.data(), series2.data(), n, beta, test_stat);\n    \n    for (int i = 0; i < n; i++) {\n        spread[i] = series2[i] - beta * series1[i];\n    }\n    \n    generateTradingSignals(spread.data(), signals.data(), n, 2.0, 0.5);\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/statistical_arbitrage.cpp",
+      "function": "_Z22generateTradingSignalsPdS_idd",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "}\n\nvoid generateTradingSignals(double* spread, double* signals, int n, double entry_z, double exit_z) {\n    double mean = 0.0, std_dev = 0.0;\n    \n    for (int i = 0; i < n; i++) {\n        mean += spread[i];\n    }\n    mean /= n;\n    \n    for (int i = 0; i < n; i++) {\n        std_dev += (spread[i] - mean) * (spread[i] - mean);\n    }\n    std_dev = sqrt(std_dev / n);\n    \n    for (int i = 0; i < n; i++) {\n        double z_score = (spread[i] - mean) / std_dev;\n        \n        if (z_score > entry_z) signals[i] = -1.0; // Short spread\n        else if (z_score < -entry_z) signals[i] = 1.0; // Long spread\n        else if (fabs(z_score) < exit_z) signals[i] = 0.0; // Close position\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> series1(n, 100.0);\n    std::vector<double> series2(n, 105.0);\n    std::vector<double> spread(n);\n    std::vector<double> signals(n);\n    \n    double beta, test_stat;\n    testCointegration(series1.data(), series2.data(), n, beta, test_stat);\n    \n    for (int i = 0; i < n; i++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

@@ -1,0 +1,369 @@
+{
+  "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+    "llvm_initial": 23,
+    "llvm_sys_noise": 11,
+    "llvm_project": 12,
+    "after_filter": 7,
+    "ai_batches": 1,
+    "ai_results": 7,
+    "omp_verified": 0,
+    "total_ms": 593.4,
+    "llvm_ms": 402.1
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1360,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "main",
+      "line": 27,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    float bandwidth;\n    \n    TCPCongestionControl(int numConns, float loss, float bw) \n        : packetLoss(loss), bandwidth(bw) {\n        connections.resize(numConns);\n        for (int i = 0; i < numConns; i++) {\n            connections[i].id = i;\n            connections[i].cwnd = 1.0f;\n            connections[i].ssthresh = 64.0f;\n            connections[i].state = 0;\n            connections[i].rtt = 0.1f;\n            connections[i].dupAckCount = 0;\n            connections[i].throughput = 0.0f;\n        }\n    }\n    \n    // Simulate one RTT\n    void simulateRTT() {\n        for (auto& conn : connections) {\n            // Slow start\n            if (conn.state == 0) {\n                if (noPacketLoss()) {\n                    conn.cwnd *= 2;\n                    if (conn.cwnd >= conn.ssthresh) {\n                        conn.state = 1;  // Enter congestion avoidance\n                    }\n                } else {\n                    handlePacketLoss(conn);\n                }\n            }\n            // Congestion avoidance\n            else if (conn.state == 1) {\n                if (noPacketLoss()) {\n                    conn.cwnd += 1.0f / conn.cwnd;\n                } else {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "main",
+      "line": 181,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "_ZN20TCPCongestionControl11simulateRTTEv",
+      "line": 40,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "_ZN20TCPCongestionControl11simulateRTTEv",
+      "line": 43,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.25000000000000006
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "_ZN20TCPCongestionControl11simulateRTTEv",
+      "line": 45,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        for (auto& conn : connections) {\n            // Slow start\n            if (conn.state == 0) {\n                if (noPacketLoss()) {\n                    conn.cwnd *= 2;\n                    if (conn.cwnd >= conn.ssthresh) {\n                        conn.state = 1;  // Enter congestion avoidance\n                    }\n                } else {\n                    handlePacketLoss(conn);\n                }\n            }\n            // Congestion avoidance\n            else if (conn.state == 1) {\n                if (noPacketLoss()) {\n                    conn.cwnd += 1.0f / conn.cwnd;\n                } else {\n                    handlePacketLoss(conn);\n                }\n            }\n            // Fast recovery\n            else if (conn.state == 2) {\n                if (noPacketLoss()) {\n                    conn.cwnd = conn.ssthresh;\n                    conn.state = 1;  // Return to congestion avoidance\n                    conn.dupAckCount = 0;\n                } else {\n                    conn.cwnd += 1;\n                }\n            }\n            \n            // Calculate throughput\n            conn.throughput = conn.cwnd / conn.rtt;\n        }\n    }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "_ZN20TCPCongestionControl11simulateRTTEv",
+      "line": 162,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    void handlePacketLoss(Connection& conn) {\n        // Fast retransmit/fast recovery\n        conn.dupAckCount++;\n        \n        if (conn.dupAckCount == 3) {\n            conn.ssthresh = conn.cwnd / 2;\n            conn.cwnd = conn.ssthresh + 3;\n            conn.state = 2;  // Fast recovery\n        } else if (conn.dupAckCount > 3 && conn.state == 2) {\n            conn.cwnd += 1;\n        } else {\n            // Timeout: reset to slow start\n            conn.ssthresh = conn.cwnd / 2;\n            conn.cwnd = 1.0f;\n            conn.state = 0;\n            conn.dupAckCount = 0;\n        }\n    }\n};\n\nint main() {\n    TCPCongestionControl tcp(100, 0.01f, 100.0f);\n    \n    for (int i = 0; i < 1000; i++) {\n        tcp.simulateRTT();\n    }\n    \n    float fairness = tcp.calculateFairness();\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "_ZN20TCPCongestionControl11simulateRTTEv",
+      "line": 166,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "        \n        if (conn.dupAckCount == 3) {\n            conn.ssthresh = conn.cwnd / 2;\n            conn.cwnd = conn.ssthresh + 3;\n            conn.state = 2;  // Fast recovery\n        } else if (conn.dupAckCount > 3 && conn.state == 2) {\n            conn.cwnd += 1;\n        } else {\n            // Timeout: reset to slow start\n            conn.ssthresh = conn.cwnd / 2;\n            conn.cwnd = 1.0f;\n            conn.state = 0;\n            conn.dupAckCount = 0;\n        }\n    }\n};\n\nint main() {\n    TCPCongestionControl tcp(100, 0.01f, 100.0f);\n    \n    for (int i = 0; i < 1000; i++) {\n        tcp.simulateRTT();\n    }\n    \n    float fairness = tcp.calculateFairness();\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "_ZN20TCPCongestionControl11simulateRTTEv",
+      "line": 54,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.06999999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "_ZN20TCPCongestionControl11simulateRTTEv",
+      "line": 162,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    void handlePacketLoss(Connection& conn) {\n        // Fast retransmit/fast recovery\n        conn.dupAckCount++;\n        \n        if (conn.dupAckCount == 3) {\n            conn.ssthresh = conn.cwnd / 2;\n            conn.cwnd = conn.ssthresh + 3;\n            conn.state = 2;  // Fast recovery\n        } else if (conn.dupAckCount > 3 && conn.state == 2) {\n            conn.cwnd += 1;\n        } else {\n            // Timeout: reset to slow start\n            conn.ssthresh = conn.cwnd / 2;\n            conn.cwnd = 1.0f;\n            conn.state = 0;\n            conn.dupAckCount = 0;\n        }\n    }\n};\n\nint main() {\n    TCPCongestionControl tcp(100, 0.01f, 100.0f);\n    \n    for (int i = 0; i < 1000; i++) {\n        tcp.simulateRTT();\n    }\n    \n    float fairness = tcp.calculateFairness();\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "_ZN20TCPCongestionControl11simulateRTTEv",
+      "line": 166,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "        \n        if (conn.dupAckCount == 3) {\n            conn.ssthresh = conn.cwnd / 2;\n            conn.cwnd = conn.ssthresh + 3;\n            conn.state = 2;  // Fast recovery\n        } else if (conn.dupAckCount > 3 && conn.state == 2) {\n            conn.cwnd += 1;\n        } else {\n            // Timeout: reset to slow start\n            conn.ssthresh = conn.cwnd / 2;\n            conn.cwnd = 1.0f;\n            conn.state = 0;\n            conn.dupAckCount = 0;\n        }\n    }\n};\n\nint main() {\n    TCPCongestionControl tcp(100, 0.01f, 100.0f);\n    \n    for (int i = 0; i < 1000; i++) {\n        tcp.simulateRTT();\n    }\n    \n    float fairness = tcp.calculateFairness();\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "_ZN20TCPCongestionControl11simulateRTTEv",
+      "line": 62,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.06999999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "_ZN20TCPCongestionControl11simulateRTTEv",
+      "line": 40,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        }\n    }\n    \n    // Simulate one RTT\n    void simulateRTT() {\n        for (auto& conn : connections) {\n            // Slow start\n            if (conn.state == 0) {\n                if (noPacketLoss()) {\n                    conn.cwnd *= 2;\n                    if (conn.cwnd >= conn.ssthresh) {\n                        conn.state = 1;  // Enter congestion avoidance\n                    }\n                } else {\n                    handlePacketLoss(conn);\n                }\n            }\n            // Congestion avoidance\n            else if (conn.state == 1) {\n                if (noPacketLoss()) {\n                    conn.cwnd += 1.0f / conn.cwnd;\n                } else {\n                    handlePacketLoss(conn);\n                }\n            }\n            // Fast recovery\n            else if (conn.state == 2) {\n                if (noPacketLoss()) {\n                    conn.cwnd = conn.ssthresh;\n                    conn.state = 1;  // Return to congestion avoidance\n                    conn.dupAckCount = 0;\n                } else {\n                    conn.cwnd += 1;\n                }\n            }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN20TCPCongestionControl10ConnectionENS_9allocatorIS2_EEE8__appendEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN20TCPCongestionControl10ConnectionENS_9allocatorIS2_EEE8__appendEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN20TCPCongestionControl10ConnectionENS_9allocatorIS2_EEE8__appendEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN20TCPCongestionControl10ConnectionENS_9allocatorIS2_EEE8__appendEm",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIN20TCPCongestionControl10ConnectionENS_9allocatorIS2_EEE8__appendEm",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN20TCPCongestionControl10ConnectionENS_9allocatorIS2_EEE8__appendEm",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "main",
+      "line": 27,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    float bandwidth;\n    \n    TCPCongestionControl(int numConns, float loss, float bw) \n        : packetLoss(loss), bandwidth(bw) {\n        connections.resize(numConns);\n        for (int i = 0; i < numConns; i++) {\n            connections[i].id = i;\n            connections[i].cwnd = 1.0f;\n            connections[i].ssthresh = 64.0f;\n            connections[i].state = 0;\n            connections[i].rtt = 0.1f;\n            connections[i].dupAckCount = 0;\n            connections[i].throughput = 0.0f;\n        }\n    }\n    \n    // Simulate one RTT\n    void simulateRTT() {\n        for (auto& conn : connections) {\n            // Slow start\n            if (conn.state == 0) {\n                if (noPacketLoss()) {\n                    conn.cwnd *= 2;\n                    if (conn.cwnd >= conn.ssthresh) {\n                        conn.state = 1;  // Enter congestion avoidance\n                    }\n                } else {\n                    handlePacketLoss(conn);\n                }\n            }\n            // Congestion avoidance\n            else if (conn.state == 1) {\n                if (noPacketLoss()) {\n                    conn.cwnd += 1.0f / conn.cwnd;\n                } else {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "_ZN20TCPCongestionControl11simulateRTTEv",
+      "line": 162,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    void handlePacketLoss(Connection& conn) {\n        // Fast retransmit/fast recovery\n        conn.dupAckCount++;\n        \n        if (conn.dupAckCount == 3) {\n            conn.ssthresh = conn.cwnd / 2;\n            conn.cwnd = conn.ssthresh + 3;\n            conn.state = 2;  // Fast recovery\n        } else if (conn.dupAckCount > 3 && conn.state == 2) {\n            conn.cwnd += 1;\n        } else {\n            // Timeout: reset to slow start\n            conn.ssthresh = conn.cwnd / 2;\n            conn.cwnd = 1.0f;\n            conn.state = 0;\n            conn.dupAckCount = 0;\n        }\n    }\n};\n\nint main() {\n    TCPCongestionControl tcp(100, 0.01f, 100.0f);\n    \n    for (int i = 0; i < 1000; i++) {\n        tcp.simulateRTT();\n    }\n    \n    float fairness = tcp.calculateFairness();\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "_ZN20TCPCongestionControl11simulateRTTEv",
+      "line": 162,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    void handlePacketLoss(Connection& conn) {\n        // Fast retransmit/fast recovery\n        conn.dupAckCount++;\n        \n        if (conn.dupAckCount == 3) {\n            conn.ssthresh = conn.cwnd / 2;\n            conn.cwnd = conn.ssthresh + 3;\n            conn.state = 2;  // Fast recovery\n        } else if (conn.dupAckCount > 3 && conn.state == 2) {\n            conn.cwnd += 1;\n        } else {\n            // Timeout: reset to slow start\n            conn.ssthresh = conn.cwnd / 2;\n            conn.cwnd = 1.0f;\n            conn.state = 0;\n            conn.dupAckCount = 0;\n        }\n    }\n};\n\nint main() {\n    TCPCongestionControl tcp(100, 0.01f, 100.0f);\n    \n    for (int i = 0; i < 1000; i++) {\n        tcp.simulateRTT();\n    }\n    \n    float fairness = tcp.calculateFairness();\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "_ZN20TCPCongestionControl11simulateRTTEv",
+      "line": 166,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "        \n        if (conn.dupAckCount == 3) {\n            conn.ssthresh = conn.cwnd / 2;\n            conn.cwnd = conn.ssthresh + 3;\n            conn.state = 2;  // Fast recovery\n        } else if (conn.dupAckCount > 3 && conn.state == 2) {\n            conn.cwnd += 1;\n        } else {\n            // Timeout: reset to slow start\n            conn.ssthresh = conn.cwnd / 2;\n            conn.cwnd = 1.0f;\n            conn.state = 0;\n            conn.dupAckCount = 0;\n        }\n    }\n};\n\nint main() {\n    TCPCongestionControl tcp(100, 0.01f, 100.0f);\n    \n    for (int i = 0; i < 1000; i++) {\n        tcp.simulateRTT();\n    }\n    \n    float fairness = tcp.calculateFairness();\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.93
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "_ZN20TCPCongestionControl11simulateRTTEv",
+      "line": 166,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "        \n        if (conn.dupAckCount == 3) {\n            conn.ssthresh = conn.cwnd / 2;\n            conn.cwnd = conn.ssthresh + 3;\n            conn.state = 2;  // Fast recovery\n        } else if (conn.dupAckCount > 3 && conn.state == 2) {\n            conn.cwnd += 1;\n        } else {\n            // Timeout: reset to slow start\n            conn.ssthresh = conn.cwnd / 2;\n            conn.cwnd = 1.0f;\n            conn.state = 0;\n            conn.dupAckCount = 0;\n        }\n    }\n};\n\nint main() {\n    TCPCongestionControl tcp(100, 0.01f, 100.0f);\n    \n    for (int i = 0; i < 1000; i++) {\n        tcp.simulateRTT();\n    }\n    \n    float fairness = tcp.calculateFairness();\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.93
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "_ZN20TCPCongestionControl11simulateRTTEv",
+      "line": 45,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        for (auto& conn : connections) {\n            // Slow start\n            if (conn.state == 0) {\n                if (noPacketLoss()) {\n                    conn.cwnd *= 2;\n                    if (conn.cwnd >= conn.ssthresh) {\n                        conn.state = 1;  // Enter congestion avoidance\n                    }\n                } else {\n                    handlePacketLoss(conn);\n                }\n            }\n            // Congestion avoidance\n            else if (conn.state == 1) {\n                if (noPacketLoss()) {\n                    conn.cwnd += 1.0f / conn.cwnd;\n                } else {\n                    handlePacketLoss(conn);\n                }\n            }\n            // Fast recovery\n            else if (conn.state == 2) {\n                if (noPacketLoss()) {\n                    conn.cwnd = conn.ssthresh;\n                    conn.state = 1;  // Return to congestion avoidance\n                    conn.dupAckCount = 0;\n                } else {\n                    conn.cwnd += 1;\n                }\n            }\n            \n            // Calculate throughput\n            conn.throughput = conn.cwnd / conn.rtt;\n        }\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/tcp_congestion.cpp",
+      "function": "_ZN20TCPCongestionControl11simulateRTTEv",
+      "line": 40,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        }\n    }\n    \n    // Simulate one RTT\n    void simulateRTT() {\n        for (auto& conn : connections) {\n            // Slow start\n            if (conn.state == 0) {\n                if (noPacketLoss()) {\n                    conn.cwnd *= 2;\n                    if (conn.cwnd >= conn.ssthresh) {\n                        conn.state = 1;  // Enter congestion avoidance\n                    }\n                } else {\n                    handlePacketLoss(conn);\n                }\n            }\n            // Congestion avoidance\n            else if (conn.state == 1) {\n                if (noPacketLoss()) {\n                    conn.cwnd += 1.0f / conn.cwnd;\n                } else {\n                    handlePacketLoss(conn);\n                }\n            }\n            // Fast recovery\n            else if (conn.state == 2) {\n                if (noPacketLoss()) {\n                    conn.cwnd = conn.ssthresh;\n                    conn.state = 1;  // Return to congestion avoidance\n                    conn.dupAckCount = 0;\n                } else {\n                    conn.cwnd += 1;\n                }\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8300000000000001
+    }
+  ]
+}

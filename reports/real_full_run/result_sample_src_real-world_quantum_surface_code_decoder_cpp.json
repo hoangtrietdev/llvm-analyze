@@ -1,0 +1,710 @@
+{
+  "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+    "llvm_initial": 42,
+    "llvm_sys_noise": 17,
+    "llvm_project": 25,
+    "after_filter": 15,
+    "ai_batches": 1,
+    "ai_results": 15,
+    "omp_verified": 0,
+    "total_ms": 742.6,
+    "llvm_ms": 458.5
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z18measureStabilizersPiS_i",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid measureStabilizers(int* qubits, int* syndrome, int lattice_size) {\n    // Surface code: measure X and Z stabilizers on lattice\n    int n_qubits = lattice_size * lattice_size;\n    \n    for (int i = 0; i < lattice_size - 1; i++) {\n        for (int j = 0; j < lattice_size - 1; j++) {\n            // X-stabilizer (measure Z-Z-Z-Z on plaquette)\n            int q1 = i * lattice_size + j;\n            int q2 = i * lattice_size + (j + 1);\n            int q3 = (i + 1) * lattice_size + j;\n            int q4 = (i + 1) * lattice_size + (j + 1);\n            \n            int x_syndrome = (qubits[q1] ^ qubits[q2] ^ qubits[q3] ^ qubits[q4]);\n            syndrome[2 * (i * (lattice_size-1) + j)] = x_syndrome;\n            \n            // Z-stabilizer\n            int z_syndrome = ((qubits[q1] >> 1) ^ (qubits[q2] >> 1) ^ \n                             (qubits[q3] >> 1) ^ (qubits[q4] >> 1)) & 1;\n            syndrome[2 * (i * (lattice_size-1) + j) + 1] = z_syndrome;\n        }\n    }\n}\n\nvoid decodeMinimumWeight(int* syndrome, int* errors, int lattice_size) {\n    // Minimum weight perfect matching decoder\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    \n    std::vector<int> defects;\n    for (int i = 0; i < n_syndromes; i++) {\n        if (syndrome[i] == 1) {\n            defects.push_back(i);\n        }\n    }\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z18measureStabilizersPiS_i",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid measureStabilizers(int* qubits, int* syndrome, int lattice_size) {\n    // Surface code: measure X and Z stabilizers on lattice\n    int n_qubits = lattice_size * lattice_size;\n    \n    for (int i = 0; i < lattice_size - 1; i++) {\n        for (int j = 0; j < lattice_size - 1; j++) {\n            // X-stabilizer (measure Z-Z-Z-Z on plaquette)\n            int q1 = i * lattice_size + j;\n            int q2 = i * lattice_size + (j + 1);\n            int q3 = (i + 1) * lattice_size + j;\n            int q4 = (i + 1) * lattice_size + (j + 1);\n            \n            int x_syndrome = (qubits[q1] ^ qubits[q2] ^ qubits[q3] ^ qubits[q4]);\n            syndrome[2 * (i * (lattice_size-1) + j)] = x_syndrome;\n            \n            // Z-stabilizer\n            int z_syndrome = ((qubits[q1] >> 1) ^ (qubits[q2] >> 1) ^ \n                             (qubits[q3] >> 1) ^ (qubits[q4] >> 1)) & 1;\n            syndrome[2 * (i * (lattice_size-1) + j) + 1] = z_syndrome;\n        }\n    }\n}\n\nvoid decodeMinimumWeight(int* syndrome, int* errors, int lattice_size) {\n    // Minimum weight perfect matching decoder\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    \n    std::vector<int> defects;\n    for (int i = 0; i < n_syndromes; i++) {\n        if (syndrome[i] == 1) {\n            defects.push_back(i);\n        }\n    }\n    "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z18measureStabilizersPiS_i",
+      "line": 12,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void measureStabilizers(int* qubits, int* syndrome, int lattice_size) {\n    // Surface code: measure X and Z stabilizers on lattice\n    int n_qubits = lattice_size * lattice_size;\n    \n    for (int i = 0; i < lattice_size - 1; i++) {\n        for (int j = 0; j < lattice_size - 1; j++) {\n            // X-stabilizer (measure Z-Z-Z-Z on plaquette)\n            int q1 = i * lattice_size + j;\n            int q2 = i * lattice_size + (j + 1);\n            int q3 = (i + 1) * lattice_size + j;\n            int q4 = (i + 1) * lattice_size + (j + 1);\n            \n            int x_syndrome = (qubits[q1] ^ qubits[q2] ^ qubits[q3] ^ qubits[q4]);\n            syndrome[2 * (i * (lattice_size-1) + j)] = x_syndrome;\n            \n            // Z-stabilizer\n            int z_syndrome = ((qubits[q1] >> 1) ^ (qubits[q2] >> 1) ^ \n                             (qubits[q3] >> 1) ^ (qubits[q4] >> 1)) & 1;\n            syndrome[2 * (i * (lattice_size-1) + j) + 1] = z_syndrome;\n        }\n    }\n}\n\nvoid decodeMinimumWeight(int* syndrome, int* errors, int lattice_size) {\n    // Minimum weight perfect matching decoder\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    \n    std::vector<int> defects;\n    for (int i = 0; i < n_syndromes; i++) {\n        if (syndrome[i] == 1) {\n            defects.push_back(i);\n        }\n    }\n    \n    // Pair defects with minimum weight matching"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "void decodeMinimumWeight(int* syndrome, int* errors, int lattice_size) {\n    // Minimum weight perfect matching decoder\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    \n    std::vector<int> defects;\n    for (int i = 0; i < n_syndromes; i++) {\n        if (syndrome[i] == 1) {\n            defects.push_back(i);\n        }\n    }\n    \n    // Pair defects with minimum weight matching\n    for (size_t i = 0; i < defects.size(); i += 2) {\n        if (i + 1 >= defects.size()) break;\n        \n        int d1 = defects[i];\n        int d2 = defects[i + 1];\n        \n        // Calculate path between defects\n        int y1 = d1 / (2 * (lattice_size - 1));\n        int x1 = (d1 / 2) % (lattice_size - 1);\n        int y2 = d2 / (2 * (lattice_size - 1));\n        int x2 = (d2 / 2) % (lattice_size - 1);\n        \n        // Apply corrections along path\n        for (int x = std::min(x1, x2); x <= std::max(x1, x2); x++) {\n            for (int y = std::min(y1, y2); y <= std::max(y1, y2); y++) {\n                int qubit_idx = y * lattice_size + x;\n                errors[qubit_idx] ^= 1;\n            }\n        }\n    }\n}\n\nvoid simulateNoiseChannel(int* qubits, int n_qubits, double error_rate,"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 42,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 36,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    // Minimum weight perfect matching decoder\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    \n    std::vector<int> defects;\n    for (int i = 0; i < n_syndromes; i++) {\n        if (syndrome[i] == 1) {\n            defects.push_back(i);\n        }\n    }\n    \n    // Pair defects with minimum weight matching\n    for (size_t i = 0; i < defects.size(); i += 2) {\n        if (i + 1 >= defects.size()) break;\n        \n        int d1 = defects[i];\n        int d2 = defects[i + 1];\n        \n        // Calculate path between defects\n        int y1 = d1 / (2 * (lattice_size - 1));\n        int x1 = (d1 / 2) % (lattice_size - 1);\n        int y2 = d2 / (2 * (lattice_size - 1));\n        int x2 = (d2 / 2) % (lattice_size - 1);\n        \n        // Apply corrections along path\n        for (int x = std::min(x1, x2); x <= std::max(x1, x2); x++) {\n            for (int y = std::min(y1, y2); y <= std::max(y1, y2); y++) {\n                int qubit_idx = y * lattice_size + x;\n                errors[qubit_idx] ^= 1;\n            }\n        }\n    }\n}\n\nvoid simulateNoiseChannel(int* qubits, int n_qubits, double error_rate,\n                          std::mt19937& rng) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "void decodeMinimumWeight(int* syndrome, int* errors, int lattice_size) {\n    // Minimum weight perfect matching decoder\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    \n    std::vector<int> defects;\n    for (int i = 0; i < n_syndromes; i++) {\n        if (syndrome[i] == 1) {\n            defects.push_back(i);\n        }\n    }\n    \n    // Pair defects with minimum weight matching\n    for (size_t i = 0; i < defects.size(); i += 2) {\n        if (i + 1 >= defects.size()) break;\n        \n        int d1 = defects[i];\n        int d2 = defects[i + 1];\n        \n        // Calculate path between defects\n        int y1 = d1 / (2 * (lattice_size - 1));\n        int x1 = (d1 / 2) % (lattice_size - 1);\n        int y2 = d2 / (2 * (lattice_size - 1));\n        int x2 = (d2 / 2) % (lattice_size - 1);\n        \n        // Apply corrections along path\n        for (int x = std::min(x1, x2); x <= std::max(x1, x2); x++) {\n            for (int y = std::min(y1, y2); y <= std::max(y1, y2); y++) {\n                int qubit_idx = y * lattice_size + x;\n                errors[qubit_idx] ^= 1;\n            }\n        }\n    }\n}\n\nvoid simulateNoiseChannel(int* qubits, int n_qubits, double error_rate,"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 43,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 42,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 55,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 56,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        int y2 = d2 / (2 * (lattice_size - 1));\n        int x2 = (d2 / 2) % (lattice_size - 1);\n        \n        // Apply corrections along path\n        for (int x = std::min(x1, x2); x <= std::max(x1, x2); x++) {\n            for (int y = std::min(y1, y2); y <= std::max(y1, y2); y++) {\n                int qubit_idx = y * lattice_size + x;\n                errors[qubit_idx] ^= 1;\n            }\n        }\n    }\n}\n\nvoid simulateNoiseChannel(int* qubits, int n_qubits, double error_rate,\n                          std::mt19937& rng) {\n    std::uniform_real_distribution<> uniform(0.0, 1.0);\n    \n    for (int i = 0; i < n_qubits; i++) {\n        // Depolarizing channel\n        double r = uniform(rng);\n        \n        if (r < error_rate / 3) {\n            // X error\n            qubits[i] ^= 1;\n        } else if (r < 2 * error_rate / 3) {\n            // Z error\n            qubits[i] ^= 2;\n        } else if (r < error_rate) {\n            // Y error (X and Z)\n            qubits[i] ^= 3;\n        }\n    }\n}\n\ndouble logicalErrorRate(int lattice_size, double physical_error_rate,"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z20simulateNoiseChannelPiidRNSt3__123mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 68,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid simulateNoiseChannel(int* qubits, int n_qubits, double error_rate,\n                          std::mt19937& rng) {\n    std::uniform_real_distribution<> uniform(0.0, 1.0);\n    \n    for (int i = 0; i < n_qubits; i++) {\n        // Depolarizing channel\n        double r = uniform(rng);\n        \n        if (r < error_rate / 3) {\n            // X error\n            qubits[i] ^= 1;\n        } else if (r < 2 * error_rate / 3) {\n            // Z error\n            qubits[i] ^= 2;\n        } else if (r < error_rate) {\n            // Y error (X and Z)\n            qubits[i] ^= 3;\n        }\n    }\n}\n\ndouble logicalErrorRate(int lattice_size, double physical_error_rate,\n                       int n_trials) {\n    int n_qubits = lattice_size * lattice_size;\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    int logical_errors = 0;\n    \n    std::mt19937 rng(42);\n    \n    for (int trial = 0; trial < n_trials; trial++) {\n        std::vector<int> qubits(n_qubits, 0);\n        std::vector<int> syndrome(n_syndromes);\n        std::vector<int> corrections(n_qubits, 0);\n        "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z20simulateNoiseChannelPiidRNSt3__123mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 72,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.35
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z20simulateNoiseChannelPiidRNSt3__123mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 75,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z20simulateNoiseChannelPiidRNSt3__123mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 78,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z20simulateNoiseChannelPiidRNSt3__123mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 68,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid simulateNoiseChannel(int* qubits, int n_qubits, double error_rate,\n                          std::mt19937& rng) {\n    std::uniform_real_distribution<> uniform(0.0, 1.0);\n    \n    for (int i = 0; i < n_qubits; i++) {\n        // Depolarizing channel\n        double r = uniform(rng);\n        \n        if (r < error_rate / 3) {\n            // X error\n            qubits[i] ^= 1;\n        } else if (r < 2 * error_rate / 3) {\n            // Z error\n            qubits[i] ^= 2;\n        } else if (r < error_rate) {\n            // Y error (X and Z)\n            qubits[i] ^= 3;\n        }\n    }\n}\n\ndouble logicalErrorRate(int lattice_size, double physical_error_rate,\n                       int n_trials) {\n    int n_qubits = lattice_size * lattice_size;\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    int logical_errors = 0;\n    \n    std::mt19937 rng(42);\n    \n    for (int trial = 0; trial < n_trials; trial++) {\n        std::vector<int> qubits(n_qubits, 0);\n        std::vector<int> syndrome(n_syndromes);\n        std::vector<int> corrections(n_qubits, 0);\n        "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 93,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    int logical_errors = 0;\n    \n    std::mt19937 rng(42);\n    \n    for (int trial = 0; trial < n_trials; trial++) {\n        std::vector<int> qubits(n_qubits, 0);\n        std::vector<int> syndrome(n_syndromes);\n        std::vector<int> corrections(n_qubits, 0);\n        \n        // Apply noise\n        simulateNoiseChannel(qubits.data(), n_qubits, physical_error_rate, rng);\n        \n        // Measure stabilizers\n        measureStabilizers(qubits.data(), syndrome.data(), lattice_size);\n        \n        // Decode and correct\n        decodeMinimumWeight(syndrome.data(), corrections.data(), lattice_size);\n        \n        // Apply corrections\n        for (int i = 0; i < n_qubits; i++) {\n            qubits[i] ^= corrections[i];\n        }\n        \n        // Check logical operators\n        int logical_x = 0, logical_z = 0;\n        for (int i = 0; i < lattice_size; i++) {\n            logical_x ^= qubits[i];\n            logical_z ^= qubits[i * lattice_size];\n        }\n        \n        if (logical_x != 0 || logical_z != 0) {\n            logical_errors++;\n        }\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 170,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 170,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 11,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid measureStabilizers(int* qubits, int* syndrome, int lattice_size) {\n    // Surface code: measure X and Z stabilizers on lattice\n    int n_qubits = lattice_size * lattice_size;\n    \n    for (int i = 0; i < lattice_size - 1; i++) {\n        for (int j = 0; j < lattice_size - 1; j++) {\n            // X-stabilizer (measure Z-Z-Z-Z on plaquette)\n            int q1 = i * lattice_size + j;\n            int q2 = i * lattice_size + (j + 1);\n            int q3 = (i + 1) * lattice_size + j;\n            int q4 = (i + 1) * lattice_size + (j + 1);\n            \n            int x_syndrome = (qubits[q1] ^ qubits[q2] ^ qubits[q3] ^ qubits[q4]);\n            syndrome[2 * (i * (lattice_size-1) + j)] = x_syndrome;\n            \n            // Z-stabilizer\n            int z_syndrome = ((qubits[q1] >> 1) ^ (qubits[q2] >> 1) ^ \n                             (qubits[q3] >> 1) ^ (qubits[q4] >> 1)) & 1;\n            syndrome[2 * (i * (lattice_size-1) + j) + 1] = z_syndrome;\n        }\n    }\n}\n\nvoid decodeMinimumWeight(int* syndrome, int* errors, int lattice_size) {\n    // Minimum weight perfect matching decoder\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    \n    std::vector<int> defects;\n    for (int i = 0; i < n_syndromes; i++) {\n        if (syndrome[i] == 1) {\n            defects.push_back(i);\n        }\n    }\n    "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 12,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void measureStabilizers(int* qubits, int* syndrome, int lattice_size) {\n    // Surface code: measure X and Z stabilizers on lattice\n    int n_qubits = lattice_size * lattice_size;\n    \n    for (int i = 0; i < lattice_size - 1; i++) {\n        for (int j = 0; j < lattice_size - 1; j++) {\n            // X-stabilizer (measure Z-Z-Z-Z on plaquette)\n            int q1 = i * lattice_size + j;\n            int q2 = i * lattice_size + (j + 1);\n            int q3 = (i + 1) * lattice_size + j;\n            int q4 = (i + 1) * lattice_size + (j + 1);\n            \n            int x_syndrome = (qubits[q1] ^ qubits[q2] ^ qubits[q3] ^ qubits[q4]);\n            syndrome[2 * (i * (lattice_size-1) + j)] = x_syndrome;\n            \n            // Z-stabilizer\n            int z_syndrome = ((qubits[q1] >> 1) ^ (qubits[q2] >> 1) ^ \n                             (qubits[q3] >> 1) ^ (qubits[q4] >> 1)) & 1;\n            syndrome[2 * (i * (lattice_size-1) + j) + 1] = z_syndrome;\n        }\n    }\n}\n\nvoid decodeMinimumWeight(int* syndrome, int* errors, int lattice_size) {\n    // Minimum weight perfect matching decoder\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    \n    std::vector<int> defects;\n    for (int i = 0; i < n_syndromes; i++) {\n        if (syndrome[i] == 1) {\n            defects.push_back(i);\n        }\n    }\n    \n    // Pair defects with minimum weight matching"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 108,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 114,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            qubits[i] ^= corrections[i];\n        }\n        \n        // Check logical operators\n        int logical_x = 0, logical_z = 0;\n        for (int i = 0; i < lattice_size; i++) {\n            logical_x ^= qubits[i];\n            logical_z ^= qubits[i * lattice_size];\n        }\n        \n        if (logical_x != 0 || logical_z != 0) {\n            logical_errors++;\n        }\n    }\n    \n    return (double)logical_errors / n_trials;\n}\n\nint main() {\n    const int lattice_size = 7; // Distance-7 surface code\n    const double physical_error_rate = 0.01;\n    const int n_trials = 10000;\n    \n    double logical_rate = logicalErrorRate(lattice_size, physical_error_rate, n_trials);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 108,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        \n        // Decode and correct\n        decodeMinimumWeight(syndrome.data(), corrections.data(), lattice_size);\n        \n        // Apply corrections\n        for (int i = 0; i < n_qubits; i++) {\n            qubits[i] ^= corrections[i];\n        }\n        \n        // Check logical operators\n        int logical_x = 0, logical_z = 0;\n        for (int i = 0; i < lattice_size; i++) {\n            logical_x ^= qubits[i];\n            logical_z ^= qubits[i * lattice_size];\n        }\n        \n        if (logical_x != 0 || logical_z != 0) {\n            logical_errors++;\n        }\n    }\n    \n    return (double)logical_errors / n_trials;\n}\n\nint main() {\n    const int lattice_size = 7; // Distance-7 surface code\n    const double physical_error_rate = 0.01;\n    const int n_trials = 10000;\n    \n    double logical_rate = logicalErrorRate(lattice_size, physical_error_rate, n_trials);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 93,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.55
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 114,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            qubits[i] ^= corrections[i];\n        }\n        \n        // Check logical operators\n        int logical_x = 0, logical_z = 0;\n        for (int i = 0; i < lattice_size; i++) {\n            logical_x ^= qubits[i];\n            logical_z ^= qubits[i * lattice_size];\n        }\n        \n        if (logical_x != 0 || logical_z != 0) {\n            logical_errors++;\n        }\n    }\n    \n    return (double)logical_errors / n_trials;\n}\n\nint main() {\n    const int lattice_size = 7; // Distance-7 surface code\n    const double physical_error_rate = 0.01;\n    const int n_trials = 10000;\n    \n    double logical_rate = logicalErrorRate(lattice_size, physical_error_rate, n_trials);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z18measureStabilizersPiS_i",
+      "line": 12,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void measureStabilizers(int* qubits, int* syndrome, int lattice_size) {\n    // Surface code: measure X and Z stabilizers on lattice\n    int n_qubits = lattice_size * lattice_size;\n    \n    for (int i = 0; i < lattice_size - 1; i++) {\n        for (int j = 0; j < lattice_size - 1; j++) {\n            // X-stabilizer (measure Z-Z-Z-Z on plaquette)\n            int q1 = i * lattice_size + j;\n            int q2 = i * lattice_size + (j + 1);\n            int q3 = (i + 1) * lattice_size + j;\n            int q4 = (i + 1) * lattice_size + (j + 1);\n            \n            int x_syndrome = (qubits[q1] ^ qubits[q2] ^ qubits[q3] ^ qubits[q4]);\n            syndrome[2 * (i * (lattice_size-1) + j)] = x_syndrome;\n            \n            // Z-stabilizer\n            int z_syndrome = ((qubits[q1] >> 1) ^ (qubits[q2] >> 1) ^ \n                             (qubits[q3] >> 1) ^ (qubits[q4] >> 1)) & 1;\n            syndrome[2 * (i * (lattice_size-1) + j) + 1] = z_syndrome;\n        }\n    }\n}\n\nvoid decodeMinimumWeight(int* syndrome, int* errors, int lattice_size) {\n    // Minimum weight perfect matching decoder\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    \n    std::vector<int> defects;\n    for (int i = 0; i < n_syndromes; i++) {\n        if (syndrome[i] == 1) {\n            defects.push_back(i);\n        }\n    }\n    \n    // Pair defects with minimum weight matching",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 36,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    // Minimum weight perfect matching decoder\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    \n    std::vector<int> defects;\n    for (int i = 0; i < n_syndromes; i++) {\n        if (syndrome[i] == 1) {\n            defects.push_back(i);\n        }\n    }\n    \n    // Pair defects with minimum weight matching\n    for (size_t i = 0; i < defects.size(); i += 2) {\n        if (i + 1 >= defects.size()) break;\n        \n        int d1 = defects[i];\n        int d2 = defects[i + 1];\n        \n        // Calculate path between defects\n        int y1 = d1 / (2 * (lattice_size - 1));\n        int x1 = (d1 / 2) % (lattice_size - 1);\n        int y2 = d2 / (2 * (lattice_size - 1));\n        int x2 = (d2 / 2) % (lattice_size - 1);\n        \n        // Apply corrections along path\n        for (int x = std::min(x1, x2); x <= std::max(x1, x2); x++) {\n            for (int y = std::min(y1, y2); y <= std::max(y1, y2); y++) {\n                int qubit_idx = y * lattice_size + x;\n                errors[qubit_idx] ^= 1;\n            }\n        }\n    }\n}\n\nvoid simulateNoiseChannel(int* qubits, int n_qubits, double error_rate,\n                          std::mt19937& rng) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 93,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    int logical_errors = 0;\n    \n    std::mt19937 rng(42);\n    \n    for (int trial = 0; trial < n_trials; trial++) {\n        std::vector<int> qubits(n_qubits, 0);\n        std::vector<int> syndrome(n_syndromes);\n        std::vector<int> corrections(n_qubits, 0);\n        \n        // Apply noise\n        simulateNoiseChannel(qubits.data(), n_qubits, physical_error_rate, rng);\n        \n        // Measure stabilizers\n        measureStabilizers(qubits.data(), syndrome.data(), lattice_size);\n        \n        // Decode and correct\n        decodeMinimumWeight(syndrome.data(), corrections.data(), lattice_size);\n        \n        // Apply corrections\n        for (int i = 0; i < n_qubits; i++) {\n            qubits[i] ^= corrections[i];\n        }\n        \n        // Check logical operators\n        int logical_x = 0, logical_z = 0;\n        for (int i = 0; i < lattice_size; i++) {\n            logical_x ^= qubits[i];\n            logical_z ^= qubits[i * lattice_size];\n        }\n        \n        if (logical_x != 0 || logical_z != 0) {\n            logical_errors++;\n        }\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 12,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void measureStabilizers(int* qubits, int* syndrome, int lattice_size) {\n    // Surface code: measure X and Z stabilizers on lattice\n    int n_qubits = lattice_size * lattice_size;\n    \n    for (int i = 0; i < lattice_size - 1; i++) {\n        for (int j = 0; j < lattice_size - 1; j++) {\n            // X-stabilizer (measure Z-Z-Z-Z on plaquette)\n            int q1 = i * lattice_size + j;\n            int q2 = i * lattice_size + (j + 1);\n            int q3 = (i + 1) * lattice_size + j;\n            int q4 = (i + 1) * lattice_size + (j + 1);\n            \n            int x_syndrome = (qubits[q1] ^ qubits[q2] ^ qubits[q3] ^ qubits[q4]);\n            syndrome[2 * (i * (lattice_size-1) + j)] = x_syndrome;\n            \n            // Z-stabilizer\n            int z_syndrome = ((qubits[q1] >> 1) ^ (qubits[q2] >> 1) ^ \n                             (qubits[q3] >> 1) ^ (qubits[q4] >> 1)) & 1;\n            syndrome[2 * (i * (lattice_size-1) + j) + 1] = z_syndrome;\n        }\n    }\n}\n\nvoid decodeMinimumWeight(int* syndrome, int* errors, int lattice_size) {\n    // Minimum weight perfect matching decoder\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    \n    std::vector<int> defects;\n    for (int i = 0; i < n_syndromes; i++) {\n        if (syndrome[i] == 1) {\n            defects.push_back(i);\n        }\n    }\n    \n    // Pair defects with minimum weight matching",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 114,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            qubits[i] ^= corrections[i];\n        }\n        \n        // Check logical operators\n        int logical_x = 0, logical_z = 0;\n        for (int i = 0; i < lattice_size; i++) {\n            logical_x ^= qubits[i];\n            logical_z ^= qubits[i * lattice_size];\n        }\n        \n        if (logical_x != 0 || logical_z != 0) {\n            logical_errors++;\n        }\n    }\n    \n    return (double)logical_errors / n_trials;\n}\n\nint main() {\n    const int lattice_size = 7; // Distance-7 surface code\n    const double physical_error_rate = 0.01;\n    const int n_trials = 10000;\n    \n    double logical_rate = logicalErrorRate(lattice_size, physical_error_rate, n_trials);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 56,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        int y2 = d2 / (2 * (lattice_size - 1));\n        int x2 = (d2 / 2) % (lattice_size - 1);\n        \n        // Apply corrections along path\n        for (int x = std::min(x1, x2); x <= std::max(x1, x2); x++) {\n            for (int y = std::min(y1, y2); y <= std::max(y1, y2); y++) {\n                int qubit_idx = y * lattice_size + x;\n                errors[qubit_idx] ^= 1;\n            }\n        }\n    }\n}\n\nvoid simulateNoiseChannel(int* qubits, int n_qubits, double error_rate,\n                          std::mt19937& rng) {\n    std::uniform_real_distribution<> uniform(0.0, 1.0);\n    \n    for (int i = 0; i < n_qubits; i++) {\n        // Depolarizing channel\n        double r = uniform(rng);\n        \n        if (r < error_rate / 3) {\n            // X error\n            qubits[i] ^= 1;\n        } else if (r < 2 * error_rate / 3) {\n            // Z error\n            qubits[i] ^= 2;\n        } else if (r < error_rate) {\n            // Y error (X and Z)\n            qubits[i] ^= 3;\n        }\n    }\n}\n\ndouble logicalErrorRate(int lattice_size, double physical_error_rate,",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 108,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        \n        // Decode and correct\n        decodeMinimumWeight(syndrome.data(), corrections.data(), lattice_size);\n        \n        // Apply corrections\n        for (int i = 0; i < n_qubits; i++) {\n            qubits[i] ^= corrections[i];\n        }\n        \n        // Check logical operators\n        int logical_x = 0, logical_z = 0;\n        for (int i = 0; i < lattice_size; i++) {\n            logical_x ^= qubits[i];\n            logical_z ^= qubits[i * lattice_size];\n        }\n        \n        if (logical_x != 0 || logical_z != 0) {\n            logical_errors++;\n        }\n    }\n    \n    return (double)logical_errors / n_trials;\n}\n\nint main() {\n    const int lattice_size = 7; // Distance-7 surface code\n    const double physical_error_rate = 0.01;\n    const int n_trials = 10000;\n    \n    double logical_rate = logicalErrorRate(lattice_size, physical_error_rate, n_trials);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "void decodeMinimumWeight(int* syndrome, int* errors, int lattice_size) {\n    // Minimum weight perfect matching decoder\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    \n    std::vector<int> defects;\n    for (int i = 0; i < n_syndromes; i++) {\n        if (syndrome[i] == 1) {\n            defects.push_back(i);\n        }\n    }\n    \n    // Pair defects with minimum weight matching\n    for (size_t i = 0; i < defects.size(); i += 2) {\n        if (i + 1 >= defects.size()) break;\n        \n        int d1 = defects[i];\n        int d2 = defects[i + 1];\n        \n        // Calculate path between defects\n        int y1 = d1 / (2 * (lattice_size - 1));\n        int x1 = (d1 / 2) % (lattice_size - 1);\n        int y2 = d2 / (2 * (lattice_size - 1));\n        int x2 = (d2 / 2) % (lattice_size - 1);\n        \n        // Apply corrections along path\n        for (int x = std::min(x1, x2); x <= std::max(x1, x2); x++) {\n            for (int y = std::min(y1, y2); y <= std::max(y1, y2); y++) {\n                int qubit_idx = y * lattice_size + x;\n                errors[qubit_idx] ^= 1;\n            }\n        }\n    }\n}\n\nvoid simulateNoiseChannel(int* qubits, int n_qubits, double error_rate,",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z19decodeMinimumWeightPiS_i",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "void decodeMinimumWeight(int* syndrome, int* errors, int lattice_size) {\n    // Minimum weight perfect matching decoder\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    \n    std::vector<int> defects;\n    for (int i = 0; i < n_syndromes; i++) {\n        if (syndrome[i] == 1) {\n            defects.push_back(i);\n        }\n    }\n    \n    // Pair defects with minimum weight matching\n    for (size_t i = 0; i < defects.size(); i += 2) {\n        if (i + 1 >= defects.size()) break;\n        \n        int d1 = defects[i];\n        int d2 = defects[i + 1];\n        \n        // Calculate path between defects\n        int y1 = d1 / (2 * (lattice_size - 1));\n        int x1 = (d1 / 2) % (lattice_size - 1);\n        int y2 = d2 / (2 * (lattice_size - 1));\n        int x2 = (d2 / 2) % (lattice_size - 1);\n        \n        // Apply corrections along path\n        for (int x = std::min(x1, x2); x <= std::max(x1, x2); x++) {\n            for (int y = std::min(y1, y2); y <= std::max(y1, y2); y++) {\n                int qubit_idx = y * lattice_size + x;\n                errors[qubit_idx] ^= 1;\n            }\n        }\n    }\n}\n\nvoid simulateNoiseChannel(int* qubits, int n_qubits, double error_rate,",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z18measureStabilizersPiS_i",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid measureStabilizers(int* qubits, int* syndrome, int lattice_size) {\n    // Surface code: measure X and Z stabilizers on lattice\n    int n_qubits = lattice_size * lattice_size;\n    \n    for (int i = 0; i < lattice_size - 1; i++) {\n        for (int j = 0; j < lattice_size - 1; j++) {\n            // X-stabilizer (measure Z-Z-Z-Z on plaquette)\n            int q1 = i * lattice_size + j;\n            int q2 = i * lattice_size + (j + 1);\n            int q3 = (i + 1) * lattice_size + j;\n            int q4 = (i + 1) * lattice_size + (j + 1);\n            \n            int x_syndrome = (qubits[q1] ^ qubits[q2] ^ qubits[q3] ^ qubits[q4]);\n            syndrome[2 * (i * (lattice_size-1) + j)] = x_syndrome;\n            \n            // Z-stabilizer\n            int z_syndrome = ((qubits[q1] >> 1) ^ (qubits[q2] >> 1) ^ \n                             (qubits[q3] >> 1) ^ (qubits[q4] >> 1)) & 1;\n            syndrome[2 * (i * (lattice_size-1) + j) + 1] = z_syndrome;\n        }\n    }\n}\n\nvoid decodeMinimumWeight(int* syndrome, int* errors, int lattice_size) {\n    // Minimum weight perfect matching decoder\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    \n    std::vector<int> defects;\n    for (int i = 0; i < n_syndromes; i++) {\n        if (syndrome[i] == 1) {\n            defects.push_back(i);\n        }\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z18measureStabilizersPiS_i",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid measureStabilizers(int* qubits, int* syndrome, int lattice_size) {\n    // Surface code: measure X and Z stabilizers on lattice\n    int n_qubits = lattice_size * lattice_size;\n    \n    for (int i = 0; i < lattice_size - 1; i++) {\n        for (int j = 0; j < lattice_size - 1; j++) {\n            // X-stabilizer (measure Z-Z-Z-Z on plaquette)\n            int q1 = i * lattice_size + j;\n            int q2 = i * lattice_size + (j + 1);\n            int q3 = (i + 1) * lattice_size + j;\n            int q4 = (i + 1) * lattice_size + (j + 1);\n            \n            int x_syndrome = (qubits[q1] ^ qubits[q2] ^ qubits[q3] ^ qubits[q4]);\n            syndrome[2 * (i * (lattice_size-1) + j)] = x_syndrome;\n            \n            // Z-stabilizer\n            int z_syndrome = ((qubits[q1] >> 1) ^ (qubits[q2] >> 1) ^ \n                             (qubits[q3] >> 1) ^ (qubits[q4] >> 1)) & 1;\n            syndrome[2 * (i * (lattice_size-1) + j) + 1] = z_syndrome;\n        }\n    }\n}\n\nvoid decodeMinimumWeight(int* syndrome, int* errors, int lattice_size) {\n    // Minimum weight perfect matching decoder\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    \n    std::vector<int> defects;\n    for (int i = 0; i < n_syndromes; i++) {\n        if (syndrome[i] == 1) {\n            defects.push_back(i);\n        }\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z20simulateNoiseChannelPiidRNSt3__123mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 68,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid simulateNoiseChannel(int* qubits, int n_qubits, double error_rate,\n                          std::mt19937& rng) {\n    std::uniform_real_distribution<> uniform(0.0, 1.0);\n    \n    for (int i = 0; i < n_qubits; i++) {\n        // Depolarizing channel\n        double r = uniform(rng);\n        \n        if (r < error_rate / 3) {\n            // X error\n            qubits[i] ^= 1;\n        } else if (r < 2 * error_rate / 3) {\n            // Z error\n            qubits[i] ^= 2;\n        } else if (r < error_rate) {\n            // Y error (X and Z)\n            qubits[i] ^= 3;\n        }\n    }\n}\n\ndouble logicalErrorRate(int lattice_size, double physical_error_rate,\n                       int n_trials) {\n    int n_qubits = lattice_size * lattice_size;\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    int logical_errors = 0;\n    \n    std::mt19937 rng(42);\n    \n    for (int trial = 0; trial < n_trials; trial++) {\n        std::vector<int> qubits(n_qubits, 0);\n        std::vector<int> syndrome(n_syndromes);\n        std::vector<int> corrections(n_qubits, 0);\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z20simulateNoiseChannelPiidRNSt3__123mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 68,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid simulateNoiseChannel(int* qubits, int n_qubits, double error_rate,\n                          std::mt19937& rng) {\n    std::uniform_real_distribution<> uniform(0.0, 1.0);\n    \n    for (int i = 0; i < n_qubits; i++) {\n        // Depolarizing channel\n        double r = uniform(rng);\n        \n        if (r < error_rate / 3) {\n            // X error\n            qubits[i] ^= 1;\n        } else if (r < 2 * error_rate / 3) {\n            // Z error\n            qubits[i] ^= 2;\n        } else if (r < error_rate) {\n            // Y error (X and Z)\n            qubits[i] ^= 3;\n        }\n    }\n}\n\ndouble logicalErrorRate(int lattice_size, double physical_error_rate,\n                       int n_trials) {\n    int n_qubits = lattice_size * lattice_size;\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    int logical_errors = 0;\n    \n    std::mt19937 rng(42);\n    \n    for (int trial = 0; trial < n_trials; trial++) {\n        std::vector<int> qubits(n_qubits, 0);\n        std::vector<int> syndrome(n_syndromes);\n        std::vector<int> corrections(n_qubits, 0);\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid measureStabilizers(int* qubits, int* syndrome, int lattice_size) {\n    // Surface code: measure X and Z stabilizers on lattice\n    int n_qubits = lattice_size * lattice_size;\n    \n    for (int i = 0; i < lattice_size - 1; i++) {\n        for (int j = 0; j < lattice_size - 1; j++) {\n            // X-stabilizer (measure Z-Z-Z-Z on plaquette)\n            int q1 = i * lattice_size + j;\n            int q2 = i * lattice_size + (j + 1);\n            int q3 = (i + 1) * lattice_size + j;\n            int q4 = (i + 1) * lattice_size + (j + 1);\n            \n            int x_syndrome = (qubits[q1] ^ qubits[q2] ^ qubits[q3] ^ qubits[q4]);\n            syndrome[2 * (i * (lattice_size-1) + j)] = x_syndrome;\n            \n            // Z-stabilizer\n            int z_syndrome = ((qubits[q1] >> 1) ^ (qubits[q2] >> 1) ^ \n                             (qubits[q3] >> 1) ^ (qubits[q4] >> 1)) & 1;\n            syndrome[2 * (i * (lattice_size-1) + j) + 1] = z_syndrome;\n        }\n    }\n}\n\nvoid decodeMinimumWeight(int* syndrome, int* errors, int lattice_size) {\n    // Minimum weight perfect matching decoder\n    int n_syndromes = 2 * (lattice_size - 1) * (lattice_size - 1);\n    \n    std::vector<int> defects;\n    for (int i = 0; i < n_syndromes; i++) {\n        if (syndrome[i] == 1) {\n            defects.push_back(i);\n        }\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/surface_code_decoder.cpp",
+      "function": "_Z16logicalErrorRateidi",
+      "line": 114,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            qubits[i] ^= corrections[i];\n        }\n        \n        // Check logical operators\n        int logical_x = 0, logical_z = 0;\n        for (int i = 0; i < lattice_size; i++) {\n            logical_x ^= qubits[i];\n            logical_z ^= qubits[i * lattice_size];\n        }\n        \n        if (logical_x != 0 || logical_z != 0) {\n            logical_errors++;\n        }\n    }\n    \n    return (double)logical_errors / n_trials;\n}\n\nint main() {\n    const int lattice_size = 7; // Distance-7 surface code\n    const double physical_error_rate = 0.01;\n    const int n_trials = 10000;\n    \n    double logical_rate = logicalErrorRate(lattice_size, physical_error_rate, n_trials);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "file": "sample/src/real-world/cryptography/elliptic_curve_crypto.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/cryptography/elliptic_curve_crypto.cpp",
+    "llvm_initial": 6,
+    "after_filter": 6,
+    "cache_hits": 0,
+    "cache_misses": 6,
+    "omp_verified": 0,
+    "omp_similar": 0,
+    "ai_call_made": 1,
+    "total_ms": 1985.1,
+    "llvm_ms": 106.9,
+    "ai_ms": 1823.4
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/elliptic_curve_crypto.cpp",
+      "function": "_Z9point_addRK5PointS1_xx",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "};\n\nPoint point_add(const Point& P, const Point& Q, int64_t p, int64_t a) {\n    if (P.x == Q.x && P.y == Q.y) {\n        // Point doubling\n        int64_t s = (3 * P.x * P.x + a) / (2 * P.y);\n        int64_t x = (s * s - 2 * P.x) % p;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/cryptography/elliptic_curve_crypto.cpp",
+      "function": "_Z9point_addRK5PointS1_xx",
+      "line": 9,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "};\n\nPoint point_add(const Point& P, const Point& Q, int64_t p, int64_t a) {\n    if (P.x == Q.x && P.y == Q.y) {\n        // Point doubling\n        int64_t s = (3 * P.x * P.x + a) / (2 * P.y);\n        int64_t x = (s * s - 2 * P.x) % p;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/cryptography/elliptic_curve_crypto.cpp",
+      "function": "_Z11scalar_multRK5Pointxxx",
+      "line": 29,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    Point temp = P;\n    k--;\n    \n    while (k > 0) {\n        if (k % 2 == 1) {\n            result = point_add(result, temp, p, a);\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/elliptic_curve_crypto.cpp",
+      "function": "_Z11scalar_multRK5Pointxxx",
+      "line": 30,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    k--;\n    \n    while (k > 0) {\n        if (k % 2 == 1) {\n            result = point_add(result, temp, p, a);\n        }\n        temp = point_add(temp, temp, p, a);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/elliptic_curve_crypto.cpp",
+      "function": "_Z11scalar_multRK5Pointxxx",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "};\n\nPoint point_add(const Point& P, const Point& Q, int64_t p, int64_t a) {\n    if (P.x == Q.x && P.y == Q.y) {\n        // Point doubling\n        int64_t s = (3 * P.x * P.x + a) / (2 * P.y);\n        int64_t x = (s * s - 2 * P.x) % p;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/cryptography/elliptic_curve_crypto.cpp",
+      "function": "_Z11scalar_multRK5Pointxxx",
+      "line": 29,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    Point temp = P;\n    k--;\n    \n    while (k > 0) {\n        if (k % 2 == 1) {\n            result = point_add(result, temp, p, a);\n        }"
+    }
+  ],
+  "final_results": [
+    {
+      "classification": "not_parallel",
+      "reasoning": "The code has a conditional branch that may be a loop and it is not clear if the loop is independent. Additionally, the code is performing point doubling which may have dependencies.",
+      "confidence": 0.7,
+      "transformations": [
+        "None recommended due to potential dependencies"
+      ],
+      "tests_recommended": [
+        "Test for dependencies and data races"
+      ],
+      "logic_issue_type": "non_parallel_algorithm",
+      "analysis_source": "ai_llm"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "The code has a while loop with conditional branches that may be dependent on the previous iterations. Runtime dependency checking is needed to ensure parallelization is safe.",
+      "confidence": 0.8,
+      "transformations": [
+        "Use OpenMP's runtime dependency checking features"
+      ],
+      "tests_recommended": [
+        "Test for dependencies and data races"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    {
+      "classification": "not_parallel",
+      "reasoning": "The code has a conditional branch that may be a loop and it is not clear if the loop is independent. Additionally, the code is performing point doubling which may have dependencies.",
+      "confidence": 0.7,
+      "transformations": [
+        "None recommended due to potential dependencies"
+      ],
+      "tests_recommended": [
+        "Test for dependencies and data races"
+      ],
+      "logic_issue_type": "non_parallel_algorithm",
+      "analysis_source": "ai_llm"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "The code has a while loop with conditional branches that may be dependent on the previous iterations. Runtime dependency checking is needed to ensure parallelization is safe.",
+      "confidence": 0.8,
+      "transformations": [
+        "Use OpenMP's runtime dependency checking features"
+      ],
+      "tests_recommended": [
+        "Test for dependencies and data races"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    },
+    {
+      "classification": "not_parallel",
+      "reasoning": "The code has a conditional branch that may be a loop and it is not clear if the loop is independent. Additionally, the code is performing point doubling which may have dependencies.",
+      "confidence": 0.7,
+      "transformations": [
+        "None recommended due to potential dependencies"
+      ],
+      "tests_recommended": [
+        "Test for dependencies and data races"
+      ],
+      "logic_issue_type": "non_parallel_algorithm",
+      "analysis_source": "ai_llm"
+    },
+    {
+      "classification": "requires_runtime_check",
+      "reasoning": "The code has a while loop with conditional branches that may be dependent on the previous iterations. Runtime dependency checking is needed to ensure parallelization is safe.",
+      "confidence": 0.8,
+      "transformations": [
+        "Use OpenMP's runtime dependency checking features"
+      ],
+      "tests_recommended": [
+        "Test for dependencies and data races"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm"
+    }
+  ]
+}

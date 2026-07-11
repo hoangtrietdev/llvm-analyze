@@ -1,0 +1,236 @@
+{
+  "file": "sample/src/real-world/weather/solar_radiation.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/weather/solar_radiation.cpp",
+    "llvm_initial": 7,
+    "llvm_sys_noise": 0,
+    "llvm_project": 7,
+    "after_filter": 7,
+    "ai_batches": 1,
+    "ai_results": 7,
+    "omp_verified": 0,
+    "total_ms": 591.3,
+    "llvm_ms": 442.1
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/solar_radiation.cpp",
+      "function": "_Z21computeSolarRadiationPdS_S_S_S_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "                          double* cloud_cover, double* surface_temp,\n                          int nx, int ny, int time_hours) {\n    const double solar_constant = 1361.0; // W/m^2\n    const double stefan_boltzmann = 5.67e-8;\n    \n    for (int t = 0; t < time_hours; t++) {\n        double hour_angle = (t - 12.0) * 15.0 * M_PI / 180.0;\n        \n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Solar zenith angle calculation\n                double latitude = (i - nx/2.0) / nx * M_PI;\n                double cos_zenith = sin(latitude) * sin(0.0) + \n                                   cos(latitude) * cos(0.0) * cos(hour_angle);\n                \n                if (cos_zenith > 0) {\n                    // Incoming shortwave radiation\n                    double incoming = solar_constant * cos_zenith;\n                    \n                    // Cloud attenuation\n                    double cloud_factor = 1.0 - 0.7 * cloud_cover[idx];\n                    \n                    // Atmospheric transmission\n                    double air_mass = 1.0 / (cos_zenith + 0.15 * pow(93.885 - acos(cos_zenith)*180/M_PI, -1.253));\n                    double transmission = exp(-0.09 * air_mass);\n                    \n                    shortwave[idx] = incoming * transmission * cloud_factor * (1.0 - albedo[idx]);\n                } else {\n                    shortwave[idx] = 0.0;\n                }\n                \n                // Outgoing longwave radiation\n                longwave[idx] = stefan_boltzmann * pow(surface_temp[idx], 4.0);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/solar_radiation.cpp",
+      "function": "_Z21computeSolarRadiationPdS_S_S_S_iii",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "    const double stefan_boltzmann = 5.67e-8;\n    \n    for (int t = 0; t < time_hours; t++) {\n        double hour_angle = (t - 12.0) * 15.0 * M_PI / 180.0;\n        \n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Solar zenith angle calculation\n                double latitude = (i - nx/2.0) / nx * M_PI;\n                double cos_zenith = sin(latitude) * sin(0.0) + \n                                   cos(latitude) * cos(0.0) * cos(hour_angle);\n                \n                if (cos_zenith > 0) {\n                    // Incoming shortwave radiation\n                    double incoming = solar_constant * cos_zenith;\n                    \n                    // Cloud attenuation\n                    double cloud_factor = 1.0 - 0.7 * cloud_cover[idx];\n                    \n                    // Atmospheric transmission\n                    double air_mass = 1.0 / (cos_zenith + 0.15 * pow(93.885 - acos(cos_zenith)*180/M_PI, -1.253));\n                    double transmission = exp(-0.09 * air_mass);\n                    \n                    shortwave[idx] = incoming * transmission * cloud_factor * (1.0 - albedo[idx]);\n                } else {\n                    shortwave[idx] = 0.0;\n                }\n                \n                // Outgoing longwave radiation\n                longwave[idx] = stefan_boltzmann * pow(surface_temp[idx], 4.0);\n                longwave[idx] *= (1.0 - 0.5 * cloud_cover[idx]); // Cloud greenhouse effect\n            }\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/solar_radiation.cpp",
+      "function": "_Z21computeSolarRadiationPdS_S_S_S_iii",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "    \n    for (int t = 0; t < time_hours; t++) {\n        double hour_angle = (t - 12.0) * 15.0 * M_PI / 180.0;\n        \n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Solar zenith angle calculation\n                double latitude = (i - nx/2.0) / nx * M_PI;\n                double cos_zenith = sin(latitude) * sin(0.0) + \n                                   cos(latitude) * cos(0.0) * cos(hour_angle);\n                \n                if (cos_zenith > 0) {\n                    // Incoming shortwave radiation\n                    double incoming = solar_constant * cos_zenith;\n                    \n                    // Cloud attenuation\n                    double cloud_factor = 1.0 - 0.7 * cloud_cover[idx];\n                    \n                    // Atmospheric transmission\n                    double air_mass = 1.0 / (cos_zenith + 0.15 * pow(93.885 - acos(cos_zenith)*180/M_PI, -1.253));\n                    double transmission = exp(-0.09 * air_mass);\n                    \n                    shortwave[idx] = incoming * transmission * cloud_factor * (1.0 - albedo[idx]);\n                } else {\n                    shortwave[idx] = 0.0;\n                }\n                \n                // Outgoing longwave radiation\n                longwave[idx] = stefan_boltzmann * pow(surface_temp[idx], 4.0);\n                longwave[idx] *= (1.0 - 0.5 * cloud_cover[idx]); // Cloud greenhouse effect\n            }\n        }\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/solar_radiation.cpp",
+      "function": "_Z21computeSolarRadiationPdS_S_S_S_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "                          double* cloud_cover, double* surface_temp,\n                          int nx, int ny, int time_hours) {\n    const double solar_constant = 1361.0; // W/m^2\n    const double stefan_boltzmann = 5.67e-8;\n    \n    for (int t = 0; t < time_hours; t++) {\n        double hour_angle = (t - 12.0) * 15.0 * M_PI / 180.0;\n        \n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Solar zenith angle calculation\n                double latitude = (i - nx/2.0) / nx * M_PI;\n                double cos_zenith = sin(latitude) * sin(0.0) + \n                                   cos(latitude) * cos(0.0) * cos(hour_angle);\n                \n                if (cos_zenith > 0) {\n                    // Incoming shortwave radiation\n                    double incoming = solar_constant * cos_zenith;\n                    \n                    // Cloud attenuation\n                    double cloud_factor = 1.0 - 0.7 * cloud_cover[idx];\n                    \n                    // Atmospheric transmission\n                    double air_mass = 1.0 / (cos_zenith + 0.15 * pow(93.885 - acos(cos_zenith)*180/M_PI, -1.253));\n                    double transmission = exp(-0.09 * air_mass);\n                    \n                    shortwave[idx] = incoming * transmission * cloud_factor * (1.0 - albedo[idx]);\n                } else {\n                    shortwave[idx] = 0.0;\n                }\n                \n                // Outgoing longwave radiation\n                longwave[idx] = stefan_boltzmann * pow(surface_temp[idx], 4.0);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/solar_radiation.cpp",
+      "function": "_Z21computeSolarRadiationPdS_S_S_S_iii",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "    const double stefan_boltzmann = 5.67e-8;\n    \n    for (int t = 0; t < time_hours; t++) {\n        double hour_angle = (t - 12.0) * 15.0 * M_PI / 180.0;\n        \n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Solar zenith angle calculation\n                double latitude = (i - nx/2.0) / nx * M_PI;\n                double cos_zenith = sin(latitude) * sin(0.0) + \n                                   cos(latitude) * cos(0.0) * cos(hour_angle);\n                \n                if (cos_zenith > 0) {\n                    // Incoming shortwave radiation\n                    double incoming = solar_constant * cos_zenith;\n                    \n                    // Cloud attenuation\n                    double cloud_factor = 1.0 - 0.7 * cloud_cover[idx];\n                    \n                    // Atmospheric transmission\n                    double air_mass = 1.0 / (cos_zenith + 0.15 * pow(93.885 - acos(cos_zenith)*180/M_PI, -1.253));\n                    double transmission = exp(-0.09 * air_mass);\n                    \n                    shortwave[idx] = incoming * transmission * cloud_factor * (1.0 - albedo[idx]);\n                } else {\n                    shortwave[idx] = 0.0;\n                }\n                \n                // Outgoing longwave radiation\n                longwave[idx] = stefan_boltzmann * pow(surface_temp[idx], 4.0);\n                longwave[idx] *= (1.0 - 0.5 * cloud_cover[idx]); // Cloud greenhouse effect\n            }\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/solar_radiation.cpp",
+      "function": "_Z21computeSolarRadiationPdS_S_S_S_iii",
+      "line": 23,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "                // Solar zenith angle calculation\n                double latitude = (i - nx/2.0) / nx * M_PI;\n                double cos_zenith = sin(latitude) * sin(0.0) + \n                                   cos(latitude) * cos(0.0) * cos(hour_angle);\n                \n                if (cos_zenith > 0) {\n                    // Incoming shortwave radiation\n                    double incoming = solar_constant * cos_zenith;\n                    \n                    // Cloud attenuation\n                    double cloud_factor = 1.0 - 0.7 * cloud_cover[idx];\n                    \n                    // Atmospheric transmission\n                    double air_mass = 1.0 / (cos_zenith + 0.15 * pow(93.885 - acos(cos_zenith)*180/M_PI, -1.253));\n                    double transmission = exp(-0.09 * air_mass);\n                    \n                    shortwave[idx] = incoming * transmission * cloud_factor * (1.0 - albedo[idx]);\n                } else {\n                    shortwave[idx] = 0.0;\n                }\n                \n                // Outgoing longwave radiation\n                longwave[idx] = stefan_boltzmann * pow(surface_temp[idx], 4.0);\n                longwave[idx] *= (1.0 - 0.5 * cloud_cover[idx]); // Cloud greenhouse effect\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 180, ny = 360;\n    std::vector<double> shortwave(nx * ny);\n    std::vector<double> longwave(nx * ny);\n    std::vector<double> albedo(nx * ny, 0.3);\n    std::vector<double> cloud_cover(nx * ny, 0.4);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/solar_radiation.cpp",
+      "function": "_Z21computeSolarRadiationPdS_S_S_S_iii",
+      "line": 15,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    \n    for (int t = 0; t < time_hours; t++) {\n        double hour_angle = (t - 12.0) * 15.0 * M_PI / 180.0;\n        \n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Solar zenith angle calculation\n                double latitude = (i - nx/2.0) / nx * M_PI;\n                double cos_zenith = sin(latitude) * sin(0.0) + \n                                   cos(latitude) * cos(0.0) * cos(hour_angle);\n                \n                if (cos_zenith > 0) {\n                    // Incoming shortwave radiation\n                    double incoming = solar_constant * cos_zenith;\n                    \n                    // Cloud attenuation\n                    double cloud_factor = 1.0 - 0.7 * cloud_cover[idx];\n                    \n                    // Atmospheric transmission\n                    double air_mass = 1.0 / (cos_zenith + 0.15 * pow(93.885 - acos(cos_zenith)*180/M_PI, -1.253));\n                    double transmission = exp(-0.09 * air_mass);\n                    \n                    shortwave[idx] = incoming * transmission * cloud_factor * (1.0 - albedo[idx]);\n                } else {\n                    shortwave[idx] = 0.0;\n                }\n                \n                // Outgoing longwave radiation\n                longwave[idx] = stefan_boltzmann * pow(surface_temp[idx], 4.0);\n                longwave[idx] *= (1.0 - 0.5 * cloud_cover[idx]); // Cloud greenhouse effect\n            }\n        }\n    }"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/solar_radiation.cpp",
+      "function": "_Z21computeSolarRadiationPdS_S_S_S_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "                          double* cloud_cover, double* surface_temp,\n                          int nx, int ny, int time_hours) {\n    const double solar_constant = 1361.0; // W/m^2\n    const double stefan_boltzmann = 5.67e-8;\n    \n    for (int t = 0; t < time_hours; t++) {\n        double hour_angle = (t - 12.0) * 15.0 * M_PI / 180.0;\n        \n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Solar zenith angle calculation\n                double latitude = (i - nx/2.0) / nx * M_PI;\n                double cos_zenith = sin(latitude) * sin(0.0) + \n                                   cos(latitude) * cos(0.0) * cos(hour_angle);\n                \n                if (cos_zenith > 0) {\n                    // Incoming shortwave radiation\n                    double incoming = solar_constant * cos_zenith;\n                    \n                    // Cloud attenuation\n                    double cloud_factor = 1.0 - 0.7 * cloud_cover[idx];\n                    \n                    // Atmospheric transmission\n                    double air_mass = 1.0 / (cos_zenith + 0.15 * pow(93.885 - acos(cos_zenith)*180/M_PI, -1.253));\n                    double transmission = exp(-0.09 * air_mass);\n                    \n                    shortwave[idx] = incoming * transmission * cloud_factor * (1.0 - albedo[idx]);\n                } else {\n                    shortwave[idx] = 0.0;\n                }\n                \n                // Outgoing longwave radiation\n                longwave[idx] = stefan_boltzmann * pow(surface_temp[idx], 4.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/solar_radiation.cpp",
+      "function": "_Z21computeSolarRadiationPdS_S_S_S_iii",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "    const double stefan_boltzmann = 5.67e-8;\n    \n    for (int t = 0; t < time_hours; t++) {\n        double hour_angle = (t - 12.0) * 15.0 * M_PI / 180.0;\n        \n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Solar zenith angle calculation\n                double latitude = (i - nx/2.0) / nx * M_PI;\n                double cos_zenith = sin(latitude) * sin(0.0) + \n                                   cos(latitude) * cos(0.0) * cos(hour_angle);\n                \n                if (cos_zenith > 0) {\n                    // Incoming shortwave radiation\n                    double incoming = solar_constant * cos_zenith;\n                    \n                    // Cloud attenuation\n                    double cloud_factor = 1.0 - 0.7 * cloud_cover[idx];\n                    \n                    // Atmospheric transmission\n                    double air_mass = 1.0 / (cos_zenith + 0.15 * pow(93.885 - acos(cos_zenith)*180/M_PI, -1.253));\n                    double transmission = exp(-0.09 * air_mass);\n                    \n                    shortwave[idx] = incoming * transmission * cloud_factor * (1.0 - albedo[idx]);\n                } else {\n                    shortwave[idx] = 0.0;\n                }\n                \n                // Outgoing longwave radiation\n                longwave[idx] = stefan_boltzmann * pow(surface_temp[idx], 4.0);\n                longwave[idx] *= (1.0 - 0.5 * cloud_cover[idx]); // Cloud greenhouse effect\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/solar_radiation.cpp",
+      "function": "_Z21computeSolarRadiationPdS_S_S_S_iii",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "    \n    for (int t = 0; t < time_hours; t++) {\n        double hour_angle = (t - 12.0) * 15.0 * M_PI / 180.0;\n        \n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Solar zenith angle calculation\n                double latitude = (i - nx/2.0) / nx * M_PI;\n                double cos_zenith = sin(latitude) * sin(0.0) + \n                                   cos(latitude) * cos(0.0) * cos(hour_angle);\n                \n                if (cos_zenith > 0) {\n                    // Incoming shortwave radiation\n                    double incoming = solar_constant * cos_zenith;\n                    \n                    // Cloud attenuation\n                    double cloud_factor = 1.0 - 0.7 * cloud_cover[idx];\n                    \n                    // Atmospheric transmission\n                    double air_mass = 1.0 / (cos_zenith + 0.15 * pow(93.885 - acos(cos_zenith)*180/M_PI, -1.253));\n                    double transmission = exp(-0.09 * air_mass);\n                    \n                    shortwave[idx] = incoming * transmission * cloud_factor * (1.0 - albedo[idx]);\n                } else {\n                    shortwave[idx] = 0.0;\n                }\n                \n                // Outgoing longwave radiation\n                longwave[idx] = stefan_boltzmann * pow(surface_temp[idx], 4.0);\n                longwave[idx] *= (1.0 - 0.5 * cloud_cover[idx]); // Cloud greenhouse effect\n            }\n        }\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/solar_radiation.cpp",
+      "function": "_Z21computeSolarRadiationPdS_S_S_S_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "                          double* cloud_cover, double* surface_temp,\n                          int nx, int ny, int time_hours) {\n    const double solar_constant = 1361.0; // W/m^2\n    const double stefan_boltzmann = 5.67e-8;\n    \n    for (int t = 0; t < time_hours; t++) {\n        double hour_angle = (t - 12.0) * 15.0 * M_PI / 180.0;\n        \n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Solar zenith angle calculation\n                double latitude = (i - nx/2.0) / nx * M_PI;\n                double cos_zenith = sin(latitude) * sin(0.0) + \n                                   cos(latitude) * cos(0.0) * cos(hour_angle);\n                \n                if (cos_zenith > 0) {\n                    // Incoming shortwave radiation\n                    double incoming = solar_constant * cos_zenith;\n                    \n                    // Cloud attenuation\n                    double cloud_factor = 1.0 - 0.7 * cloud_cover[idx];\n                    \n                    // Atmospheric transmission\n                    double air_mass = 1.0 / (cos_zenith + 0.15 * pow(93.885 - acos(cos_zenith)*180/M_PI, -1.253));\n                    double transmission = exp(-0.09 * air_mass);\n                    \n                    shortwave[idx] = incoming * transmission * cloud_factor * (1.0 - albedo[idx]);\n                } else {\n                    shortwave[idx] = 0.0;\n                }\n                \n                // Outgoing longwave radiation\n                longwave[idx] = stefan_boltzmann * pow(surface_temp[idx], 4.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/solar_radiation.cpp",
+      "function": "_Z21computeSolarRadiationPdS_S_S_S_iii",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "    const double stefan_boltzmann = 5.67e-8;\n    \n    for (int t = 0; t < time_hours; t++) {\n        double hour_angle = (t - 12.0) * 15.0 * M_PI / 180.0;\n        \n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Solar zenith angle calculation\n                double latitude = (i - nx/2.0) / nx * M_PI;\n                double cos_zenith = sin(latitude) * sin(0.0) + \n                                   cos(latitude) * cos(0.0) * cos(hour_angle);\n                \n                if (cos_zenith > 0) {\n                    // Incoming shortwave radiation\n                    double incoming = solar_constant * cos_zenith;\n                    \n                    // Cloud attenuation\n                    double cloud_factor = 1.0 - 0.7 * cloud_cover[idx];\n                    \n                    // Atmospheric transmission\n                    double air_mass = 1.0 / (cos_zenith + 0.15 * pow(93.885 - acos(cos_zenith)*180/M_PI, -1.253));\n                    double transmission = exp(-0.09 * air_mass);\n                    \n                    shortwave[idx] = incoming * transmission * cloud_factor * (1.0 - albedo[idx]);\n                } else {\n                    shortwave[idx] = 0.0;\n                }\n                \n                // Outgoing longwave radiation\n                longwave[idx] = stefan_boltzmann * pow(surface_temp[idx], 4.0);\n                longwave[idx] *= (1.0 - 0.5 * cloud_cover[idx]); // Cloud greenhouse effect\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/solar_radiation.cpp",
+      "function": "_Z21computeSolarRadiationPdS_S_S_S_iii",
+      "line": 23,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "                // Solar zenith angle calculation\n                double latitude = (i - nx/2.0) / nx * M_PI;\n                double cos_zenith = sin(latitude) * sin(0.0) + \n                                   cos(latitude) * cos(0.0) * cos(hour_angle);\n                \n                if (cos_zenith > 0) {\n                    // Incoming shortwave radiation\n                    double incoming = solar_constant * cos_zenith;\n                    \n                    // Cloud attenuation\n                    double cloud_factor = 1.0 - 0.7 * cloud_cover[idx];\n                    \n                    // Atmospheric transmission\n                    double air_mass = 1.0 / (cos_zenith + 0.15 * pow(93.885 - acos(cos_zenith)*180/M_PI, -1.253));\n                    double transmission = exp(-0.09 * air_mass);\n                    \n                    shortwave[idx] = incoming * transmission * cloud_factor * (1.0 - albedo[idx]);\n                } else {\n                    shortwave[idx] = 0.0;\n                }\n                \n                // Outgoing longwave radiation\n                longwave[idx] = stefan_boltzmann * pow(surface_temp[idx], 4.0);\n                longwave[idx] *= (1.0 - 0.5 * cloud_cover[idx]); // Cloud greenhouse effect\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 180, ny = 360;\n    std::vector<double> shortwave(nx * ny);\n    std::vector<double> longwave(nx * ny);\n    std::vector<double> albedo(nx * ny, 0.3);\n    std::vector<double> cloud_cover(nx * ny, 0.4);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/solar_radiation.cpp",
+      "function": "_Z21computeSolarRadiationPdS_S_S_S_iii",
+      "line": 15,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    \n    for (int t = 0; t < time_hours; t++) {\n        double hour_angle = (t - 12.0) * 15.0 * M_PI / 180.0;\n        \n        for (int i = 0; i < nx; i++) {\n            for (int j = 0; j < ny; j++) {\n                int idx = i * ny + j;\n                \n                // Solar zenith angle calculation\n                double latitude = (i - nx/2.0) / nx * M_PI;\n                double cos_zenith = sin(latitude) * sin(0.0) + \n                                   cos(latitude) * cos(0.0) * cos(hour_angle);\n                \n                if (cos_zenith > 0) {\n                    // Incoming shortwave radiation\n                    double incoming = solar_constant * cos_zenith;\n                    \n                    // Cloud attenuation\n                    double cloud_factor = 1.0 - 0.7 * cloud_cover[idx];\n                    \n                    // Atmospheric transmission\n                    double air_mass = 1.0 / (cos_zenith + 0.15 * pow(93.885 - acos(cos_zenith)*180/M_PI, -1.253));\n                    double transmission = exp(-0.09 * air_mass);\n                    \n                    shortwave[idx] = incoming * transmission * cloud_factor * (1.0 - albedo[idx]);\n                } else {\n                    shortwave[idx] = 0.0;\n                }\n                \n                // Outgoing longwave radiation\n                longwave[idx] = stefan_boltzmann * pow(surface_temp[idx], 4.0);\n                longwave[idx] *= (1.0 - 0.5 * cloud_cover[idx]); // Cloud greenhouse effect\n            }\n        }\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    }
+  ]
+}

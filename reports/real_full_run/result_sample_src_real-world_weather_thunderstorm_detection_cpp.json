@@ -1,0 +1,139 @@
+{
+  "file": "sample/src/real-world/weather/thunderstorm_detection.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/weather/thunderstorm_detection.cpp",
+    "llvm_initial": 6,
+    "llvm_sys_noise": 0,
+    "llvm_project": 6,
+    "after_filter": 3,
+    "ai_batches": 1,
+    "ai_results": 3,
+    "omp_verified": 0,
+    "total_ms": 587.8,
+    "llvm_ms": 359.3
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/thunderstorm_detection.cpp",
+      "function": "_Z25detectSevereThunderstormsPdS_S_S_S_Pbiii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid detectSevereThunderstorms(double* temperature, double* dewpoint, double* pressure,\n                               double* wind_u, double* wind_v, bool* severe_cells,\n                               int nx, int ny, int nz) {\n    for (int i = 0; i < nx; i++) {\n        for (int j = 0; j < ny; j++) {\n            double CAPE = 0.0;\n            double wind_shear = 0.0;\n            \n            // Calculate CAPE (Convective Available Potential Energy)\n            for (int k = 1; k < nz; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                int idx_below = i*ny*nz + j*nz + (k-1);\n                \n                double T_parcel = temperature[idx_below] + 273.15;\n                double T_env = temperature[idx] + 273.15;\n                double buoyancy = (T_parcel - T_env) / T_env * 9.81;\n                \n                if (buoyancy > 0) {\n                    CAPE += buoyancy * 100.0; // 100m layer thickness\n                }\n            }\n            \n            // Calculate wind shear (0-6 km)\n            int surface_idx = i*ny*nz + j*nz + 0;\n            int upper_idx = i*ny*nz + j*nz + std::min(nz-1, 60);\n            \n            double du = wind_u[upper_idx] - wind_u[surface_idx];\n            double dv = wind_v[upper_idx] - wind_v[surface_idx];\n            wind_shear = sqrt(du*du + dv*dv);\n            \n            // Severe criteria: CAPE > 1000 J/kg and shear > 20 m/s\n            severe_cells[i*ny + j] = (CAPE > 1000.0 && wind_shear > 20.0);\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/thunderstorm_detection.cpp",
+      "function": "_Z25detectSevereThunderstormsPdS_S_S_S_Pbiii",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid detectSevereThunderstorms(double* temperature, double* dewpoint, double* pressure,\n                               double* wind_u, double* wind_v, bool* severe_cells,\n                               int nx, int ny, int nz) {\n    for (int i = 0; i < nx; i++) {\n        for (int j = 0; j < ny; j++) {\n            double CAPE = 0.0;\n            double wind_shear = 0.0;\n            \n            // Calculate CAPE (Convective Available Potential Energy)\n            for (int k = 1; k < nz; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                int idx_below = i*ny*nz + j*nz + (k-1);\n                \n                double T_parcel = temperature[idx_below] + 273.15;\n                double T_env = temperature[idx] + 273.15;\n                double buoyancy = (T_parcel - T_env) / T_env * 9.81;\n                \n                if (buoyancy > 0) {\n                    CAPE += buoyancy * 100.0; // 100m layer thickness\n                }\n            }\n            \n            // Calculate wind shear (0-6 km)\n            int surface_idx = i*ny*nz + j*nz + 0;\n            int upper_idx = i*ny*nz + j*nz + std::min(nz-1, 60);\n            \n            double du = wind_u[upper_idx] - wind_u[surface_idx];\n            double dv = wind_v[upper_idx] - wind_v[surface_idx];\n            wind_shear = sqrt(du*du + dv*dv);\n            \n            // Severe criteria: CAPE > 1000 J/kg and shear > 20 m/s\n            severe_cells[i*ny + j] = (CAPE > 1000.0 && wind_shear > 20.0);\n        }\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/thunderstorm_detection.cpp",
+      "function": "_Z25detectSevereThunderstormsPdS_S_S_S_Pbiii",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/thunderstorm_detection.cpp",
+      "function": "_Z25detectSevereThunderstormsPdS_S_S_S_Pbiii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid detectSevereThunderstorms(double* temperature, double* dewpoint, double* pressure,\n                               double* wind_u, double* wind_v, bool* severe_cells,\n                               int nx, int ny, int nz) {\n    for (int i = 0; i < nx; i++) {\n        for (int j = 0; j < ny; j++) {\n            double CAPE = 0.0;\n            double wind_shear = 0.0;\n            \n            // Calculate CAPE (Convective Available Potential Energy)\n            for (int k = 1; k < nz; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                int idx_below = i*ny*nz + j*nz + (k-1);\n                \n                double T_parcel = temperature[idx_below] + 273.15;\n                double T_env = temperature[idx] + 273.15;\n                double buoyancy = (T_parcel - T_env) / T_env * 9.81;\n                \n                if (buoyancy > 0) {\n                    CAPE += buoyancy * 100.0; // 100m layer thickness\n                }\n            }\n            \n            // Calculate wind shear (0-6 km)\n            int surface_idx = i*ny*nz + j*nz + 0;\n            int upper_idx = i*ny*nz + j*nz + std::min(nz-1, 60);\n            \n            double du = wind_u[upper_idx] - wind_u[surface_idx];\n            double dv = wind_v[upper_idx] - wind_v[surface_idx];\n            wind_shear = sqrt(du*du + dv*dv);\n            \n            // Severe criteria: CAPE > 1000 J/kg and shear > 20 m/s\n            severe_cells[i*ny + j] = (CAPE > 1000.0 && wind_shear > 20.0);\n        }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/thunderstorm_detection.cpp",
+      "function": "_Z25detectSevereThunderstormsPdS_S_S_S_Pbiii",
+      "line": 9,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/thunderstorm_detection.cpp",
+      "function": "_Z25detectSevereThunderstormsPdS_S_S_S_Pbiii",
+      "line": 14,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.44999999999999996
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/thunderstorm_detection.cpp",
+      "function": "_Z25detectSevereThunderstormsPdS_S_S_S_Pbiii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid detectSevereThunderstorms(double* temperature, double* dewpoint, double* pressure,\n                               double* wind_u, double* wind_v, bool* severe_cells,\n                               int nx, int ny, int nz) {\n    for (int i = 0; i < nx; i++) {\n        for (int j = 0; j < ny; j++) {\n            double CAPE = 0.0;\n            double wind_shear = 0.0;\n            \n            // Calculate CAPE (Convective Available Potential Energy)\n            for (int k = 1; k < nz; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                int idx_below = i*ny*nz + j*nz + (k-1);\n                \n                double T_parcel = temperature[idx_below] + 273.15;\n                double T_env = temperature[idx] + 273.15;\n                double buoyancy = (T_parcel - T_env) / T_env * 9.81;\n                \n                if (buoyancy > 0) {\n                    CAPE += buoyancy * 100.0; // 100m layer thickness\n                }\n            }\n            \n            // Calculate wind shear (0-6 km)\n            int surface_idx = i*ny*nz + j*nz + 0;\n            int upper_idx = i*ny*nz + j*nz + std::min(nz-1, 60);\n            \n            double du = wind_u[upper_idx] - wind_u[surface_idx];\n            double dv = wind_v[upper_idx] - wind_v[surface_idx];\n            wind_shear = sqrt(du*du + dv*dv);\n            \n            // Severe criteria: CAPE > 1000 J/kg and shear > 20 m/s\n            severe_cells[i*ny + j] = (CAPE > 1000.0 && wind_shear > 20.0);\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/thunderstorm_detection.cpp",
+      "function": "_Z25detectSevereThunderstormsPdS_S_S_S_Pbiii",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid detectSevereThunderstorms(double* temperature, double* dewpoint, double* pressure,\n                               double* wind_u, double* wind_v, bool* severe_cells,\n                               int nx, int ny, int nz) {\n    for (int i = 0; i < nx; i++) {\n        for (int j = 0; j < ny; j++) {\n            double CAPE = 0.0;\n            double wind_shear = 0.0;\n            \n            // Calculate CAPE (Convective Available Potential Energy)\n            for (int k = 1; k < nz; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                int idx_below = i*ny*nz + j*nz + (k-1);\n                \n                double T_parcel = temperature[idx_below] + 273.15;\n                double T_env = temperature[idx] + 273.15;\n                double buoyancy = (T_parcel - T_env) / T_env * 9.81;\n                \n                if (buoyancy > 0) {\n                    CAPE += buoyancy * 100.0; // 100m layer thickness\n                }\n            }\n            \n            // Calculate wind shear (0-6 km)\n            int surface_idx = i*ny*nz + j*nz + 0;\n            int upper_idx = i*ny*nz + j*nz + std::min(nz-1, 60);\n            \n            double du = wind_u[upper_idx] - wind_u[surface_idx];\n            double dv = wind_v[upper_idx] - wind_v[surface_idx];\n            wind_shear = sqrt(du*du + dv*dv);\n            \n            // Severe criteria: CAPE > 1000 J/kg and shear > 20 m/s\n            severe_cells[i*ny + j] = (CAPE > 1000.0 && wind_shear > 20.0);\n        }\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/thunderstorm_detection.cpp",
+      "function": "_Z25detectSevereThunderstormsPdS_S_S_S_Pbiii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid detectSevereThunderstorms(double* temperature, double* dewpoint, double* pressure,\n                               double* wind_u, double* wind_v, bool* severe_cells,\n                               int nx, int ny, int nz) {\n    for (int i = 0; i < nx; i++) {\n        for (int j = 0; j < ny; j++) {\n            double CAPE = 0.0;\n            double wind_shear = 0.0;\n            \n            // Calculate CAPE (Convective Available Potential Energy)\n            for (int k = 1; k < nz; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                int idx_below = i*ny*nz + j*nz + (k-1);\n                \n                double T_parcel = temperature[idx_below] + 273.15;\n                double T_env = temperature[idx] + 273.15;\n                double buoyancy = (T_parcel - T_env) / T_env * 9.81;\n                \n                if (buoyancy > 0) {\n                    CAPE += buoyancy * 100.0; // 100m layer thickness\n                }\n            }\n            \n            // Calculate wind shear (0-6 km)\n            int surface_idx = i*ny*nz + j*nz + 0;\n            int upper_idx = i*ny*nz + j*nz + std::min(nz-1, 60);\n            \n            double du = wind_u[upper_idx] - wind_u[surface_idx];\n            double dv = wind_v[upper_idx] - wind_v[surface_idx];\n            wind_shear = sqrt(du*du + dv*dv);\n            \n            // Severe criteria: CAPE > 1000 J/kg and shear > 20 m/s\n            severe_cells[i*ny + j] = (CAPE > 1000.0 && wind_shear > 20.0);\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

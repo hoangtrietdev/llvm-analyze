@@ -1,0 +1,114 @@
+{
+  "file": "sample/src/real-world/scientific/monte_carlo_integration.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/scientific/monte_carlo_integration.cpp",
+    "llvm_initial": 6,
+    "llvm_sys_noise": 3,
+    "llvm_project": 3,
+    "after_filter": 2,
+    "ai_batches": 1,
+    "ai_results": 2,
+    "omp_verified": 0,
+    "total_ms": 500.4,
+    "llvm_ms": 405.6
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_Z21monte_carlo_integratei",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_Z21monte_carlo_integratei",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "_Z21monte_carlo_integratei",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/monte_carlo_integration.cpp",
+      "function": "_Z21monte_carlo_integratei",
+      "line": 16,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::uniform_real_distribution<> dis(0.0, 1.0);\n    \n    double sum = 0.0;\n    for (int i = 0; i < NUM_SAMPLES; i++) {\n        double result = 1.0;\n        for (int d = 0; d < dimensions; d++) {\n            double x = dis(gen);\n            result *= sin(x * M_PI);\n        }\n        sum += result;\n    }\n    \n    return sum / NUM_SAMPLES;\n}\n\nint main() {\n    double result = monte_carlo_integrate(10);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/monte_carlo_integration.cpp",
+      "function": "_Z21monte_carlo_integratei",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::random_device rd;\n    std::mt19937 gen(rd());\n    std::uniform_real_distribution<> dis(0.0, 1.0);\n    \n    double sum = 0.0;\n    for (int i = 0; i < NUM_SAMPLES; i++) {\n        double result = 1.0;\n        for (int d = 0; d < dimensions; d++) {\n            double x = dis(gen);\n            result *= sin(x * M_PI);\n        }\n        sum += result;\n    }\n    \n    return sum / NUM_SAMPLES;\n}\n\nint main() {\n    double result = monte_carlo_integrate(10);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/monte_carlo_integration.cpp",
+      "function": "_Z21monte_carlo_integratei",
+      "line": 16,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/monte_carlo_integration.cpp",
+      "function": "_Z21monte_carlo_integratei",
+      "line": 16,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::uniform_real_distribution<> dis(0.0, 1.0);\n    \n    double sum = 0.0;\n    for (int i = 0; i < NUM_SAMPLES; i++) {\n        double result = 1.0;\n        for (int d = 0; d < dimensions; d++) {\n            double x = dis(gen);\n            result *= sin(x * M_PI);\n        }\n        sum += result;\n    }\n    \n    return sum / NUM_SAMPLES;\n}\n\nint main() {\n    double result = monte_carlo_integrate(10);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/monte_carlo_integration.cpp",
+      "function": "_Z21monte_carlo_integratei",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::random_device rd;\n    std::mt19937 gen(rd());\n    std::uniform_real_distribution<> dis(0.0, 1.0);\n    \n    double sum = 0.0;\n    for (int i = 0; i < NUM_SAMPLES; i++) {\n        double result = 1.0;\n        for (int d = 0; d < dimensions; d++) {\n            double x = dis(gen);\n            result *= sin(x * M_PI);\n        }\n        sum += result;\n    }\n    \n    return sum / NUM_SAMPLES;\n}\n\nint main() {\n    double result = monte_carlo_integrate(10);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

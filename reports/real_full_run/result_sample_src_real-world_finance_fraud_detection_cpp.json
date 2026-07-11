@@ -1,0 +1,1692 @@
+{
+  "file": "sample/src/real-world/finance/fraud_detection.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/finance/fraud_detection.cpp",
+    "llvm_initial": 158,
+    "llvm_sys_noise": 131,
+    "llvm_project": 27,
+    "after_filter": 16,
+    "ai_batches": 2,
+    "ai_results": 16,
+    "omp_verified": 9,
+    "total_ms": 6966.7,
+    "llvm_ms": 584.5
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 525,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.12000000000000002
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 502,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "main",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "main",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1146,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "main",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "main",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 525,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.7000000000000001,
+      "context": "    FraudDetection::Account account;\n    account.accountId = 1;\n    account.avgTransactionAmount = 100;\n    account.transactionCount = 1000;\n    \n    for (const auto& txn : fd.transactions) {\n        features.push_back(fd.extractFeatures(txn, account));\n        labels.push_back(txn.isFraud ? 1 : 0);\n    }\n    \n    // Build isolation forest\n    std::vector<FraudDetection::IsolationTree*> forest;\n    for (int t = 0; t < 100; t++) {\n        // Sample subset\n        std::vector<std::vector<double>> sample;\n        for (int i = 0; i < 256; i++) {\n            int idx = rand() % features.size();\n            sample.push_back(features[idx]);\n        }\n        \n        forest.push_back(fd.buildIsolationTree(sample, 10, 0));\n    }\n    \n    // Detect anomalies\n    std::vector<int> predictions;\n    for (const auto& feat : features) {\n        double score = fd.computeAnomalyScore(forest, feat);\n        predictions.push_back(score > 0.6 ? 1 : 0);\n    }\n    \n    // Evaluate\n    auto metrics = fd.evaluate(predictions, labels);\n    \n    // Cleanup\n    for (auto tree : forest) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 545,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.42000000000000004
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 535,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1146,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "main",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "main",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 532,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 554,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.27
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 119,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 111,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        return currentDepth;\n    }\n    \n    double averagePathLength(int n) {\n        if (n <= 1) return 0;\n        return 2.0 * (std::log(n - 1) + 0.5772156649) - 2.0 * (n - 1) / n;\n    }\n    \n    double computeAnomalyScore(const std::vector<IsolationTree*>& forest,\n                              const std::vector<double>& sample) {\n        double avgPathLength = 0;\n        \n        for (IsolationTree* tree : forest) {\n            avgPathLength += computePathLength(tree, sample, 0);\n        }\n        \n        avgPathLength /= forest.size();\n        \n        // Normalize\n        double c = averagePathLength(forest[0]->size);\n        double score = std::pow(2, -avgPathLength / c);\n        \n        return score;\n    }\n    \n    // Random Forest classifier\n    struct DecisionNode {\n        int featureIndex;\n        double threshold;\n        bool isLeaf;\n        int classLabel;  // 0=normal, 1=fraud\n        DecisionNode* left;\n        DecisionNode* right;\n        "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 119,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    double computeAnomalyScore(const std::vector<IsolationTree*>& forest,\n                              const std::vector<double>& sample) {\n        double avgPathLength = 0;\n        \n        for (IsolationTree* tree : forest) {\n            avgPathLength += computePathLength(tree, sample, 0);\n        }\n        \n        avgPathLength /= forest.size();\n        \n        // Normalize\n        double c = averagePathLength(forest[0]->size);\n        double score = std::pow(2, -avgPathLength / c);\n        \n        return score;\n    }\n    \n    // Random Forest classifier\n    struct DecisionNode {\n        int featureIndex;\n        double threshold;\n        bool isLeaf;\n        int classLabel;  // 0=normal, 1=fraud\n        DecisionNode* left;\n        DecisionNode* right;\n        \n        DecisionNode() : left(nullptr), right(nullptr), isLeaf(false) {}\n        ~DecisionNode() {\n            delete left;\n            delete right;\n        }\n    };\n    \n    DecisionNode* buildDecisionTree(const std::vector<std::vector<double>>& features,"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1146,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "main",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "main",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 545,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        forest.push_back(fd.buildIsolationTree(sample, 10, 0));\n    }\n    \n    // Detect anomalies\n    std::vector<int> predictions;\n    for (const auto& feat : features) {\n        double score = fd.computeAnomalyScore(forest, feat);\n        predictions.push_back(score > 0.6 ? 1 : 0);\n    }\n    \n    // Evaluate\n    auto metrics = fd.evaluate(predictions, labels);\n    \n    // Cleanup\n    for (auto tree : forest) {\n        delete tree;\n    }\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 555,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.35
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 554,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.85,
+      "context": "    \n    // Evaluate\n    auto metrics = fd.evaluate(predictions, labels);\n    \n    // Cleanup\n    for (auto tree : forest) {\n        delete tree;\n    }\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN14FraudDetection11TransactionENS_9allocatorIS2_EEE9push_backB8ne210101ERKS2_",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__16vectorIN14FraudDetection11TransactionENS_9allocatorIS2_EEE9push_backB8ne210101ERKS2_",
+      "line": 1003,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__16vectorIN14FraudDetection11TransactionENS_9allocatorIS2_EEE9push_backB8ne210101ERKS2_",
+      "line": 1003,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__16vectorIN14FraudDetection11TransactionENS_9allocatorIS2_EEE9push_backB8ne210101ERKS2_",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN14FraudDetection11TransactionD1Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN14FraudDetection11TransactionD1Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetection15extractFeaturesERKNS_11TransactionERKNS_7AccountE",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE9push_backB8ne210101ERKS3_",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE9push_backB8ne210101ERKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE9push_backB8ne210101ERKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE9push_backB8ne210101ERKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 53,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.10000000000000007
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 65,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 75,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 65,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Find min and max for split feature\n        double minVal = data[0][tree->splitFeature];\n        double maxVal = data[0][tree->splitFeature];\n        \n        for (const auto& sample : data) {\n            minVal = std::min(minVal, sample[tree->splitFeature]);\n            maxVal = std::max(maxVal, sample[tree->splitFeature]);\n        }\n        \n        // Random split value\n        tree->splitValue = minVal + (rand() % 1000) / 1000.0 * (maxVal - minVal);\n        \n        // Split data\n        std::vector<std::vector<double>> leftData, rightData;\n        for (const auto& sample : data) {\n            if (sample[tree->splitFeature] < tree->splitValue) {\n                leftData.push_back(sample);\n            } else {\n                rightData.push_back(sample);\n            }\n        }\n        \n        // Build subtrees\n        if (!leftData.empty()) {\n            tree->left = buildIsolationTree(leftData, maxDepth, currentDepth + 1);\n        }\n        if (!rightData.empty()) {\n            tree->right = buildIsolationTree(rightData, maxDepth, currentDepth + 1);\n        }\n        \n        return tree;\n    }\n    \n    double computePathLength(IsolationTree* tree, const std::vector<double>& sample,"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "                rightData.push_back(sample);\n            }\n        }\n        \n        // Build subtrees\n        if (!leftData.empty()) {\n            tree->left = buildIsolationTree(leftData, maxDepth, currentDepth + 1);\n        }\n        if (!rightData.empty()) {\n            tree->right = buildIsolationTree(rightData, maxDepth, currentDepth + 1);\n        }\n        \n        return tree;\n    }\n    \n    double computePathLength(IsolationTree* tree, const std::vector<double>& sample,\n                            int currentDepth) {\n        if (tree->left == nullptr && tree->right == nullptr) {\n            // Leaf node - add average path length for remaining samples\n            return currentDepth + averagePathLength(tree->size);\n        }\n        \n        if (sample[tree->splitFeature] < tree->splitValue && tree->left != nullptr) {\n            return computePathLength(tree->left, sample, currentDepth + 1);\n        } else if (tree->right != nullptr) {\n            return computePathLength(tree->right, sample, currentDepth + 1);\n        }\n        \n        return currentDepth;\n    }\n    \n    double averagePathLength(int n) {\n        if (n <= 1) return 0;\n        return 2.0 * (std::log(n - 1) + 0.5772156649) - 2.0 * (n - 1) / n;\n    }"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 75,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        // Random split value\n        tree->splitValue = minVal + (rand() % 1000) / 1000.0 * (maxVal - minVal);\n        \n        // Split data\n        std::vector<std::vector<double>> leftData, rightData;\n        for (const auto& sample : data) {\n            if (sample[tree->splitFeature] < tree->splitValue) {\n                leftData.push_back(sample);\n            } else {\n                rightData.push_back(sample);\n            }\n        }\n        \n        // Build subtrees\n        if (!leftData.empty()) {\n            tree->left = buildIsolationTree(leftData, maxDepth, currentDepth + 1);\n        }\n        if (!rightData.empty()) {\n            tree->right = buildIsolationTree(rightData, maxDepth, currentDepth + 1);\n        }\n        \n        return tree;\n    }\n    \n    double computePathLength(IsolationTree* tree, const std::vector<double>& sample,\n                            int currentDepth) {\n        if (tree->left == nullptr && tree->right == nullptr) {\n            // Leaf node - add average path length for remaining samples\n            return currentDepth + averagePathLength(tree->size);\n        }\n        \n        if (sample[tree->splitFeature] < tree->splitValue && tree->left != nullptr) {\n            return computePathLength(tree->left, sample, currentDepth + 1);\n        } else if (tree->right != nullptr) {\n            return computePathLength(tree->right, sample, currentDepth + 1);"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 87,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        \n        // Build subtrees\n        if (!leftData.empty()) {\n            tree->left = buildIsolationTree(leftData, maxDepth, currentDepth + 1);\n        }\n        if (!rightData.empty()) {\n            tree->right = buildIsolationTree(rightData, maxDepth, currentDepth + 1);\n        }\n        \n        return tree;\n    }\n    \n    double computePathLength(IsolationTree* tree, const std::vector<double>& sample,\n                            int currentDepth) {\n        if (tree->left == nullptr && tree->right == nullptr) {\n            // Leaf node - add average path length for remaining samples\n            return currentDepth + averagePathLength(tree->size);\n        }\n        \n        if (sample[tree->splitFeature] < tree->splitValue && tree->left != nullptr) {\n            return computePathLength(tree->left, sample, currentDepth + 1);\n        } else if (tree->right != nullptr) {\n            return computePathLength(tree->right, sample, currentDepth + 1);\n        }\n        \n        return currentDepth;\n    }\n    \n    double averagePathLength(int n) {\n        if (n <= 1) return 0;\n        return 2.0 * (std::log(n - 1) + 0.5772156649) - 2.0 * (n - 1) / n;\n    }\n    \n    double computeAnomalyScore(const std::vector<IsolationTree*>& forest,\n                              const std::vector<double>& sample) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection13IsolationTreeD1Ev",
+      "line": 43,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.9,
+      "context": "        IsolationTree* right;\n        int size;  // Number of samples\n        \n        IsolationTree() : left(nullptr), right(nullptr), size(0) {}\n        ~IsolationTree() {\n            delete left;\n            delete right;\n        }\n    };\n    \n    IsolationTree* buildIsolationTree(const std::vector<std::vector<double>>& data,\n                                      int maxDepth, int currentDepth) {\n        IsolationTree* tree = new IsolationTree();\n        tree->size = data.size();\n        \n        if (currentDepth >= maxDepth || data.size() <= 1) {\n            return tree;\n        }\n        \n        // Random feature selection\n        int numFeatures = data[0].size();\n        tree->splitFeature = rand() % numFeatures;\n        \n        // Find min and max for split feature\n        double minVal = data[0][tree->splitFeature];\n        double maxVal = data[0][tree->splitFeature];\n        \n        for (const auto& sample : data) {\n            minVal = std::min(minVal, sample[tree->splitFeature]);\n            maxVal = std::max(maxVal, sample[tree->splitFeature]);\n        }\n        \n        // Random split value\n        tree->splitValue = minVal + (rand() % 1000) / 1000.0 * (maxVal - minVal);\n        "
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection13IsolationTreeD1Ev",
+      "line": 44,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.9,
+      "context": "        int size;  // Number of samples\n        \n        IsolationTree() : left(nullptr), right(nullptr), size(0) {}\n        ~IsolationTree() {\n            delete left;\n            delete right;\n        }\n    };\n    \n    IsolationTree* buildIsolationTree(const std::vector<std::vector<double>>& data,\n                                      int maxDepth, int currentDepth) {\n        IsolationTree* tree = new IsolationTree();\n        tree->size = data.size();\n        \n        if (currentDepth >= maxDepth || data.size() <= 1) {\n            return tree;\n        }\n        \n        // Random feature selection\n        int numFeatures = data[0].size();\n        tree->splitFeature = rand() % numFeatures;\n        \n        // Find min and max for split feature\n        double minVal = data[0][tree->splitFeature];\n        double maxVal = data[0][tree->splitFeature];\n        \n        for (const auto& sample : data) {\n            minVal = std::min(minVal, sample[tree->splitFeature]);\n            maxVal = std::max(maxVal, sample[tree->splitFeature]);\n        }\n        \n        // Random split value\n        tree->splitValue = minVal + (rand() % 1000) / 1000.0 * (maxVal - minVal);\n        \n        // Split data"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetection7AccountD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetection7AccountD1Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN14FraudDetection7AccountD1Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetection7AccountD1Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetection7AccountD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetection7AccountD1Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN14FraudDetection7AccountD1Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetection7AccountD1Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetectionD1Ev",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetectionD1Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN14FraudDetectionD1Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZN14FraudDetectionD1Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN14FraudDetectionD1Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE9push_backB8ne210101ERKd",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE9push_backB8ne210101ERKd",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE9push_backB8ne210101ERKd",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE9push_backB8ne210101ERKd",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE9push_backB8ne210101EOd",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE9push_backB8ne210101EOd",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE9push_backB8ne210101EOd",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE9push_backB8ne210101EOd",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection17computePathLengthEPNS_13IsolationTreeERKNSt3__16vectorIdNS2_9allocatorIdEEEEi",
+      "line": 96,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        return tree;\n    }\n    \n    double computePathLength(IsolationTree* tree, const std::vector<double>& sample,\n                            int currentDepth) {\n        if (tree->left == nullptr && tree->right == nullptr) {\n            // Leaf node - add average path length for remaining samples\n            return currentDepth + averagePathLength(tree->size);\n        }\n        \n        if (sample[tree->splitFeature] < tree->splitValue && tree->left != nullptr) {\n            return computePathLength(tree->left, sample, currentDepth + 1);\n        } else if (tree->right != nullptr) {\n            return computePathLength(tree->right, sample, currentDepth + 1);\n        }\n        \n        return currentDepth;\n    }\n    \n    double averagePathLength(int n) {\n        if (n <= 1) return 0;\n        return 2.0 * (std::log(n - 1) + 0.5772156649) - 2.0 * (n - 1) / n;\n    }\n    \n    double computeAnomalyScore(const std::vector<IsolationTree*>& forest,\n                              const std::vector<double>& sample) {\n        double avgPathLength = 0;\n        \n        for (IsolationTree* tree : forest) {\n            avgPathLength += computePathLength(tree, sample, 0);\n        }\n        \n        avgPathLength /= forest.size();\n        \n        // Normalize"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection17computePathLengthEPNS_13IsolationTreeERKNSt3__16vectorIdNS2_9allocatorIdEEEEi",
+      "line": 96,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        return tree;\n    }\n    \n    double computePathLength(IsolationTree* tree, const std::vector<double>& sample,\n                            int currentDepth) {\n        if (tree->left == nullptr && tree->right == nullptr) {\n            // Leaf node - add average path length for remaining samples\n            return currentDepth + averagePathLength(tree->size);\n        }\n        \n        if (sample[tree->splitFeature] < tree->splitValue && tree->left != nullptr) {\n            return computePathLength(tree->left, sample, currentDepth + 1);\n        } else if (tree->right != nullptr) {\n            return computePathLength(tree->right, sample, currentDepth + 1);\n        }\n        \n        return currentDepth;\n    }\n    \n    double averagePathLength(int n) {\n        if (n <= 1) return 0;\n        return 2.0 * (std::log(n - 1) + 0.5772156649) - 2.0 * (n - 1) / n;\n    }\n    \n    double computeAnomalyScore(const std::vector<IsolationTree*>& forest,\n                              const std::vector<double>& sample) {\n        double avgPathLength = 0;\n        \n        for (IsolationTree* tree : forest) {\n            avgPathLength += computePathLength(tree, sample, 0);\n        }\n        \n        avgPathLength /= forest.size();\n        \n        // Normalize"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection17computePathLengthEPNS_13IsolationTreeERKNSt3__16vectorIdNS2_9allocatorIdEEEEi",
+      "line": 111,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        return currentDepth;\n    }\n    \n    double averagePathLength(int n) {\n        if (n <= 1) return 0;\n        return 2.0 * (std::log(n - 1) + 0.5772156649) - 2.0 * (n - 1) / n;\n    }\n    \n    double computeAnomalyScore(const std::vector<IsolationTree*>& forest,\n                              const std::vector<double>& sample) {\n        double avgPathLength = 0;\n        \n        for (IsolationTree* tree : forest) {\n            avgPathLength += computePathLength(tree, sample, 0);\n        }\n        \n        avgPathLength /= forest.size();\n        \n        // Normalize\n        double c = averagePathLength(forest[0]->size);\n        double score = std::pow(2, -avgPathLength / c);\n        \n        return score;\n    }\n    \n    // Random Forest classifier\n    struct DecisionNode {\n        int featureIndex;\n        double threshold;\n        bool isLeaf;\n        int classLabel;  // 0=normal, 1=fraud\n        DecisionNode* left;\n        DecisionNode* right;\n        "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection17computePathLengthEPNS_13IsolationTreeERKNSt3__16vectorIdNS2_9allocatorIdEEEEi",
+      "line": 101,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.98,
+      "context": "        if (tree->left == nullptr && tree->right == nullptr) {\n            // Leaf node - add average path length for remaining samples\n            return currentDepth + averagePathLength(tree->size);\n        }\n        \n        if (sample[tree->splitFeature] < tree->splitValue && tree->left != nullptr) {\n            return computePathLength(tree->left, sample, currentDepth + 1);\n        } else if (tree->right != nullptr) {\n            return computePathLength(tree->right, sample, currentDepth + 1);\n        }\n        \n        return currentDepth;\n    }\n    \n    double averagePathLength(int n) {\n        if (n <= 1) return 0;\n        return 2.0 * (std::log(n - 1) + 0.5772156649) - 2.0 * (n - 1) / n;\n    }\n    \n    double computeAnomalyScore(const std::vector<IsolationTree*>& forest,\n                              const std::vector<double>& sample) {\n        double avgPathLength = 0;\n        \n        for (IsolationTree* tree : forest) {\n            avgPathLength += computePathLength(tree, sample, 0);\n        }\n        \n        avgPathLength /= forest.size();\n        \n        // Normalize\n        double c = averagePathLength(forest[0]->size);\n        double score = std::pow(2, -avgPathLength / c);\n        \n        return score;\n    }"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection17computePathLengthEPNS_13IsolationTreeERKNSt3__16vectorIdNS2_9allocatorIdEEEEi",
+      "line": 103,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.98,
+      "context": "            return currentDepth + averagePathLength(tree->size);\n        }\n        \n        if (sample[tree->splitFeature] < tree->splitValue && tree->left != nullptr) {\n            return computePathLength(tree->left, sample, currentDepth + 1);\n        } else if (tree->right != nullptr) {\n            return computePathLength(tree->right, sample, currentDepth + 1);\n        }\n        \n        return currentDepth;\n    }\n    \n    double averagePathLength(int n) {\n        if (n <= 1) return 0;\n        return 2.0 * (std::log(n - 1) + 0.5772156649) - 2.0 * (n - 1) / n;\n    }\n    \n    double computeAnomalyScore(const std::vector<IsolationTree*>& forest,\n                              const std::vector<double>& sample) {\n        double avgPathLength = 0;\n        \n        for (IsolationTree* tree : forest) {\n            avgPathLength += computePathLength(tree, sample, 0);\n        }\n        \n        avgPathLength /= forest.size();\n        \n        // Normalize\n        double c = averagePathLength(forest[0]->size);\n        double score = std::pow(2, -avgPathLength / c);\n        \n        return score;\n    }\n    \n    // Random Forest classifier"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__tree",
+      "function": "_ZNSt3__16__treeINS_12__value_typeIiN14FraudDetection7AccountEEENS_19__map_value_compareIiNS_4pairIKiS3_EENS_4lessIiEELb1EEENS_9allocatorIS8_EEE7destroyEPNS_11__tree_nodeIS4_PvEE",
+      "line": 1449,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__112__destroy_atB8ne210101INS_4pairIKiN14FraudDetection7AccountEEETnNS_9enable_ifIXntsr8is_arrayIT_EE5valueEiE4typeELi0EEEvPS7_",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__112__destroy_atB8ne210101INS_4pairIKiN14FraudDetection7AccountEEETnNS_9enable_ifIXntsr8is_arrayIT_EE5valueEiE4typeELi0EEEvPS7_",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__112__destroy_atB8ne210101INS_4pairIKiN14FraudDetection7AccountEEETnNS_9enable_ifIXntsr8is_arrayIT_EE5valueEiE4typeELi0EEEvPS7_",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__112__destroy_atB8ne210101INS_4pairIKiN14FraudDetection7AccountEEETnNS_9enable_ifIXntsr8is_arrayIT_EE5valueEiE4typeELi0EEEvPS7_",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__112__destroy_atB8ne210101INS_4pairIKiN14FraudDetection7AccountEEETnNS_9enable_ifIXntsr8is_arrayIT_EE5valueEiE4typeELi0EEEvPS7_",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__112__destroy_atB8ne210101INS_4pairIKiN14FraudDetection7AccountEEETnNS_9enable_ifIXntsr8is_arrayIT_EE5valueEiE4typeELi0EEEvPS7_",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__112__destroy_atB8ne210101INS_4pairIKiN14FraudDetection7AccountEEETnNS_9enable_ifIXntsr8is_arrayIT_EE5valueEiE4typeELi0EEEvPS7_",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__112__destroy_atB8ne210101INS_4pairIKiN14FraudDetection7AccountEEETnNS_9enable_ifIXntsr8is_arrayIT_EE5valueEiE4typeELi0EEEvPS7_",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE24__emplace_back_slow_pathIJRKS3_EEEPS3_DpOT_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE24__emplace_back_slow_pathIJRKS3_EEEPS3_DpOT_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE24__emplace_back_slow_pathIJRKS3_EEEPS3_DpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE24__emplace_back_slow_pathIJRKS3_EEEPS3_DpOT_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE24__emplace_back_slow_pathIJRKS3_EEEPS3_DpOT_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE24__emplace_back_slow_pathIJRKS3_EEEPS3_DpOT_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE24__emplace_back_slow_pathIJRKS3_EEEPS3_DpOT_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN14FraudDetection11TransactionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN14FraudDetection11TransactionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIN14FraudDetection11TransactionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__16vectorIN14FraudDetection11TransactionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 1003,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__16vectorIN14FraudDetection11TransactionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 1003,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__16vectorIN14FraudDetection11TransactionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__16vectorIN14FraudDetection11TransactionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 625,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__16vectorIN14FraudDetection11TransactionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 625,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__16vectorIN14FraudDetection11TransactionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__16vectorIN14FraudDetection11TransactionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__16vectorIN14FraudDetection11TransactionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 49,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN14FraudDetection11TransactionENS_9allocatorIS2_EEE24__emplace_back_slow_pathIJRKS2_EEEPS2_DpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE25__init_copy_ctor_externalEPKcm",
+      "line": 2574,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE25__init_copy_ctor_externalEPKcm",
+      "line": 2578,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE25__init_copy_ctor_externalEPKcm",
+      "line": 228,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN14FraudDetection11TransactionERNS_9allocatorIS2_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__114__split_bufferIN14FraudDetection11TransactionERNS_9allocatorIS2_EEED1Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "_ZNSt3__114__split_bufferIN14FraudDetection11TransactionERNS_9allocatorIS2_EEED1Ev",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN14FraudDetection11TransactionERNS_9allocatorIS2_EEED1Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIN14FraudDetection11TransactionERNS_9allocatorIS2_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 111,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        return currentDepth;\n    }\n    \n    double averagePathLength(int n) {\n        if (n <= 1) return 0;\n        return 2.0 * (std::log(n - 1) + 0.5772156649) - 2.0 * (n - 1) / n;\n    }\n    \n    double computeAnomalyScore(const std::vector<IsolationTree*>& forest,\n                              const std::vector<double>& sample) {\n        double avgPathLength = 0;\n        \n        for (IsolationTree* tree : forest) {\n            avgPathLength += computePathLength(tree, sample, 0);\n        }\n        \n        avgPathLength /= forest.size();\n        \n        // Normalize\n        double c = averagePathLength(forest[0]->size);\n        double score = std::pow(2, -avgPathLength / c);\n        \n        return score;\n    }\n    \n    // Random Forest classifier\n    struct DecisionNode {\n        int featureIndex;\n        double threshold;\n        bool isLeaf;\n        int classLabel;  // 0=normal, 1=fraud\n        DecisionNode* left;\n        DecisionNode* right;\n        ",
+      "classification": "safe_parallel",
+      "reasoning": "The function averagePathLength has no data dependencies and performs independent calculations, making it suitable for parallelization.",
+      "confidence": 0.9,
+      "transformations": [
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Unit test for averagePathLength function"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 119,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    double computeAnomalyScore(const std::vector<IsolationTree*>& forest,\n                              const std::vector<double>& sample) {\n        double avgPathLength = 0;\n        \n        for (IsolationTree* tree : forest) {\n            avgPathLength += computePathLength(tree, sample, 0);\n        }\n        \n        avgPathLength /= forest.size();\n        \n        // Normalize\n        double c = averagePathLength(forest[0]->size);\n        double score = std::pow(2, -avgPathLength / c);\n        \n        return score;\n    }\n    \n    // Random Forest classifier\n    struct DecisionNode {\n        int featureIndex;\n        double threshold;\n        bool isLeaf;\n        int classLabel;  // 0=normal, 1=fraud\n        DecisionNode* left;\n        DecisionNode* right;\n        \n        DecisionNode() : left(nullptr), right(nullptr), isLeaf(false) {}\n        ~DecisionNode() {\n            delete left;\n            delete right;\n        }\n    };\n    \n    DecisionNode* buildDecisionTree(const std::vector<std::vector<double>>& features,",
+      "classification": "safe_parallel",
+      "reasoning": "The loop in computeAnomalyScore has independent iterations and can be parallelized using SIMD instructions.",
+      "confidence": 0.8,
+      "transformations": [
+        "OpenMP SIMD parallelization"
+      ],
+      "tests_recommended": [
+        "Unit test for computeAnomalyScore function"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 545,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        forest.push_back(fd.buildIsolationTree(sample, 10, 0));\n    }\n    \n    // Detect anomalies\n    std::vector<int> predictions;\n    for (const auto& feat : features) {\n        double score = fd.computeAnomalyScore(forest, feat);\n        predictions.push_back(score > 0.6 ? 1 : 0);\n    }\n    \n    // Evaluate\n    auto metrics = fd.evaluate(predictions, labels);\n    \n    // Cleanup\n    for (auto tree : forest) {\n        delete tree;\n    }\n    \n    return 0;\n}",
+      "classification": "safe_parallel",
+      "reasoning": "The loop in the main function has independent iterations and can be parallelized.",
+      "confidence": 0.85,
+      "transformations": [
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Unit test for main function"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 65,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Find min and max for split feature\n        double minVal = data[0][tree->splitFeature];\n        double maxVal = data[0][tree->splitFeature];\n        \n        for (const auto& sample : data) {\n            minVal = std::min(minVal, sample[tree->splitFeature]);\n            maxVal = std::max(maxVal, sample[tree->splitFeature]);\n        }\n        \n        // Random split value\n        tree->splitValue = minVal + (rand() % 1000) / 1000.0 * (maxVal - minVal);\n        \n        // Split data\n        std::vector<std::vector<double>> leftData, rightData;\n        for (const auto& sample : data) {\n            if (sample[tree->splitFeature] < tree->splitValue) {\n                leftData.push_back(sample);\n            } else {\n                rightData.push_back(sample);\n            }\n        }\n        \n        // Build subtrees\n        if (!leftData.empty()) {\n            tree->left = buildIsolationTree(leftData, maxDepth, currentDepth + 1);\n        }\n        if (!rightData.empty()) {\n            tree->right = buildIsolationTree(rightData, maxDepth, currentDepth + 1);\n        }\n        \n        return tree;\n    }\n    \n    double computePathLength(IsolationTree* tree, const std::vector<double>& sample,",
+      "classification": "safe_parallel",
+      "reasoning": "The loop in buildIsolationTree has independent iterations and can be parallelized.",
+      "confidence": 0.8,
+      "transformations": [
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Unit test for buildIsolationTree function"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 75,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        // Random split value\n        tree->splitValue = minVal + (rand() % 1000) / 1000.0 * (maxVal - minVal);\n        \n        // Split data\n        std::vector<std::vector<double>> leftData, rightData;\n        for (const auto& sample : data) {\n            if (sample[tree->splitFeature] < tree->splitValue) {\n                leftData.push_back(sample);\n            } else {\n                rightData.push_back(sample);\n            }\n        }\n        \n        // Build subtrees\n        if (!leftData.empty()) {\n            tree->left = buildIsolationTree(leftData, maxDepth, currentDepth + 1);\n        }\n        if (!rightData.empty()) {\n            tree->right = buildIsolationTree(rightData, maxDepth, currentDepth + 1);\n        }\n        \n        return tree;\n    }\n    \n    double computePathLength(IsolationTree* tree, const std::vector<double>& sample,\n                            int currentDepth) {\n        if (tree->left == nullptr && tree->right == nullptr) {\n            // Leaf node - add average path length for remaining samples\n            return currentDepth + averagePathLength(tree->size);\n        }\n        \n        if (sample[tree->splitFeature] < tree->splitValue && tree->left != nullptr) {\n            return computePathLength(tree->left, sample, currentDepth + 1);\n        } else if (tree->right != nullptr) {\n            return computePathLength(tree->right, sample, currentDepth + 1);",
+      "classification": "safe_parallel",
+      "reasoning": "The loop in buildIsolationTree has independent iterations and can be parallelized.",
+      "confidence": 0.8,
+      "transformations": [
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Unit test for buildIsolationTree function"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection17computePathLengthEPNS_13IsolationTreeERKNSt3__16vectorIdNS2_9allocatorIdEEEEi",
+      "line": 96,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        return tree;\n    }\n    \n    double computePathLength(IsolationTree* tree, const std::vector<double>& sample,\n                            int currentDepth) {\n        if (tree->left == nullptr && tree->right == nullptr) {\n            // Leaf node - add average path length for remaining samples\n            return currentDepth + averagePathLength(tree->size);\n        }\n        \n        if (sample[tree->splitFeature] < tree->splitValue && tree->left != nullptr) {\n            return computePathLength(tree->left, sample, currentDepth + 1);\n        } else if (tree->right != nullptr) {\n            return computePathLength(tree->right, sample, currentDepth + 1);\n        }\n        \n        return currentDepth;\n    }\n    \n    double averagePathLength(int n) {\n        if (n <= 1) return 0;\n        return 2.0 * (std::log(n - 1) + 0.5772156649) - 2.0 * (n - 1) / n;\n    }\n    \n    double computeAnomalyScore(const std::vector<IsolationTree*>& forest,\n                              const std::vector<double>& sample) {\n        double avgPathLength = 0;\n        \n        for (IsolationTree* tree : forest) {\n            avgPathLength += computePathLength(tree, sample, 0);\n        }\n        \n        avgPathLength /= forest.size();\n        \n        // Normalize",
+      "classification": "requires_runtime_check",
+      "reasoning": "The function computePathLength has recursive calls and data dependencies that need to be checked at runtime.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP task parallelization with dependency checking"
+      ],
+      "tests_recommended": [
+        "Unit test for computePathLength function with different input scenarios"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection17computePathLengthEPNS_13IsolationTreeERKNSt3__16vectorIdNS2_9allocatorIdEEEEi",
+      "line": 96,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        return tree;\n    }\n    \n    double computePathLength(IsolationTree* tree, const std::vector<double>& sample,\n                            int currentDepth) {\n        if (tree->left == nullptr && tree->right == nullptr) {\n            // Leaf node - add average path length for remaining samples\n            return currentDepth + averagePathLength(tree->size);\n        }\n        \n        if (sample[tree->splitFeature] < tree->splitValue && tree->left != nullptr) {\n            return computePathLength(tree->left, sample, currentDepth + 1);\n        } else if (tree->right != nullptr) {\n            return computePathLength(tree->right, sample, currentDepth + 1);\n        }\n        \n        return currentDepth;\n    }\n    \n    double averagePathLength(int n) {\n        if (n <= 1) return 0;\n        return 2.0 * (std::log(n - 1) + 0.5772156649) - 2.0 * (n - 1) / n;\n    }\n    \n    double computeAnomalyScore(const std::vector<IsolationTree*>& forest,\n                              const std::vector<double>& sample) {\n        double avgPathLength = 0;\n        \n        for (IsolationTree* tree : forest) {\n            avgPathLength += computePathLength(tree, sample, 0);\n        }\n        \n        avgPathLength /= forest.size();\n        \n        // Normalize",
+      "classification": "requires_runtime_check",
+      "reasoning": "The function computePathLength has recursive calls and data dependencies that need to be checked at runtime.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP task parallelization with dependency checking"
+      ],
+      "tests_recommended": [
+        "Unit test for computePathLength function with different input scenarios"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection17computePathLengthEPNS_13IsolationTreeERKNSt3__16vectorIdNS2_9allocatorIdEEEEi",
+      "line": 111,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        return currentDepth;\n    }\n    \n    double averagePathLength(int n) {\n        if (n <= 1) return 0;\n        return 2.0 * (std::log(n - 1) + 0.5772156649) - 2.0 * (n - 1) / n;\n    }\n    \n    double computeAnomalyScore(const std::vector<IsolationTree*>& forest,\n                              const std::vector<double>& sample) {\n        double avgPathLength = 0;\n        \n        for (IsolationTree* tree : forest) {\n            avgPathLength += computePathLength(tree, sample, 0);\n        }\n        \n        avgPathLength /= forest.size();\n        \n        // Normalize\n        double c = averagePathLength(forest[0]->size);\n        double score = std::pow(2, -avgPathLength / c);\n        \n        return score;\n    }\n    \n    // Random Forest classifier\n    struct DecisionNode {\n        int featureIndex;\n        double threshold;\n        bool isLeaf;\n        int classLabel;  // 0=normal, 1=fraud\n        DecisionNode* left;\n        DecisionNode* right;\n        ",
+      "classification": "safe_parallel",
+      "reasoning": "The function averagePathLength has no data dependencies and performs independent calculations, making it suitable for parallelization.",
+      "confidence": 0.9,
+      "transformations": [
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Unit test for averagePathLength function"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection17computePathLengthEPNS_13IsolationTreeERKNSt3__16vectorIdNS2_9allocatorIdEEEEi",
+      "line": 101,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.98,
+      "context": "        if (tree->left == nullptr && tree->right == nullptr) {\n            // Leaf node - add average path length for remaining samples\n            return currentDepth + averagePathLength(tree->size);\n        }\n        \n        if (sample[tree->splitFeature] < tree->splitValue && tree->left != nullptr) {\n            return computePathLength(tree->left, sample, currentDepth + 1);\n        } else if (tree->right != nullptr) {\n            return computePathLength(tree->right, sample, currentDepth + 1);\n        }\n        \n        return currentDepth;\n    }\n    \n    double averagePathLength(int n) {\n        if (n <= 1) return 0;\n        return 2.0 * (std::log(n - 1) + 0.5772156649) - 2.0 * (n - 1) / n;\n    }\n    \n    double computeAnomalyScore(const std::vector<IsolationTree*>& forest,\n                              const std::vector<double>& sample) {\n        double avgPathLength = 0;\n        \n        for (IsolationTree* tree : forest) {\n            avgPathLength += computePathLength(tree, sample, 0);\n        }\n        \n        avgPathLength /= forest.size();\n        \n        // Normalize\n        double c = averagePathLength(forest[0]->size);\n        double score = std::pow(2, -avgPathLength / c);\n        \n        return score;\n    }",
+      "classification": "safe_parallel",
+      "reasoning": "The loop in computePathLength has independent iterations and can be parallelized using SIMD instructions.",
+      "confidence": 0.8,
+      "transformations": [
+        "OpenMP SIMD parallelization"
+      ],
+      "tests_recommended": [
+        "Unit test for computePathLength function"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.98
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection17computePathLengthEPNS_13IsolationTreeERKNSt3__16vectorIdNS2_9allocatorIdEEEEi",
+      "line": 103,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.98,
+      "context": "            return currentDepth + averagePathLength(tree->size);\n        }\n        \n        if (sample[tree->splitFeature] < tree->splitValue && tree->left != nullptr) {\n            return computePathLength(tree->left, sample, currentDepth + 1);\n        } else if (tree->right != nullptr) {\n            return computePathLength(tree->right, sample, currentDepth + 1);\n        }\n        \n        return currentDepth;\n    }\n    \n    double averagePathLength(int n) {\n        if (n <= 1) return 0;\n        return 2.0 * (std::log(n - 1) + 0.5772156649) - 2.0 * (n - 1) / n;\n    }\n    \n    double computeAnomalyScore(const std::vector<IsolationTree*>& forest,\n                              const std::vector<double>& sample) {\n        double avgPathLength = 0;\n        \n        for (IsolationTree* tree : forest) {\n            avgPathLength += computePathLength(tree, sample, 0);\n        }\n        \n        avgPathLength /= forest.size();\n        \n        // Normalize\n        double c = averagePathLength(forest[0]->size);\n        double score = std::pow(2, -avgPathLength / c);\n        \n        return score;\n    }\n    \n    // Random Forest classifier",
+      "classification": "requires_runtime_check",
+      "reasoning": "The function computePathLength has recursive calls and data dependencies that need to be checked at runtime.",
+      "confidence": 0.7,
+      "transformations": [
+        "OpenMP task parallelization with dependency checking"
+      ],
+      "tests_recommended": [
+        "Unit test for computePathLength function with different input scenarios"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.98
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection13IsolationTreeD1Ev",
+      "line": 43,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.9,
+      "context": "        IsolationTree* right;\n        int size;  // Number of samples\n        \n        IsolationTree() : left(nullptr), right(nullptr), size(0) {}\n        ~IsolationTree() {\n            delete left;\n            delete right;\n        }\n    };\n    \n    IsolationTree* buildIsolationTree(const std::vector<std::vector<double>>& data,\n                                      int maxDepth, int currentDepth) {\n        IsolationTree* tree = new IsolationTree();\n        tree->size = data.size();\n        \n        if (currentDepth >= maxDepth || data.size() <= 1) {\n            return tree;\n        }\n        \n        // Random feature selection\n        int numFeatures = data[0].size();\n        tree->splitFeature = rand() % numFeatures;\n        \n        // Find min and max for split feature\n        double minVal = data[0][tree->splitFeature];\n        double maxVal = data[0][tree->splitFeature];\n        \n        for (const auto& sample : data) {\n            minVal = std::min(minVal, sample[tree->splitFeature]);\n            maxVal = std::max(maxVal, sample[tree->splitFeature]);\n        }\n        \n        // Random split value\n        tree->splitValue = minVal + (rand() % 1000) / 1000.0 * (maxVal - minVal);\n        ",
+      "classification": "not_parallel",
+      "reasoning": "The destructor of IsolationTree has sequential logic and cannot be parallelized.",
+      "confidence": 0.9,
+      "transformations": [
+        "None"
+      ],
+      "tests_recommended": [
+        "Unit test for IsolationTree destructor"
+      ],
+      "logic_issue_type": "non_parallel_algorithm",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.9
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection13IsolationTreeD1Ev",
+      "line": 44,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.9,
+      "context": "        int size;  // Number of samples\n        \n        IsolationTree() : left(nullptr), right(nullptr), size(0) {}\n        ~IsolationTree() {\n            delete left;\n            delete right;\n        }\n    };\n    \n    IsolationTree* buildIsolationTree(const std::vector<std::vector<double>>& data,\n                                      int maxDepth, int currentDepth) {\n        IsolationTree* tree = new IsolationTree();\n        tree->size = data.size();\n        \n        if (currentDepth >= maxDepth || data.size() <= 1) {\n            return tree;\n        }\n        \n        // Random feature selection\n        int numFeatures = data[0].size();\n        tree->splitFeature = rand() % numFeatures;\n        \n        // Find min and max for split feature\n        double minVal = data[0][tree->splitFeature];\n        double maxVal = data[0][tree->splitFeature];\n        \n        for (const auto& sample : data) {\n            minVal = std::min(minVal, sample[tree->splitFeature]);\n            maxVal = std::max(maxVal, sample[tree->splitFeature]);\n        }\n        \n        // Random split value\n        tree->splitValue = minVal + (rand() % 1000) / 1000.0 * (maxVal - minVal);\n        \n        // Split data",
+      "classification": "not_parallel",
+      "reasoning": "The destructor of IsolationTree has sequential logic and cannot be parallelized.",
+      "confidence": 0.9,
+      "transformations": [
+        "None"
+      ],
+      "tests_recommended": [
+        "Unit test for IsolationTree destructor"
+      ],
+      "logic_issue_type": "non_parallel_algorithm",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.9
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 554,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.85,
+      "context": "    \n    // Evaluate\n    auto metrics = fd.evaluate(predictions, labels);\n    \n    // Cleanup\n    for (auto tree : forest) {\n        delete tree;\n    }\n    \n    return 0;\n}",
+      "classification": "not_parallel",
+      "reasoning": "The loop in the main function has sequential logic and cannot be parallelized.",
+      "confidence": 0.9,
+      "transformations": [
+        "None"
+      ],
+      "tests_recommended": [
+        "Unit test for main function"
+      ],
+      "logic_issue_type": "non_parallel_algorithm",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.85
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "                rightData.push_back(sample);\n            }\n        }\n        \n        // Build subtrees\n        if (!leftData.empty()) {\n            tree->left = buildIsolationTree(leftData, maxDepth, currentDepth + 1);\n        }\n        if (!rightData.empty()) {\n            tree->right = buildIsolationTree(rightData, maxDepth, currentDepth + 1);\n        }\n        \n        return tree;\n    }\n    \n    double computePathLength(IsolationTree* tree, const std::vector<double>& sample,\n                            int currentDepth) {\n        if (tree->left == nullptr && tree->right == nullptr) {\n            // Leaf node - add average path length for remaining samples\n            return currentDepth + averagePathLength(tree->size);\n        }\n        \n        if (sample[tree->splitFeature] < tree->splitValue && tree->left != nullptr) {\n            return computePathLength(tree->left, sample, currentDepth + 1);\n        } else if (tree->right != nullptr) {\n            return computePathLength(tree->right, sample, currentDepth + 1);\n        }\n        \n        return currentDepth;\n    }\n    \n    double averagePathLength(int n) {\n        if (n <= 1) return 0;\n        return 2.0 * (std::log(n - 1) + 0.5772156649) - 2.0 * (n - 1) / n;\n    }",
+      "classification": "safe_parallel",
+      "reasoning": "The loop in buildIsolationTree has independent iterations and can be parallelized.",
+      "confidence": 0.8,
+      "transformations": [
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Unit test for buildIsolationTree function"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "_ZN14FraudDetection18buildIsolationTreeERKNSt3__16vectorINS1_IdNS0_9allocatorIdEEEENS2_IS4_EEEEii",
+      "line": 87,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        \n        // Build subtrees\n        if (!leftData.empty()) {\n            tree->left = buildIsolationTree(leftData, maxDepth, currentDepth + 1);\n        }\n        if (!rightData.empty()) {\n            tree->right = buildIsolationTree(rightData, maxDepth, currentDepth + 1);\n        }\n        \n        return tree;\n    }\n    \n    double computePathLength(IsolationTree* tree, const std::vector<double>& sample,\n                            int currentDepth) {\n        if (tree->left == nullptr && tree->right == nullptr) {\n            // Leaf node - add average path length for remaining samples\n            return currentDepth + averagePathLength(tree->size);\n        }\n        \n        if (sample[tree->splitFeature] < tree->splitValue && tree->left != nullptr) {\n            return computePathLength(tree->left, sample, currentDepth + 1);\n        } else if (tree->right != nullptr) {\n            return computePathLength(tree->right, sample, currentDepth + 1);\n        }\n        \n        return currentDepth;\n    }\n    \n    double averagePathLength(int n) {\n        if (n <= 1) return 0;\n        return 2.0 * (std::log(n - 1) + 0.5772156649) - 2.0 * (n - 1) / n;\n    }\n    \n    double computeAnomalyScore(const std::vector<IsolationTree*>& forest,\n                              const std::vector<double>& sample) {",
+      "classification": "safe_parallel",
+      "reasoning": "The loop in buildIsolationTree has independent iterations and can be parallelized.",
+      "confidence": 0.8,
+      "transformations": [
+        "OpenMP parallel for loop"
+      ],
+      "tests_recommended": [
+        "Unit test for buildIsolationTree function"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "ai_llm",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/fraud_detection.cpp",
+      "function": "main",
+      "line": 525,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.7000000000000001,
+      "context": "    FraudDetection::Account account;\n    account.accountId = 1;\n    account.avgTransactionAmount = 100;\n    account.transactionCount = 1000;\n    \n    for (const auto& txn : fd.transactions) {\n        features.push_back(fd.extractFeatures(txn, account));\n        labels.push_back(txn.isFraud ? 1 : 0);\n    }\n    \n    // Build isolation forest\n    std::vector<FraudDetection::IsolationTree*> forest;\n    for (int t = 0; t < 100; t++) {\n        // Sample subset\n        std::vector<std::vector<double>> sample;\n        for (int i = 0; i < 256; i++) {\n            int idx = rand() % features.size();\n            sample.push_back(features[idx]);\n        }\n        \n        forest.push_back(fd.buildIsolationTree(sample, 10, 0));\n    }\n    \n    // Detect anomalies\n    std::vector<int> predictions;\n    for (const auto& feat : features) {\n        double score = fd.computeAnomalyScore(forest, feat);\n        predictions.push_back(score > 0.6 ? 1 : 0);\n    }\n    \n    // Evaluate\n    auto metrics = fd.evaluate(predictions, labels);\n    \n    // Cleanup\n    for (auto tree : forest) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.7000000000000001
+    }
+  ]
+}

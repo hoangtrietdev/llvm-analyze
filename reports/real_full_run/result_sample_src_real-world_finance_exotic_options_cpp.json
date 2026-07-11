@@ -1,0 +1,661 @@
+{
+  "file": "sample/src/real-world/finance/exotic_options.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/finance/exotic_options.cpp",
+    "llvm_initial": 47,
+    "llvm_sys_noise": 23,
+    "llvm_project": 24,
+    "after_filter": 11,
+    "ai_batches": 1,
+    "ai_results": 11,
+    "omp_verified": 0,
+    "total_ms": 747.9,
+    "llvm_ms": 457.2
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z17asianOptionPayoffRNSt3__16vectorIdNS_9allocatorIdEEEEdb",
+      "line": 8,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z17asianOptionPayoffRNSt3__16vectorIdNS_9allocatorIdEEEEdb",
+      "line": 8,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "#include <cmath>\n#include <random>\n\ndouble asianOptionPayoff(std::vector<double>& prices, double strike, bool is_call) {\n    double average = 0.0;\n    for (double price : prices) {\n        average += price;\n    }\n    average /= prices.size();\n    \n    if (is_call) {\n        return std::max(average - strike, 0.0);\n    } else {\n        return std::max(strike - average, 0.0);\n    }\n}\n\ndouble barrierOptionPayoff(std::vector<double>& prices, double strike, double barrier,\n                          bool is_call, bool is_up, bool is_knock_out) {\n    bool barrier_hit = false;\n    \n    if (is_up) {\n        for (double price : prices) {\n            if (price >= barrier) {\n                barrier_hit = true;\n                break;\n            }\n        }\n    } else {\n        for (double price : prices) {\n            if (price <= barrier) {\n                barrier_hit = true;\n                break;\n            }\n        }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z19barrierOptionPayoffRNSt3__16vectorIdNS_9allocatorIdEEEEddbbb",
+      "line": 24,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.47
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z19barrierOptionPayoffRNSt3__16vectorIdNS_9allocatorIdEEEEddbbb",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.55
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "unknown",
+      "function": "_Z19barrierOptionPayoffRNSt3__16vectorIdNS_9allocatorIdEEEEddbbb",
+      "line": 0,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "// Exotic Options - Asian and Barrier\n#include <vector>\n#include <cmath>\n#include <random>\n\ndouble asianOptionPayoff(std::vector<double>& prices, double strike, bool is_call) {\n    double average = 0.0;\n    for (double price : prices) {\n        average += price;\n    }\n    average /= prices.size();\n    \n    if (is_call) {\n        return std::max(average - strike, 0.0);\n    } else {\n        return std::max(strike - average, 0.0);\n    }\n}\n\ndouble barrierOptionPayoff(std::vector<double>& prices, double strike, double barrier,\n                          bool is_call, bool is_up, bool is_knock_out) {\n    bool barrier_hit = false;\n    \n    if (is_up) {\n        for (double price : prices) {\n            if (price >= barrier) {\n                barrier_hit = true;\n                break;\n            }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z19barrierOptionPayoffRNSt3__16vectorIdNS_9allocatorIdEEEEddbbb",
+      "line": 32,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.55
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "unknown",
+      "function": "_Z19barrierOptionPayoffRNSt3__16vectorIdNS_9allocatorIdEEEEddbbb",
+      "line": 0,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "// Exotic Options - Asian and Barrier\n#include <vector>\n#include <cmath>\n#include <random>\n\ndouble asianOptionPayoff(std::vector<double>& prices, double strike, bool is_call) {\n    double average = 0.0;\n    for (double price : prices) {\n        average += price;\n    }\n    average /= prices.size();\n    \n    if (is_call) {\n        return std::max(average - strike, 0.0);\n    } else {\n        return std::max(strike - average, 0.0);\n    }\n}\n\ndouble barrierOptionPayoff(std::vector<double>& prices, double strike, double barrier,\n                          bool is_call, bool is_up, bool is_knock_out) {\n    bool barrier_hit = false;\n    \n    if (is_up) {\n        for (double price : prices) {\n            if (price >= barrier) {\n                barrier_hit = true;\n                break;\n            }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z19barrierOptionPayoffRNSt3__16vectorIdNS_9allocatorIdEEEEddbbb",
+      "line": 41,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 149,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 62,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    std::vector<double> asian_call_payoffs(n_simulations);\n    std::vector<double> asian_put_payoffs(n_simulations);\n    std::vector<double> barrier_up_out_payoffs(n_simulations);\n    std::vector<double> barrier_down_in_payoffs(n_simulations);\n    \n    for (int sim = 0; sim < n_simulations; sim++) {\n        std::vector<double> prices(n_steps + 1);\n        prices[0] = S0;\n        \n        // Generate price path\n        for (int t = 1; t <= n_steps; t++) {\n            double Z = normal(rng);\n            prices[t] = prices[t-1] * exp((r - 0.5*sigma*sigma)*dt + sigma*sqrt(dt)*Z);\n        }\n        \n        // Asian options\n        asian_call_payoffs[sim] = asianOptionPayoff(prices, K, true);\n        asian_put_payoffs[sim] = asianOptionPayoff(prices, K, false);\n        \n        // Barrier options\n        barrier_up_out_payoffs[sim] = barrierOptionPayoff(prices, K, barrier, true, true, true);\n        barrier_down_in_payoffs[sim] = barrierOptionPayoff(prices, K, barrier*0.8, true, false, false);\n    }\n    \n    // Calculate prices\n    double discount = exp(-r * T);\n    \n    double asian_call_price = 0.0, asian_put_price = 0.0;\n    double barrier_up_out_price = 0.0, barrier_down_in_price = 0.0;\n    \n    for (int i = 0; i < n_simulations; i++) {\n        asian_call_price += asian_call_payoffs[i];\n        asian_put_price += asian_put_payoffs[i];\n        barrier_up_out_price += barrier_up_out_payoffs[i];\n        barrier_down_in_price += barrier_down_in_payoffs[i];"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 67,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    for (int sim = 0; sim < n_simulations; sim++) {\n        std::vector<double> prices(n_steps + 1);\n        prices[0] = S0;\n        \n        // Generate price path\n        for (int t = 1; t <= n_steps; t++) {\n            double Z = normal(rng);\n            prices[t] = prices[t-1] * exp((r - 0.5*sigma*sigma)*dt + sigma*sqrt(dt)*Z);\n        }\n        \n        // Asian options\n        asian_call_payoffs[sim] = asianOptionPayoff(prices, K, true);\n        asian_put_payoffs[sim] = asianOptionPayoff(prices, K, false);\n        \n        // Barrier options\n        barrier_up_out_payoffs[sim] = barrierOptionPayoff(prices, K, barrier, true, true, true);\n        barrier_down_in_payoffs[sim] = barrierOptionPayoff(prices, K, barrier*0.8, true, false, false);\n    }\n    \n    // Calculate prices\n    double discount = exp(-r * T);\n    \n    double asian_call_price = 0.0, asian_put_price = 0.0;\n    double barrier_up_out_price = 0.0, barrier_down_in_price = 0.0;\n    \n    for (int i = 0; i < n_simulations; i++) {\n        asian_call_price += asian_call_payoffs[i];\n        asian_put_price += asian_put_payoffs[i];\n        barrier_up_out_price += barrier_up_out_payoffs[i];\n        barrier_down_in_price += barrier_down_in_payoffs[i];\n    }\n    \n    asian_call_price = discount * asian_call_price / n_simulations;\n    asian_put_price = discount * asian_put_price / n_simulations;\n    barrier_up_out_price = discount * barrier_up_out_price / n_simulations;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 8,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 8,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "#include <cmath>\n#include <random>\n\ndouble asianOptionPayoff(std::vector<double>& prices, double strike, bool is_call) {\n    double average = 0.0;\n    for (double price : prices) {\n        average += price;\n    }\n    average /= prices.size();\n    \n    if (is_call) {\n        return std::max(average - strike, 0.0);\n    } else {\n        return std::max(strike - average, 0.0);\n    }\n}\n\ndouble barrierOptionPayoff(std::vector<double>& prices, double strike, double barrier,\n                          bool is_call, bool is_up, bool is_knock_out) {\n    bool barrier_hit = false;\n    \n    if (is_up) {\n        for (double price : prices) {\n            if (price >= barrier) {\n                barrier_hit = true;\n                break;\n            }\n        }\n    } else {\n        for (double price : prices) {\n            if (price <= barrier) {\n                barrier_hit = true;\n                break;\n            }\n        }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 8,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 67,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 8,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "#include <cmath>\n#include <random>\n\ndouble asianOptionPayoff(std::vector<double>& prices, double strike, bool is_call) {\n    double average = 0.0;\n    for (double price : prices) {\n        average += price;\n    }\n    average /= prices.size();\n    \n    if (is_call) {\n        return std::max(average - strike, 0.0);\n    } else {\n        return std::max(strike - average, 0.0);\n    }\n}\n\ndouble barrierOptionPayoff(std::vector<double>& prices, double strike, double barrier,\n                          bool is_call, bool is_up, bool is_knock_out) {\n    bool barrier_hit = false;\n    \n    if (is_up) {\n        for (double price : prices) {\n            if (price >= barrier) {\n                barrier_hit = true;\n                break;\n            }\n        }\n    } else {\n        for (double price : prices) {\n            if (price <= barrier) {\n                barrier_hit = true;\n                break;\n            }\n        }"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "unknown",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 0,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "// Exotic Options - Asian and Barrier\n#include <vector>\n#include <cmath>\n#include <random>\n\ndouble asianOptionPayoff(std::vector<double>& prices, double strike, bool is_call) {\n    double average = 0.0;\n    for (double price : prices) {\n        average += price;\n    }\n    average /= prices.size();\n    \n    if (is_call) {\n        return std::max(average - strike, 0.0);\n    } else {\n        return std::max(strike - average, 0.0);\n    }\n}\n\ndouble barrierOptionPayoff(std::vector<double>& prices, double strike, double barrier,\n                          bool is_call, bool is_up, bool is_knock_out) {\n    bool barrier_hit = false;\n    \n    if (is_up) {\n        for (double price : prices) {\n            if (price >= barrier) {\n                barrier_hit = true;\n                break;\n            }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 32,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.47
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "unknown",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 0,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "// Exotic Options - Asian and Barrier\n#include <vector>\n#include <cmath>\n#include <random>\n\ndouble asianOptionPayoff(std::vector<double>& prices, double strike, bool is_call) {\n    double average = 0.0;\n    for (double price : prices) {\n        average += price;\n    }\n    average /= prices.size();\n    \n    if (is_call) {\n        return std::max(average - strike, 0.0);\n    } else {\n        return std::max(strike - average, 0.0);\n    }\n}\n\ndouble barrierOptionPayoff(std::vector<double>& prices, double strike, double barrier,\n                          bool is_call, bool is_up, bool is_knock_out) {\n    bool barrier_hit = false;\n    \n    if (is_up) {\n        for (double price : prices) {\n            if (price >= barrier) {\n                barrier_hit = true;\n                break;\n            }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 62,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    std::vector<double> asian_call_payoffs(n_simulations);\n    std::vector<double> asian_put_payoffs(n_simulations);\n    std::vector<double> barrier_up_out_payoffs(n_simulations);\n    std::vector<double> barrier_down_in_payoffs(n_simulations);\n    \n    for (int sim = 0; sim < n_simulations; sim++) {\n        std::vector<double> prices(n_steps + 1);\n        prices[0] = S0;\n        \n        // Generate price path\n        for (int t = 1; t <= n_steps; t++) {\n            double Z = normal(rng);\n            prices[t] = prices[t-1] * exp((r - 0.5*sigma*sigma)*dt + sigma*sqrt(dt)*Z);\n        }\n        \n        // Asian options\n        asian_call_payoffs[sim] = asianOptionPayoff(prices, K, true);\n        asian_put_payoffs[sim] = asianOptionPayoff(prices, K, false);\n        \n        // Barrier options\n        barrier_up_out_payoffs[sim] = barrierOptionPayoff(prices, K, barrier, true, true, true);\n        barrier_down_in_payoffs[sim] = barrierOptionPayoff(prices, K, barrier*0.8, true, false, false);\n    }\n    \n    // Calculate prices\n    double discount = exp(-r * T);\n    \n    double asian_call_price = 0.0, asian_put_price = 0.0;\n    double barrier_up_out_price = 0.0, barrier_down_in_price = 0.0;\n    \n    for (int i = 0; i < n_simulations; i++) {\n        asian_call_price += asian_call_payoffs[i];\n        asian_put_price += asian_put_payoffs[i];\n        barrier_up_out_price += barrier_up_out_payoffs[i];\n        barrier_down_in_price += barrier_down_in_payoffs[i];"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "_Z18priceRainbowOptionddddddddi",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceRainbowOptionddddddddi",
+      "line": 111,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceRainbowOptionddddddddi",
+      "line": 111,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::mt19937 rng(42);\n    std::normal_distribution<> normal(0.0, 1.0);\n    \n    double sum_payoff = 0.0;\n    \n    for (int sim = 0; sim < n_simulations; sim++) {\n        double S1 = S1_0, S2 = S2_0;\n        \n        for (int t = 0; t < n_steps; t++) {\n            double Z1 = normal(rng);\n            double Z2 = rho * Z1 + sqrt(1 - rho*rho) * normal(rng);\n            \n            S1 *= exp((r - 0.5*sigma1*sigma1)*dt + sigma1*sqrt(dt)*Z1);\n            S2 *= exp((r - 0.5*sigma2*sigma2)*dt + sigma2*sqrt(dt)*Z2);\n        }\n        \n        // Best-of option\n        double payoff = std::max(std::max(S1, S2) - K, 0.0);\n        sum_payoff += payoff;\n    }\n    \n    double price = exp(-r * T) * sum_payoff / n_simulations;\n}\n\nint main() {\n    double S0 = 100.0, K = 100.0, T = 1.0;\n    double r = 0.05, sigma = 0.2;\n    double barrier = 120.0;\n    \n    priceExoticOptions(S0, K, T, r, sigma, barrier, 100000, 252);\n    priceRainbowOption(100.0, 100.0, 100.0, 1.0, 0.05, 0.2, 0.25, 0.6, 50000);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceRainbowOptionddddddddi",
+      "line": 114,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "main",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "main",
+      "line": 111,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "main",
+      "line": 114,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/normal_distribution.h",
+      "function": "_ZNSt3__119normal_distributionIdEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEdRT_RKNS1_10param_typeE",
+      "line": 113,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/normal_distribution.h",
+      "function": "_ZNSt3__119normal_distributionIdEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEdRT_RKNS1_10param_typeE",
+      "line": 125,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z17asianOptionPayoffRNSt3__16vectorIdNS_9allocatorIdEEEEdb",
+      "line": 8,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "#include <cmath>\n#include <random>\n\ndouble asianOptionPayoff(std::vector<double>& prices, double strike, bool is_call) {\n    double average = 0.0;\n    for (double price : prices) {\n        average += price;\n    }\n    average /= prices.size();\n    \n    if (is_call) {\n        return std::max(average - strike, 0.0);\n    } else {\n        return std::max(strike - average, 0.0);\n    }\n}\n\ndouble barrierOptionPayoff(std::vector<double>& prices, double strike, double barrier,\n                          bool is_call, bool is_up, bool is_knock_out) {\n    bool barrier_hit = false;\n    \n    if (is_up) {\n        for (double price : prices) {\n            if (price >= barrier) {\n                barrier_hit = true;\n                break;\n            }\n        }\n    } else {\n        for (double price : prices) {\n            if (price <= barrier) {\n                barrier_hit = true;\n                break;\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "unknown",
+      "function": "_Z19barrierOptionPayoffRNSt3__16vectorIdNS_9allocatorIdEEEEddbbb",
+      "line": 0,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "// Exotic Options - Asian and Barrier\n#include <vector>\n#include <cmath>\n#include <random>\n\ndouble asianOptionPayoff(std::vector<double>& prices, double strike, bool is_call) {\n    double average = 0.0;\n    for (double price : prices) {\n        average += price;\n    }\n    average /= prices.size();\n    \n    if (is_call) {\n        return std::max(average - strike, 0.0);\n    } else {\n        return std::max(strike - average, 0.0);\n    }\n}\n\ndouble barrierOptionPayoff(std::vector<double>& prices, double strike, double barrier,\n                          bool is_call, bool is_up, bool is_knock_out) {\n    bool barrier_hit = false;\n    \n    if (is_up) {\n        for (double price : prices) {\n            if (price >= barrier) {\n                barrier_hit = true;\n                break;\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "unknown",
+      "function": "_Z19barrierOptionPayoffRNSt3__16vectorIdNS_9allocatorIdEEEEddbbb",
+      "line": 0,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "// Exotic Options - Asian and Barrier\n#include <vector>\n#include <cmath>\n#include <random>\n\ndouble asianOptionPayoff(std::vector<double>& prices, double strike, bool is_call) {\n    double average = 0.0;\n    for (double price : prices) {\n        average += price;\n    }\n    average /= prices.size();\n    \n    if (is_call) {\n        return std::max(average - strike, 0.0);\n    } else {\n        return std::max(strike - average, 0.0);\n    }\n}\n\ndouble barrierOptionPayoff(std::vector<double>& prices, double strike, double barrier,\n                          bool is_call, bool is_up, bool is_knock_out) {\n    bool barrier_hit = false;\n    \n    if (is_up) {\n        for (double price : prices) {\n            if (price >= barrier) {\n                barrier_hit = true;\n                break;\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 67,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    for (int sim = 0; sim < n_simulations; sim++) {\n        std::vector<double> prices(n_steps + 1);\n        prices[0] = S0;\n        \n        // Generate price path\n        for (int t = 1; t <= n_steps; t++) {\n            double Z = normal(rng);\n            prices[t] = prices[t-1] * exp((r - 0.5*sigma*sigma)*dt + sigma*sqrt(dt)*Z);\n        }\n        \n        // Asian options\n        asian_call_payoffs[sim] = asianOptionPayoff(prices, K, true);\n        asian_put_payoffs[sim] = asianOptionPayoff(prices, K, false);\n        \n        // Barrier options\n        barrier_up_out_payoffs[sim] = barrierOptionPayoff(prices, K, barrier, true, true, true);\n        barrier_down_in_payoffs[sim] = barrierOptionPayoff(prices, K, barrier*0.8, true, false, false);\n    }\n    \n    // Calculate prices\n    double discount = exp(-r * T);\n    \n    double asian_call_price = 0.0, asian_put_price = 0.0;\n    double barrier_up_out_price = 0.0, barrier_down_in_price = 0.0;\n    \n    for (int i = 0; i < n_simulations; i++) {\n        asian_call_price += asian_call_payoffs[i];\n        asian_put_price += asian_put_payoffs[i];\n        barrier_up_out_price += barrier_up_out_payoffs[i];\n        barrier_down_in_price += barrier_down_in_payoffs[i];\n    }\n    \n    asian_call_price = discount * asian_call_price / n_simulations;\n    asian_put_price = discount * asian_put_price / n_simulations;\n    barrier_up_out_price = discount * barrier_up_out_price / n_simulations;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 8,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "#include <cmath>\n#include <random>\n\ndouble asianOptionPayoff(std::vector<double>& prices, double strike, bool is_call) {\n    double average = 0.0;\n    for (double price : prices) {\n        average += price;\n    }\n    average /= prices.size();\n    \n    if (is_call) {\n        return std::max(average - strike, 0.0);\n    } else {\n        return std::max(strike - average, 0.0);\n    }\n}\n\ndouble barrierOptionPayoff(std::vector<double>& prices, double strike, double barrier,\n                          bool is_call, bool is_up, bool is_knock_out) {\n    bool barrier_hit = false;\n    \n    if (is_up) {\n        for (double price : prices) {\n            if (price >= barrier) {\n                barrier_hit = true;\n                break;\n            }\n        }\n    } else {\n        for (double price : prices) {\n            if (price <= barrier) {\n                barrier_hit = true;\n                break;\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 8,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "#include <cmath>\n#include <random>\n\ndouble asianOptionPayoff(std::vector<double>& prices, double strike, bool is_call) {\n    double average = 0.0;\n    for (double price : prices) {\n        average += price;\n    }\n    average /= prices.size();\n    \n    if (is_call) {\n        return std::max(average - strike, 0.0);\n    } else {\n        return std::max(strike - average, 0.0);\n    }\n}\n\ndouble barrierOptionPayoff(std::vector<double>& prices, double strike, double barrier,\n                          bool is_call, bool is_up, bool is_knock_out) {\n    bool barrier_hit = false;\n    \n    if (is_up) {\n        for (double price : prices) {\n            if (price >= barrier) {\n                barrier_hit = true;\n                break;\n            }\n        }\n    } else {\n        for (double price : prices) {\n            if (price <= barrier) {\n                barrier_hit = true;\n                break;\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "unknown",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 0,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "// Exotic Options - Asian and Barrier\n#include <vector>\n#include <cmath>\n#include <random>\n\ndouble asianOptionPayoff(std::vector<double>& prices, double strike, bool is_call) {\n    double average = 0.0;\n    for (double price : prices) {\n        average += price;\n    }\n    average /= prices.size();\n    \n    if (is_call) {\n        return std::max(average - strike, 0.0);\n    } else {\n        return std::max(strike - average, 0.0);\n    }\n}\n\ndouble barrierOptionPayoff(std::vector<double>& prices, double strike, double barrier,\n                          bool is_call, bool is_up, bool is_knock_out) {\n    bool barrier_hit = false;\n    \n    if (is_up) {\n        for (double price : prices) {\n            if (price >= barrier) {\n                barrier_hit = true;\n                break;\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "unknown",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 0,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "// Exotic Options - Asian and Barrier\n#include <vector>\n#include <cmath>\n#include <random>\n\ndouble asianOptionPayoff(std::vector<double>& prices, double strike, bool is_call) {\n    double average = 0.0;\n    for (double price : prices) {\n        average += price;\n    }\n    average /= prices.size();\n    \n    if (is_call) {\n        return std::max(average - strike, 0.0);\n    } else {\n        return std::max(strike - average, 0.0);\n    }\n}\n\ndouble barrierOptionPayoff(std::vector<double>& prices, double strike, double barrier,\n                          bool is_call, bool is_up, bool is_knock_out) {\n    bool barrier_hit = false;\n    \n    if (is_up) {\n        for (double price : prices) {\n            if (price >= barrier) {\n                barrier_hit = true;\n                break;\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 62,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    std::vector<double> asian_call_payoffs(n_simulations);\n    std::vector<double> asian_put_payoffs(n_simulations);\n    std::vector<double> barrier_up_out_payoffs(n_simulations);\n    std::vector<double> barrier_down_in_payoffs(n_simulations);\n    \n    for (int sim = 0; sim < n_simulations; sim++) {\n        std::vector<double> prices(n_steps + 1);\n        prices[0] = S0;\n        \n        // Generate price path\n        for (int t = 1; t <= n_steps; t++) {\n            double Z = normal(rng);\n            prices[t] = prices[t-1] * exp((r - 0.5*sigma*sigma)*dt + sigma*sqrt(dt)*Z);\n        }\n        \n        // Asian options\n        asian_call_payoffs[sim] = asianOptionPayoff(prices, K, true);\n        asian_put_payoffs[sim] = asianOptionPayoff(prices, K, false);\n        \n        // Barrier options\n        barrier_up_out_payoffs[sim] = barrierOptionPayoff(prices, K, barrier, true, true, true);\n        barrier_down_in_payoffs[sim] = barrierOptionPayoff(prices, K, barrier*0.8, true, false, false);\n    }\n    \n    // Calculate prices\n    double discount = exp(-r * T);\n    \n    double asian_call_price = 0.0, asian_put_price = 0.0;\n    double barrier_up_out_price = 0.0, barrier_down_in_price = 0.0;\n    \n    for (int i = 0; i < n_simulations; i++) {\n        asian_call_price += asian_call_payoffs[i];\n        asian_put_price += asian_put_payoffs[i];\n        barrier_up_out_price += barrier_up_out_payoffs[i];\n        barrier_down_in_price += barrier_down_in_payoffs[i];",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceExoticOptionsddddddii",
+      "line": 62,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    std::vector<double> asian_call_payoffs(n_simulations);\n    std::vector<double> asian_put_payoffs(n_simulations);\n    std::vector<double> barrier_up_out_payoffs(n_simulations);\n    std::vector<double> barrier_down_in_payoffs(n_simulations);\n    \n    for (int sim = 0; sim < n_simulations; sim++) {\n        std::vector<double> prices(n_steps + 1);\n        prices[0] = S0;\n        \n        // Generate price path\n        for (int t = 1; t <= n_steps; t++) {\n            double Z = normal(rng);\n            prices[t] = prices[t-1] * exp((r - 0.5*sigma*sigma)*dt + sigma*sqrt(dt)*Z);\n        }\n        \n        // Asian options\n        asian_call_payoffs[sim] = asianOptionPayoff(prices, K, true);\n        asian_put_payoffs[sim] = asianOptionPayoff(prices, K, false);\n        \n        // Barrier options\n        barrier_up_out_payoffs[sim] = barrierOptionPayoff(prices, K, barrier, true, true, true);\n        barrier_down_in_payoffs[sim] = barrierOptionPayoff(prices, K, barrier*0.8, true, false, false);\n    }\n    \n    // Calculate prices\n    double discount = exp(-r * T);\n    \n    double asian_call_price = 0.0, asian_put_price = 0.0;\n    double barrier_up_out_price = 0.0, barrier_down_in_price = 0.0;\n    \n    for (int i = 0; i < n_simulations; i++) {\n        asian_call_price += asian_call_payoffs[i];\n        asian_put_price += asian_put_payoffs[i];\n        barrier_up_out_price += barrier_up_out_payoffs[i];\n        barrier_down_in_price += barrier_down_in_payoffs[i];",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/exotic_options.cpp",
+      "function": "_Z18priceRainbowOptionddddddddi",
+      "line": 111,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::mt19937 rng(42);\n    std::normal_distribution<> normal(0.0, 1.0);\n    \n    double sum_payoff = 0.0;\n    \n    for (int sim = 0; sim < n_simulations; sim++) {\n        double S1 = S1_0, S2 = S2_0;\n        \n        for (int t = 0; t < n_steps; t++) {\n            double Z1 = normal(rng);\n            double Z2 = rho * Z1 + sqrt(1 - rho*rho) * normal(rng);\n            \n            S1 *= exp((r - 0.5*sigma1*sigma1)*dt + sigma1*sqrt(dt)*Z1);\n            S2 *= exp((r - 0.5*sigma2*sigma2)*dt + sigma2*sqrt(dt)*Z2);\n        }\n        \n        // Best-of option\n        double payoff = std::max(std::max(S1, S2) - K, 0.0);\n        sum_payoff += payoff;\n    }\n    \n    double price = exp(-r * T) * sum_payoff / n_simulations;\n}\n\nint main() {\n    double S0 = 100.0, K = 100.0, T = 1.0;\n    double r = 0.05, sigma = 0.2;\n    double barrier = 120.0;\n    \n    priceExoticOptions(S0, K, T, r, sigma, barrier, 100000, 252);\n    priceRainbowOption(100.0, 100.0, 100.0, 1.0, 0.05, 0.2, 0.25, 0.6, 50000);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

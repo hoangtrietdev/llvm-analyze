@@ -1,0 +1,1254 @@
+{
+  "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+    "llvm_initial": 113,
+    "llvm_sys_noise": 90,
+    "llvm_project": 23,
+    "after_filter": 14,
+    "ai_batches": 1,
+    "ai_results": 14,
+    "omp_verified": 0,
+    "total_ms": 737.6,
+    "llvm_ms": 451.3
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "main",
+      "line": 24,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        covariance_matrix.resize(NUM_ASSETS, std::vector<double>(NUM_ASSETS));\n    }\n    \n    void calculate_statistics() {\n        // Calculate expected returns\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            double sum = 0.0;\n            for (int t = 0; t < HISTORICAL_DAYS; t++) {\n                sum += returns_data[i][t];\n            }\n            expected_returns[i] = sum / HISTORICAL_DAYS;\n        }\n        \n        // Calculate covariance matrix\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                double cov = 0.0;\n                for (int t = 0; t < HISTORICAL_DAYS; t++) {\n                    cov += (returns_data[i][t] - expected_returns[i]) *\n                           (returns_data[j][t] - expected_returns[j]);\n                }\n                covariance_matrix[i][j] = cov / (HISTORICAL_DAYS - 1);\n            }\n        }\n    }\n    \n    double calculate_portfolio_return(const std::vector<double>& weights) {\n        double portfolio_return = 0.0;\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            portfolio_return += weights[i] * expected_returns[i];\n        }\n        return portfolio_return;\n    }\n    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "main",
+      "line": 26,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    void calculate_statistics() {\n        // Calculate expected returns\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            double sum = 0.0;\n            for (int t = 0; t < HISTORICAL_DAYS; t++) {\n                sum += returns_data[i][t];\n            }\n            expected_returns[i] = sum / HISTORICAL_DAYS;\n        }\n        \n        // Calculate covariance matrix\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                double cov = 0.0;\n                for (int t = 0; t < HISTORICAL_DAYS; t++) {\n                    cov += (returns_data[i][t] - expected_returns[i]) *\n                           (returns_data[j][t] - expected_returns[j]);\n                }\n                covariance_matrix[i][j] = cov / (HISTORICAL_DAYS - 1);\n            }\n        }\n    }\n    \n    double calculate_portfolio_return(const std::vector<double>& weights) {\n        double portfolio_return = 0.0;\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            portfolio_return += weights[i] * expected_returns[i];\n        }\n        return portfolio_return;\n    }\n    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {\n        double variance = 0.0;\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "main",
+      "line": 33,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "main",
+      "line": 34,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            expected_returns[i] = sum / HISTORICAL_DAYS;\n        }\n        \n        // Calculate covariance matrix\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                double cov = 0.0;\n                for (int t = 0; t < HISTORICAL_DAYS; t++) {\n                    cov += (returns_data[i][t] - expected_returns[i]) *\n                           (returns_data[j][t] - expected_returns[j]);\n                }\n                covariance_matrix[i][j] = cov / (HISTORICAL_DAYS - 1);\n            }\n        }\n    }\n    \n    double calculate_portfolio_return(const std::vector<double>& weights) {\n        double portfolio_return = 0.0;\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            portfolio_return += weights[i] * expected_returns[i];\n        }\n        return portfolio_return;\n    }\n    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {\n        double variance = 0.0;\n        \n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                variance += weights[i] * weights[j] * covariance_matrix[i][j];\n            }\n        }\n        \n        return sqrt(variance);\n    }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "main",
+      "line": 36,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer21optimize_sharpe_ratioEdi",
+      "line": 69,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizer21optimize_sharpe_ratioEdi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer21optimize_sharpe_ratioEdi",
+      "line": 74,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (int iter = 0; iter < iterations; iter++) {\n            std::vector<double> weights(NUM_ASSETS);\n            \n            // Generate random weights\n            double sum = 0.0;\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] = (rand() % 10000) / 10000.0;\n                sum += weights[i];\n            }\n            \n            // Normalize weights\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] /= sum;\n            }\n            \n            // Calculate Sharpe ratio\n            double portfolio_return = calculate_portfolio_return(weights);\n            double portfolio_risk = calculate_portfolio_risk(weights);\n            double sharpe_ratio = (portfolio_return - risk_free_rate) / portfolio_risk;\n            \n            if (sharpe_ratio > best_sharpe) {\n                best_sharpe = sharpe_ratio;\n                best_weights = weights;\n            }\n        }\n        \n        return best_weights;\n    }\n    \n    void calculate_efficient_frontier(int num_points,\n                                     std::vector<double>& returns,\n                                     std::vector<double>& risks) {\n        returns.resize(num_points);\n        risks.resize(num_points);\n        "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer21optimize_sharpe_ratioEdi",
+      "line": 47,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        }\n    }\n    \n    double calculate_portfolio_return(const std::vector<double>& weights) {\n        double portfolio_return = 0.0;\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            portfolio_return += weights[i] * expected_returns[i];\n        }\n        return portfolio_return;\n    }\n    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {\n        double variance = 0.0;\n        \n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                variance += weights[i] * weights[j] * covariance_matrix[i][j];\n            }\n        }\n        \n        return sqrt(variance);\n    }\n    \n    std::vector<double> optimize_sharpe_ratio(double risk_free_rate, int iterations) {\n        std::vector<double> best_weights(NUM_ASSETS, 1.0 / NUM_ASSETS);\n        double best_sharpe = -1e9;\n        \n        for (int iter = 0; iter < iterations; iter++) {\n            std::vector<double> weights(NUM_ASSETS);\n            \n            // Generate random weights\n            double sum = 0.0;\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] = (rand() % 10000) / 10000.0;\n                sum += weights[i];"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer21optimize_sharpe_ratioEdi",
+      "line": 56,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    }\n    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {\n        double variance = 0.0;\n        \n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                variance += weights[i] * weights[j] * covariance_matrix[i][j];\n            }\n        }\n        \n        return sqrt(variance);\n    }\n    \n    std::vector<double> optimize_sharpe_ratio(double risk_free_rate, int iterations) {\n        std::vector<double> best_weights(NUM_ASSETS, 1.0 / NUM_ASSETS);\n        double best_sharpe = -1e9;\n        \n        for (int iter = 0; iter < iterations; iter++) {\n            std::vector<double> weights(NUM_ASSETS);\n            \n            // Generate random weights\n            double sum = 0.0;\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] = (rand() % 10000) / 10000.0;\n                sum += weights[i];\n            }\n            \n            // Normalize weights\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] /= sum;\n            }\n            \n            // Calculate Sharpe ratio\n            double portfolio_return = calculate_portfolio_return(weights);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer21optimize_sharpe_ratioEdi",
+      "line": 57,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {\n        double variance = 0.0;\n        \n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                variance += weights[i] * weights[j] * covariance_matrix[i][j];\n            }\n        }\n        \n        return sqrt(variance);\n    }\n    \n    std::vector<double> optimize_sharpe_ratio(double risk_free_rate, int iterations) {\n        std::vector<double> best_weights(NUM_ASSETS, 1.0 / NUM_ASSETS);\n        double best_sharpe = -1e9;\n        \n        for (int iter = 0; iter < iterations; iter++) {\n            std::vector<double> weights(NUM_ASSETS);\n            \n            // Generate random weights\n            double sum = 0.0;\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] = (rand() % 10000) / 10000.0;\n                sum += weights[i];\n            }\n            \n            // Normalize weights\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] /= sum;\n            }\n            \n            // Calculate Sharpe ratio\n            double portfolio_return = calculate_portfolio_return(weights);\n            double portfolio_risk = calculate_portfolio_risk(weights);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer21optimize_sharpe_ratioEdi",
+      "line": 89,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer21optimize_sharpe_ratioEdi",
+      "line": 80,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                weights[i] = (rand() % 10000) / 10000.0;\n                sum += weights[i];\n            }\n            \n            // Normalize weights\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] /= sum;\n            }\n            \n            // Calculate Sharpe ratio\n            double portfolio_return = calculate_portfolio_return(weights);\n            double portfolio_risk = calculate_portfolio_risk(weights);\n            double sharpe_ratio = (portfolio_return - risk_free_rate) / portfolio_risk;\n            \n            if (sharpe_ratio > best_sharpe) {\n                best_sharpe = sharpe_ratio;\n                best_weights = weights;\n            }\n        }\n        \n        return best_weights;\n    }\n    \n    void calculate_efficient_frontier(int num_points,\n                                     std::vector<double>& returns,\n                                     std::vector<double>& risks) {\n        returns.resize(num_points);\n        risks.resize(num_points);\n        \n        double min_return = *std::min_element(expected_returns.begin(), expected_returns.end());\n        double max_return = *std::max_element(expected_returns.begin(), expected_returns.end());\n        \n        for (int p = 0; p < num_points; p++) {\n            double target_return = min_return + \n                (max_return - min_return) * p / (num_points - 1);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer21optimize_sharpe_ratioEdi",
+      "line": 69,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizer21optimize_sharpe_ratioEdi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 1360,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 1360,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/min_element.h",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 33,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/min_element.h",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 37,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/max_element.h",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 29,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/max_element.h",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 31,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 107,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.38
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 107,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.30000000000000004
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 118,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            double min_risk = 1e9;\n            \n            for (int iter = 0; iter < 10000; iter++) {\n                // Generate weights that sum to 1\n                double sum = 0.0;\n                for (int i = 0; i < NUM_ASSETS; i++) {\n                    weights[i] = (rand() % 10000) / 10000.0;\n                    sum += weights[i];\n                }\n                for (int i = 0; i < NUM_ASSETS; i++) {\n                    weights[i] /= sum;\n                }\n                \n                double port_return = calculate_portfolio_return(weights);\n                \n                // Check if close to target return\n                if (fabs(port_return - target_return) < 0.001) {\n                    double risk = calculate_portfolio_risk(weights);\n                    if (risk < min_risk) {\n                        min_risk = risk;\n                        returns[p] = port_return;\n                        risks[p] = risk;\n                    }\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    PortfolioOptimizer optimizer;\n    \n    optimizer.calculate_statistics();\n    \n    std::vector<double> optimal_weights = optimizer.optimize_sharpe_ratio(0.02, 100000);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 47,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "        }\n    }\n    \n    double calculate_portfolio_return(const std::vector<double>& weights) {\n        double portfolio_return = 0.0;\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            portfolio_return += weights[i] * expected_returns[i];\n        }\n        return portfolio_return;\n    }\n    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {\n        double variance = 0.0;\n        \n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                variance += weights[i] * weights[j] * covariance_matrix[i][j];\n            }\n        }\n        \n        return sqrt(variance);\n    }\n    \n    std::vector<double> optimize_sharpe_ratio(double risk_free_rate, int iterations) {\n        std::vector<double> best_weights(NUM_ASSETS, 1.0 / NUM_ASSETS);\n        double best_sharpe = -1e9;\n        \n        for (int iter = 0; iter < iterations; iter++) {\n            std::vector<double> weights(NUM_ASSETS);\n            \n            // Generate random weights\n            double sum = 0.0;\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] = (rand() % 10000) / 10000.0;\n                sum += weights[i];"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 129,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.30000000000000004
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 122,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                double sum = 0.0;\n                for (int i = 0; i < NUM_ASSETS; i++) {\n                    weights[i] = (rand() % 10000) / 10000.0;\n                    sum += weights[i];\n                }\n                for (int i = 0; i < NUM_ASSETS; i++) {\n                    weights[i] /= sum;\n                }\n                \n                double port_return = calculate_portfolio_return(weights);\n                \n                // Check if close to target return\n                if (fabs(port_return - target_return) < 0.001) {\n                    double risk = calculate_portfolio_risk(weights);\n                    if (risk < min_risk) {\n                        min_risk = risk;\n                        returns[p] = port_return;\n                        risks[p] = risk;\n                    }\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    PortfolioOptimizer optimizer;\n    \n    optimizer.calculate_statistics();\n    \n    std::vector<double> optimal_weights = optimizer.optimize_sharpe_ratio(0.02, 100000);\n    \n    std::vector<double> frontier_returns, frontier_risks;\n    optimizer.calculate_efficient_frontier(50, frontier_returns, frontier_risks);\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 56,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "    }\n    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {\n        double variance = 0.0;\n        \n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                variance += weights[i] * weights[j] * covariance_matrix[i][j];\n            }\n        }\n        \n        return sqrt(variance);\n    }\n    \n    std::vector<double> optimize_sharpe_ratio(double risk_free_rate, int iterations) {\n        std::vector<double> best_weights(NUM_ASSETS, 1.0 / NUM_ASSETS);\n        double best_sharpe = -1e9;\n        \n        for (int iter = 0; iter < iterations; iter++) {\n            std::vector<double> weights(NUM_ASSETS);\n            \n            // Generate random weights\n            double sum = 0.0;\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] = (rand() % 10000) / 10000.0;\n                sum += weights[i];\n            }\n            \n            // Normalize weights\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] /= sum;\n            }\n            \n            // Calculate Sharpe ratio\n            double portfolio_return = calculate_portfolio_return(weights);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 57,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {\n        double variance = 0.0;\n        \n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                variance += weights[i] * weights[j] * covariance_matrix[i][j];\n            }\n        }\n        \n        return sqrt(variance);\n    }\n    \n    std::vector<double> optimize_sharpe_ratio(double risk_free_rate, int iterations) {\n        std::vector<double> best_weights(NUM_ASSETS, 1.0 / NUM_ASSETS);\n        double best_sharpe = -1e9;\n        \n        for (int iter = 0; iter < iterations; iter++) {\n            std::vector<double> weights(NUM_ASSETS);\n            \n            // Generate random weights\n            double sum = 0.0;\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] = (rand() % 10000) / 10000.0;\n                sum += weights[i];\n            }\n            \n            // Normalize weights\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] /= sum;\n            }\n            \n            // Calculate Sharpe ratio\n            double portfolio_return = calculate_portfolio_return(weights);\n            double portfolio_risk = calculate_portfolio_risk(weights);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 131,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.4
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 115,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "            \n            // Find minimum variance portfolio for target return\n            std::vector<double> weights(NUM_ASSETS, 1.0 / NUM_ASSETS);\n            double min_risk = 1e9;\n            \n            for (int iter = 0; iter < 10000; iter++) {\n                // Generate weights that sum to 1\n                double sum = 0.0;\n                for (int i = 0; i < NUM_ASSETS; i++) {\n                    weights[i] = (rand() % 10000) / 10000.0;\n                    sum += weights[i];\n                }\n                for (int i = 0; i < NUM_ASSETS; i++) {\n                    weights[i] /= sum;\n                }\n                \n                double port_return = calculate_portfolio_return(weights);\n                \n                // Check if close to target return\n                if (fabs(port_return - target_return) < 0.001) {\n                    double risk = calculate_portfolio_risk(weights);\n                    if (risk < min_risk) {\n                        min_risk = risk;\n                        returns[p] = port_return;\n                        risks[p] = risk;\n                    }\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    PortfolioOptimizer optimizer;\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 1369,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 1360,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 1369,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerC2Ev",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 257,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IdNS_9allocatorIdEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIdNS_9allocatorIdEEEERNS2_IS4_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE8__appendEm",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 1058,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 1059,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 889,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 572,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIdNS_9allocatorIdEEE18__assign_with_sizeB8ne210101IPdS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerD2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerD2Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerD2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerD2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18PortfolioOptimizerD2Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "main",
+      "line": 24,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        covariance_matrix.resize(NUM_ASSETS, std::vector<double>(NUM_ASSETS));\n    }\n    \n    void calculate_statistics() {\n        // Calculate expected returns\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            double sum = 0.0;\n            for (int t = 0; t < HISTORICAL_DAYS; t++) {\n                sum += returns_data[i][t];\n            }\n            expected_returns[i] = sum / HISTORICAL_DAYS;\n        }\n        \n        // Calculate covariance matrix\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                double cov = 0.0;\n                for (int t = 0; t < HISTORICAL_DAYS; t++) {\n                    cov += (returns_data[i][t] - expected_returns[i]) *\n                           (returns_data[j][t] - expected_returns[j]);\n                }\n                covariance_matrix[i][j] = cov / (HISTORICAL_DAYS - 1);\n            }\n        }\n    }\n    \n    double calculate_portfolio_return(const std::vector<double>& weights) {\n        double portfolio_return = 0.0;\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            portfolio_return += weights[i] * expected_returns[i];\n        }\n        return portfolio_return;\n    }\n    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "main",
+      "line": 26,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    void calculate_statistics() {\n        // Calculate expected returns\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            double sum = 0.0;\n            for (int t = 0; t < HISTORICAL_DAYS; t++) {\n                sum += returns_data[i][t];\n            }\n            expected_returns[i] = sum / HISTORICAL_DAYS;\n        }\n        \n        // Calculate covariance matrix\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                double cov = 0.0;\n                for (int t = 0; t < HISTORICAL_DAYS; t++) {\n                    cov += (returns_data[i][t] - expected_returns[i]) *\n                           (returns_data[j][t] - expected_returns[j]);\n                }\n                covariance_matrix[i][j] = cov / (HISTORICAL_DAYS - 1);\n            }\n        }\n    }\n    \n    double calculate_portfolio_return(const std::vector<double>& weights) {\n        double portfolio_return = 0.0;\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            portfolio_return += weights[i] * expected_returns[i];\n        }\n        return portfolio_return;\n    }\n    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {\n        double variance = 0.0;\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "main",
+      "line": 34,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            expected_returns[i] = sum / HISTORICAL_DAYS;\n        }\n        \n        // Calculate covariance matrix\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                double cov = 0.0;\n                for (int t = 0; t < HISTORICAL_DAYS; t++) {\n                    cov += (returns_data[i][t] - expected_returns[i]) *\n                           (returns_data[j][t] - expected_returns[j]);\n                }\n                covariance_matrix[i][j] = cov / (HISTORICAL_DAYS - 1);\n            }\n        }\n    }\n    \n    double calculate_portfolio_return(const std::vector<double>& weights) {\n        double portfolio_return = 0.0;\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            portfolio_return += weights[i] * expected_returns[i];\n        }\n        return portfolio_return;\n    }\n    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {\n        double variance = 0.0;\n        \n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                variance += weights[i] * weights[j] * covariance_matrix[i][j];\n            }\n        }\n        \n        return sqrt(variance);\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer21optimize_sharpe_ratioEdi",
+      "line": 74,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (int iter = 0; iter < iterations; iter++) {\n            std::vector<double> weights(NUM_ASSETS);\n            \n            // Generate random weights\n            double sum = 0.0;\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] = (rand() % 10000) / 10000.0;\n                sum += weights[i];\n            }\n            \n            // Normalize weights\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] /= sum;\n            }\n            \n            // Calculate Sharpe ratio\n            double portfolio_return = calculate_portfolio_return(weights);\n            double portfolio_risk = calculate_portfolio_risk(weights);\n            double sharpe_ratio = (portfolio_return - risk_free_rate) / portfolio_risk;\n            \n            if (sharpe_ratio > best_sharpe) {\n                best_sharpe = sharpe_ratio;\n                best_weights = weights;\n            }\n        }\n        \n        return best_weights;\n    }\n    \n    void calculate_efficient_frontier(int num_points,\n                                     std::vector<double>& returns,\n                                     std::vector<double>& risks) {\n        returns.resize(num_points);\n        risks.resize(num_points);\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer21optimize_sharpe_ratioEdi",
+      "line": 80,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                weights[i] = (rand() % 10000) / 10000.0;\n                sum += weights[i];\n            }\n            \n            // Normalize weights\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] /= sum;\n            }\n            \n            // Calculate Sharpe ratio\n            double portfolio_return = calculate_portfolio_return(weights);\n            double portfolio_risk = calculate_portfolio_risk(weights);\n            double sharpe_ratio = (portfolio_return - risk_free_rate) / portfolio_risk;\n            \n            if (sharpe_ratio > best_sharpe) {\n                best_sharpe = sharpe_ratio;\n                best_weights = weights;\n            }\n        }\n        \n        return best_weights;\n    }\n    \n    void calculate_efficient_frontier(int num_points,\n                                     std::vector<double>& returns,\n                                     std::vector<double>& risks) {\n        returns.resize(num_points);\n        risks.resize(num_points);\n        \n        double min_return = *std::min_element(expected_returns.begin(), expected_returns.end());\n        double max_return = *std::max_element(expected_returns.begin(), expected_returns.end());\n        \n        for (int p = 0; p < num_points; p++) {\n            double target_return = min_return + \n                (max_return - min_return) * p / (num_points - 1);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 118,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            double min_risk = 1e9;\n            \n            for (int iter = 0; iter < 10000; iter++) {\n                // Generate weights that sum to 1\n                double sum = 0.0;\n                for (int i = 0; i < NUM_ASSETS; i++) {\n                    weights[i] = (rand() % 10000) / 10000.0;\n                    sum += weights[i];\n                }\n                for (int i = 0; i < NUM_ASSETS; i++) {\n                    weights[i] /= sum;\n                }\n                \n                double port_return = calculate_portfolio_return(weights);\n                \n                // Check if close to target return\n                if (fabs(port_return - target_return) < 0.001) {\n                    double risk = calculate_portfolio_risk(weights);\n                    if (risk < min_risk) {\n                        min_risk = risk;\n                        returns[p] = port_return;\n                        risks[p] = risk;\n                    }\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    PortfolioOptimizer optimizer;\n    \n    optimizer.calculate_statistics();\n    \n    std::vector<double> optimal_weights = optimizer.optimize_sharpe_ratio(0.02, 100000);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 122,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                double sum = 0.0;\n                for (int i = 0; i < NUM_ASSETS; i++) {\n                    weights[i] = (rand() % 10000) / 10000.0;\n                    sum += weights[i];\n                }\n                for (int i = 0; i < NUM_ASSETS; i++) {\n                    weights[i] /= sum;\n                }\n                \n                double port_return = calculate_portfolio_return(weights);\n                \n                // Check if close to target return\n                if (fabs(port_return - target_return) < 0.001) {\n                    double risk = calculate_portfolio_risk(weights);\n                    if (risk < min_risk) {\n                        min_risk = risk;\n                        returns[p] = port_return;\n                        risks[p] = risk;\n                    }\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    PortfolioOptimizer optimizer;\n    \n    optimizer.calculate_statistics();\n    \n    std::vector<double> optimal_weights = optimizer.optimize_sharpe_ratio(0.02, 100000);\n    \n    std::vector<double> frontier_returns, frontier_risks;\n    optimizer.calculate_efficient_frontier(50, frontier_returns, frontier_risks);\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 56,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "    }\n    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {\n        double variance = 0.0;\n        \n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                variance += weights[i] * weights[j] * covariance_matrix[i][j];\n            }\n        }\n        \n        return sqrt(variance);\n    }\n    \n    std::vector<double> optimize_sharpe_ratio(double risk_free_rate, int iterations) {\n        std::vector<double> best_weights(NUM_ASSETS, 1.0 / NUM_ASSETS);\n        double best_sharpe = -1e9;\n        \n        for (int iter = 0; iter < iterations; iter++) {\n            std::vector<double> weights(NUM_ASSETS);\n            \n            // Generate random weights\n            double sum = 0.0;\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] = (rand() % 10000) / 10000.0;\n                sum += weights[i];\n            }\n            \n            // Normalize weights\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] /= sum;\n            }\n            \n            // Calculate Sharpe ratio\n            double portfolio_return = calculate_portfolio_return(weights);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer21optimize_sharpe_ratioEdi",
+      "line": 56,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    }\n    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {\n        double variance = 0.0;\n        \n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                variance += weights[i] * weights[j] * covariance_matrix[i][j];\n            }\n        }\n        \n        return sqrt(variance);\n    }\n    \n    std::vector<double> optimize_sharpe_ratio(double risk_free_rate, int iterations) {\n        std::vector<double> best_weights(NUM_ASSETS, 1.0 / NUM_ASSETS);\n        double best_sharpe = -1e9;\n        \n        for (int iter = 0; iter < iterations; iter++) {\n            std::vector<double> weights(NUM_ASSETS);\n            \n            // Generate random weights\n            double sum = 0.0;\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] = (rand() % 10000) / 10000.0;\n                sum += weights[i];\n            }\n            \n            // Normalize weights\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] /= sum;\n            }\n            \n            // Calculate Sharpe ratio\n            double portfolio_return = calculate_portfolio_return(weights);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 47,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "        }\n    }\n    \n    double calculate_portfolio_return(const std::vector<double>& weights) {\n        double portfolio_return = 0.0;\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            portfolio_return += weights[i] * expected_returns[i];\n        }\n        return portfolio_return;\n    }\n    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {\n        double variance = 0.0;\n        \n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                variance += weights[i] * weights[j] * covariance_matrix[i][j];\n            }\n        }\n        \n        return sqrt(variance);\n    }\n    \n    std::vector<double> optimize_sharpe_ratio(double risk_free_rate, int iterations) {\n        std::vector<double> best_weights(NUM_ASSETS, 1.0 / NUM_ASSETS);\n        double best_sharpe = -1e9;\n        \n        for (int iter = 0; iter < iterations; iter++) {\n            std::vector<double> weights(NUM_ASSETS);\n            \n            // Generate random weights\n            double sum = 0.0;\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] = (rand() % 10000) / 10000.0;\n                sum += weights[i];",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.7000000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 57,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {\n        double variance = 0.0;\n        \n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                variance += weights[i] * weights[j] * covariance_matrix[i][j];\n            }\n        }\n        \n        return sqrt(variance);\n    }\n    \n    std::vector<double> optimize_sharpe_ratio(double risk_free_rate, int iterations) {\n        std::vector<double> best_weights(NUM_ASSETS, 1.0 / NUM_ASSETS);\n        double best_sharpe = -1e9;\n        \n        for (int iter = 0; iter < iterations; iter++) {\n            std::vector<double> weights(NUM_ASSETS);\n            \n            // Generate random weights\n            double sum = 0.0;\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] = (rand() % 10000) / 10000.0;\n                sum += weights[i];\n            }\n            \n            // Normalize weights\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] /= sum;\n            }\n            \n            // Calculate Sharpe ratio\n            double portfolio_return = calculate_portfolio_return(weights);\n            double portfolio_risk = calculate_portfolio_risk(weights);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.7000000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer28calculate_efficient_frontierEiRNSt3__16vectorIdNS0_9allocatorIdEEEES5_",
+      "line": 115,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "            \n            // Find minimum variance portfolio for target return\n            std::vector<double> weights(NUM_ASSETS, 1.0 / NUM_ASSETS);\n            double min_risk = 1e9;\n            \n            for (int iter = 0; iter < 10000; iter++) {\n                // Generate weights that sum to 1\n                double sum = 0.0;\n                for (int i = 0; i < NUM_ASSETS; i++) {\n                    weights[i] = (rand() % 10000) / 10000.0;\n                    sum += weights[i];\n                }\n                for (int i = 0; i < NUM_ASSETS; i++) {\n                    weights[i] /= sum;\n                }\n                \n                double port_return = calculate_portfolio_return(weights);\n                \n                // Check if close to target return\n                if (fabs(port_return - target_return) < 0.001) {\n                    double risk = calculate_portfolio_risk(weights);\n                    if (risk < min_risk) {\n                        min_risk = risk;\n                        returns[p] = port_return;\n                        risks[p] = risk;\n                    }\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    PortfolioOptimizer optimizer;\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer21optimize_sharpe_ratioEdi",
+      "line": 47,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        }\n    }\n    \n    double calculate_portfolio_return(const std::vector<double>& weights) {\n        double portfolio_return = 0.0;\n        for (int i = 0; i < NUM_ASSETS; i++) {\n            portfolio_return += weights[i] * expected_returns[i];\n        }\n        return portfolio_return;\n    }\n    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {\n        double variance = 0.0;\n        \n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                variance += weights[i] * weights[j] * covariance_matrix[i][j];\n            }\n        }\n        \n        return sqrt(variance);\n    }\n    \n    std::vector<double> optimize_sharpe_ratio(double risk_free_rate, int iterations) {\n        std::vector<double> best_weights(NUM_ASSETS, 1.0 / NUM_ASSETS);\n        double best_sharpe = -1e9;\n        \n        for (int iter = 0; iter < iterations; iter++) {\n            std::vector<double> weights(NUM_ASSETS);\n            \n            // Generate random weights\n            double sum = 0.0;\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] = (rand() % 10000) / 10000.0;\n                sum += weights[i];",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/portfolio_optimization.cpp",
+      "function": "_ZN18PortfolioOptimizer21optimize_sharpe_ratioEdi",
+      "line": 57,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    \n    double calculate_portfolio_risk(const std::vector<double>& weights) {\n        double variance = 0.0;\n        \n        for (int i = 0; i < NUM_ASSETS; i++) {\n            for (int j = 0; j < NUM_ASSETS; j++) {\n                variance += weights[i] * weights[j] * covariance_matrix[i][j];\n            }\n        }\n        \n        return sqrt(variance);\n    }\n    \n    std::vector<double> optimize_sharpe_ratio(double risk_free_rate, int iterations) {\n        std::vector<double> best_weights(NUM_ASSETS, 1.0 / NUM_ASSETS);\n        double best_sharpe = -1e9;\n        \n        for (int iter = 0; iter < iterations; iter++) {\n            std::vector<double> weights(NUM_ASSETS);\n            \n            // Generate random weights\n            double sum = 0.0;\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] = (rand() % 10000) / 10000.0;\n                sum += weights[i];\n            }\n            \n            // Normalize weights\n            for (int i = 0; i < NUM_ASSETS; i++) {\n                weights[i] /= sum;\n            }\n            \n            // Calculate Sharpe ratio\n            double portfolio_return = calculate_portfolio_return(weights);\n            double portfolio_risk = calculate_portfolio_risk(weights);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    }
+  ]
+}

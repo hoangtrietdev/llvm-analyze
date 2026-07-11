@@ -1,0 +1,1112 @@
+{
+  "file": "sample/src/real-world/networking/traffic_shaping.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/networking/traffic_shaping.cpp",
+    "llvm_initial": 119,
+    "llvm_sys_noise": 110,
+    "llvm_project": 9,
+    "after_filter": 6,
+    "ai_batches": 1,
+    "ai_results": 6,
+    "omp_verified": 0,
+    "total_ms": 738.6,
+    "llvm_ms": 511.1
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1369,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/traffic_shaping.cpp",
+      "function": "main",
+      "line": 72,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "        return false;\n    }\n    \n    // Enqueue packet with tail drop\n    bool enqueuePacket(const Packet& pkt, int queueId) {\n        if (queues[queueId].packets.size() >= static_cast<size_t>(queues[queueId].maxSize)) {\n            queues[queueId].droppedPackets++;\n            return false;\n        }\n        \n        queues[queueId].packets.push(pkt);\n        return true;\n    }\n    \n    // Random Early Detection (RED)\n    bool shouldDropRED(int queueId) {\n        int queueSize = queues[queueId].packets.size();\n        int maxSize = queues[queueId].maxSize;\n        \n        int minThreshold = maxSize / 3;\n        int maxThreshold = 2 * maxSize / 3;\n        \n        if (queueSize < minThreshold) {\n            return false;\n        } else if (queueSize >= maxThreshold) {\n            return true;\n        } else {\n            // Linear probability between thresholds\n            double dropProb = static_cast<double>(queueSize - minThreshold) / \n                            (maxThreshold - minThreshold);\n            \n            return (static_cast<double>(rand()) / RAND_MAX) < dropProb;\n        }\n    }\n    "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "main",
+      "line": 1580,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/traffic_shaping.cpp",
+      "function": "main",
+      "line": 293,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/traffic_shaping.cpp",
+      "function": "main",
+      "line": 145,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.2
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/traffic_shaping.cpp",
+      "function": "main",
+      "line": 148,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.88,
+      "context": "        int attempts = 0;\n        \n        while (attempts < numQueues) {\n            int q = drrState.currentQueue;\n            \n            if (!queues[q].packets.empty()) {\n                drrState.deficitCounters[q] += drrState.quantum;\n                \n                const auto& pkt = queues[q].packets.front();\n                \n                if (pkt.size <= drrState.deficitCounters[q]) {\n                    drrState.deficitCounters[q] -= pkt.size;\n                    queues[q].packets.pop();\n                    \n                    drrState.currentQueue = (q + 1) % numQueues;\n                    return pkt;\n                }\n            } else {\n                drrState.deficitCounters[q] = 0;\n            }\n            \n            drrState.currentQueue = (q + 1) % numQueues;\n            attempts++;\n        }\n        \n        return Packet{-1, 0, 0, 0, 0};\n    }\n    \n    // Hierarchical Token Bucket (HTB)\n    struct HTBClass {\n        int parentId;\n        double rate;\n        double ceil;  // Maximum rate\n        TokenBucket bucket;\n        std::vector<int> children;"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/traffic_shaping.cpp",
+      "function": "main",
+      "line": 153,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            if (!queues[q].packets.empty()) {\n                drrState.deficitCounters[q] += drrState.quantum;\n                \n                const auto& pkt = queues[q].packets.front();\n                \n                if (pkt.size <= drrState.deficitCounters[q]) {\n                    drrState.deficitCounters[q] -= pkt.size;\n                    queues[q].packets.pop();\n                    \n                    drrState.currentQueue = (q + 1) % numQueues;\n                    return pkt;\n                }\n            } else {\n                drrState.deficitCounters[q] = 0;\n            }\n            \n            drrState.currentQueue = (q + 1) % numQueues;\n            attempts++;\n        }\n        \n        return Packet{-1, 0, 0, 0, 0};\n    }\n    \n    // Hierarchical Token Bucket (HTB)\n    struct HTBClass {\n        int parentId;\n        double rate;\n        double ceil;  // Maximum rate\n        TokenBucket bucket;\n        std::vector<int> children;\n    };\n    \n    std::vector<HTBClass> htbClasses;\n    \n    bool borrowTokens(int classId, int packetSize, double currentTime) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "main",
+      "line": 1169,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "main",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "// Network Traffic Shaping and QoS\n#include <vector>\n#include <queue>\n#include <cmath>\n#include <algorithm>\n\nclass TrafficShaper {\npublic:\n    struct Packet {\n        int flowId;\n        int size;\n        int priority;\n        double timestamp;\n        uint8_t dscp;  // Differentiated Services Code Point\n    };\n    \n    struct TokenBucket {\n        double rate;           // Tokens per second\n        double bucketSize;     // Maximum burst\n        double tokens;         // Current tokens\n        double lastUpdate;\n    };\n    \n    struct Queue {\n        std::queue<Packet> packets;\n        int maxSize;\n        double weight;\n        int droppedPackets;\n    };"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/traffic_shaping.cpp",
+      "function": "main",
+      "line": 305,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperC2Ei",
+      "line": 1360,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperC2Ei",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperC2Ei",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperC2Ei",
+      "line": 762,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperC2Ei",
+      "line": 1360,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperC2Ei",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/traffic_shaping.cpp",
+      "function": "_ZN13TrafficShaperC2Ei",
+      "line": 39,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    TrafficShaper(int nQueues) : numQueues(nQueues) {\n        queues.resize(nQueues);\n        buckets.resize(nQueues);\n        \n        for (int i = 0; i < nQueues; i++) {\n            queues[i].maxSize = 1000;\n            queues[i].droppedPackets = 0;\n            queues[i].weight = 1.0 / nQueues;\n            \n            buckets[i].rate = 1000000.0;  // 1 Mbps\n            buckets[i].bucketSize = 10000.0;\n            buckets[i].tokens = buckets[i].bucketSize;\n            buckets[i].lastUpdate = 0;\n        }\n    }\n    \n    // Token bucket algorithm\n    bool checkTokenBucket(int queueId, int packetSize, double currentTime) {\n        auto& bucket = buckets[queueId];\n        \n        // Add tokens based on elapsed time\n        double elapsed = currentTime - bucket.lastUpdate;\n        bucket.tokens += elapsed * bucket.rate;\n        bucket.tokens = std::min(bucket.tokens, bucket.bucketSize);\n        bucket.lastUpdate = currentTime;\n        \n        // Check if enough tokens\n        if (bucket.tokens >= packetSize) {\n            bucket.tokens -= packetSize;\n            return true;\n        }\n        \n        return false;\n    }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperC2Ei",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperC2Ei",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/traffic_shaping.cpp",
+      "function": "_ZN13TrafficShaperC2Ei",
+      "line": 39,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    TrafficShaper(int nQueues) : numQueues(nQueues) {\n        queues.resize(nQueues);\n        buckets.resize(nQueues);\n        \n        for (int i = 0; i < nQueues; i++) {\n            queues[i].maxSize = 1000;\n            queues[i].droppedPackets = 0;\n            queues[i].weight = 1.0 / nQueues;\n            \n            buckets[i].rate = 1000000.0;  // 1 Mbps\n            buckets[i].bucketSize = 10000.0;\n            buckets[i].tokens = buckets[i].bucketSize;\n            buckets[i].lastUpdate = 0;\n        }\n    }\n    \n    // Token bucket algorithm\n    bool checkTokenBucket(int queueId, int packetSize, double currentTime) {\n        auto& bucket = buckets[queueId];\n        \n        // Add tokens based on elapsed time\n        double elapsed = currentTime - bucket.lastUpdate;\n        bucket.tokens += elapsed * bucket.rate;\n        bucket.tokens = std::min(bucket.tokens, bucket.bucketSize);\n        bucket.lastUpdate = currentTime;\n        \n        // Check if enough tokens\n        if (bucket.tokens >= packetSize) {\n            bucket.tokens -= packetSize;\n            return true;\n        }\n        \n        return false;\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper11LeakyBucketENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper11LeakyBucketENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper11LeakyBucketENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper8CBQClassENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper8CBQClassENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper8CBQClassENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper8HTBClassENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper8HTBClassENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper8HTBClassENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper8HTBClassENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper5QueueENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper5QueueENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper5QueueENS_9allocatorIS2_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper5QueueENS_9allocatorIS2_EEE8__appendEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper5QueueENS_9allocatorIS2_EEE8__appendEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper5QueueENS_9allocatorIS2_EEE8__appendEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper5QueueENS_9allocatorIS2_EEE8__appendEm",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper5QueueENS_9allocatorIS2_EEE8__appendEm",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper5QueueENS_9allocatorIS2_EEE8__appendEm",
+      "line": 625,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper5QueueENS_9allocatorIS2_EEE8__appendEm",
+      "line": 625,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper5QueueENS_9allocatorIS2_EEE8__appendEm",
+      "line": 49,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper5QueueENS_9allocatorIS2_EEE8__appendEm",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN13TrafficShaper6PacketENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 2535,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN13TrafficShaper6PacketENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 2535,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN13TrafficShaper6PacketENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 623,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN13TrafficShaper6PacketENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 623,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeIN13TrafficShaper6PacketENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeIN13TrafficShaper6PacketENS_9allocatorIS2_EEED2B8ne210101Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper11TokenBucketENS_9allocatorIS2_EEE8__appendEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper11TokenBucketENS_9allocatorIS2_EEE8__appendEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper11TokenBucketENS_9allocatorIS2_EEE8__appendEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper11TokenBucketENS_9allocatorIS2_EEE8__appendEm",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper11TokenBucketENS_9allocatorIS2_EEE8__appendEm",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN13TrafficShaper11TokenBucketENS_9allocatorIS2_EEE8__appendEm",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE8__appendEmRKi",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE8__appendEmRKi",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE8__appendEmRKi",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE8__appendEmRKi",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE8__appendEmRKi",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE8__appendEmRKi",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE8__appendEmRKi",
+      "line": 257,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE8__appendEmRKi",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN13TrafficShaper6PacketENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 2174,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN13TrafficShaper6PacketENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 2181,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN13TrafficShaper6PacketENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 2184,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__15dequeIN13TrafficShaper6PacketENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeIN13TrafficShaper6PacketENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 457,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeIN13TrafficShaper6PacketENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 458,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__15dequeIN13TrafficShaper6PacketENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/deque",
+      "function": "_ZNSt3__15dequeIN13TrafficShaper6PacketENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 2205,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeIN13TrafficShaper6PacketENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__15dequeIN13TrafficShaper6PacketENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/unique_ptr.h",
+      "function": "_ZNSt3__15dequeIN13TrafficShaper6PacketENS_9allocatorIS2_EEE19__add_back_capacityEv",
+      "line": 289,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 457,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 458,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE12emplace_backIJRS3_EEEvDpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 457,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 458,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE12emplace_backIJS3_EEEvDpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 434,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 435,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketENS_9allocatorIS3_EEE13emplace_frontIJS3_EEEvDpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 434,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 435,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 292,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketERNS_9allocatorIS3_EEE13emplace_frontIJRS3_EEEvDpOT_",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketERNS_9allocatorIS3_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferIPN13TrafficShaper6PacketERNS_9allocatorIS3_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperD2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperD2Ev",
+      "line": 762,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperD2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperD2Ev",
+      "line": 762,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperD2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperD2Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperD2Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperD2Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperD2Ev",
+      "line": 762,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN13TrafficShaperD2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/traffic_shaping.cpp",
+      "function": "main",
+      "line": 153,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            if (!queues[q].packets.empty()) {\n                drrState.deficitCounters[q] += drrState.quantum;\n                \n                const auto& pkt = queues[q].packets.front();\n                \n                if (pkt.size <= drrState.deficitCounters[q]) {\n                    drrState.deficitCounters[q] -= pkt.size;\n                    queues[q].packets.pop();\n                    \n                    drrState.currentQueue = (q + 1) % numQueues;\n                    return pkt;\n                }\n            } else {\n                drrState.deficitCounters[q] = 0;\n            }\n            \n            drrState.currentQueue = (q + 1) % numQueues;\n            attempts++;\n        }\n        \n        return Packet{-1, 0, 0, 0, 0};\n    }\n    \n    // Hierarchical Token Bucket (HTB)\n    struct HTBClass {\n        int parentId;\n        double rate;\n        double ceil;  // Maximum rate\n        TokenBucket bucket;\n        std::vector<int> children;\n    };\n    \n    std::vector<HTBClass> htbClasses;\n    \n    bool borrowTokens(int classId, int packetSize, double currentTime) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/traffic_shaping.cpp",
+      "function": "_ZN13TrafficShaperC2Ei",
+      "line": 39,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    TrafficShaper(int nQueues) : numQueues(nQueues) {\n        queues.resize(nQueues);\n        buckets.resize(nQueues);\n        \n        for (int i = 0; i < nQueues; i++) {\n            queues[i].maxSize = 1000;\n            queues[i].droppedPackets = 0;\n            queues[i].weight = 1.0 / nQueues;\n            \n            buckets[i].rate = 1000000.0;  // 1 Mbps\n            buckets[i].bucketSize = 10000.0;\n            buckets[i].tokens = buckets[i].bucketSize;\n            buckets[i].lastUpdate = 0;\n        }\n    }\n    \n    // Token bucket algorithm\n    bool checkTokenBucket(int queueId, int packetSize, double currentTime) {\n        auto& bucket = buckets[queueId];\n        \n        // Add tokens based on elapsed time\n        double elapsed = currentTime - bucket.lastUpdate;\n        bucket.tokens += elapsed * bucket.rate;\n        bucket.tokens = std::min(bucket.tokens, bucket.bucketSize);\n        bucket.lastUpdate = currentTime;\n        \n        // Check if enough tokens\n        if (bucket.tokens >= packetSize) {\n            bucket.tokens -= packetSize;\n            return true;\n        }\n        \n        return false;\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/networking/traffic_shaping.cpp",
+      "function": "main",
+      "line": 148,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.88,
+      "context": "        int attempts = 0;\n        \n        while (attempts < numQueues) {\n            int q = drrState.currentQueue;\n            \n            if (!queues[q].packets.empty()) {\n                drrState.deficitCounters[q] += drrState.quantum;\n                \n                const auto& pkt = queues[q].packets.front();\n                \n                if (pkt.size <= drrState.deficitCounters[q]) {\n                    drrState.deficitCounters[q] -= pkt.size;\n                    queues[q].packets.pop();\n                    \n                    drrState.currentQueue = (q + 1) % numQueues;\n                    return pkt;\n                }\n            } else {\n                drrState.deficitCounters[q] = 0;\n            }\n            \n            drrState.currentQueue = (q + 1) % numQueues;\n            attempts++;\n        }\n        \n        return Packet{-1, 0, 0, 0, 0};\n    }\n    \n    // Hierarchical Token Bucket (HTB)\n    struct HTBClass {\n        int parentId;\n        double rate;\n        double ceil;  // Maximum rate\n        TokenBucket bucket;\n        std::vector<int> children;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.88
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/networking/traffic_shaping.cpp",
+      "function": "main",
+      "line": 72,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "        return false;\n    }\n    \n    // Enqueue packet with tail drop\n    bool enqueuePacket(const Packet& pkt, int queueId) {\n        if (queues[queueId].packets.size() >= static_cast<size_t>(queues[queueId].maxSize)) {\n            queues[queueId].droppedPackets++;\n            return false;\n        }\n        \n        queues[queueId].packets.push(pkt);\n        return true;\n    }\n    \n    // Random Early Detection (RED)\n    bool shouldDropRED(int queueId) {\n        int queueSize = queues[queueId].packets.size();\n        int maxSize = queues[queueId].maxSize;\n        \n        int minThreshold = maxSize / 3;\n        int maxThreshold = 2 * maxSize / 3;\n        \n        if (queueSize < minThreshold) {\n            return false;\n        } else if (queueSize >= maxThreshold) {\n            return true;\n        } else {\n            // Linear probability between thresholds\n            double dropProb = static_cast<double>(queueSize - minThreshold) / \n                            (maxThreshold - minThreshold);\n            \n            return (static_cast<double>(rand()) / RAND_MAX) < dropProb;\n        }\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.78
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/networking/traffic_shaping.cpp",
+      "function": "_ZN13TrafficShaperC2Ei",
+      "line": 39,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    TrafficShaper(int nQueues) : numQueues(nQueues) {\n        queues.resize(nQueues);\n        buckets.resize(nQueues);\n        \n        for (int i = 0; i < nQueues; i++) {\n            queues[i].maxSize = 1000;\n            queues[i].droppedPackets = 0;\n            queues[i].weight = 1.0 / nQueues;\n            \n            buckets[i].rate = 1000000.0;  // 1 Mbps\n            buckets[i].bucketSize = 10000.0;\n            buckets[i].tokens = buckets[i].bucketSize;\n            buckets[i].lastUpdate = 0;\n        }\n    }\n    \n    // Token bucket algorithm\n    bool checkTokenBucket(int queueId, int packetSize, double currentTime) {\n        auto& bucket = buckets[queueId];\n        \n        // Add tokens based on elapsed time\n        double elapsed = currentTime - bucket.lastUpdate;\n        bucket.tokens += elapsed * bucket.rate;\n        bucket.tokens = std::min(bucket.tokens, bucket.bucketSize);\n        bucket.lastUpdate = currentTime;\n        \n        // Check if enough tokens\n        if (bucket.tokens >= packetSize) {\n            bucket.tokens -= packetSize;\n            return true;\n        }\n        \n        return false;\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "unknown",
+      "function": "main",
+      "line": 0,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "// Network Traffic Shaping and QoS\n#include <vector>\n#include <queue>\n#include <cmath>\n#include <algorithm>\n\nclass TrafficShaper {\npublic:\n    struct Packet {\n        int flowId;\n        int size;\n        int priority;\n        double timestamp;\n        uint8_t dscp;  // Differentiated Services Code Point\n    };\n    \n    struct TokenBucket {\n        double rate;           // Tokens per second\n        double bucketSize;     // Maximum burst\n        double tokens;         // Current tokens\n        double lastUpdate;\n    };\n    \n    struct Queue {\n        std::queue<Packet> packets;\n        int maxSize;\n        double weight;\n        int droppedPackets;\n    };",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.6
+    }
+  ]
+}

@@ -1,0 +1,353 @@
+{
+  "file": "sample/src/real-world/trading/mean_reversion.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/trading/mean_reversion.cpp",
+    "llvm_initial": 13,
+    "llvm_sys_noise": 3,
+    "llvm_project": 10,
+    "after_filter": 10,
+    "ai_batches": 1,
+    "ai_results": 10,
+    "omp_verified": 0,
+    "total_ms": 628.7,
+    "llvm_ms": 378.8
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid estimateOUParameters(double* prices, int n, double dt, \n                         double& theta, double& mu, double& sigma) {\n    // Estimate mean reversion parameters\n    std::vector<double> log_prices(n);\n    for (int i = 0; i < n; i++) {\n        log_prices[i] = log(prices[i]);\n    }\n    \n    mu = 0.0;\n    for (int i = 0; i < n; i++) {\n        mu += log_prices[i];\n    }\n    mu /= n;\n    \n    double sum_prod = 0.0, sum_sq = 0.0;\n    for (int i = 1; i < n; i++) {\n        double deviation_prev = log_prices[i-1] - mu;\n        double deviation_curr = log_prices[i] - mu;\n        sum_prod += deviation_curr * deviation_prev;\n        sum_sq += deviation_prev * deviation_prev;\n    }\n    \n    theta = -log(sum_prod / sum_sq) / dt;\n    \n    // Estimate volatility\n    sigma = 0.0;\n    for (int i = 1; i < n; i++) {\n        double expected = log_prices[i-1] + (mu - log_prices[i-1]) * (1 - exp(-theta * dt));\n        sigma += (log_prices[i] - expected) * (log_prices[i] - expected);\n    }\n    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    for (int i = 0; i < n; i++) {\n        log_prices[i] = log(prices[i]);\n    }\n    \n    mu = 0.0;\n    for (int i = 0; i < n; i++) {\n        mu += log_prices[i];\n    }\n    mu /= n;\n    \n    double sum_prod = 0.0, sum_sq = 0.0;\n    for (int i = 1; i < n; i++) {\n        double deviation_prev = log_prices[i-1] - mu;\n        double deviation_curr = log_prices[i] - mu;\n        sum_prod += deviation_curr * deviation_prev;\n        sum_sq += deviation_prev * deviation_prev;\n    }\n    \n    theta = -log(sum_prod / sum_sq) / dt;\n    \n    // Estimate volatility\n    sigma = 0.0;\n    for (int i = 1; i < n; i++) {\n        double expected = log_prices[i-1] + (mu - log_prices[i-1]) * (1 - exp(-theta * dt));\n        sigma += (log_prices[i] - expected) * (log_prices[i] - expected);\n    }\n    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, \n                              double* positions, int n, double risk_aversion) {\n    for (int i = 0; i < n; i++) {\n        double log_price = log(prices[i]);\n        double expected_return = theta * (mu - log_price);\n        "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 9,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "\nvoid estimateOUParameters(double* prices, int n, double dt, \n                         double& theta, double& mu, double& sigma) {\n    // Estimate mean reversion parameters\n    std::vector<double> log_prices(n);\n    for (int i = 0; i < n; i++) {\n        log_prices[i] = log(prices[i]);\n    }\n    \n    mu = 0.0;\n    for (int i = 0; i < n; i++) {\n        mu += log_prices[i];\n    }\n    mu /= n;\n    \n    double sum_prod = 0.0, sum_sq = 0.0;\n    for (int i = 1; i < n; i++) {\n        double deviation_prev = log_prices[i-1] - mu;\n        double deviation_curr = log_prices[i] - mu;\n        sum_prod += deviation_curr * deviation_prev;\n        sum_sq += deviation_prev * deviation_prev;\n    }\n    \n    theta = -log(sum_prod / sum_sq) / dt;\n    \n    // Estimate volatility\n    sigma = 0.0;\n    for (int i = 1; i < n; i++) {\n        double expected = log_prices[i-1] + (mu - log_prices[i-1]) * (1 - exp(-theta * dt));\n        sigma += (log_prices[i] - expected) * (log_prices[i] - expected);\n    }\n    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 20,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        mu += log_prices[i];\n    }\n    mu /= n;\n    \n    double sum_prod = 0.0, sum_sq = 0.0;\n    for (int i = 1; i < n; i++) {\n        double deviation_prev = log_prices[i-1] - mu;\n        double deviation_curr = log_prices[i] - mu;\n        sum_prod += deviation_curr * deviation_prev;\n        sum_sq += deviation_prev * deviation_prev;\n    }\n    \n    theta = -log(sum_prod / sum_sq) / dt;\n    \n    // Estimate volatility\n    sigma = 0.0;\n    for (int i = 1; i < n; i++) {\n        double expected = log_prices[i-1] + (mu - log_prices[i-1]) * (1 - exp(-theta * dt));\n        sigma += (log_prices[i] - expected) * (log_prices[i] - expected);\n    }\n    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, \n                              double* positions, int n, double risk_aversion) {\n    for (int i = 0; i < n; i++) {\n        double log_price = log(prices[i]);\n        double expected_return = theta * (mu - log_price);\n        \n        // Optimal position based on Kelly criterion with risk aversion\n        positions[i] = expected_return / (risk_aversion * 0.01); // Simplified\n    }\n}\n\nint main() {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 14,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    for (int i = 0; i < n; i++) {\n        log_prices[i] = log(prices[i]);\n    }\n    \n    mu = 0.0;\n    for (int i = 0; i < n; i++) {\n        mu += log_prices[i];\n    }\n    mu /= n;\n    \n    double sum_prod = 0.0, sum_sq = 0.0;\n    for (int i = 1; i < n; i++) {\n        double deviation_prev = log_prices[i-1] - mu;\n        double deviation_curr = log_prices[i] - mu;\n        sum_prod += deviation_curr * deviation_prev;\n        sum_sq += deviation_prev * deviation_prev;\n    }\n    \n    theta = -log(sum_prod / sum_sq) / dt;\n    \n    // Estimate volatility\n    sigma = 0.0;\n    for (int i = 1; i < n; i++) {\n        double expected = log_prices[i-1] + (mu - log_prices[i-1]) * (1 - exp(-theta * dt));\n        sigma += (log_prices[i] - expected) * (log_prices[i] - expected);\n    }\n    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, \n                              double* positions, int n, double risk_aversion) {\n    for (int i = 0; i < n; i++) {\n        double log_price = log(prices[i]);\n        double expected_return = theta * (mu - log_price);\n        "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 31,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    \n    theta = -log(sum_prod / sum_sq) / dt;\n    \n    // Estimate volatility\n    sigma = 0.0;\n    for (int i = 1; i < n; i++) {\n        double expected = log_prices[i-1] + (mu - log_prices[i-1]) * (1 - exp(-theta * dt));\n        sigma += (log_prices[i] - expected) * (log_prices[i] - expected);\n    }\n    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, \n                              double* positions, int n, double risk_aversion) {\n    for (int i = 0; i < n; i++) {\n        double log_price = log(prices[i]);\n        double expected_return = theta * (mu - log_price);\n        \n        // Optimal position based on Kelly criterion with risk aversion\n        positions[i] = expected_return / (risk_aversion * 0.01); // Simplified\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> prices(n, 100.0);\n    std::vector<double> positions(n);\n    \n    double theta, mu, sigma;\n    estimateOUParameters(prices.data(), n, 1.0/252.0, theta, mu, sigma);\n    calculateOptimalPosition(prices.data(), theta, mu, positions.data(), n, 2.0);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 20,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        mu += log_prices[i];\n    }\n    mu /= n;\n    \n    double sum_prod = 0.0, sum_sq = 0.0;\n    for (int i = 1; i < n; i++) {\n        double deviation_prev = log_prices[i-1] - mu;\n        double deviation_curr = log_prices[i] - mu;\n        sum_prod += deviation_curr * deviation_prev;\n        sum_sq += deviation_prev * deviation_prev;\n    }\n    \n    theta = -log(sum_prod / sum_sq) / dt;\n    \n    // Estimate volatility\n    sigma = 0.0;\n    for (int i = 1; i < n; i++) {\n        double expected = log_prices[i-1] + (mu - log_prices[i-1]) * (1 - exp(-theta * dt));\n        sigma += (log_prices[i] - expected) * (log_prices[i] - expected);\n    }\n    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, \n                              double* positions, int n, double risk_aversion) {\n    for (int i = 0; i < n; i++) {\n        double log_price = log(prices[i]);\n        double expected_return = theta * (mu - log_price);\n        \n        // Optimal position based on Kelly criterion with risk aversion\n        positions[i] = expected_return / (risk_aversion * 0.01); // Simplified\n    }\n}\n\nint main() {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 31,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    \n    theta = -log(sum_prod / sum_sq) / dt;\n    \n    // Estimate volatility\n    sigma = 0.0;\n    for (int i = 1; i < n; i++) {\n        double expected = log_prices[i-1] + (mu - log_prices[i-1]) * (1 - exp(-theta * dt));\n        sigma += (log_prices[i] - expected) * (log_prices[i] - expected);\n    }\n    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, \n                              double* positions, int n, double risk_aversion) {\n    for (int i = 0; i < n; i++) {\n        double log_price = log(prices[i]);\n        double expected_return = theta * (mu - log_price);\n        \n        // Optimal position based on Kelly criterion with risk aversion\n        positions[i] = expected_return / (risk_aversion * 0.01); // Simplified\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> prices(n, 100.0);\n    std::vector<double> positions(n);\n    \n    double theta, mu, sigma;\n    estimateOUParameters(prices.data(), n, 1.0/252.0, theta, mu, sigma);\n    calculateOptimalPosition(prices.data(), theta, mu, positions.data(), n, 2.0);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z24calculateOptimalPositionPdddS_id",
+      "line": 40,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, \n                              double* positions, int n, double risk_aversion) {\n    for (int i = 0; i < n; i++) {\n        double log_price = log(prices[i]);\n        double expected_return = theta * (mu - log_price);\n        \n        // Optimal position based on Kelly criterion with risk aversion\n        positions[i] = expected_return / (risk_aversion * 0.01); // Simplified\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> prices(n, 100.0);\n    std::vector<double> positions(n);\n    \n    double theta, mu, sigma;\n    estimateOUParameters(prices.data(), n, 1.0/252.0, theta, mu, sigma);\n    calculateOptimalPosition(prices.data(), theta, mu, positions.data(), n, 2.0);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z24calculateOptimalPositionPdddS_id",
+      "line": 40,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, \n                              double* positions, int n, double risk_aversion) {\n    for (int i = 0; i < n; i++) {\n        double log_price = log(prices[i]);\n        double expected_return = theta * (mu - log_price);\n        \n        // Optimal position based on Kelly criterion with risk aversion\n        positions[i] = expected_return / (risk_aversion * 0.01); // Simplified\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> prices(n, 100.0);\n    std::vector<double> positions(n);\n    \n    double theta, mu, sigma;\n    estimateOUParameters(prices.data(), n, 1.0/252.0, theta, mu, sigma);\n    calculateOptimalPosition(prices.data(), theta, mu, positions.data(), n, 2.0);\n    \n    return 0;\n}"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 20,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        mu += log_prices[i];\n    }\n    mu /= n;\n    \n    double sum_prod = 0.0, sum_sq = 0.0;\n    for (int i = 1; i < n; i++) {\n        double deviation_prev = log_prices[i-1] - mu;\n        double deviation_curr = log_prices[i] - mu;\n        sum_prod += deviation_curr * deviation_prev;\n        sum_sq += deviation_prev * deviation_prev;\n    }\n    \n    theta = -log(sum_prod / sum_sq) / dt;\n    \n    // Estimate volatility\n    sigma = 0.0;\n    for (int i = 1; i < n; i++) {\n        double expected = log_prices[i-1] + (mu - log_prices[i-1]) * (1 - exp(-theta * dt));\n        sigma += (log_prices[i] - expected) * (log_prices[i] - expected);\n    }\n    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, \n                              double* positions, int n, double risk_aversion) {\n    for (int i = 0; i < n; i++) {\n        double log_price = log(prices[i]);\n        double expected_return = theta * (mu - log_price);\n        \n        // Optimal position based on Kelly criterion with risk aversion\n        positions[i] = expected_return / (risk_aversion * 0.01); // Simplified\n    }\n}\n\nint main() {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 14,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    for (int i = 0; i < n; i++) {\n        log_prices[i] = log(prices[i]);\n    }\n    \n    mu = 0.0;\n    for (int i = 0; i < n; i++) {\n        mu += log_prices[i];\n    }\n    mu /= n;\n    \n    double sum_prod = 0.0, sum_sq = 0.0;\n    for (int i = 1; i < n; i++) {\n        double deviation_prev = log_prices[i-1] - mu;\n        double deviation_curr = log_prices[i] - mu;\n        sum_prod += deviation_curr * deviation_prev;\n        sum_sq += deviation_prev * deviation_prev;\n    }\n    \n    theta = -log(sum_prod / sum_sq) / dt;\n    \n    // Estimate volatility\n    sigma = 0.0;\n    for (int i = 1; i < n; i++) {\n        double expected = log_prices[i-1] + (mu - log_prices[i-1]) * (1 - exp(-theta * dt));\n        sigma += (log_prices[i] - expected) * (log_prices[i] - expected);\n    }\n    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, \n                              double* positions, int n, double risk_aversion) {\n    for (int i = 0; i < n; i++) {\n        double log_price = log(prices[i]);\n        double expected_return = theta * (mu - log_price);\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid estimateOUParameters(double* prices, int n, double dt, \n                         double& theta, double& mu, double& sigma) {\n    // Estimate mean reversion parameters\n    std::vector<double> log_prices(n);\n    for (int i = 0; i < n; i++) {\n        log_prices[i] = log(prices[i]);\n    }\n    \n    mu = 0.0;\n    for (int i = 0; i < n; i++) {\n        mu += log_prices[i];\n    }\n    mu /= n;\n    \n    double sum_prod = 0.0, sum_sq = 0.0;\n    for (int i = 1; i < n; i++) {\n        double deviation_prev = log_prices[i-1] - mu;\n        double deviation_curr = log_prices[i] - mu;\n        sum_prod += deviation_curr * deviation_prev;\n        sum_sq += deviation_prev * deviation_prev;\n    }\n    \n    theta = -log(sum_prod / sum_sq) / dt;\n    \n    // Estimate volatility\n    sigma = 0.0;\n    for (int i = 1; i < n; i++) {\n        double expected = log_prices[i-1] + (mu - log_prices[i-1]) * (1 - exp(-theta * dt));\n        sigma += (log_prices[i] - expected) * (log_prices[i] - expected);\n    }\n    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z24calculateOptimalPositionPdddS_id",
+      "line": 40,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, \n                              double* positions, int n, double risk_aversion) {\n    for (int i = 0; i < n; i++) {\n        double log_price = log(prices[i]);\n        double expected_return = theta * (mu - log_price);\n        \n        // Optimal position based on Kelly criterion with risk aversion\n        positions[i] = expected_return / (risk_aversion * 0.01); // Simplified\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> prices(n, 100.0);\n    std::vector<double> positions(n);\n    \n    double theta, mu, sigma;\n    estimateOUParameters(prices.data(), n, 1.0/252.0, theta, mu, sigma);\n    calculateOptimalPosition(prices.data(), theta, mu, positions.data(), n, 2.0);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 9,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "\nvoid estimateOUParameters(double* prices, int n, double dt, \n                         double& theta, double& mu, double& sigma) {\n    // Estimate mean reversion parameters\n    std::vector<double> log_prices(n);\n    for (int i = 0; i < n; i++) {\n        log_prices[i] = log(prices[i]);\n    }\n    \n    mu = 0.0;\n    for (int i = 0; i < n; i++) {\n        mu += log_prices[i];\n    }\n    mu /= n;\n    \n    double sum_prod = 0.0, sum_sq = 0.0;\n    for (int i = 1; i < n; i++) {\n        double deviation_prev = log_prices[i-1] - mu;\n        double deviation_curr = log_prices[i] - mu;\n        sum_prod += deviation_curr * deviation_prev;\n        sum_sq += deviation_prev * deviation_prev;\n    }\n    \n    theta = -log(sum_prod / sum_sq) / dt;\n    \n    // Estimate volatility\n    sigma = 0.0;\n    for (int i = 1; i < n; i++) {\n        double expected = log_prices[i-1] + (mu - log_prices[i-1]) * (1 - exp(-theta * dt));\n        sigma += (log_prices[i] - expected) * (log_prices[i] - expected);\n    }\n    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 31,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    \n    theta = -log(sum_prod / sum_sq) / dt;\n    \n    // Estimate volatility\n    sigma = 0.0;\n    for (int i = 1; i < n; i++) {\n        double expected = log_prices[i-1] + (mu - log_prices[i-1]) * (1 - exp(-theta * dt));\n        sigma += (log_prices[i] - expected) * (log_prices[i] - expected);\n    }\n    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, \n                              double* positions, int n, double risk_aversion) {\n    for (int i = 0; i < n; i++) {\n        double log_price = log(prices[i]);\n        double expected_return = theta * (mu - log_price);\n        \n        // Optimal position based on Kelly criterion with risk aversion\n        positions[i] = expected_return / (risk_aversion * 0.01); // Simplified\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> prices(n, 100.0);\n    std::vector<double> positions(n);\n    \n    double theta, mu, sigma;\n    estimateOUParameters(prices.data(), n, 1.0/252.0, theta, mu, sigma);\n    calculateOptimalPosition(prices.data(), theta, mu, positions.data(), n, 2.0);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 20,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        mu += log_prices[i];\n    }\n    mu /= n;\n    \n    double sum_prod = 0.0, sum_sq = 0.0;\n    for (int i = 1; i < n; i++) {\n        double deviation_prev = log_prices[i-1] - mu;\n        double deviation_curr = log_prices[i] - mu;\n        sum_prod += deviation_curr * deviation_prev;\n        sum_sq += deviation_prev * deviation_prev;\n    }\n    \n    theta = -log(sum_prod / sum_sq) / dt;\n    \n    // Estimate volatility\n    sigma = 0.0;\n    for (int i = 1; i < n; i++) {\n        double expected = log_prices[i-1] + (mu - log_prices[i-1]) * (1 - exp(-theta * dt));\n        sigma += (log_prices[i] - expected) * (log_prices[i] - expected);\n    }\n    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, \n                              double* positions, int n, double risk_aversion) {\n    for (int i = 0; i < n; i++) {\n        double log_price = log(prices[i]);\n        double expected_return = theta * (mu - log_price);\n        \n        // Optimal position based on Kelly criterion with risk aversion\n        positions[i] = expected_return / (risk_aversion * 0.01); // Simplified\n    }\n}\n\nint main() {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 31,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "    \n    theta = -log(sum_prod / sum_sq) / dt;\n    \n    // Estimate volatility\n    sigma = 0.0;\n    for (int i = 1; i < n; i++) {\n        double expected = log_prices[i-1] + (mu - log_prices[i-1]) * (1 - exp(-theta * dt));\n        sigma += (log_prices[i] - expected) * (log_prices[i] - expected);\n    }\n    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, \n                              double* positions, int n, double risk_aversion) {\n    for (int i = 0; i < n; i++) {\n        double log_price = log(prices[i]);\n        double expected_return = theta * (mu - log_price);\n        \n        // Optimal position based on Kelly criterion with risk aversion\n        positions[i] = expected_return / (risk_aversion * 0.01); // Simplified\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> prices(n, 100.0);\n    std::vector<double> positions(n);\n    \n    double theta, mu, sigma;\n    estimateOUParameters(prices.data(), n, 1.0/252.0, theta, mu, sigma);\n    calculateOptimalPosition(prices.data(), theta, mu, positions.data(), n, 2.0);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z20estimateOUParametersPdidRdS0_S0_",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    for (int i = 0; i < n; i++) {\n        log_prices[i] = log(prices[i]);\n    }\n    \n    mu = 0.0;\n    for (int i = 0; i < n; i++) {\n        mu += log_prices[i];\n    }\n    mu /= n;\n    \n    double sum_prod = 0.0, sum_sq = 0.0;\n    for (int i = 1; i < n; i++) {\n        double deviation_prev = log_prices[i-1] - mu;\n        double deviation_curr = log_prices[i] - mu;\n        sum_prod += deviation_curr * deviation_prev;\n        sum_sq += deviation_prev * deviation_prev;\n    }\n    \n    theta = -log(sum_prod / sum_sq) / dt;\n    \n    // Estimate volatility\n    sigma = 0.0;\n    for (int i = 1; i < n; i++) {\n        double expected = log_prices[i-1] + (mu - log_prices[i-1]) * (1 - exp(-theta * dt));\n        sigma += (log_prices[i] - expected) * (log_prices[i] - expected);\n    }\n    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, \n                              double* positions, int n, double risk_aversion) {\n    for (int i = 0; i < n; i++) {\n        double log_price = log(prices[i]);\n        double expected_return = theta * (mu - log_price);\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/mean_reversion.cpp",
+      "function": "_Z24calculateOptimalPositionPdddS_id",
+      "line": 40,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    sigma = sqrt(sigma / (n - 1) / dt);\n}\n\nvoid calculateOptimalPosition(double* prices, double theta, double mu, \n                              double* positions, int n, double risk_aversion) {\n    for (int i = 0; i < n; i++) {\n        double log_price = log(prices[i]);\n        double expected_return = theta * (mu - log_price);\n        \n        // Optimal position based on Kelly criterion with risk aversion\n        positions[i] = expected_return / (risk_aversion * 0.01); // Simplified\n    }\n}\n\nint main() {\n    const int n = 1000;\n    std::vector<double> prices(n, 100.0);\n    std::vector<double> positions(n);\n    \n    double theta, mu, sigma;\n    estimateOUParameters(prices.data(), n, 1.0/252.0, theta, mu, sigma);\n    calculateOptimalPosition(prices.data(), theta, mu, positions.data(), n, 2.0);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    }
+  ]
+}

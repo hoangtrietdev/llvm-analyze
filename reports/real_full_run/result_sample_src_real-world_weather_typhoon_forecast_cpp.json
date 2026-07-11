@@ -1,0 +1,290 @@
+{
+  "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+    "llvm_initial": 13,
+    "llvm_sys_noise": 0,
+    "llvm_project": 13,
+    "after_filter": 7,
+    "ai_batches": 1,
+    "ai_results": 7,
+    "omp_verified": 0,
+    "total_ms": 551.4,
+    "llvm_ms": 357.6
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "_Z24forecastTyphoonIntensityPdS_S_S_S_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid forecastTyphoonIntensity(double* sst, double* wind_shear, double* humidity,\n                              double* vorticity, double* intensity, \n                              int nx, int ny, int forecast_hours) {\n    for (int hour = 0; hour < forecast_hours; hour++) {\n        for (int i = 2; i < nx-2; i++) {\n            for (int j = 2; j < ny-2; j++) {\n                int idx = i * ny + j;\n                \n                // Potential intensity based on SST\n                double potential_intensity = 0.0;\n                if (sst[idx] > 26.5) {\n                    potential_intensity = 25.0 + (sst[idx] - 26.5) * 15.0;\n                }\n                \n                // Wind shear inhibition\n                double shear_factor = exp(-wind_shear[idx] / 10.0);\n                \n                // Humidity enhancement\n                double humidity_factor = 0.5 + 0.5 * humidity[idx] / 100.0;\n                \n                // Vorticity contribution\n                double vorticity_sum = 0.0;\n                for (int di = -2; di <= 2; di++) {\n                    for (int dj = -2; dj <= 2; dj++) {\n                        vorticity_sum += vorticity[(i+di)*ny + (j+dj)] / 25.0;\n                    }\n                }\n                \n                // Update intensity\n                double tendency = (potential_intensity - intensity[idx]) * 0.05 * \n                                shear_factor * humidity_factor + vorticity_sum * 2.0;\n                \n                intensity[idx] += tendency;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "_Z24forecastTyphoonIntensityPdS_S_S_S_iii",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid forecastTyphoonIntensity(double* sst, double* wind_shear, double* humidity,\n                              double* vorticity, double* intensity, \n                              int nx, int ny, int forecast_hours) {\n    for (int hour = 0; hour < forecast_hours; hour++) {\n        for (int i = 2; i < nx-2; i++) {\n            for (int j = 2; j < ny-2; j++) {\n                int idx = i * ny + j;\n                \n                // Potential intensity based on SST\n                double potential_intensity = 0.0;\n                if (sst[idx] > 26.5) {\n                    potential_intensity = 25.0 + (sst[idx] - 26.5) * 15.0;\n                }\n                \n                // Wind shear inhibition\n                double shear_factor = exp(-wind_shear[idx] / 10.0);\n                \n                // Humidity enhancement\n                double humidity_factor = 0.5 + 0.5 * humidity[idx] / 100.0;\n                \n                // Vorticity contribution\n                double vorticity_sum = 0.0;\n                for (int di = -2; di <= 2; di++) {\n                    for (int dj = -2; dj <= 2; dj++) {\n                        vorticity_sum += vorticity[(i+di)*ny + (j+dj)] / 25.0;\n                    }\n                }\n                \n                // Update intensity\n                double tendency = (potential_intensity - intensity[idx]) * 0.05 * \n                                shear_factor * humidity_factor + vorticity_sum * 2.0;\n                \n                intensity[idx] += tendency;\n            }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "_Z24forecastTyphoonIntensityPdS_S_S_S_iii",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void forecastTyphoonIntensity(double* sst, double* wind_shear, double* humidity,\n                              double* vorticity, double* intensity, \n                              int nx, int ny, int forecast_hours) {\n    for (int hour = 0; hour < forecast_hours; hour++) {\n        for (int i = 2; i < nx-2; i++) {\n            for (int j = 2; j < ny-2; j++) {\n                int idx = i * ny + j;\n                \n                // Potential intensity based on SST\n                double potential_intensity = 0.0;\n                if (sst[idx] > 26.5) {\n                    potential_intensity = 25.0 + (sst[idx] - 26.5) * 15.0;\n                }\n                \n                // Wind shear inhibition\n                double shear_factor = exp(-wind_shear[idx] / 10.0);\n                \n                // Humidity enhancement\n                double humidity_factor = 0.5 + 0.5 * humidity[idx] / 100.0;\n                \n                // Vorticity contribution\n                double vorticity_sum = 0.0;\n                for (int di = -2; di <= 2; di++) {\n                    for (int dj = -2; dj <= 2; dj++) {\n                        vorticity_sum += vorticity[(i+di)*ny + (j+dj)] / 25.0;\n                    }\n                }\n                \n                // Update intensity\n                double tendency = (potential_intensity - intensity[idx]) * 0.05 * \n                                shear_factor * humidity_factor + vorticity_sum * 2.0;\n                \n                intensity[idx] += tendency;\n            }\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "_Z24forecastTyphoonIntensityPdS_S_S_S_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid forecastTyphoonIntensity(double* sst, double* wind_shear, double* humidity,\n                              double* vorticity, double* intensity, \n                              int nx, int ny, int forecast_hours) {\n    for (int hour = 0; hour < forecast_hours; hour++) {\n        for (int i = 2; i < nx-2; i++) {\n            for (int j = 2; j < ny-2; j++) {\n                int idx = i * ny + j;\n                \n                // Potential intensity based on SST\n                double potential_intensity = 0.0;\n                if (sst[idx] > 26.5) {\n                    potential_intensity = 25.0 + (sst[idx] - 26.5) * 15.0;\n                }\n                \n                // Wind shear inhibition\n                double shear_factor = exp(-wind_shear[idx] / 10.0);\n                \n                // Humidity enhancement\n                double humidity_factor = 0.5 + 0.5 * humidity[idx] / 100.0;\n                \n                // Vorticity contribution\n                double vorticity_sum = 0.0;\n                for (int di = -2; di <= 2; di++) {\n                    for (int dj = -2; dj <= 2; dj++) {\n                        vorticity_sum += vorticity[(i+di)*ny + (j+dj)] / 25.0;\n                    }\n                }\n                \n                // Update intensity\n                double tendency = (potential_intensity - intensity[idx]) * 0.05 * \n                                shear_factor * humidity_factor + vorticity_sum * 2.0;\n                \n                intensity[idx] += tendency;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "_Z24forecastTyphoonIntensityPdS_S_S_S_iii",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid forecastTyphoonIntensity(double* sst, double* wind_shear, double* humidity,\n                              double* vorticity, double* intensity, \n                              int nx, int ny, int forecast_hours) {\n    for (int hour = 0; hour < forecast_hours; hour++) {\n        for (int i = 2; i < nx-2; i++) {\n            for (int j = 2; j < ny-2; j++) {\n                int idx = i * ny + j;\n                \n                // Potential intensity based on SST\n                double potential_intensity = 0.0;\n                if (sst[idx] > 26.5) {\n                    potential_intensity = 25.0 + (sst[idx] - 26.5) * 15.0;\n                }\n                \n                // Wind shear inhibition\n                double shear_factor = exp(-wind_shear[idx] / 10.0);\n                \n                // Humidity enhancement\n                double humidity_factor = 0.5 + 0.5 * humidity[idx] / 100.0;\n                \n                // Vorticity contribution\n                double vorticity_sum = 0.0;\n                for (int di = -2; di <= 2; di++) {\n                    for (int dj = -2; dj <= 2; dj++) {\n                        vorticity_sum += vorticity[(i+di)*ny + (j+dj)] / 25.0;\n                    }\n                }\n                \n                // Update intensity\n                double tendency = (potential_intensity - intensity[idx]) * 0.05 * \n                                shear_factor * humidity_factor + vorticity_sum * 2.0;\n                \n                intensity[idx] += tendency;\n            }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "_Z24forecastTyphoonIntensityPdS_S_S_S_iii",
+      "line": 10,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "_Z24forecastTyphoonIntensityPdS_S_S_S_iii",
+      "line": 27,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "_Z24forecastTyphoonIntensityPdS_S_S_S_iii",
+      "line": 28,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                double humidity_factor = 0.5 + 0.5 * humidity[idx] / 100.0;\n                \n                // Vorticity contribution\n                double vorticity_sum = 0.0;\n                for (int di = -2; di <= 2; di++) {\n                    for (int dj = -2; dj <= 2; dj++) {\n                        vorticity_sum += vorticity[(i+di)*ny + (j+dj)] / 25.0;\n                    }\n                }\n                \n                // Update intensity\n                double tendency = (potential_intensity - intensity[idx]) * 0.05 * \n                                shear_factor * humidity_factor + vorticity_sum * 2.0;\n                \n                intensity[idx] += tendency;\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100, forecast_hours = 120;\n    std::vector<double> sst(nx * ny, 28.0);\n    std::vector<double> wind_shear(nx * ny, 8.0);\n    std::vector<double> humidity(nx * ny, 70.0);\n    std::vector<double> vorticity(nx * ny, 1e-4);\n    std::vector<double> intensity(nx * ny, 20.0);\n    \n    forecastTyphoonIntensity(sst.data(), wind_shear.data(), humidity.data(),\n                            vorticity.data(), intensity.data(), nx, ny, forecast_hours);\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "main",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "main",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "main",
+      "line": 10,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "main",
+      "line": 27,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "main",
+      "line": 28,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.98,
+      "context": "                double humidity_factor = 0.5 + 0.5 * humidity[idx] / 100.0;\n                \n                // Vorticity contribution\n                double vorticity_sum = 0.0;\n                for (int di = -2; di <= 2; di++) {\n                    for (int dj = -2; dj <= 2; dj++) {\n                        vorticity_sum += vorticity[(i+di)*ny + (j+dj)] / 25.0;\n                    }\n                }\n                \n                // Update intensity\n                double tendency = (potential_intensity - intensity[idx]) * 0.05 * \n                                shear_factor * humidity_factor + vorticity_sum * 2.0;\n                \n                intensity[idx] += tendency;\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100, forecast_hours = 120;\n    std::vector<double> sst(nx * ny, 28.0);\n    std::vector<double> wind_shear(nx * ny, 8.0);\n    std::vector<double> humidity(nx * ny, 70.0);\n    std::vector<double> vorticity(nx * ny, 1e-4);\n    std::vector<double> intensity(nx * ny, 20.0);\n    \n    forecastTyphoonIntensity(sst.data(), wind_shear.data(), humidity.data(),\n                            vorticity.data(), intensity.data(), nx, ny, forecast_hours);\n    return 0;\n}"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "_Z24forecastTyphoonIntensityPdS_S_S_S_iii",
+      "line": 28,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                double humidity_factor = 0.5 + 0.5 * humidity[idx] / 100.0;\n                \n                // Vorticity contribution\n                double vorticity_sum = 0.0;\n                for (int di = -2; di <= 2; di++) {\n                    for (int dj = -2; dj <= 2; dj++) {\n                        vorticity_sum += vorticity[(i+di)*ny + (j+dj)] / 25.0;\n                    }\n                }\n                \n                // Update intensity\n                double tendency = (potential_intensity - intensity[idx]) * 0.05 * \n                                shear_factor * humidity_factor + vorticity_sum * 2.0;\n                \n                intensity[idx] += tendency;\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100, forecast_hours = 120;\n    std::vector<double> sst(nx * ny, 28.0);\n    std::vector<double> wind_shear(nx * ny, 8.0);\n    std::vector<double> humidity(nx * ny, 70.0);\n    std::vector<double> vorticity(nx * ny, 1e-4);\n    std::vector<double> intensity(nx * ny, 20.0);\n    \n    forecastTyphoonIntensity(sst.data(), wind_shear.data(), humidity.data(),\n                            vorticity.data(), intensity.data(), nx, ny, forecast_hours);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "main",
+      "line": 28,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.98,
+      "context": "                double humidity_factor = 0.5 + 0.5 * humidity[idx] / 100.0;\n                \n                // Vorticity contribution\n                double vorticity_sum = 0.0;\n                for (int di = -2; di <= 2; di++) {\n                    for (int dj = -2; dj <= 2; dj++) {\n                        vorticity_sum += vorticity[(i+di)*ny + (j+dj)] / 25.0;\n                    }\n                }\n                \n                // Update intensity\n                double tendency = (potential_intensity - intensity[idx]) * 0.05 * \n                                shear_factor * humidity_factor + vorticity_sum * 2.0;\n                \n                intensity[idx] += tendency;\n            }\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100, forecast_hours = 120;\n    std::vector<double> sst(nx * ny, 28.0);\n    std::vector<double> wind_shear(nx * ny, 8.0);\n    std::vector<double> humidity(nx * ny, 70.0);\n    std::vector<double> vorticity(nx * ny, 1e-4);\n    std::vector<double> intensity(nx * ny, 20.0);\n    \n    forecastTyphoonIntensity(sst.data(), wind_shear.data(), humidity.data(),\n                            vorticity.data(), intensity.data(), nx, ny, forecast_hours);\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.98
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "_Z24forecastTyphoonIntensityPdS_S_S_S_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid forecastTyphoonIntensity(double* sst, double* wind_shear, double* humidity,\n                              double* vorticity, double* intensity, \n                              int nx, int ny, int forecast_hours) {\n    for (int hour = 0; hour < forecast_hours; hour++) {\n        for (int i = 2; i < nx-2; i++) {\n            for (int j = 2; j < ny-2; j++) {\n                int idx = i * ny + j;\n                \n                // Potential intensity based on SST\n                double potential_intensity = 0.0;\n                if (sst[idx] > 26.5) {\n                    potential_intensity = 25.0 + (sst[idx] - 26.5) * 15.0;\n                }\n                \n                // Wind shear inhibition\n                double shear_factor = exp(-wind_shear[idx] / 10.0);\n                \n                // Humidity enhancement\n                double humidity_factor = 0.5 + 0.5 * humidity[idx] / 100.0;\n                \n                // Vorticity contribution\n                double vorticity_sum = 0.0;\n                for (int di = -2; di <= 2; di++) {\n                    for (int dj = -2; dj <= 2; dj++) {\n                        vorticity_sum += vorticity[(i+di)*ny + (j+dj)] / 25.0;\n                    }\n                }\n                \n                // Update intensity\n                double tendency = (potential_intensity - intensity[idx]) * 0.05 * \n                                shear_factor * humidity_factor + vorticity_sum * 2.0;\n                \n                intensity[idx] += tendency;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "_Z24forecastTyphoonIntensityPdS_S_S_S_iii",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid forecastTyphoonIntensity(double* sst, double* wind_shear, double* humidity,\n                              double* vorticity, double* intensity, \n                              int nx, int ny, int forecast_hours) {\n    for (int hour = 0; hour < forecast_hours; hour++) {\n        for (int i = 2; i < nx-2; i++) {\n            for (int j = 2; j < ny-2; j++) {\n                int idx = i * ny + j;\n                \n                // Potential intensity based on SST\n                double potential_intensity = 0.0;\n                if (sst[idx] > 26.5) {\n                    potential_intensity = 25.0 + (sst[idx] - 26.5) * 15.0;\n                }\n                \n                // Wind shear inhibition\n                double shear_factor = exp(-wind_shear[idx] / 10.0);\n                \n                // Humidity enhancement\n                double humidity_factor = 0.5 + 0.5 * humidity[idx] / 100.0;\n                \n                // Vorticity contribution\n                double vorticity_sum = 0.0;\n                for (int di = -2; di <= 2; di++) {\n                    for (int dj = -2; dj <= 2; dj++) {\n                        vorticity_sum += vorticity[(i+di)*ny + (j+dj)] / 25.0;\n                    }\n                }\n                \n                // Update intensity\n                double tendency = (potential_intensity - intensity[idx]) * 0.05 * \n                                shear_factor * humidity_factor + vorticity_sum * 2.0;\n                \n                intensity[idx] += tendency;\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "_Z24forecastTyphoonIntensityPdS_S_S_S_iii",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void forecastTyphoonIntensity(double* sst, double* wind_shear, double* humidity,\n                              double* vorticity, double* intensity, \n                              int nx, int ny, int forecast_hours) {\n    for (int hour = 0; hour < forecast_hours; hour++) {\n        for (int i = 2; i < nx-2; i++) {\n            for (int j = 2; j < ny-2; j++) {\n                int idx = i * ny + j;\n                \n                // Potential intensity based on SST\n                double potential_intensity = 0.0;\n                if (sst[idx] > 26.5) {\n                    potential_intensity = 25.0 + (sst[idx] - 26.5) * 15.0;\n                }\n                \n                // Wind shear inhibition\n                double shear_factor = exp(-wind_shear[idx] / 10.0);\n                \n                // Humidity enhancement\n                double humidity_factor = 0.5 + 0.5 * humidity[idx] / 100.0;\n                \n                // Vorticity contribution\n                double vorticity_sum = 0.0;\n                for (int di = -2; di <= 2; di++) {\n                    for (int dj = -2; dj <= 2; dj++) {\n                        vorticity_sum += vorticity[(i+di)*ny + (j+dj)] / 25.0;\n                    }\n                }\n                \n                // Update intensity\n                double tendency = (potential_intensity - intensity[idx]) * 0.05 * \n                                shear_factor * humidity_factor + vorticity_sum * 2.0;\n                \n                intensity[idx] += tendency;\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "_Z24forecastTyphoonIntensityPdS_S_S_S_iii",
+      "line": 8,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "#include <cmath>\n\nvoid forecastTyphoonIntensity(double* sst, double* wind_shear, double* humidity,\n                              double* vorticity, double* intensity, \n                              int nx, int ny, int forecast_hours) {\n    for (int hour = 0; hour < forecast_hours; hour++) {\n        for (int i = 2; i < nx-2; i++) {\n            for (int j = 2; j < ny-2; j++) {\n                int idx = i * ny + j;\n                \n                // Potential intensity based on SST\n                double potential_intensity = 0.0;\n                if (sst[idx] > 26.5) {\n                    potential_intensity = 25.0 + (sst[idx] - 26.5) * 15.0;\n                }\n                \n                // Wind shear inhibition\n                double shear_factor = exp(-wind_shear[idx] / 10.0);\n                \n                // Humidity enhancement\n                double humidity_factor = 0.5 + 0.5 * humidity[idx] / 100.0;\n                \n                // Vorticity contribution\n                double vorticity_sum = 0.0;\n                for (int di = -2; di <= 2; di++) {\n                    for (int dj = -2; dj <= 2; dj++) {\n                        vorticity_sum += vorticity[(i+di)*ny + (j+dj)] / 25.0;\n                    }\n                }\n                \n                // Update intensity\n                double tendency = (potential_intensity - intensity[idx]) * 0.05 * \n                                shear_factor * humidity_factor + vorticity_sum * 2.0;\n                \n                intensity[idx] += tendency;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/typhoon_forecast.cpp",
+      "function": "_Z24forecastTyphoonIntensityPdS_S_S_S_iii",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid forecastTyphoonIntensity(double* sst, double* wind_shear, double* humidity,\n                              double* vorticity, double* intensity, \n                              int nx, int ny, int forecast_hours) {\n    for (int hour = 0; hour < forecast_hours; hour++) {\n        for (int i = 2; i < nx-2; i++) {\n            for (int j = 2; j < ny-2; j++) {\n                int idx = i * ny + j;\n                \n                // Potential intensity based on SST\n                double potential_intensity = 0.0;\n                if (sst[idx] > 26.5) {\n                    potential_intensity = 25.0 + (sst[idx] - 26.5) * 15.0;\n                }\n                \n                // Wind shear inhibition\n                double shear_factor = exp(-wind_shear[idx] / 10.0);\n                \n                // Humidity enhancement\n                double humidity_factor = 0.5 + 0.5 * humidity[idx] / 100.0;\n                \n                // Vorticity contribution\n                double vorticity_sum = 0.0;\n                for (int di = -2; di <= 2; di++) {\n                    for (int dj = -2; dj <= 2; dj++) {\n                        vorticity_sum += vorticity[(i+di)*ny + (j+dj)] / 25.0;\n                    }\n                }\n                \n                // Update intensity\n                double tendency = (potential_intensity - intensity[idx]) * 0.05 * \n                                shear_factor * humidity_factor + vorticity_sum * 2.0;\n                \n                intensity[idx] += tendency;\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

@@ -1,0 +1,1243 @@
+{
+  "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+    "llvm_initial": 103,
+    "llvm_sys_noise": 77,
+    "llvm_project": 26,
+    "after_filter": 17,
+    "ai_batches": 2,
+    "ai_results": 17,
+    "omp_verified": 0,
+    "total_ms": 4029.7,
+    "llvm_ms": 495.1
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1360,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19FastMultipoleMethod14evaluateForcesEv",
+      "line": 149,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19FastMultipoleMethod14evaluateForcesEv",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19FastMultipoleMethod14evaluateForcesEv",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod14evaluateForcesEv",
+      "line": 110,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod14evaluateForcesEv",
+      "line": 110,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.35
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod14evaluateForcesEv",
+      "line": 118,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        }\n        \n        root = buildTree(allIndices, 0, 0, 1000, 0);\n        \n        // Traverse tree and compute forces\n        for (size_t i = 0; i < particles.size(); i++) {\n            evaluateParticleForce(i, root);\n        }\n    }\n    \n    void evaluateParticleForce(int idx, TreeNode* node) {\n        double dx = particles[idx].x - node->cx;\n        double dy = particles[idx].y - node->cy;\n        double r = std::sqrt(dx * dx + dy * dy);\n        \n        // Multipole acceptance criterion\n        if (node->isLeaf || node->size / r < 0.5) {\n            // Use multipole expansion\n            std::complex<double> z(dx, dy);\n            std::complex<double> force(0, 0);\n            \n            for (int p = 1; p < pOrder; p++) {\n                force += static_cast<double>(p) * node->moments[p] / \n                        std::pow(z, p + 1);\n            }\n            \n            particles[idx].fx -= force.real();\n            particles[idx].fy -= force.imag();\n        } else {\n            // Recurse to children\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    evaluateParticleForce(idx, child);\n                }\n            }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19FastMultipoleMethod14evaluateForcesEv",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod14evaluateForcesEv",
+      "line": 118,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19FastMultipoleMethod14evaluateForcesEv",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN19FastMultipoleMethod8ParticleENS_9allocatorIS2_EEE8__appendEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN19FastMultipoleMethod8ParticleENS_9allocatorIS2_EEE8__appendEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIN19FastMultipoleMethod8ParticleENS_9allocatorIS2_EEE8__appendEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN19FastMultipoleMethod8ParticleENS_9allocatorIS2_EEE8__appendEm",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIN19FastMultipoleMethod8ParticleENS_9allocatorIS2_EEE8__appendEm",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIN19FastMultipoleMethod8ParticleENS_9allocatorIS2_EEE8__appendEm",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod9buildTreeERKNSt3__16vectorIiNS0_9allocatorIiEEEEdddi",
+      "line": 44,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19FastMultipoleMethod9buildTreeERKNSt3__16vectorIiNS0_9allocatorIiEEEEdddi",
+      "line": 1031,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod9buildTreeERKNSt3__16vectorIiNS0_9allocatorIiEEEEdddi",
+      "line": 50,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19FastMultipoleMethod9buildTreeERKNSt3__16vectorIiNS0_9allocatorIiEEEEdddi",
+      "line": 1360,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19FastMultipoleMethod9buildTreeERKNSt3__16vectorIiNS0_9allocatorIiEEEEdddi",
+      "line": 1362,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod9buildTreeERKNSt3__16vectorIiNS0_9allocatorIiEEEEdddi",
+      "line": 50,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19FastMultipoleMethod9buildTreeERKNSt3__16vectorIiNS0_9allocatorIiEEEEdddi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19FastMultipoleMethod9buildTreeERKNSt3__16vectorIiNS0_9allocatorIiEEEEdddi",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19FastMultipoleMethod9buildTreeERKNSt3__16vectorIiNS0_9allocatorIiEEEEdddi",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19FastMultipoleMethod9buildTreeERKNSt3__16vectorIiNS0_9allocatorIiEEEEdddi",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod9buildTreeERKNSt3__16vectorIiNS0_9allocatorIiEEEEdddi",
+      "line": 61,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "            \n            double newSize = size / 2;\n            node->children.resize(4);\n            \n            for (int q = 0; q < 4; q++) {\n                if (!quadrants[q].empty()) {\n                    double ncx = cx + (q & 1 ? newSize/2 : -newSize/2);\n                    double ncy = cy + (q & 2 ? newSize/2 : -newSize/2);\n                    node->children[q] = buildTree(quadrants[q], ncx, ncy, \n                                                 newSize, level + 1);\n                }\n            }\n        }\n        \n        computeMultipoles(node);\n        return node;\n    }\n    \n    // Compute multipole expansion\n    void computeMultipoles(TreeNode* node) {\n        node->moments.resize(pOrder, std::complex<double>(0, 0));\n        \n        if (node->isLeaf) {\n            for (int idx : node->particles) {\n                std::complex<double> z(particles[idx].x - node->cx,\n                                      particles[idx].y - node->cy);\n                \n                std::complex<double> zpow(1, 0);\n                for (int p = 0; p < pOrder; p++) {\n                    node->moments[p] += particles[idx].mass * zpow;\n                    zpow *= z;\n                }\n            }\n        } else {\n            // Multipole-to-multipole translation"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod9buildTreeERKNSt3__16vectorIiNS0_9allocatorIiEEEEdddi",
+      "line": 60,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 129,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        double dx = particles[idx].x - node->cx;\n        double dy = particles[idx].y - node->cy;\n        double r = std::sqrt(dx * dx + dy * dy);\n        \n        // Multipole acceptance criterion\n        if (node->isLeaf || node->size / r < 0.5) {\n            // Use multipole expansion\n            std::complex<double> z(dx, dy);\n            std::complex<double> force(0, 0);\n            \n            for (int p = 1; p < pOrder; p++) {\n                force += static_cast<double>(p) * node->moments[p] / \n                        std::pow(z, p + 1);\n            }\n            \n            particles[idx].fx -= force.real();\n            particles[idx].fy -= force.imag();\n        } else {\n            // Recurse to children\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    evaluateParticleForce(idx, child);\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    FastMultipoleMethod fmm(10000, 10);\n    fmm.evaluateForces();\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 129,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 134,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        if (node->isLeaf || node->size / r < 0.5) {\n            // Use multipole expansion\n            std::complex<double> z(dx, dy);\n            std::complex<double> force(0, 0);\n            \n            for (int p = 1; p < pOrder; p++) {\n                force += static_cast<double>(p) * node->moments[p] / \n                        std::pow(z, p + 1);\n            }\n            \n            particles[idx].fx -= force.real();\n            particles[idx].fy -= force.imag();\n        } else {\n            // Recurse to children\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    evaluateParticleForce(idx, child);\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    FastMultipoleMethod fmm(10000, 10);\n    fmm.evaluateForces();\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 785,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 785,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 1080,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 1083,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 1084,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 1087,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 134,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        if (node->isLeaf || node->size / r < 0.5) {\n            // Use multipole expansion\n            std::complex<double> z(dx, dy);\n            std::complex<double> force(0, 0);\n            \n            for (int p = 1; p < pOrder; p++) {\n                force += static_cast<double>(p) * node->moments[p] / \n                        std::pow(z, p + 1);\n            }\n            \n            particles[idx].fx -= force.real();\n            particles[idx].fy -= force.imag();\n        } else {\n            // Recurse to children\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    evaluateParticleForce(idx, child);\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    FastMultipoleMethod fmm(10000, 10);\n    fmm.evaluateForces();\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 143,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 144,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            particles[idx].fx -= force.real();\n            particles[idx].fy -= force.imag();\n        } else {\n            // Recurse to children\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    evaluateParticleForce(idx, child);\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    FastMultipoleMethod fmm(10000, 10);\n    fmm.evaluateForces();\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 143,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            \n            particles[idx].fx -= force.real();\n            particles[idx].fy -= force.imag();\n        } else {\n            // Recurse to children\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    evaluateParticleForce(idx, child);\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    FastMultipoleMethod fmm(10000, 10);\n    fmm.evaluateForces();\n    return 0;\n}"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE9push_backB8ne210101ERKi",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE9push_backB8ne210101ERKi",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE9push_backB8ne210101ERKi",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE9push_backB8ne210101ERKi",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 1369,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 78,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    \n    // Compute multipole expansion\n    void computeMultipoles(TreeNode* node) {\n        node->moments.resize(pOrder, std::complex<double>(0, 0));\n        \n        if (node->isLeaf) {\n            for (int idx : node->particles) {\n                std::complex<double> z(particles[idx].x - node->cx,\n                                      particles[idx].y - node->cy);\n                \n                std::complex<double> zpow(1, 0);\n                for (int p = 0; p < pOrder; p++) {\n                    node->moments[p] += particles[idx].mass * zpow;\n                    zpow *= z;\n                }\n            }\n        } else {\n            // Multipole-to-multipole translation\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 79,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    // Compute multipole expansion\n    void computeMultipoles(TreeNode* node) {\n        node->moments.resize(pOrder, std::complex<double>(0, 0));\n        \n        if (node->isLeaf) {\n            for (int idx : node->particles) {\n                std::complex<double> z(particles[idx].x - node->cx,\n                                      particles[idx].y - node->cy);\n                \n                std::complex<double> zpow(1, 0);\n                for (int p = 0; p < pOrder; p++) {\n                    node->moments[p] += particles[idx].mass * zpow;\n                    zpow *= z;\n                }\n            }\n        } else {\n            // Multipole-to-multipole translation\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 84,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            for (int idx : node->particles) {\n                std::complex<double> z(particles[idx].x - node->cx,\n                                      particles[idx].y - node->cy);\n                \n                std::complex<double> zpow(1, 0);\n                for (int p = 0; p < pOrder; p++) {\n                    node->moments[p] += particles[idx].mass * zpow;\n                    zpow *= z;\n                }\n            }\n        } else {\n            // Multipole-to-multipole translation\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {\n        std::vector<int> allIndices(particles.size());\n        for (size_t i = 0; i < particles.size(); i++) {\n            allIndices[i] = i;\n            particles[i].fx = particles[i].fy = 0.0;\n        }"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 79,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    // Compute multipole expansion\n    void computeMultipoles(TreeNode* node) {\n        node->moments.resize(pOrder, std::complex<double>(0, 0));\n        \n        if (node->isLeaf) {\n            for (int idx : node->particles) {\n                std::complex<double> z(particles[idx].x - node->cx,\n                                      particles[idx].y - node->cy);\n                \n                std::complex<double> zpow(1, 0);\n                for (int p = 0; p < pOrder; p++) {\n                    node->moments[p] += particles[idx].mass * zpow;\n                    zpow *= z;\n                }\n            }\n        } else {\n            // Multipole-to-multipole translation\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 785,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 785,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 84,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "            for (int idx : node->particles) {\n                std::complex<double> z(particles[idx].x - node->cx,\n                                      particles[idx].y - node->cy);\n                \n                std::complex<double> zpow(1, 0);\n                for (int p = 0; p < pOrder; p++) {\n                    node->moments[p] += particles[idx].mass * zpow;\n                    zpow *= z;\n                }\n            }\n        } else {\n            // Multipole-to-multipole translation\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {\n        std::vector<int> allIndices(particles.size());\n        for (size_t i = 0; i < particles.size(); i++) {\n            allIndices[i] = i;\n            particles[i].fx = particles[i].fy = 0.0;\n        }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 91,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "                    zpow *= z;\n                }\n            }\n        } else {\n            // Multipole-to-multipole translation\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {\n        std::vector<int> allIndices(particles.size());\n        for (size_t i = 0; i < particles.size(); i++) {\n            allIndices[i] = i;\n            particles[i].fx = particles[i].fy = 0.0;\n        }\n        \n        root = buildTree(allIndices, 0, 0, 1000, 0);\n        \n        // Traverse tree and compute forces\n        for (size_t i = 0; i < particles.size(); i++) {\n            evaluateParticleForce(i, root);\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 92,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "                }\n            }\n        } else {\n            // Multipole-to-multipole translation\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {\n        std::vector<int> allIndices(particles.size());\n        for (size_t i = 0; i < particles.size(); i++) {\n            allIndices[i] = i;\n            particles[i].fx = particles[i].fy = 0.0;\n        }\n        \n        root = buildTree(allIndices, 0, 0, 1000, 0);\n        \n        // Traverse tree and compute forces\n        for (size_t i = 0; i < particles.size(); i++) {\n            evaluateParticleForce(i, root);\n        }\n    }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 96,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {\n        std::vector<int> allIndices(particles.size());\n        for (size_t i = 0; i < particles.size(); i++) {\n            allIndices[i] = i;\n            particles[i].fx = particles[i].fy = 0.0;\n        }\n        \n        root = buildTree(allIndices, 0, 0, 1000, 0);\n        \n        // Traverse tree and compute forces\n        for (size_t i = 0; i < particles.size(); i++) {\n            evaluateParticleForce(i, root);\n        }\n    }\n    \n    void evaluateParticleForce(int idx, TreeNode* node) {\n        double dx = particles[idx].x - node->cx;\n        double dy = particles[idx].y - node->cy;"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 785,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 785,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 1080,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 1083,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 1084,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 1087,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 785,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 785,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 97,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {\n        std::vector<int> allIndices(particles.size());\n        for (size_t i = 0; i < particles.size(); i++) {\n            allIndices[i] = i;\n            particles[i].fx = particles[i].fy = 0.0;\n        }\n        \n        root = buildTree(allIndices, 0, 0, 1000, 0);\n        \n        // Traverse tree and compute forces\n        for (size_t i = 0; i < particles.size(); i++) {\n            evaluateParticleForce(i, root);\n        }\n    }\n    \n    void evaluateParticleForce(int idx, TreeNode* node) {\n        double dx = particles[idx].x - node->cx;\n        double dy = particles[idx].y - node->cy;\n        double r = std::sqrt(dx * dx + dy * dy);"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 91,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    zpow *= z;\n                }\n            }\n        } else {\n            // Multipole-to-multipole translation\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {\n        std::vector<int> allIndices(particles.size());\n        for (size_t i = 0; i < particles.size(); i++) {\n            allIndices[i] = i;\n            particles[i].fx = particles[i].fy = 0.0;\n        }\n        \n        root = buildTree(allIndices, 0, 0, 1000, 0);\n        \n        // Traverse tree and compute forces\n        for (size_t i = 0; i < particles.size(); i++) {\n            evaluateParticleForce(i, root);\n        }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 1058,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 1059,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 889,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 572,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE18__assign_with_sizeB8ne210101IPiS5_EEvT_T0_l",
+      "line": 228,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IiNS_9allocatorIiEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IiNS_9allocatorIiEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IiNS_9allocatorIiEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IiNS_9allocatorIiEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_IiNS_9allocatorIiEEEENS2_IS4_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIPN19FastMultipoleMethod8TreeNodeENS_9allocatorIS3_EEE8__appendEm",
+      "line": 954,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIPN19FastMultipoleMethod8TreeNodeENS_9allocatorIS3_EEE8__appendEm",
+      "line": 919,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIPN19FastMultipoleMethod8TreeNodeENS_9allocatorIS3_EEE8__appendEm",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIPN19FastMultipoleMethod8TreeNodeENS_9allocatorIS3_EEE8__appendEm",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIPN19FastMultipoleMethod8TreeNodeENS_9allocatorIS3_EEE8__appendEm",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIPN19FastMultipoleMethod8TreeNodeENS_9allocatorIS3_EEE8__appendEm",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 935,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 257,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 129,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        double dx = particles[idx].x - node->cx;\n        double dy = particles[idx].y - node->cy;\n        double r = std::sqrt(dx * dx + dy * dy);\n        \n        // Multipole acceptance criterion\n        if (node->isLeaf || node->size / r < 0.5) {\n            // Use multipole expansion\n            std::complex<double> z(dx, dy);\n            std::complex<double> force(0, 0);\n            \n            for (int p = 1; p < pOrder; p++) {\n                force += static_cast<double>(p) * node->moments[p] / \n                        std::pow(z, p + 1);\n            }\n            \n            particles[idx].fx -= force.real();\n            particles[idx].fy -= force.imag();\n        } else {\n            // Recurse to children\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    evaluateParticleForce(idx, child);\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    FastMultipoleMethod fmm(10000, 10);\n    fmm.evaluateForces();\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 134,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        if (node->isLeaf || node->size / r < 0.5) {\n            // Use multipole expansion\n            std::complex<double> z(dx, dy);\n            std::complex<double> force(0, 0);\n            \n            for (int p = 1; p < pOrder; p++) {\n                force += static_cast<double>(p) * node->moments[p] / \n                        std::pow(z, p + 1);\n            }\n            \n            particles[idx].fx -= force.real();\n            particles[idx].fy -= force.imag();\n        } else {\n            // Recurse to children\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    evaluateParticleForce(idx, child);\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    FastMultipoleMethod fmm(10000, 10);\n    fmm.evaluateForces();\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 143,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            \n            particles[idx].fx -= force.real();\n            particles[idx].fy -= force.imag();\n        } else {\n            // Recurse to children\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    evaluateParticleForce(idx, child);\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    FastMultipoleMethod fmm(10000, 10);\n    fmm.evaluateForces();\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 84,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            for (int idx : node->particles) {\n                std::complex<double> z(particles[idx].x - node->cx,\n                                      particles[idx].y - node->cy);\n                \n                std::complex<double> zpow(1, 0);\n                for (int p = 0; p < pOrder; p++) {\n                    node->moments[p] += particles[idx].mass * zpow;\n                    zpow *= z;\n                }\n            }\n        } else {\n            // Multipole-to-multipole translation\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {\n        std::vector<int> allIndices(particles.size());\n        for (size_t i = 0; i < particles.size(); i++) {\n            allIndices[i] = i;\n            particles[i].fx = particles[i].fy = 0.0;\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 79,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    // Compute multipole expansion\n    void computeMultipoles(TreeNode* node) {\n        node->moments.resize(pOrder, std::complex<double>(0, 0));\n        \n        if (node->isLeaf) {\n            for (int idx : node->particles) {\n                std::complex<double> z(particles[idx].x - node->cx,\n                                      particles[idx].y - node->cy);\n                \n                std::complex<double> zpow(1, 0);\n                for (int p = 0; p < pOrder; p++) {\n                    node->moments[p] += particles[idx].mass * zpow;\n                    zpow *= z;\n                }\n            }\n        } else {\n            // Multipole-to-multipole translation\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 97,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {\n        std::vector<int> allIndices(particles.size());\n        for (size_t i = 0; i < particles.size(); i++) {\n            allIndices[i] = i;\n            particles[i].fx = particles[i].fy = 0.0;\n        }\n        \n        root = buildTree(allIndices, 0, 0, 1000, 0);\n        \n        // Traverse tree and compute forces\n        for (size_t i = 0; i < particles.size(); i++) {\n            evaluateParticleForce(i, root);\n        }\n    }\n    \n    void evaluateParticleForce(int idx, TreeNode* node) {\n        double dx = particles[idx].x - node->cx;\n        double dy = particles[idx].y - node->cy;\n        double r = std::sqrt(dx * dx + dy * dy);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 91,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                    zpow *= z;\n                }\n            }\n        } else {\n            // Multipole-to-multipole translation\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {\n        std::vector<int> allIndices(particles.size());\n        for (size_t i = 0; i < particles.size(); i++) {\n            allIndices[i] = i;\n            particles[i].fx = particles[i].fy = 0.0;\n        }\n        \n        root = buildTree(allIndices, 0, 0, 1000, 0);\n        \n        // Traverse tree and compute forces\n        for (size_t i = 0; i < particles.size(); i++) {\n            evaluateParticleForce(i, root);\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod9buildTreeERKNSt3__16vectorIiNS0_9allocatorIiEEEEdddi",
+      "line": 61,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "            \n            double newSize = size / 2;\n            node->children.resize(4);\n            \n            for (int q = 0; q < 4; q++) {\n                if (!quadrants[q].empty()) {\n                    double ncx = cx + (q & 1 ? newSize/2 : -newSize/2);\n                    double ncy = cy + (q & 2 ? newSize/2 : -newSize/2);\n                    node->children[q] = buildTree(quadrants[q], ncx, ncy, \n                                                 newSize, level + 1);\n                }\n            }\n        }\n        \n        computeMultipoles(node);\n        return node;\n    }\n    \n    // Compute multipole expansion\n    void computeMultipoles(TreeNode* node) {\n        node->moments.resize(pOrder, std::complex<double>(0, 0));\n        \n        if (node->isLeaf) {\n            for (int idx : node->particles) {\n                std::complex<double> z(particles[idx].x - node->cx,\n                                      particles[idx].y - node->cy);\n                \n                std::complex<double> zpow(1, 0);\n                for (int p = 0; p < pOrder; p++) {\n                    node->moments[p] += particles[idx].mass * zpow;\n                    zpow *= z;\n                }\n            }\n        } else {\n            // Multipole-to-multipole translation",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.93
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod14evaluateForcesEv",
+      "line": 118,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "        }\n        \n        root = buildTree(allIndices, 0, 0, 1000, 0);\n        \n        // Traverse tree and compute forces\n        for (size_t i = 0; i < particles.size(); i++) {\n            evaluateParticleForce(i, root);\n        }\n    }\n    \n    void evaluateParticleForce(int idx, TreeNode* node) {\n        double dx = particles[idx].x - node->cx;\n        double dy = particles[idx].y - node->cy;\n        double r = std::sqrt(dx * dx + dy * dy);\n        \n        // Multipole acceptance criterion\n        if (node->isLeaf || node->size / r < 0.5) {\n            // Use multipole expansion\n            std::complex<double> z(dx, dy);\n            std::complex<double> force(0, 0);\n            \n            for (int p = 1; p < pOrder; p++) {\n                force += static_cast<double>(p) * node->moments[p] / \n                        std::pow(z, p + 1);\n            }\n            \n            particles[idx].fx -= force.real();\n            particles[idx].fy -= force.imag();\n        } else {\n            // Recurse to children\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    evaluateParticleForce(idx, child);\n                }\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 84,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "            for (int idx : node->particles) {\n                std::complex<double> z(particles[idx].x - node->cx,\n                                      particles[idx].y - node->cy);\n                \n                std::complex<double> zpow(1, 0);\n                for (int p = 0; p < pOrder; p++) {\n                    node->moments[p] += particles[idx].mass * zpow;\n                    zpow *= z;\n                }\n            }\n        } else {\n            // Multipole-to-multipole translation\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {\n        std::vector<int> allIndices(particles.size());\n        for (size_t i = 0; i < particles.size(); i++) {\n            allIndices[i] = i;\n            particles[i].fx = particles[i].fy = 0.0;\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 96,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {\n        std::vector<int> allIndices(particles.size());\n        for (size_t i = 0; i < particles.size(); i++) {\n            allIndices[i] = i;\n            particles[i].fx = particles[i].fy = 0.0;\n        }\n        \n        root = buildTree(allIndices, 0, 0, 1000, 0);\n        \n        // Traverse tree and compute forces\n        for (size_t i = 0; i < particles.size(); i++) {\n            evaluateParticleForce(i, root);\n        }\n    }\n    \n    void evaluateParticleForce(int idx, TreeNode* node) {\n        double dx = particles[idx].x - node->cx;\n        double dy = particles[idx].y - node->cy;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 92,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "                }\n            }\n        } else {\n            // Multipole-to-multipole translation\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {\n        std::vector<int> allIndices(particles.size());\n        for (size_t i = 0; i < particles.size(); i++) {\n            allIndices[i] = i;\n            particles[i].fx = particles[i].fy = 0.0;\n        }\n        \n        root = buildTree(allIndices, 0, 0, 1000, 0);\n        \n        // Traverse tree and compute forces\n        for (size_t i = 0; i < particles.size(); i++) {\n            evaluateParticleForce(i, root);\n        }\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 134,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        if (node->isLeaf || node->size / r < 0.5) {\n            // Use multipole expansion\n            std::complex<double> z(dx, dy);\n            std::complex<double> force(0, 0);\n            \n            for (int p = 1; p < pOrder; p++) {\n                force += static_cast<double>(p) * node->moments[p] / \n                        std::pow(z, p + 1);\n            }\n            \n            particles[idx].fx -= force.real();\n            particles[idx].fy -= force.imag();\n        } else {\n            // Recurse to children\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    evaluateParticleForce(idx, child);\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    FastMultipoleMethod fmm(10000, 10);\n    fmm.evaluateForces();\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod21evaluateParticleForceEiPNS_8TreeNodeE",
+      "line": 144,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            particles[idx].fx -= force.real();\n            particles[idx].fy -= force.imag();\n        } else {\n            // Recurse to children\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    evaluateParticleForce(idx, child);\n                }\n            }\n        }\n    }\n};\n\nint main() {\n    FastMultipoleMethod fmm(10000, 10);\n    fmm.evaluateForces();\n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 78,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    \n    // Compute multipole expansion\n    void computeMultipoles(TreeNode* node) {\n        node->moments.resize(pOrder, std::complex<double>(0, 0));\n        \n        if (node->isLeaf) {\n            for (int idx : node->particles) {\n                std::complex<double> z(particles[idx].x - node->cx,\n                                      particles[idx].y - node->cy);\n                \n                std::complex<double> zpow(1, 0);\n                for (int p = 0; p < pOrder; p++) {\n                    node->moments[p] += particles[idx].mass * zpow;\n                    zpow *= z;\n                }\n            }\n        } else {\n            // Multipole-to-multipole translation\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 79,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    // Compute multipole expansion\n    void computeMultipoles(TreeNode* node) {\n        node->moments.resize(pOrder, std::complex<double>(0, 0));\n        \n        if (node->isLeaf) {\n            for (int idx : node->particles) {\n                std::complex<double> z(particles[idx].x - node->cx,\n                                      particles[idx].y - node->cy);\n                \n                std::complex<double> zpow(1, 0);\n                for (int p = 0; p < pOrder; p++) {\n                    node->moments[p] += particles[idx].mass * zpow;\n                    zpow *= z;\n                }\n            }\n        } else {\n            // Multipole-to-multipole translation\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/scientific/fast_multipole.cpp",
+      "function": "_ZN19FastMultipoleMethod17computeMultipolesEPNS_8TreeNodeE",
+      "line": 91,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "                    zpow *= z;\n                }\n            }\n        } else {\n            // Multipole-to-multipole translation\n            for (TreeNode* child : node->children) {\n                if (child) {\n                    std::complex<double> z0(child->cx - node->cx,\n                                           child->cy - node->cy);\n                    \n                    for (int p = 0; p < pOrder; p++) {\n                        for (int k = 0; k <= p; k++) {\n                            node->moments[p] += child->moments[k] * \n                                std::pow(z0, p - k);\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    // Evaluate force using FMM\n    void evaluateForces() {\n        std::vector<int> allIndices(particles.size());\n        for (size_t i = 0; i < particles.size(); i++) {\n            allIndices[i] = i;\n            particles[i].fx = particles[i].fy = 0.0;\n        }\n        \n        root = buildTree(allIndices, 0, 0, 1000, 0);\n        \n        // Traverse tree and compute forces\n        for (size_t i = 0; i < particles.size(); i++) {\n            evaluateParticleForce(i, root);\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    }
+  ]
+}

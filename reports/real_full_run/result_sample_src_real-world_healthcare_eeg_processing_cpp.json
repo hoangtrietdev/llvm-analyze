@@ -1,0 +1,485 @@
+{
+  "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+    "llvm_initial": 20,
+    "llvm_sys_noise": 0,
+    "llvm_project": 20,
+    "after_filter": 13,
+    "ai_batches": 1,
+    "ai_results": 13,
+    "omp_verified": 0,
+    "total_ms": 688.2,
+    "llvm_ms": 363.9
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z10analyzeEEGPdiiS_S_S_",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid analyzeEEG(double* eeg_signal, int n_channels, int n_samples, \n               double* alpha_power, double* beta_power, double* theta_power) {\n    const double sample_rate = 256.0; // Hz\n    \n    for (int ch = 0; ch < n_channels; ch++) {\n        alpha_power[ch] = 0.0;\n        beta_power[ch] = 0.0;\n        theta_power[ch] = 0.0;\n        \n        // Compute power spectral density using periodogram\n        for (int freq = 0; freq < n_samples/2; freq++) {\n            double power = 0.0;\n            \n            for (int t = 0; t < n_samples; t++) {\n                double angle = 2.0 * M_PI * freq * t / n_samples;\n                power += eeg_signal[ch * n_samples + t] * cos(angle);\n            }\n            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z10analyzeEEGPdiiS_S_S_",
+      "line": 15,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        alpha_power[ch] = 0.0;\n        beta_power[ch] = 0.0;\n        theta_power[ch] = 0.0;\n        \n        // Compute power spectral density using periodogram\n        for (int freq = 0; freq < n_samples/2; freq++) {\n            double power = 0.0;\n            \n            for (int t = 0; t < n_samples; t++) {\n                double angle = 2.0 * M_PI * freq * t / n_samples;\n                power += eeg_signal[ch * n_samples + t] * cos(angle);\n            }\n            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }\n    }\n}\n\nvoid detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z10analyzeEEGPdiiS_S_S_",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        \n        // Compute power spectral density using periodogram\n        for (int freq = 0; freq < n_samples/2; freq++) {\n            double power = 0.0;\n            \n            for (int t = 0; t < n_samples; t++) {\n                double angle = 2.0 * M_PI * freq * t / n_samples;\n                power += eeg_signal[ch * n_samples + t] * cos(angle);\n            }\n            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }\n    }\n}\n\nvoid detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;\n        double line_length = 0.0;\n        \n        for (int t = 0; t < n_samples; t++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z10analyzeEEGPdiiS_S_S_",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid analyzeEEG(double* eeg_signal, int n_channels, int n_samples, \n               double* alpha_power, double* beta_power, double* theta_power) {\n    const double sample_rate = 256.0; // Hz\n    \n    for (int ch = 0; ch < n_channels; ch++) {\n        alpha_power[ch] = 0.0;\n        beta_power[ch] = 0.0;\n        theta_power[ch] = 0.0;\n        \n        // Compute power spectral density using periodogram\n        for (int freq = 0; freq < n_samples/2; freq++) {\n            double power = 0.0;\n            \n            for (int t = 0; t < n_samples; t++) {\n                double angle = 2.0 * M_PI * freq * t / n_samples;\n                power += eeg_signal[ch * n_samples + t] * cos(angle);\n            }\n            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z10analyzeEEGPdiiS_S_S_",
+      "line": 27,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }\n    }\n}\n\nvoid detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;\n        double line_length = 0.0;\n        \n        for (int t = 0; t < n_samples; t++) {\n            energy += eeg_signal[ch * n_samples + t] * eeg_signal[ch * n_samples + t];\n            \n            if (t > 0) {\n                line_length += fabs(eeg_signal[ch * n_samples + t] - \n                                   eeg_signal[ch * n_samples + t - 1]);\n            }\n        }\n        \n        // Seizure criteria: high energy and high line length"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z10analyzeEEGPdiiS_S_S_",
+      "line": 18,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z10analyzeEEGPdiiS_S_S_",
+      "line": 31,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z10analyzeEEGPdiiS_S_S_",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z10analyzeEEGPdiiS_S_S_",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        alpha_power[ch] = 0.0;\n        beta_power[ch] = 0.0;\n        theta_power[ch] = 0.0;\n        \n        // Compute power spectral density using periodogram\n        for (int freq = 0; freq < n_samples/2; freq++) {\n            double power = 0.0;\n            \n            for (int t = 0; t < n_samples; t++) {\n                double angle = 2.0 * M_PI * freq * t / n_samples;\n                power += eeg_signal[ch * n_samples + t] * cos(angle);\n            }\n            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }\n    }\n}\n\nvoid detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z13detectSeizurePdiiPb",
+      "line": 43,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n    }\n}\n\nvoid detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;\n        double line_length = 0.0;\n        \n        for (int t = 0; t < n_samples; t++) {\n            energy += eeg_signal[ch * n_samples + t] * eeg_signal[ch * n_samples + t];\n            \n            if (t > 0) {\n                line_length += fabs(eeg_signal[ch * n_samples + t] - \n                                   eeg_signal[ch * n_samples + t - 1]);\n            }\n        }\n        \n        // Seizure criteria: high energy and high line length\n        seizure_detected[ch] = (energy > 1000.0 && line_length > 500.0);\n    }\n}\n\nint main() {\n    const int n_channels = 64, n_samples = 1024;\n    std::vector<double> eeg_signal(n_channels * n_samples, 0.0);\n    std::vector<double> alpha_power(n_channels);\n    std::vector<double> beta_power(n_channels);\n    std::vector<double> theta_power(n_channels);\n    std::vector<char> seizure_detected(n_channels);\n    \n    analyzeEEG(eeg_signal.data(), n_channels, n_samples, \n              alpha_power.data(), beta_power.data(), theta_power.data());\n    detectSeizure(eeg_signal.data(), n_channels, n_samples, (bool*)seizure_detected.data());\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z13detectSeizurePdiiPb",
+      "line": 47,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;\n        double line_length = 0.0;\n        \n        for (int t = 0; t < n_samples; t++) {\n            energy += eeg_signal[ch * n_samples + t] * eeg_signal[ch * n_samples + t];\n            \n            if (t > 0) {\n                line_length += fabs(eeg_signal[ch * n_samples + t] - \n                                   eeg_signal[ch * n_samples + t - 1]);\n            }\n        }\n        \n        // Seizure criteria: high energy and high line length\n        seizure_detected[ch] = (energy > 1000.0 && line_length > 500.0);\n    }\n}\n\nint main() {\n    const int n_channels = 64, n_samples = 1024;\n    std::vector<double> eeg_signal(n_channels * n_samples, 0.0);\n    std::vector<double> alpha_power(n_channels);\n    std::vector<double> beta_power(n_channels);\n    std::vector<double> theta_power(n_channels);\n    std::vector<char> seizure_detected(n_channels);\n    \n    analyzeEEG(eeg_signal.data(), n_channels, n_samples, \n              alpha_power.data(), beta_power.data(), theta_power.data());\n    detectSeizure(eeg_signal.data(), n_channels, n_samples, (bool*)seizure_detected.data());\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z13detectSeizurePdiiPb",
+      "line": 43,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        }\n    }\n}\n\nvoid detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;\n        double line_length = 0.0;\n        \n        for (int t = 0; t < n_samples; t++) {\n            energy += eeg_signal[ch * n_samples + t] * eeg_signal[ch * n_samples + t];\n            \n            if (t > 0) {\n                line_length += fabs(eeg_signal[ch * n_samples + t] - \n                                   eeg_signal[ch * n_samples + t - 1]);\n            }\n        }\n        \n        // Seizure criteria: high energy and high line length\n        seizure_detected[ch] = (energy > 1000.0 && line_length > 500.0);\n    }\n}\n\nint main() {\n    const int n_channels = 64, n_samples = 1024;\n    std::vector<double> eeg_signal(n_channels * n_samples, 0.0);\n    std::vector<double> alpha_power(n_channels);\n    std::vector<double> beta_power(n_channels);\n    std::vector<double> theta_power(n_channels);\n    std::vector<char> seizure_detected(n_channels);\n    \n    analyzeEEG(eeg_signal.data(), n_channels, n_samples, \n              alpha_power.data(), beta_power.data(), theta_power.data());\n    detectSeizure(eeg_signal.data(), n_channels, n_samples, (bool*)seizure_detected.data());\n    "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z13detectSeizurePdiiPb",
+      "line": 50,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z13detectSeizurePdiiPb",
+      "line": 47,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;\n        double line_length = 0.0;\n        \n        for (int t = 0; t < n_samples; t++) {\n            energy += eeg_signal[ch * n_samples + t] * eeg_signal[ch * n_samples + t];\n            \n            if (t > 0) {\n                line_length += fabs(eeg_signal[ch * n_samples + t] - \n                                   eeg_signal[ch * n_samples + t - 1]);\n            }\n        }\n        \n        // Seizure criteria: high energy and high line length\n        seizure_detected[ch] = (energy > 1000.0 && line_length > 500.0);\n    }\n}\n\nint main() {\n    const int n_channels = 64, n_samples = 1024;\n    std::vector<double> eeg_signal(n_channels * n_samples, 0.0);\n    std::vector<double> alpha_power(n_channels);\n    std::vector<double> beta_power(n_channels);\n    std::vector<double> theta_power(n_channels);\n    std::vector<char> seizure_detected(n_channels);\n    \n    analyzeEEG(eeg_signal.data(), n_channels, n_samples, \n              alpha_power.data(), beta_power.data(), theta_power.data());\n    detectSeizure(eeg_signal.data(), n_channels, n_samples, (bool*)seizure_detected.data());\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "main",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "\nvoid analyzeEEG(double* eeg_signal, int n_channels, int n_samples, \n               double* alpha_power, double* beta_power, double* theta_power) {\n    const double sample_rate = 256.0; // Hz\n    \n    for (int ch = 0; ch < n_channels; ch++) {\n        alpha_power[ch] = 0.0;\n        beta_power[ch] = 0.0;\n        theta_power[ch] = 0.0;\n        \n        // Compute power spectral density using periodogram\n        for (int freq = 0; freq < n_samples/2; freq++) {\n            double power = 0.0;\n            \n            for (int t = 0; t < n_samples; t++) {\n                double angle = 2.0 * M_PI * freq * t / n_samples;\n                power += eeg_signal[ch * n_samples + t] * cos(angle);\n            }\n            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "main",
+      "line": 27,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }\n    }\n}\n\nvoid detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;\n        double line_length = 0.0;\n        \n        for (int t = 0; t < n_samples; t++) {\n            energy += eeg_signal[ch * n_samples + t] * eeg_signal[ch * n_samples + t];\n            \n            if (t > 0) {\n                line_length += fabs(eeg_signal[ch * n_samples + t] - \n                                   eeg_signal[ch * n_samples + t - 1]);\n            }\n        }\n        \n        // Seizure criteria: high energy and high line length"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "main",
+      "line": 18,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "main",
+      "line": 31,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.4800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "main",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.4800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "main",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "        alpha_power[ch] = 0.0;\n        beta_power[ch] = 0.0;\n        theta_power[ch] = 0.0;\n        \n        // Compute power spectral density using periodogram\n        for (int freq = 0; freq < n_samples/2; freq++) {\n            double power = 0.0;\n            \n            for (int t = 0; t < n_samples; t++) {\n                double angle = 2.0 * M_PI * freq * t / n_samples;\n                power += eeg_signal[ch * n_samples + t] * cos(angle);\n            }\n            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }\n    }\n}\n\nvoid detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z10analyzeEEGPdiiS_S_S_",
+      "line": 15,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        alpha_power[ch] = 0.0;\n        beta_power[ch] = 0.0;\n        theta_power[ch] = 0.0;\n        \n        // Compute power spectral density using periodogram\n        for (int freq = 0; freq < n_samples/2; freq++) {\n            double power = 0.0;\n            \n            for (int t = 0; t < n_samples; t++) {\n                double angle = 2.0 * M_PI * freq * t / n_samples;\n                power += eeg_signal[ch * n_samples + t] * cos(angle);\n            }\n            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }\n    }\n}\n\nvoid detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z13detectSeizurePdiiPb",
+      "line": 43,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        }\n    }\n}\n\nvoid detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;\n        double line_length = 0.0;\n        \n        for (int t = 0; t < n_samples; t++) {\n            energy += eeg_signal[ch * n_samples + t] * eeg_signal[ch * n_samples + t];\n            \n            if (t > 0) {\n                line_length += fabs(eeg_signal[ch * n_samples + t] - \n                                   eeg_signal[ch * n_samples + t - 1]);\n            }\n        }\n        \n        // Seizure criteria: high energy and high line length\n        seizure_detected[ch] = (energy > 1000.0 && line_length > 500.0);\n    }\n}\n\nint main() {\n    const int n_channels = 64, n_samples = 1024;\n    std::vector<double> eeg_signal(n_channels * n_samples, 0.0);\n    std::vector<double> alpha_power(n_channels);\n    std::vector<double> beta_power(n_channels);\n    std::vector<double> theta_power(n_channels);\n    std::vector<char> seizure_detected(n_channels);\n    \n    analyzeEEG(eeg_signal.data(), n_channels, n_samples, \n              alpha_power.data(), beta_power.data(), theta_power.data());\n    detectSeizure(eeg_signal.data(), n_channels, n_samples, (bool*)seizure_detected.data());\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z10analyzeEEGPdiiS_S_S_",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid analyzeEEG(double* eeg_signal, int n_channels, int n_samples, \n               double* alpha_power, double* beta_power, double* theta_power) {\n    const double sample_rate = 256.0; // Hz\n    \n    for (int ch = 0; ch < n_channels; ch++) {\n        alpha_power[ch] = 0.0;\n        beta_power[ch] = 0.0;\n        theta_power[ch] = 0.0;\n        \n        // Compute power spectral density using periodogram\n        for (int freq = 0; freq < n_samples/2; freq++) {\n            double power = 0.0;\n            \n            for (int t = 0; t < n_samples; t++) {\n                double angle = 2.0 * M_PI * freq * t / n_samples;\n                power += eeg_signal[ch * n_samples + t] * cos(angle);\n            }\n            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z10analyzeEEGPdiiS_S_S_",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "\nvoid analyzeEEG(double* eeg_signal, int n_channels, int n_samples, \n               double* alpha_power, double* beta_power, double* theta_power) {\n    const double sample_rate = 256.0; // Hz\n    \n    for (int ch = 0; ch < n_channels; ch++) {\n        alpha_power[ch] = 0.0;\n        beta_power[ch] = 0.0;\n        theta_power[ch] = 0.0;\n        \n        // Compute power spectral density using periodogram\n        for (int freq = 0; freq < n_samples/2; freq++) {\n            double power = 0.0;\n            \n            for (int t = 0; t < n_samples; t++) {\n                double angle = 2.0 * M_PI * freq * t / n_samples;\n                power += eeg_signal[ch * n_samples + t] * cos(angle);\n            }\n            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z10analyzeEEGPdiiS_S_S_",
+      "line": 27,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }\n    }\n}\n\nvoid detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;\n        double line_length = 0.0;\n        \n        for (int t = 0; t < n_samples; t++) {\n            energy += eeg_signal[ch * n_samples + t] * eeg_signal[ch * n_samples + t];\n            \n            if (t > 0) {\n                line_length += fabs(eeg_signal[ch * n_samples + t] - \n                                   eeg_signal[ch * n_samples + t - 1]);\n            }\n        }\n        \n        // Seizure criteria: high energy and high line length",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z10analyzeEEGPdiiS_S_S_",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        alpha_power[ch] = 0.0;\n        beta_power[ch] = 0.0;\n        theta_power[ch] = 0.0;\n        \n        // Compute power spectral density using periodogram\n        for (int freq = 0; freq < n_samples/2; freq++) {\n            double power = 0.0;\n            \n            for (int t = 0; t < n_samples; t++) {\n                double angle = 2.0 * M_PI * freq * t / n_samples;\n                power += eeg_signal[ch * n_samples + t] * cos(angle);\n            }\n            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }\n    }\n}\n\nvoid detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "main",
+      "line": 9,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "\nvoid analyzeEEG(double* eeg_signal, int n_channels, int n_samples, \n               double* alpha_power, double* beta_power, double* theta_power) {\n    const double sample_rate = 256.0; // Hz\n    \n    for (int ch = 0; ch < n_channels; ch++) {\n        alpha_power[ch] = 0.0;\n        beta_power[ch] = 0.0;\n        theta_power[ch] = 0.0;\n        \n        // Compute power spectral density using periodogram\n        for (int freq = 0; freq < n_samples/2; freq++) {\n            double power = 0.0;\n            \n            for (int t = 0; t < n_samples; t++) {\n                double angle = 2.0 * M_PI * freq * t / n_samples;\n                power += eeg_signal[ch * n_samples + t] * cos(angle);\n            }\n            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "main",
+      "line": 27,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }\n    }\n}\n\nvoid detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;\n        double line_length = 0.0;\n        \n        for (int t = 0; t < n_samples; t++) {\n            energy += eeg_signal[ch * n_samples + t] * eeg_signal[ch * n_samples + t];\n            \n            if (t > 0) {\n                line_length += fabs(eeg_signal[ch * n_samples + t] - \n                                   eeg_signal[ch * n_samples + t - 1]);\n            }\n        }\n        \n        // Seizure criteria: high energy and high line length",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "main",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "        alpha_power[ch] = 0.0;\n        beta_power[ch] = 0.0;\n        theta_power[ch] = 0.0;\n        \n        // Compute power spectral density using periodogram\n        for (int freq = 0; freq < n_samples/2; freq++) {\n            double power = 0.0;\n            \n            for (int t = 0; t < n_samples; t++) {\n                double angle = 2.0 * M_PI * freq * t / n_samples;\n                power += eeg_signal[ch * n_samples + t] * cos(angle);\n            }\n            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }\n    }\n}\n\nvoid detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z10analyzeEEGPdiiS_S_S_",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        \n        // Compute power spectral density using periodogram\n        for (int freq = 0; freq < n_samples/2; freq++) {\n            double power = 0.0;\n            \n            for (int t = 0; t < n_samples; t++) {\n                double angle = 2.0 * M_PI * freq * t / n_samples;\n                power += eeg_signal[ch * n_samples + t] * cos(angle);\n            }\n            power = power * power / n_samples;\n            \n            double frequency = freq * sample_rate / n_samples;\n            \n            // Alpha band: 8-13 Hz\n            if (frequency >= 8.0 && frequency <= 13.0) {\n                alpha_power[ch] += power;\n            }\n            // Beta band: 13-30 Hz\n            else if (frequency >= 13.0 && frequency <= 30.0) {\n                beta_power[ch] += power;\n            }\n            // Theta band: 4-8 Hz\n            else if (frequency >= 4.0 && frequency <= 8.0) {\n                theta_power[ch] += power;\n            }\n        }\n    }\n}\n\nvoid detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;\n        double line_length = 0.0;\n        \n        for (int t = 0; t < n_samples; t++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z13detectSeizurePdiiPb",
+      "line": 43,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n    }\n}\n\nvoid detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;\n        double line_length = 0.0;\n        \n        for (int t = 0; t < n_samples; t++) {\n            energy += eeg_signal[ch * n_samples + t] * eeg_signal[ch * n_samples + t];\n            \n            if (t > 0) {\n                line_length += fabs(eeg_signal[ch * n_samples + t] - \n                                   eeg_signal[ch * n_samples + t - 1]);\n            }\n        }\n        \n        // Seizure criteria: high energy and high line length\n        seizure_detected[ch] = (energy > 1000.0 && line_length > 500.0);\n    }\n}\n\nint main() {\n    const int n_channels = 64, n_samples = 1024;\n    std::vector<double> eeg_signal(n_channels * n_samples, 0.0);\n    std::vector<double> alpha_power(n_channels);\n    std::vector<double> beta_power(n_channels);\n    std::vector<double> theta_power(n_channels);\n    std::vector<char> seizure_detected(n_channels);\n    \n    analyzeEEG(eeg_signal.data(), n_channels, n_samples, \n              alpha_power.data(), beta_power.data(), theta_power.data());\n    detectSeizure(eeg_signal.data(), n_channels, n_samples, (bool*)seizure_detected.data());\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z13detectSeizurePdiiPb",
+      "line": 47,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;\n        double line_length = 0.0;\n        \n        for (int t = 0; t < n_samples; t++) {\n            energy += eeg_signal[ch * n_samples + t] * eeg_signal[ch * n_samples + t];\n            \n            if (t > 0) {\n                line_length += fabs(eeg_signal[ch * n_samples + t] - \n                                   eeg_signal[ch * n_samples + t - 1]);\n            }\n        }\n        \n        // Seizure criteria: high energy and high line length\n        seizure_detected[ch] = (energy > 1000.0 && line_length > 500.0);\n    }\n}\n\nint main() {\n    const int n_channels = 64, n_samples = 1024;\n    std::vector<double> eeg_signal(n_channels * n_samples, 0.0);\n    std::vector<double> alpha_power(n_channels);\n    std::vector<double> beta_power(n_channels);\n    std::vector<double> theta_power(n_channels);\n    std::vector<char> seizure_detected(n_channels);\n    \n    analyzeEEG(eeg_signal.data(), n_channels, n_samples, \n              alpha_power.data(), beta_power.data(), theta_power.data());\n    detectSeizure(eeg_signal.data(), n_channels, n_samples, (bool*)seizure_detected.data());\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/eeg_processing.cpp",
+      "function": "_Z13detectSeizurePdiiPb",
+      "line": 47,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void detectSeizure(double* eeg_signal, int n_channels, int n_samples, bool* seizure_detected) {\n    for (int ch = 0; ch < n_channels; ch++) {\n        double energy = 0.0;\n        double line_length = 0.0;\n        \n        for (int t = 0; t < n_samples; t++) {\n            energy += eeg_signal[ch * n_samples + t] * eeg_signal[ch * n_samples + t];\n            \n            if (t > 0) {\n                line_length += fabs(eeg_signal[ch * n_samples + t] - \n                                   eeg_signal[ch * n_samples + t - 1]);\n            }\n        }\n        \n        // Seizure criteria: high energy and high line length\n        seizure_detected[ch] = (energy > 1000.0 && line_length > 500.0);\n    }\n}\n\nint main() {\n    const int n_channels = 64, n_samples = 1024;\n    std::vector<double> eeg_signal(n_channels * n_samples, 0.0);\n    std::vector<double> alpha_power(n_channels);\n    std::vector<double> beta_power(n_channels);\n    std::vector<double> theta_power(n_channels);\n    std::vector<char> seizure_detected(n_channels);\n    \n    analyzeEEG(eeg_signal.data(), n_channels, n_samples, \n              alpha_power.data(), beta_power.data(), theta_power.data());\n    detectSeizure(eeg_signal.data(), n_channels, n_samples, (bool*)seizure_detected.data());\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

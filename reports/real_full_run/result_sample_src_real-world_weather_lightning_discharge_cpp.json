@@ -1,0 +1,652 @@
+{
+  "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+    "llvm_initial": 44,
+    "llvm_sys_noise": 5,
+    "llvm_project": 39,
+    "after_filter": 11,
+    "ai_batches": 1,
+    "ai_results": 11,
+    "omp_verified": 0,
+    "total_ms": 851.1,
+    "llvm_ms": 431.4
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z22calculateElectricFieldRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiid",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z22calculateElectricFieldRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiid",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z22calculateElectricFieldRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiid",
+      "line": 16,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z22calculateElectricFieldRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiid",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z22calculateElectricFieldRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiid",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z22calculateElectricFieldRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiid",
+      "line": 16,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\nvoid calculateElectricField(std::vector<LightningNode>& nodes, double* E_field,\n                           int nx, int ny, int nz, double dx) {\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                // Electric field from potential: E = -\u2207\u03c6\n                E_field[3*idx + 0] = -(nodes[idx+ny*nz].potential - nodes[idx-ny*nz].potential) / (2*dx);\n                E_field[3*idx + 1] = -(nodes[idx+nz].potential - nodes[idx-nz].potential) / (2*dx);\n                E_field[3*idx + 2] = -(nodes[idx+1].potential - nodes[idx-1].potential) / (2*dx);\n            }\n        }\n    }\n}\n\nvoid propagateStreamers(std::vector<LightningNode>& nodes, double* E_field,\n                       int nx, int ny, int nz, double threshold_field,\n                       std::mt19937& rng) {\n    std::uniform_real_distribution<> uniform(0.0, 1.0);\n    \n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                double E_mag = sqrt(E_field[3*idx + 0]*E_field[3*idx + 0] +\n                                   E_field[3*idx + 1]*E_field[3*idx + 1] +\n                                   E_field[3*idx + 2]*E_field[3*idx + 2]);\n                \n                // Check if field exceeds breakdown threshold\n                if (E_mag > threshold_field && uniform(rng) < 0.01) {\n                    nodes[idx].is_leader = true;\n                    nodes[idx].potential = 0.0; // Discharge"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 33,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 34,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 33,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 34,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 43,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.15000000000000002
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 43,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.15000000000000002
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 48,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                if (E_mag > threshold_field && uniform(rng) < 0.01) {\n                    nodes[idx].is_leader = true;\n                    nodes[idx].potential = 0.0; // Discharge\n                    \n                    // Propagate to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                \n                                int ni = i + di;\n                                int nj = j + dj;\n                                int nk = k + dk;\n                                \n                                if (ni >= 0 && ni < nx && nj >= 0 && nj < ny && nk >= 0 && nk < nz) {\n                                    int nidx = ni*ny*nz + nj*nz + nk;\n                                    \n                                    // Probabilistic branching\n                                    if (!nodes[nidx].is_leader && uniform(rng) < E_mag / threshold_field * 0.1) {\n                                        nodes[nidx].is_leader = true;\n                                        nodes[nidx].potential *= 0.5;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}\n\nvoid solvePoissonEquation(double* potential, double* charge_density,\n                         int nx, int ny, int nz, double dx, int iterations) {\n    std::vector<double> pot_new(nx*ny*nz);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    nodes[idx].is_leader = true;\n                    nodes[idx].potential = 0.0; // Discharge\n                    \n                    // Propagate to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                \n                                int ni = i + di;\n                                int nj = j + dj;\n                                int nk = k + dk;\n                                \n                                if (ni >= 0 && ni < nx && nj >= 0 && nj < ny && nk >= 0 && nk < nz) {\n                                    int nidx = ni*ny*nz + nj*nz + nk;\n                                    \n                                    // Probabilistic branching\n                                    if (!nodes[nidx].is_leader && uniform(rng) < E_mag / threshold_field * 0.1) {\n                                        nodes[nidx].is_leader = true;\n                                        nodes[nidx].potential *= 0.5;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}\n\nvoid solvePoissonEquation(double* potential, double* charge_density,\n                         int nx, int ny, int nz, double dx, int iterations) {\n    std::vector<double> pot_new(nx*ny*nz);\n    const double epsilon_0 = 8.854e-12;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 51,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    \n                    // Propagate to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                \n                                int ni = i + di;\n                                int nj = j + dj;\n                                int nk = k + dk;\n                                \n                                if (ni >= 0 && ni < nx && nj >= 0 && nj < ny && nk >= 0 && nk < nz) {\n                                    int nidx = ni*ny*nz + nj*nz + nk;\n                                    \n                                    // Probabilistic branching\n                                    if (!nodes[nidx].is_leader && uniform(rng) < E_mag / threshold_field * 0.1) {\n                                        nodes[nidx].is_leader = true;\n                                        nodes[nidx].potential *= 0.5;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}\n\nvoid solvePoissonEquation(double* potential, double* charge_density,\n                         int nx, int ny, int nz, double dx, int iterations) {\n    std::vector<double> pot_new(nx*ny*nz);\n    const double epsilon_0 = 8.854e-12;\n    \n    for (int iter = 0; iter < iterations; iter++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 57,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 61,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.73,
+      "context": "                                \n                                if (ni >= 0 && ni < nx && nj >= 0 && nj < ny && nk >= 0 && nk < nz) {\n                                    int nidx = ni*ny*nz + nj*nz + nk;\n                                    \n                                    // Probabilistic branching\n                                    if (!nodes[nidx].is_leader && uniform(rng) < E_mag / threshold_field * 0.1) {\n                                        nodes[nidx].is_leader = true;\n                                        nodes[nidx].potential *= 0.5;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}\n\nvoid solvePoissonEquation(double* potential, double* charge_density,\n                         int nx, int ny, int nz, double dx, int iterations) {\n    std::vector<double> pot_new(nx*ny*nz);\n    const double epsilon_0 = 8.854e-12;\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double laplacian = (potential[(i+1)*ny*nz+j*nz+k] + potential[(i-1)*ny*nz+j*nz+k] +\n                                       potential[i*ny*nz+(j+1)*nz+k] + potential[i*ny*nz+(j-1)*nz+k] +\n                                       potential[i*ny*nz+j*nz+(k+1)] + potential[i*ny*nz+j*nz+(k-1)] -\n                                       6*potential[idx]) / (dx*dx);\n                    "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 61,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.15000000000000002
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 50,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    nodes[idx].potential = 0.0; // Discharge\n                    \n                    // Propagate to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                \n                                int ni = i + di;\n                                int nj = j + dj;\n                                int nk = k + dk;\n                                \n                                if (ni >= 0 && ni < nx && nj >= 0 && nj < ny && nk >= 0 && nk < nz) {\n                                    int nidx = ni*ny*nz + nj*nz + nk;\n                                    \n                                    // Probabilistic branching\n                                    if (!nodes[nidx].is_leader && uniform(rng) < E_mag / threshold_field * 0.1) {\n                                        nodes[nidx].is_leader = true;\n                                        nodes[nidx].potential *= 0.5;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}\n\nvoid solvePoissonEquation(double* potential, double* charge_density,\n                         int nx, int ny, int nz, double dx, int iterations) {\n    std::vector<double> pot_new(nx*ny*nz);\n    const double epsilon_0 = 8.854e-12;\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z20solvePoissonEquationPdS_iiidi",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z20solvePoissonEquationPdS_iiidi",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z20solvePoissonEquationPdS_iiidi",
+      "line": 80,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void solvePoissonEquation(double* potential, double* charge_density,\n                         int nx, int ny, int nz, double dx, int iterations) {\n    std::vector<double> pot_new(nx*ny*nz);\n    const double epsilon_0 = 8.854e-12;\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double laplacian = (potential[(i+1)*ny*nz+j*nz+k] + potential[(i-1)*ny*nz+j*nz+k] +\n                                       potential[i*ny*nz+(j+1)*nz+k] + potential[i*ny*nz+(j-1)*nz+k] +\n                                       potential[i*ny*nz+j*nz+(k+1)] + potential[i*ny*nz+j*nz+(k-1)] -\n                                       6*potential[idx]) / (dx*dx);\n                    \n                    pot_new[idx] = potential[idx] + 0.1 * (laplacian + charge_density[idx] / epsilon_0);\n                }\n            }\n        }\n        \n        for (size_t i = 0; i < pot_new.size(); i++) {\n            potential[i] = pot_new[i];\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100, nz = 200;\n    const double dx = 10.0; // meters\n    const double threshold_field = 3e6; // V/m (breakdown field)\n    \n    std::vector<LightningNode> nodes(nx*ny*nz);\n    std::vector<double> E_field(nx*ny*nz*3, 0.0);\n    std::vector<double> charge_density(nx*ny*nz, 0.0);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z20solvePoissonEquationPdS_iiidi",
+      "line": 81,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z20solvePoissonEquationPdS_iiidi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z20solvePoissonEquationPdS_iiidi",
+      "line": 96,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z20solvePoissonEquationPdS_iiidi",
+      "line": 82,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z20solvePoissonEquationPdS_iiidi",
+      "line": 83,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z20solvePoissonEquationPdS_iiidi",
+      "line": 81,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z20solvePoissonEquationPdS_iiidi",
+      "line": 82,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.53
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z20solvePoissonEquationPdS_iiidi",
+      "line": 83,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.44999999999999996
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z20solvePoissonEquationPdS_iiidi",
+      "line": 80,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void solvePoissonEquation(double* potential, double* charge_density,\n                         int nx, int ny, int nz, double dx, int iterations) {\n    std::vector<double> pot_new(nx*ny*nz);\n    const double epsilon_0 = 8.854e-12;\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double laplacian = (potential[(i+1)*ny*nz+j*nz+k] + potential[(i-1)*ny*nz+j*nz+k] +\n                                       potential[i*ny*nz+(j+1)*nz+k] + potential[i*ny*nz+(j-1)*nz+k] +\n                                       potential[i*ny*nz+j*nz+(k+1)] + potential[i*ny*nz+j*nz+(k-1)] -\n                                       6*potential[idx]) / (dx*dx);\n                    \n                    pot_new[idx] = potential[idx] + 0.1 * (laplacian + charge_density[idx] / epsilon_0);\n                }\n            }\n        }\n        \n        for (size_t i = 0; i < pot_new.size(); i++) {\n            potential[i] = pot_new[i];\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100, nz = 200;\n    const double dx = 10.0; // meters\n    const double threshold_field = 3e6; // V/m (breakdown field)\n    \n    std::vector<LightningNode> nodes(nx*ny*nz);\n    std::vector<double> E_field(nx*ny*nz*3, 0.0);\n    std::vector<double> charge_density(nx*ny*nz, 0.0);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "main",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "main",
+      "line": 114,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "main",
+      "line": 115,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "main",
+      "line": 116,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.98,
+      "context": "    std::mt19937 rng(42);\n    \n    // Initialize cloud charge at top\n    for (int i = 0; i < nx; i++) {\n        for (int j = 0; j < ny; j++) {\n            for (int k = nz*3/4; k < nz; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                nodes[idx].x = i * dx;\n                nodes[idx].y = j * dx;\n                nodes[idx].z = k * dx;\n                nodes[idx].potential = -1e8; // -100 MV\n                charge_density[idx] = -1e-6; // C/m\u00b3\n            }\n        }\n    }\n    \n    // Ground at bottom\n    for (int i = 0; i < nx; i++) {\n        for (int j = 0; j < ny; j++) {\n            int idx = i*ny*nz + j*nz + 0;\n            nodes[idx].potential = 0.0;\n        }\n    }\n    \n    // Simulate lightning discharge\n    for (int step = 0; step < 100; step++) {\n        calculateElectricField(nodes, E_field.data(), nx, ny, nz, dx);\n        propagateStreamers(nodes, E_field.data(), nx, ny, nz, threshold_field, rng);\n    }\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "main",
+      "line": 128,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "main",
+      "line": 129,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.98,
+      "context": "        }\n    }\n    \n    // Ground at bottom\n    for (int i = 0; i < nx; i++) {\n        for (int j = 0; j < ny; j++) {\n            int idx = i*ny*nz + j*nz + 0;\n            nodes[idx].potential = 0.0;\n        }\n    }\n    \n    // Simulate lightning discharge\n    for (int step = 0; step < 100; step++) {\n        calculateElectricField(nodes, E_field.data(), nx, ny, nz, dx);\n        propagateStreamers(nodes, E_field.data(), nx, ny, nz, threshold_field, rng);\n    }\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "main",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "main",
+      "line": 15,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "main",
+      "line": 16,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.98,
+      "context": "\nvoid calculateElectricField(std::vector<LightningNode>& nodes, double* E_field,\n                           int nx, int ny, int nz, double dx) {\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                // Electric field from potential: E = -\u2207\u03c6\n                E_field[3*idx + 0] = -(nodes[idx+ny*nz].potential - nodes[idx-ny*nz].potential) / (2*dx);\n                E_field[3*idx + 1] = -(nodes[idx+nz].potential - nodes[idx-nz].potential) / (2*dx);\n                E_field[3*idx + 2] = -(nodes[idx+1].potential - nodes[idx-1].potential) / (2*dx);\n            }\n        }\n    }\n}\n\nvoid propagateStreamers(std::vector<LightningNode>& nodes, double* E_field,\n                       int nx, int ny, int nz, double threshold_field,\n                       std::mt19937& rng) {\n    std::uniform_real_distribution<> uniform(0.0, 1.0);\n    \n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                double E_mag = sqrt(E_field[3*idx + 0]*E_field[3*idx + 0] +\n                                   E_field[3*idx + 1]*E_field[3*idx + 1] +\n                                   E_field[3*idx + 2]*E_field[3*idx + 2]);\n                \n                // Check if field exceeds breakdown threshold\n                if (E_mag > threshold_field && uniform(rng) < 0.01) {\n                    nodes[idx].is_leader = true;\n                    nodes[idx].potential = 0.0; // Discharge"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "main",
+      "line": 136,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.20000000000000004
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z22calculateElectricFieldRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiid",
+      "line": 16,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\nvoid calculateElectricField(std::vector<LightningNode>& nodes, double* E_field,\n                           int nx, int ny, int nz, double dx) {\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                // Electric field from potential: E = -\u2207\u03c6\n                E_field[3*idx + 0] = -(nodes[idx+ny*nz].potential - nodes[idx-ny*nz].potential) / (2*dx);\n                E_field[3*idx + 1] = -(nodes[idx+nz].potential - nodes[idx-nz].potential) / (2*dx);\n                E_field[3*idx + 2] = -(nodes[idx+1].potential - nodes[idx-1].potential) / (2*dx);\n            }\n        }\n    }\n}\n\nvoid propagateStreamers(std::vector<LightningNode>& nodes, double* E_field,\n                       int nx, int ny, int nz, double threshold_field,\n                       std::mt19937& rng) {\n    std::uniform_real_distribution<> uniform(0.0, 1.0);\n    \n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                double E_mag = sqrt(E_field[3*idx + 0]*E_field[3*idx + 0] +\n                                   E_field[3*idx + 1]*E_field[3*idx + 1] +\n                                   E_field[3*idx + 2]*E_field[3*idx + 2]);\n                \n                // Check if field exceeds breakdown threshold\n                if (E_mag > threshold_field && uniform(rng) < 0.01) {\n                    nodes[idx].is_leader = true;\n                    nodes[idx].potential = 0.0; // Discharge",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "main",
+      "line": 116,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.98,
+      "context": "    std::mt19937 rng(42);\n    \n    // Initialize cloud charge at top\n    for (int i = 0; i < nx; i++) {\n        for (int j = 0; j < ny; j++) {\n            for (int k = nz*3/4; k < nz; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                nodes[idx].x = i * dx;\n                nodes[idx].y = j * dx;\n                nodes[idx].z = k * dx;\n                nodes[idx].potential = -1e8; // -100 MV\n                charge_density[idx] = -1e-6; // C/m\u00b3\n            }\n        }\n    }\n    \n    // Ground at bottom\n    for (int i = 0; i < nx; i++) {\n        for (int j = 0; j < ny; j++) {\n            int idx = i*ny*nz + j*nz + 0;\n            nodes[idx].potential = 0.0;\n        }\n    }\n    \n    // Simulate lightning discharge\n    for (int step = 0; step < 100; step++) {\n        calculateElectricField(nodes, E_field.data(), nx, ny, nz, dx);\n        propagateStreamers(nodes, E_field.data(), nx, ny, nz, threshold_field, rng);\n    }\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.98
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "main",
+      "line": 129,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.98,
+      "context": "        }\n    }\n    \n    // Ground at bottom\n    for (int i = 0; i < nx; i++) {\n        for (int j = 0; j < ny; j++) {\n            int idx = i*ny*nz + j*nz + 0;\n            nodes[idx].potential = 0.0;\n        }\n    }\n    \n    // Simulate lightning discharge\n    for (int step = 0; step < 100; step++) {\n        calculateElectricField(nodes, E_field.data(), nx, ny, nz, dx);\n        propagateStreamers(nodes, E_field.data(), nx, ny, nz, threshold_field, rng);\n    }\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.98
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "main",
+      "line": 16,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.98,
+      "context": "\nvoid calculateElectricField(std::vector<LightningNode>& nodes, double* E_field,\n                           int nx, int ny, int nz, double dx) {\n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                // Electric field from potential: E = -\u2207\u03c6\n                E_field[3*idx + 0] = -(nodes[idx+ny*nz].potential - nodes[idx-ny*nz].potential) / (2*dx);\n                E_field[3*idx + 1] = -(nodes[idx+nz].potential - nodes[idx-nz].potential) / (2*dx);\n                E_field[3*idx + 2] = -(nodes[idx+1].potential - nodes[idx-1].potential) / (2*dx);\n            }\n        }\n    }\n}\n\nvoid propagateStreamers(std::vector<LightningNode>& nodes, double* E_field,\n                       int nx, int ny, int nz, double threshold_field,\n                       std::mt19937& rng) {\n    std::uniform_real_distribution<> uniform(0.0, 1.0);\n    \n    for (int i = 1; i < nx-1; i++) {\n        for (int j = 1; j < ny-1; j++) {\n            for (int k = 1; k < nz-1; k++) {\n                int idx = i*ny*nz + j*nz + k;\n                \n                double E_mag = sqrt(E_field[3*idx + 0]*E_field[3*idx + 0] +\n                                   E_field[3*idx + 1]*E_field[3*idx + 1] +\n                                   E_field[3*idx + 2]*E_field[3*idx + 2]);\n                \n                // Check if field exceeds breakdown threshold\n                if (E_mag > threshold_field && uniform(rng) < 0.01) {\n                    nodes[idx].is_leader = true;\n                    nodes[idx].potential = 0.0; // Discharge",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.98
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 61,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.73,
+      "context": "                                \n                                if (ni >= 0 && ni < nx && nj >= 0 && nj < ny && nk >= 0 && nk < nz) {\n                                    int nidx = ni*ny*nz + nj*nz + nk;\n                                    \n                                    // Probabilistic branching\n                                    if (!nodes[nidx].is_leader && uniform(rng) < E_mag / threshold_field * 0.1) {\n                                        nodes[nidx].is_leader = true;\n                                        nodes[nidx].potential *= 0.5;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}\n\nvoid solvePoissonEquation(double* potential, double* charge_density,\n                         int nx, int ny, int nz, double dx, int iterations) {\n    std::vector<double> pot_new(nx*ny*nz);\n    const double epsilon_0 = 8.854e-12;\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double laplacian = (potential[(i+1)*ny*nz+j*nz+k] + potential[(i-1)*ny*nz+j*nz+k] +\n                                       potential[i*ny*nz+(j+1)*nz+k] + potential[i*ny*nz+(j-1)*nz+k] +\n                                       potential[i*ny*nz+j*nz+(k+1)] + potential[i*ny*nz+j*nz+(k-1)] -\n                                       6*potential[idx]) / (dx*dx);\n                    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.73
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 48,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                if (E_mag > threshold_field && uniform(rng) < 0.01) {\n                    nodes[idx].is_leader = true;\n                    nodes[idx].potential = 0.0; // Discharge\n                    \n                    // Propagate to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                \n                                int ni = i + di;\n                                int nj = j + dj;\n                                int nk = k + dk;\n                                \n                                if (ni >= 0 && ni < nx && nj >= 0 && nj < ny && nk >= 0 && nk < nz) {\n                                    int nidx = ni*ny*nz + nj*nz + nk;\n                                    \n                                    // Probabilistic branching\n                                    if (!nodes[nidx].is_leader && uniform(rng) < E_mag / threshold_field * 0.1) {\n                                        nodes[nidx].is_leader = true;\n                                        nodes[nidx].potential *= 0.5;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}\n\nvoid solvePoissonEquation(double* potential, double* charge_density,\n                         int nx, int ny, int nz, double dx, int iterations) {\n    std::vector<double> pot_new(nx*ny*nz);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    nodes[idx].is_leader = true;\n                    nodes[idx].potential = 0.0; // Discharge\n                    \n                    // Propagate to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                \n                                int ni = i + di;\n                                int nj = j + dj;\n                                int nk = k + dk;\n                                \n                                if (ni >= 0 && ni < nx && nj >= 0 && nj < ny && nk >= 0 && nk < nz) {\n                                    int nidx = ni*ny*nz + nj*nz + nk;\n                                    \n                                    // Probabilistic branching\n                                    if (!nodes[nidx].is_leader && uniform(rng) < E_mag / threshold_field * 0.1) {\n                                        nodes[nidx].is_leader = true;\n                                        nodes[nidx].potential *= 0.5;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}\n\nvoid solvePoissonEquation(double* potential, double* charge_density,\n                         int nx, int ny, int nz, double dx, int iterations) {\n    std::vector<double> pot_new(nx*ny*nz);\n    const double epsilon_0 = 8.854e-12;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 51,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    \n                    // Propagate to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                \n                                int ni = i + di;\n                                int nj = j + dj;\n                                int nk = k + dk;\n                                \n                                if (ni >= 0 && ni < nx && nj >= 0 && nj < ny && nk >= 0 && nk < nz) {\n                                    int nidx = ni*ny*nz + nj*nz + nk;\n                                    \n                                    // Probabilistic branching\n                                    if (!nodes[nidx].is_leader && uniform(rng) < E_mag / threshold_field * 0.1) {\n                                        nodes[nidx].is_leader = true;\n                                        nodes[nidx].potential *= 0.5;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}\n\nvoid solvePoissonEquation(double* potential, double* charge_density,\n                         int nx, int ny, int nz, double dx, int iterations) {\n    std::vector<double> pot_new(nx*ny*nz);\n    const double epsilon_0 = 8.854e-12;\n    \n    for (int iter = 0; iter < iterations; iter++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z18propagateStreamersRNSt3__16vectorI13LightningNodeNS_9allocatorIS1_EEEEPdiiidRNS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEE",
+      "line": 50,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    nodes[idx].potential = 0.0; // Discharge\n                    \n                    // Propagate to neighbors\n                    for (int di = -1; di <= 1; di++) {\n                        for (int dj = -1; dj <= 1; dj++) {\n                            for (int dk = -1; dk <= 1; dk++) {\n                                if (di == 0 && dj == 0 && dk == 0) continue;\n                                \n                                int ni = i + di;\n                                int nj = j + dj;\n                                int nk = k + dk;\n                                \n                                if (ni >= 0 && ni < nx && nj >= 0 && nj < ny && nk >= 0 && nk < nz) {\n                                    int nidx = ni*ny*nz + nj*nz + nk;\n                                    \n                                    // Probabilistic branching\n                                    if (!nodes[nidx].is_leader && uniform(rng) < E_mag / threshold_field * 0.1) {\n                                        nodes[nidx].is_leader = true;\n                                        nodes[nidx].potential *= 0.5;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}\n\nvoid solvePoissonEquation(double* potential, double* charge_density,\n                         int nx, int ny, int nz, double dx, int iterations) {\n    std::vector<double> pot_new(nx*ny*nz);\n    const double epsilon_0 = 8.854e-12;\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z20solvePoissonEquationPdS_iiidi",
+      "line": 80,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void solvePoissonEquation(double* potential, double* charge_density,\n                         int nx, int ny, int nz, double dx, int iterations) {\n    std::vector<double> pot_new(nx*ny*nz);\n    const double epsilon_0 = 8.854e-12;\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double laplacian = (potential[(i+1)*ny*nz+j*nz+k] + potential[(i-1)*ny*nz+j*nz+k] +\n                                       potential[i*ny*nz+(j+1)*nz+k] + potential[i*ny*nz+(j-1)*nz+k] +\n                                       potential[i*ny*nz+j*nz+(k+1)] + potential[i*ny*nz+j*nz+(k-1)] -\n                                       6*potential[idx]) / (dx*dx);\n                    \n                    pot_new[idx] = potential[idx] + 0.1 * (laplacian + charge_density[idx] / epsilon_0);\n                }\n            }\n        }\n        \n        for (size_t i = 0; i < pot_new.size(); i++) {\n            potential[i] = pot_new[i];\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100, nz = 200;\n    const double dx = 10.0; // meters\n    const double threshold_field = 3e6; // V/m (breakdown field)\n    \n    std::vector<LightningNode> nodes(nx*ny*nz);\n    std::vector<double> E_field(nx*ny*nz*3, 0.0);\n    std::vector<double> charge_density(nx*ny*nz, 0.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/lightning_discharge.cpp",
+      "function": "_Z20solvePoissonEquationPdS_iiidi",
+      "line": 80,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void solvePoissonEquation(double* potential, double* charge_density,\n                         int nx, int ny, int nz, double dx, int iterations) {\n    std::vector<double> pot_new(nx*ny*nz);\n    const double epsilon_0 = 8.854e-12;\n    \n    for (int iter = 0; iter < iterations; iter++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                for (int k = 1; k < nz-1; k++) {\n                    int idx = i*ny*nz + j*nz + k;\n                    \n                    double laplacian = (potential[(i+1)*ny*nz+j*nz+k] + potential[(i-1)*ny*nz+j*nz+k] +\n                                       potential[i*ny*nz+(j+1)*nz+k] + potential[i*ny*nz+(j-1)*nz+k] +\n                                       potential[i*ny*nz+j*nz+(k+1)] + potential[i*ny*nz+j*nz+(k-1)] -\n                                       6*potential[idx]) / (dx*dx);\n                    \n                    pot_new[idx] = potential[idx] + 0.1 * (laplacian + charge_density[idx] / epsilon_0);\n                }\n            }\n        }\n        \n        for (size_t i = 0; i < pot_new.size(); i++) {\n            potential[i] = pot_new[i];\n        }\n    }\n}\n\nint main() {\n    const int nx = 100, ny = 100, nz = 200;\n    const double dx = 10.0; // meters\n    const double threshold_field = 3e6; // V/m (breakdown field)\n    \n    std::vector<LightningNode> nodes(nx*ny*nz);\n    std::vector<double> E_field(nx*ny*nz*3, 0.0);\n    std::vector<double> charge_density(nx*ny*nz, 0.0);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

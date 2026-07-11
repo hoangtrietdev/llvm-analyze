@@ -1,0 +1,302 @@
+{
+  "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+    "llvm_initial": 12,
+    "llvm_sys_noise": 1,
+    "llvm_project": 11,
+    "after_filter": 8,
+    "ai_batches": 1,
+    "ai_results": 8,
+    "omp_verified": 0,
+    "total_ms": 575.9,
+    "llvm_ms": 395.0
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z27calculateOrderBookImbalanceP14OrderBookLevelS0_iPd",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "\nvoid calculateOrderBookImbalance(OrderBookLevel* bids, OrderBookLevel* asks,\n                                int n_levels, double* imbalance) {\n    double bid_volume = 0.0, ask_volume = 0.0;\n    \n    for (int i = 0; i < n_levels; i++) {\n        bid_volume += bids[i].quantity;\n        ask_volume += asks[i].quantity;\n    }\n    \n    *imbalance = (bid_volume - ask_volume) / (bid_volume + ask_volume);\n}\n\nvoid predictShortTermPrice(double* prices, double* volumes, double* imbalances,\n                          double* predictions, int n_ticks, int lookback) {\n    for (int t = lookback; t < n_ticks; t++) {\n        double weighted_imbalance = 0.0;\n        double volume_weighted_price = 0.0;\n        double total_volume = 0.0;\n        \n        for (int lag = 0; lag < lookback; lag++) {\n            int idx = t - lag - 1;\n            double weight = exp(-0.1 * lag);\n            \n            weighted_imbalance += imbalances[idx] * weight;\n            volume_weighted_price += prices[idx] * volumes[idx];\n            total_volume += volumes[idx];\n        }\n        \n        volume_weighted_price /= total_volume;\n        \n        // Predict next price based on momentum and imbalance\n        double momentum = (prices[t-1] - prices[t-lookback]) / lookback;\n        predictions[t] = volume_weighted_price + momentum + \n                        weighted_imbalance * 0.001;"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z27calculateOrderBookImbalanceP14OrderBookLevelS0_iPd",
+      "line": 14,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\nvoid calculateOrderBookImbalance(OrderBookLevel* bids, OrderBookLevel* asks,\n                                int n_levels, double* imbalance) {\n    double bid_volume = 0.0, ask_volume = 0.0;\n    \n    for (int i = 0; i < n_levels; i++) {\n        bid_volume += bids[i].quantity;\n        ask_volume += asks[i].quantity;\n    }\n    \n    *imbalance = (bid_volume - ask_volume) / (bid_volume + ask_volume);\n}\n\nvoid predictShortTermPrice(double* prices, double* volumes, double* imbalances,\n                          double* predictions, int n_ticks, int lookback) {\n    for (int t = lookback; t < n_ticks; t++) {\n        double weighted_imbalance = 0.0;\n        double volume_weighted_price = 0.0;\n        double total_volume = 0.0;\n        \n        for (int lag = 0; lag < lookback; lag++) {\n            int idx = t - lag - 1;\n            double weight = exp(-0.1 * lag);\n            \n            weighted_imbalance += imbalances[idx] * weight;\n            volume_weighted_price += prices[idx] * volumes[idx];\n            total_volume += volumes[idx];\n        }\n        \n        volume_weighted_price /= total_volume;\n        \n        // Predict next price based on momentum and imbalance\n        double momentum = (prices[t-1] - prices[t-lookback]) / lookback;\n        predictions[t] = volume_weighted_price + momentum + \n                        weighted_imbalance * 0.001;"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z21predictShortTermPricePdS_S_S_ii",
+      "line": 24,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    *imbalance = (bid_volume - ask_volume) / (bid_volume + ask_volume);\n}\n\nvoid predictShortTermPrice(double* prices, double* volumes, double* imbalances,\n                          double* predictions, int n_ticks, int lookback) {\n    for (int t = lookback; t < n_ticks; t++) {\n        double weighted_imbalance = 0.0;\n        double volume_weighted_price = 0.0;\n        double total_volume = 0.0;\n        \n        for (int lag = 0; lag < lookback; lag++) {\n            int idx = t - lag - 1;\n            double weight = exp(-0.1 * lag);\n            \n            weighted_imbalance += imbalances[idx] * weight;\n            volume_weighted_price += prices[idx] * volumes[idx];\n            total_volume += volumes[idx];\n        }\n        \n        volume_weighted_price /= total_volume;\n        \n        // Predict next price based on momentum and imbalance\n        double momentum = (prices[t-1] - prices[t-lookback]) / lookback;\n        predictions[t] = volume_weighted_price + momentum + \n                        weighted_imbalance * 0.001;\n    }\n}\n\nvoid detectToxicFlow(double* trade_sizes, double* price_changes, \n                    bool* toxic_flow, int n_trades, int window) {\n    for (int t = window; t < n_trades; t++) {\n        double avg_size = 0.0;\n        double avg_impact = 0.0;\n        \n        for (int i = 0; i < window; i++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z21predictShortTermPricePdS_S_S_ii",
+      "line": 29,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    for (int t = lookback; t < n_ticks; t++) {\n        double weighted_imbalance = 0.0;\n        double volume_weighted_price = 0.0;\n        double total_volume = 0.0;\n        \n        for (int lag = 0; lag < lookback; lag++) {\n            int idx = t - lag - 1;\n            double weight = exp(-0.1 * lag);\n            \n            weighted_imbalance += imbalances[idx] * weight;\n            volume_weighted_price += prices[idx] * volumes[idx];\n            total_volume += volumes[idx];\n        }\n        \n        volume_weighted_price /= total_volume;\n        \n        // Predict next price based on momentum and imbalance\n        double momentum = (prices[t-1] - prices[t-lookback]) / lookback;\n        predictions[t] = volume_weighted_price + momentum + \n                        weighted_imbalance * 0.001;\n    }\n}\n\nvoid detectToxicFlow(double* trade_sizes, double* price_changes, \n                    bool* toxic_flow, int n_trades, int window) {\n    for (int t = window; t < n_trades; t++) {\n        double avg_size = 0.0;\n        double avg_impact = 0.0;\n        \n        for (int i = 0; i < window; i++) {\n            avg_size += trade_sizes[t - i];\n            avg_impact += fabs(price_changes[t - i]);\n        }\n        \n        avg_size /= window;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z21predictShortTermPricePdS_S_S_ii",
+      "line": 24,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z21predictShortTermPricePdS_S_S_ii",
+      "line": 29,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z15detectToxicFlowPdS_Pbii",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n}\n\nvoid detectToxicFlow(double* trade_sizes, double* price_changes, \n                    bool* toxic_flow, int n_trades, int window) {\n    for (int t = window; t < n_trades; t++) {\n        double avg_size = 0.0;\n        double avg_impact = 0.0;\n        \n        for (int i = 0; i < window; i++) {\n            avg_size += trade_sizes[t - i];\n            avg_impact += fabs(price_changes[t - i]);\n        }\n        \n        avg_size /= window;\n        avg_impact /= window;\n        \n        // Toxic flow: large trades with high price impact\n        toxic_flow[t] = (trade_sizes[t] > avg_size * 2.0 && \n                        fabs(price_changes[t]) > avg_impact * 1.5);\n    }\n}\n\nint main() {\n    const int n_levels = 10, n_ticks = 10000;\n    \n    std::vector<OrderBookLevel> bids(n_levels);\n    std::vector<OrderBookLevel> asks(n_levels);\n    std::vector<double> prices(n_ticks, 100.0);\n    std::vector<double> volumes(n_ticks, 1000.0);\n    std::vector<double> imbalances(n_ticks);\n    std::vector<double> predictions(n_ticks);\n    std::vector<double> trade_sizes(n_ticks, 500.0);\n    std::vector<double> price_changes(n_ticks, 0.01);\n    std::vector<bool> toxic_flow(n_ticks);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z15detectToxicFlowPdS_Pbii",
+      "line": 53,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    bool* toxic_flow, int n_trades, int window) {\n    for (int t = window; t < n_trades; t++) {\n        double avg_size = 0.0;\n        double avg_impact = 0.0;\n        \n        for (int i = 0; i < window; i++) {\n            avg_size += trade_sizes[t - i];\n            avg_impact += fabs(price_changes[t - i]);\n        }\n        \n        avg_size /= window;\n        avg_impact /= window;\n        \n        // Toxic flow: large trades with high price impact\n        toxic_flow[t] = (trade_sizes[t] > avg_size * 2.0 && \n                        fabs(price_changes[t]) > avg_impact * 1.5);\n    }\n}\n\nint main() {\n    const int n_levels = 10, n_ticks = 10000;\n    \n    std::vector<OrderBookLevel> bids(n_levels);\n    std::vector<OrderBookLevel> asks(n_levels);\n    std::vector<double> prices(n_ticks, 100.0);\n    std::vector<double> volumes(n_ticks, 1000.0);\n    std::vector<double> imbalances(n_ticks);\n    std::vector<double> predictions(n_ticks);\n    std::vector<double> trade_sizes(n_ticks, 500.0);\n    std::vector<double> price_changes(n_ticks, 0.01);\n    std::vector<bool> toxic_flow(n_ticks);\n    \n    for (int t = 0; t < n_ticks; t++) {\n        double imbalance;\n        calculateOrderBookImbalance(bids.data(), asks.data(), n_levels, &imbalance);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z15detectToxicFlowPdS_Pbii",
+      "line": 62,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        avg_size /= window;\n        avg_impact /= window;\n        \n        // Toxic flow: large trades with high price impact\n        toxic_flow[t] = (trade_sizes[t] > avg_size * 2.0 && \n                        fabs(price_changes[t]) > avg_impact * 1.5);\n    }\n}\n\nint main() {\n    const int n_levels = 10, n_ticks = 10000;\n    \n    std::vector<OrderBookLevel> bids(n_levels);\n    std::vector<OrderBookLevel> asks(n_levels);\n    std::vector<double> prices(n_ticks, 100.0);\n    std::vector<double> volumes(n_ticks, 1000.0);\n    std::vector<double> imbalances(n_ticks);\n    std::vector<double> predictions(n_ticks);\n    std::vector<double> trade_sizes(n_ticks, 500.0);\n    std::vector<double> price_changes(n_ticks, 0.01);\n    std::vector<bool> toxic_flow(n_ticks);\n    \n    for (int t = 0; t < n_ticks; t++) {\n        double imbalance;\n        calculateOrderBookImbalance(bids.data(), asks.data(), n_levels, &imbalance);\n        imbalances[t] = imbalance;\n    }\n    \n    std::vector<char> toxic_flow_buf(n_ticks);\n    predictShortTermPrice(prices.data(), volumes.data(), imbalances.data(),\n                         predictions.data(), n_ticks, 20);\n    detectToxicFlow(trade_sizes.data(), price_changes.data(), (bool*)toxic_flow_buf.data(),\n                   n_ticks, 50);\n    "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z15detectToxicFlowPdS_Pbii",
+      "line": 53,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z15detectToxicFlowPdS_Pbii",
+      "line": 49,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n}\n\nvoid detectToxicFlow(double* trade_sizes, double* price_changes, \n                    bool* toxic_flow, int n_trades, int window) {\n    for (int t = window; t < n_trades; t++) {\n        double avg_size = 0.0;\n        double avg_impact = 0.0;\n        \n        for (int i = 0; i < window; i++) {\n            avg_size += trade_sizes[t - i];\n            avg_impact += fabs(price_changes[t - i]);\n        }\n        \n        avg_size /= window;\n        avg_impact /= window;\n        \n        // Toxic flow: large trades with high price impact\n        toxic_flow[t] = (trade_sizes[t] > avg_size * 2.0 && \n                        fabs(price_changes[t]) > avg_impact * 1.5);\n    }\n}\n\nint main() {\n    const int n_levels = 10, n_ticks = 10000;\n    \n    std::vector<OrderBookLevel> bids(n_levels);\n    std::vector<OrderBookLevel> asks(n_levels);\n    std::vector<double> prices(n_ticks, 100.0);\n    std::vector<double> volumes(n_ticks, 1000.0);\n    std::vector<double> imbalances(n_ticks);\n    std::vector<double> predictions(n_ticks);\n    std::vector<double> trade_sizes(n_ticks, 500.0);\n    std::vector<double> price_changes(n_ticks, 0.01);\n    std::vector<bool> toxic_flow(n_ticks);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/fill_n.h",
+      "function": "main",
+      "line": 74,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z27calculateOrderBookImbalanceP14OrderBookLevelS0_iPd",
+      "line": 14,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "\nvoid calculateOrderBookImbalance(OrderBookLevel* bids, OrderBookLevel* asks,\n                                int n_levels, double* imbalance) {\n    double bid_volume = 0.0, ask_volume = 0.0;\n    \n    for (int i = 0; i < n_levels; i++) {\n        bid_volume += bids[i].quantity;\n        ask_volume += asks[i].quantity;\n    }\n    \n    *imbalance = (bid_volume - ask_volume) / (bid_volume + ask_volume);\n}\n\nvoid predictShortTermPrice(double* prices, double* volumes, double* imbalances,\n                          double* predictions, int n_ticks, int lookback) {\n    for (int t = lookback; t < n_ticks; t++) {\n        double weighted_imbalance = 0.0;\n        double volume_weighted_price = 0.0;\n        double total_volume = 0.0;\n        \n        for (int lag = 0; lag < lookback; lag++) {\n            int idx = t - lag - 1;\n            double weight = exp(-0.1 * lag);\n            \n            weighted_imbalance += imbalances[idx] * weight;\n            volume_weighted_price += prices[idx] * volumes[idx];\n            total_volume += volumes[idx];\n        }\n        \n        volume_weighted_price /= total_volume;\n        \n        // Predict next price based on momentum and imbalance\n        double momentum = (prices[t-1] - prices[t-lookback]) / lookback;\n        predictions[t] = volume_weighted_price + momentum + \n                        weighted_imbalance * 0.001;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z21predictShortTermPricePdS_S_S_ii",
+      "line": 24,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    *imbalance = (bid_volume - ask_volume) / (bid_volume + ask_volume);\n}\n\nvoid predictShortTermPrice(double* prices, double* volumes, double* imbalances,\n                          double* predictions, int n_ticks, int lookback) {\n    for (int t = lookback; t < n_ticks; t++) {\n        double weighted_imbalance = 0.0;\n        double volume_weighted_price = 0.0;\n        double total_volume = 0.0;\n        \n        for (int lag = 0; lag < lookback; lag++) {\n            int idx = t - lag - 1;\n            double weight = exp(-0.1 * lag);\n            \n            weighted_imbalance += imbalances[idx] * weight;\n            volume_weighted_price += prices[idx] * volumes[idx];\n            total_volume += volumes[idx];\n        }\n        \n        volume_weighted_price /= total_volume;\n        \n        // Predict next price based on momentum and imbalance\n        double momentum = (prices[t-1] - prices[t-lookback]) / lookback;\n        predictions[t] = volume_weighted_price + momentum + \n                        weighted_imbalance * 0.001;\n    }\n}\n\nvoid detectToxicFlow(double* trade_sizes, double* price_changes, \n                    bool* toxic_flow, int n_trades, int window) {\n    for (int t = window; t < n_trades; t++) {\n        double avg_size = 0.0;\n        double avg_impact = 0.0;\n        \n        for (int i = 0; i < window; i++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z15detectToxicFlowPdS_Pbii",
+      "line": 62,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        avg_size /= window;\n        avg_impact /= window;\n        \n        // Toxic flow: large trades with high price impact\n        toxic_flow[t] = (trade_sizes[t] > avg_size * 2.0 && \n                        fabs(price_changes[t]) > avg_impact * 1.5);\n    }\n}\n\nint main() {\n    const int n_levels = 10, n_ticks = 10000;\n    \n    std::vector<OrderBookLevel> bids(n_levels);\n    std::vector<OrderBookLevel> asks(n_levels);\n    std::vector<double> prices(n_ticks, 100.0);\n    std::vector<double> volumes(n_ticks, 1000.0);\n    std::vector<double> imbalances(n_ticks);\n    std::vector<double> predictions(n_ticks);\n    std::vector<double> trade_sizes(n_ticks, 500.0);\n    std::vector<double> price_changes(n_ticks, 0.01);\n    std::vector<bool> toxic_flow(n_ticks);\n    \n    for (int t = 0; t < n_ticks; t++) {\n        double imbalance;\n        calculateOrderBookImbalance(bids.data(), asks.data(), n_levels, &imbalance);\n        imbalances[t] = imbalance;\n    }\n    \n    std::vector<char> toxic_flow_buf(n_ticks);\n    predictShortTermPrice(prices.data(), volumes.data(), imbalances.data(),\n                         predictions.data(), n_ticks, 20);\n    detectToxicFlow(trade_sizes.data(), price_changes.data(), (bool*)toxic_flow_buf.data(),\n                   n_ticks, 50);\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z15detectToxicFlowPdS_Pbii",
+      "line": 49,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n}\n\nvoid detectToxicFlow(double* trade_sizes, double* price_changes, \n                    bool* toxic_flow, int n_trades, int window) {\n    for (int t = window; t < n_trades; t++) {\n        double avg_size = 0.0;\n        double avg_impact = 0.0;\n        \n        for (int i = 0; i < window; i++) {\n            avg_size += trade_sizes[t - i];\n            avg_impact += fabs(price_changes[t - i]);\n        }\n        \n        avg_size /= window;\n        avg_impact /= window;\n        \n        // Toxic flow: large trades with high price impact\n        toxic_flow[t] = (trade_sizes[t] > avg_size * 2.0 && \n                        fabs(price_changes[t]) > avg_impact * 1.5);\n    }\n}\n\nint main() {\n    const int n_levels = 10, n_ticks = 10000;\n    \n    std::vector<OrderBookLevel> bids(n_levels);\n    std::vector<OrderBookLevel> asks(n_levels);\n    std::vector<double> prices(n_ticks, 100.0);\n    std::vector<double> volumes(n_ticks, 1000.0);\n    std::vector<double> imbalances(n_ticks);\n    std::vector<double> predictions(n_ticks);\n    std::vector<double> trade_sizes(n_ticks, 500.0);\n    std::vector<double> price_changes(n_ticks, 0.01);\n    std::vector<bool> toxic_flow(n_ticks);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z27calculateOrderBookImbalanceP14OrderBookLevelS0_iPd",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "\nvoid calculateOrderBookImbalance(OrderBookLevel* bids, OrderBookLevel* asks,\n                                int n_levels, double* imbalance) {\n    double bid_volume = 0.0, ask_volume = 0.0;\n    \n    for (int i = 0; i < n_levels; i++) {\n        bid_volume += bids[i].quantity;\n        ask_volume += asks[i].quantity;\n    }\n    \n    *imbalance = (bid_volume - ask_volume) / (bid_volume + ask_volume);\n}\n\nvoid predictShortTermPrice(double* prices, double* volumes, double* imbalances,\n                          double* predictions, int n_ticks, int lookback) {\n    for (int t = lookback; t < n_ticks; t++) {\n        double weighted_imbalance = 0.0;\n        double volume_weighted_price = 0.0;\n        double total_volume = 0.0;\n        \n        for (int lag = 0; lag < lookback; lag++) {\n            int idx = t - lag - 1;\n            double weight = exp(-0.1 * lag);\n            \n            weighted_imbalance += imbalances[idx] * weight;\n            volume_weighted_price += prices[idx] * volumes[idx];\n            total_volume += volumes[idx];\n        }\n        \n        volume_weighted_price /= total_volume;\n        \n        // Predict next price based on momentum and imbalance\n        double momentum = (prices[t-1] - prices[t-lookback]) / lookback;\n        predictions[t] = volume_weighted_price + momentum + \n                        weighted_imbalance * 0.001;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z21predictShortTermPricePdS_S_S_ii",
+      "line": 29,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    for (int t = lookback; t < n_ticks; t++) {\n        double weighted_imbalance = 0.0;\n        double volume_weighted_price = 0.0;\n        double total_volume = 0.0;\n        \n        for (int lag = 0; lag < lookback; lag++) {\n            int idx = t - lag - 1;\n            double weight = exp(-0.1 * lag);\n            \n            weighted_imbalance += imbalances[idx] * weight;\n            volume_weighted_price += prices[idx] * volumes[idx];\n            total_volume += volumes[idx];\n        }\n        \n        volume_weighted_price /= total_volume;\n        \n        // Predict next price based on momentum and imbalance\n        double momentum = (prices[t-1] - prices[t-lookback]) / lookback;\n        predictions[t] = volume_weighted_price + momentum + \n                        weighted_imbalance * 0.001;\n    }\n}\n\nvoid detectToxicFlow(double* trade_sizes, double* price_changes, \n                    bool* toxic_flow, int n_trades, int window) {\n    for (int t = window; t < n_trades; t++) {\n        double avg_size = 0.0;\n        double avg_impact = 0.0;\n        \n        for (int i = 0; i < window; i++) {\n            avg_size += trade_sizes[t - i];\n            avg_impact += fabs(price_changes[t - i]);\n        }\n        \n        avg_size /= window;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z15detectToxicFlowPdS_Pbii",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n}\n\nvoid detectToxicFlow(double* trade_sizes, double* price_changes, \n                    bool* toxic_flow, int n_trades, int window) {\n    for (int t = window; t < n_trades; t++) {\n        double avg_size = 0.0;\n        double avg_impact = 0.0;\n        \n        for (int i = 0; i < window; i++) {\n            avg_size += trade_sizes[t - i];\n            avg_impact += fabs(price_changes[t - i]);\n        }\n        \n        avg_size /= window;\n        avg_impact /= window;\n        \n        // Toxic flow: large trades with high price impact\n        toxic_flow[t] = (trade_sizes[t] > avg_size * 2.0 && \n                        fabs(price_changes[t]) > avg_impact * 1.5);\n    }\n}\n\nint main() {\n    const int n_levels = 10, n_ticks = 10000;\n    \n    std::vector<OrderBookLevel> bids(n_levels);\n    std::vector<OrderBookLevel> asks(n_levels);\n    std::vector<double> prices(n_ticks, 100.0);\n    std::vector<double> volumes(n_ticks, 1000.0);\n    std::vector<double> imbalances(n_ticks);\n    std::vector<double> predictions(n_ticks);\n    std::vector<double> trade_sizes(n_ticks, 500.0);\n    std::vector<double> price_changes(n_ticks, 0.01);\n    std::vector<bool> toxic_flow(n_ticks);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/trading/hft_microstructure.cpp",
+      "function": "_Z15detectToxicFlowPdS_Pbii",
+      "line": 53,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    bool* toxic_flow, int n_trades, int window) {\n    for (int t = window; t < n_trades; t++) {\n        double avg_size = 0.0;\n        double avg_impact = 0.0;\n        \n        for (int i = 0; i < window; i++) {\n            avg_size += trade_sizes[t - i];\n            avg_impact += fabs(price_changes[t - i]);\n        }\n        \n        avg_size /= window;\n        avg_impact /= window;\n        \n        // Toxic flow: large trades with high price impact\n        toxic_flow[t] = (trade_sizes[t] > avg_size * 2.0 && \n                        fabs(price_changes[t]) > avg_impact * 1.5);\n    }\n}\n\nint main() {\n    const int n_levels = 10, n_ticks = 10000;\n    \n    std::vector<OrderBookLevel> bids(n_levels);\n    std::vector<OrderBookLevel> asks(n_levels);\n    std::vector<double> prices(n_ticks, 100.0);\n    std::vector<double> volumes(n_ticks, 1000.0);\n    std::vector<double> imbalances(n_ticks);\n    std::vector<double> predictions(n_ticks);\n    std::vector<double> trade_sizes(n_ticks, 500.0);\n    std::vector<double> price_changes(n_ticks, 0.01);\n    std::vector<bool> toxic_flow(n_ticks);\n    \n    for (int t = 0; t < n_ticks; t++) {\n        double imbalance;\n        calculateOrderBookImbalance(bids.data(), asks.data(), n_levels, &imbalance);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

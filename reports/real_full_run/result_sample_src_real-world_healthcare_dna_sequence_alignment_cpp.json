@@ -1,0 +1,999 @@
+{
+  "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+    "llvm_initial": 93,
+    "llvm_sys_noise": 77,
+    "llvm_project": 16,
+    "after_filter": 10,
+    "ai_batches": 1,
+    "ai_results": 10,
+    "omp_verified": 0,
+    "total_ms": 691.9,
+    "llvm_ms": 435.5
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_Z11find_motifsRKNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEi",
+      "line": 68,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_Z11find_motifsRKNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEi",
+      "line": 66,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "};\n\nvoid find_motifs(const std::string& sequence, int motif_length) {\n    std::vector<int> motif_counts(1 << (2 * motif_length), 0);\n    \n    for (size_t i = 0; i <= sequence.length() - motif_length; i++) {\n        int hash = 0;\n        for (int j = 0; j < motif_length; j++) {\n            char c = sequence[i + j];\n            int code = (c == 'A') ? 0 : (c == 'C') ? 1 : (c == 'G') ? 2 : 3;\n            hash = (hash << 2) | code;\n        }\n        motif_counts[hash]++;\n    }\n}\n\nint main() {\n    DNASequenceAligner aligner;\n    \n    std::string seq1 = \"ACGTACGTACGTACGT\";\n    std::string seq2 = \"ACGTACGTACGTACGT\";\n    \n    for (int i = 0; i < 1000; i++) {\n        seq1 += \"ACGT\";\n        seq2 += \"ACGT\";\n    }\n    \n    int score = aligner.align_sequences(seq1, seq2);\n    find_motifs(seq1, 8);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_Z11find_motifsRKNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEi",
+      "line": 68,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "main",
+      "line": 83,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "main",
+      "line": 66,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "};\n\nvoid find_motifs(const std::string& sequence, int motif_length) {\n    std::vector<int> motif_counts(1 << (2 * motif_length), 0);\n    \n    for (size_t i = 0; i <= sequence.length() - motif_length; i++) {\n        int hash = 0;\n        for (int j = 0; j < motif_length; j++) {\n            char c = sequence[i + j];\n            int code = (c == 'A') ? 0 : (c == 'C') ? 1 : (c == 'G') ? 2 : 3;\n            hash = (hash << 2) | code;\n        }\n        motif_counts[hash]++;\n    }\n}\n\nint main() {\n    DNASequenceAligner aligner;\n    \n    std::string seq1 = \"ACGTACGTACGTACGT\";\n    std::string seq2 = \"ACGTACGTACGTACGT\";\n    \n    for (int i = 0; i < 1000; i++) {\n        seq1 += \"ACGT\";\n        seq2 += \"ACGT\";\n    }\n    \n    int score = aligner.align_sequences(seq1, seq2);\n    find_motifs(seq1, 8);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "main",
+      "line": 68,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.28
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/string",
+      "function": "main",
+      "line": 1206,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 1369,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 1369,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 22,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        // Initialize first row and column\n        for (int i = 0; i <= m; i++) {\n            score_matrix[i][0] = i * -2;\n            traceback_matrix[i][0] = 'U';\n        }\n        for (int j = 0; j <= n; j++) {\n            score_matrix[0][j] = j * -2;\n            traceback_matrix[0][j] = 'L';\n        }\n        \n        // Fill the matrix\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                int match = score_matrix[i-1][j-1] + (seq1[i-1] == seq2[j-1] ? 1 : -1);\n                int delete_gap = score_matrix[i-1][j] - 2;\n                int insert_gap = score_matrix[i][j-1] - 2;\n                \n                score_matrix[i][j] = std::max({match, delete_gap, insert_gap});\n                \n                if (score_matrix[i][j] == match) traceback_matrix[i][j] = 'D';\n                else if (score_matrix[i][j] == delete_gap) traceback_matrix[i][j] = 'U';\n                else traceback_matrix[i][j] = 'L';\n            }\n        }\n        \n        return score_matrix[m][n];\n    }\n    \n    void align_multiple_sequences(std::vector<std::string>& sequences) {\n        int num_seq = sequences.size();\n        std::vector<std::vector<int>> pairwise_scores(num_seq, std::vector<int>(num_seq, 0));\n        \n        // Compute all pairwise alignments\n        for (int i = 0; i < num_seq; i++) {\n            for (int j = i + 1; j < num_seq; j++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 22,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        score_matrix.resize(m + 1, std::vector<int>(n + 1, 0));\n        traceback_matrix.resize(m + 1, std::vector<char>(n + 1, 'X'));\n        \n        // Initialize first row and column\n        for (int i = 0; i <= m; i++) {\n            score_matrix[i][0] = i * -2;\n            traceback_matrix[i][0] = 'U';\n        }\n        for (int j = 0; j <= n; j++) {\n            score_matrix[0][j] = j * -2;\n            traceback_matrix[0][j] = 'L';\n        }\n        \n        // Fill the matrix\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                int match = score_matrix[i-1][j-1] + (seq1[i-1] == seq2[j-1] ? 1 : -1);\n                int delete_gap = score_matrix[i-1][j] - 2;\n                int insert_gap = score_matrix[i][j-1] - 2;\n                \n                score_matrix[i][j] = std::max({match, delete_gap, insert_gap});\n                \n                if (score_matrix[i][j] == match) traceback_matrix[i][j] = 'D';\n                else if (score_matrix[i][j] == delete_gap) traceback_matrix[i][j] = 'U';\n                else traceback_matrix[i][j] = 'L';\n            }\n        }\n        \n        return score_matrix[m][n];\n    }\n    \n    void align_multiple_sequences(std::vector<std::string>& sequences) {\n        int num_seq = sequences.size();\n        std::vector<std::vector<int>> pairwise_scores(num_seq, std::vector<int>(num_seq, 0));"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 32,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            score_matrix[0][j] = j * -2;\n            traceback_matrix[0][j] = 'L';\n        }\n        \n        // Fill the matrix\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                int match = score_matrix[i-1][j-1] + (seq1[i-1] == seq2[j-1] ? 1 : -1);\n                int delete_gap = score_matrix[i-1][j] - 2;\n                int insert_gap = score_matrix[i][j-1] - 2;\n                \n                score_matrix[i][j] = std::max({match, delete_gap, insert_gap});\n                \n                if (score_matrix[i][j] == match) traceback_matrix[i][j] = 'D';\n                else if (score_matrix[i][j] == delete_gap) traceback_matrix[i][j] = 'U';\n                else traceback_matrix[i][j] = 'L';\n            }\n        }\n        \n        return score_matrix[m][n];\n    }\n    \n    void align_multiple_sequences(std::vector<std::string>& sequences) {\n        int num_seq = sequences.size();\n        std::vector<std::vector<int>> pairwise_scores(num_seq, std::vector<int>(num_seq, 0));\n        \n        // Compute all pairwise alignments\n        for (int i = 0; i < num_seq; i++) {\n            for (int j = i + 1; j < num_seq; j++) {\n                pairwise_scores[i][j] = align_sequences(sequences[i], sequences[j]);\n                pairwise_scores[j][i] = pairwise_scores[i][j];\n            }\n        }\n    }\n};"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 26,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        // Initialize first row and column\n        for (int i = 0; i <= m; i++) {\n            score_matrix[i][0] = i * -2;\n            traceback_matrix[i][0] = 'U';\n        }\n        for (int j = 0; j <= n; j++) {\n            score_matrix[0][j] = j * -2;\n            traceback_matrix[0][j] = 'L';\n        }\n        \n        // Fill the matrix\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                int match = score_matrix[i-1][j-1] + (seq1[i-1] == seq2[j-1] ? 1 : -1);\n                int delete_gap = score_matrix[i-1][j] - 2;\n                int insert_gap = score_matrix[i][j-1] - 2;\n                \n                score_matrix[i][j] = std::max({match, delete_gap, insert_gap});\n                \n                if (score_matrix[i][j] == match) traceback_matrix[i][j] = 'D';\n                else if (score_matrix[i][j] == delete_gap) traceback_matrix[i][j] = 'U';\n                else traceback_matrix[i][j] = 'L';\n            }\n        }\n        \n        return score_matrix[m][n];\n    }\n    \n    void align_multiple_sequences(std::vector<std::string>& sequences) {\n        int num_seq = sequences.size();\n        std::vector<std::vector<int>> pairwise_scores(num_seq, std::vector<int>(num_seq, 0));\n        \n        // Compute all pairwise alignments\n        for (int i = 0; i < num_seq; i++) {\n            for (int j = i + 1; j < num_seq; j++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 33,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            traceback_matrix[0][j] = 'L';\n        }\n        \n        // Fill the matrix\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                int match = score_matrix[i-1][j-1] + (seq1[i-1] == seq2[j-1] ? 1 : -1);\n                int delete_gap = score_matrix[i-1][j] - 2;\n                int insert_gap = score_matrix[i][j-1] - 2;\n                \n                score_matrix[i][j] = std::max({match, delete_gap, insert_gap});\n                \n                if (score_matrix[i][j] == match) traceback_matrix[i][j] = 'D';\n                else if (score_matrix[i][j] == delete_gap) traceback_matrix[i][j] = 'U';\n                else traceback_matrix[i][j] = 'L';\n            }\n        }\n        \n        return score_matrix[m][n];\n    }\n    \n    void align_multiple_sequences(std::vector<std::string>& sequences) {\n        int num_seq = sequences.size();\n        std::vector<std::vector<int>> pairwise_scores(num_seq, std::vector<int>(num_seq, 0));\n        \n        // Compute all pairwise alignments\n        for (int i = 0; i < num_seq; i++) {\n            for (int j = i + 1; j < num_seq; j++) {\n                pairwise_scores[i][j] = align_sequences(sequences[i], sequences[j]);\n                pairwise_scores[j][i] = pairwise_scores[i][j];\n            }\n        }\n    }\n};\n"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 32,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            score_matrix[0][j] = j * -2;\n            traceback_matrix[0][j] = 'L';\n        }\n        \n        // Fill the matrix\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                int match = score_matrix[i-1][j-1] + (seq1[i-1] == seq2[j-1] ? 1 : -1);\n                int delete_gap = score_matrix[i-1][j] - 2;\n                int insert_gap = score_matrix[i][j-1] - 2;\n                \n                score_matrix[i][j] = std::max({match, delete_gap, insert_gap});\n                \n                if (score_matrix[i][j] == match) traceback_matrix[i][j] = 'D';\n                else if (score_matrix[i][j] == delete_gap) traceback_matrix[i][j] = 'U';\n                else traceback_matrix[i][j] = 'L';\n            }\n        }\n        \n        return score_matrix[m][n];\n    }\n    \n    void align_multiple_sequences(std::vector<std::string>& sequences) {\n        int num_seq = sequences.size();\n        std::vector<std::vector<int>> pairwise_scores(num_seq, std::vector<int>(num_seq, 0));\n        \n        // Compute all pairwise alignments\n        for (int i = 0; i < num_seq; i++) {\n            for (int j = i + 1; j < num_seq; j++) {\n                pairwise_scores[i][j] = align_sequences(sequences[i], sequences[j]);\n                pairwise_scores[j][i] = pairwise_scores[i][j];\n            }\n        }\n    }\n};"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__algorithm/max_element.h",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 31,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 40,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.35
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 41,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "                int insert_gap = score_matrix[i][j-1] - 2;\n                \n                score_matrix[i][j] = std::max({match, delete_gap, insert_gap});\n                \n                if (score_matrix[i][j] == match) traceback_matrix[i][j] = 'D';\n                else if (score_matrix[i][j] == delete_gap) traceback_matrix[i][j] = 'U';\n                else traceback_matrix[i][j] = 'L';\n            }\n        }\n        \n        return score_matrix[m][n];\n    }\n    \n    void align_multiple_sequences(std::vector<std::string>& sequences) {\n        int num_seq = sequences.size();\n        std::vector<std::vector<int>> pairwise_scores(num_seq, std::vector<int>(num_seq, 0));\n        \n        // Compute all pairwise alignments\n        for (int i = 0; i < num_seq; i++) {\n            for (int j = i + 1; j < num_seq; j++) {\n                pairwise_scores[i][j] = align_sequences(sequences[i], sequences[j]);\n                pairwise_scores[j][i] = pairwise_scores[i][j];\n            }\n        }\n    }\n};\n\nvoid find_motifs(const std::string& sequence, int motif_length) {\n    std::vector<int> motif_counts(1 << (2 * motif_length), 0);\n    \n    for (size_t i = 0; i <= sequence.length() - motif_length; i++) {\n        int hash = 0;\n        for (int j = 0; j < motif_length; j++) {\n            char c = sequence[i + j];\n            int code = (c == 'A') ? 0 : (c == 'C') ? 1 : (c == 'G') ? 2 : 3;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 33,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            traceback_matrix[0][j] = 'L';\n        }\n        \n        // Fill the matrix\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                int match = score_matrix[i-1][j-1] + (seq1[i-1] == seq2[j-1] ? 1 : -1);\n                int delete_gap = score_matrix[i-1][j] - 2;\n                int insert_gap = score_matrix[i][j-1] - 2;\n                \n                score_matrix[i][j] = std::max({match, delete_gap, insert_gap});\n                \n                if (score_matrix[i][j] == match) traceback_matrix[i][j] = 'D';\n                else if (score_matrix[i][j] == delete_gap) traceback_matrix[i][j] = 'U';\n                else traceback_matrix[i][j] = 'L';\n            }\n        }\n        \n        return score_matrix[m][n];\n    }\n    \n    void align_multiple_sequences(std::vector<std::string>& sequences) {\n        int num_seq = sequences.size();\n        std::vector<std::vector<int>> pairwise_scores(num_seq, std::vector<int>(num_seq, 0));\n        \n        // Compute all pairwise alignments\n        for (int i = 0; i < num_seq; i++) {\n            for (int j = i + 1; j < num_seq; j++) {\n                pairwise_scores[i][j] = align_sequences(sequences[i], sequences[j]);\n                pairwise_scores[j][i] = pairwise_scores[i][j];\n            }\n        }\n    }\n};\n"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAlignerD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAlignerD1Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAlignerD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAlignerD1Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAlignerD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAlignerD1Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAlignerD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN18DNASequenceAlignerD1Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 257,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IiNS_9allocatorIiEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIiNS_9allocatorIiEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIiNS_9allocatorIiEEEERNS2_IS4_EEED1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIiNS_9allocatorIiEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIiNS_9allocatorIiEEEERNS2_IS4_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IcNS_9allocatorIcEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IcNS_9allocatorIcEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IcNS_9allocatorIcEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IcNS_9allocatorIcEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IcNS_9allocatorIcEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IcNS_9allocatorIcEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IcNS_9allocatorIcEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 902,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IcNS_9allocatorIcEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS0_IcNS_9allocatorIcEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IcNS_9allocatorIcEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IcNS_9allocatorIcEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_IcNS_9allocatorIcEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IcNS_9allocatorIcEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 257,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS0_IcNS_9allocatorIcEEEENS1_IS3_EEE8__appendEmRKS3_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIcNS_9allocatorIcEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIcNS_9allocatorIcEEEERNS2_IS4_EEED1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIcNS_9allocatorIcEEEERNS2_IS4_EEED1Ev",
+      "line": 313,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__114__split_bufferINS_6vectorIcNS_9allocatorIcEEEERNS2_IS4_EEED1Ev",
+      "line": 341,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 22,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        score_matrix.resize(m + 1, std::vector<int>(n + 1, 0));\n        traceback_matrix.resize(m + 1, std::vector<char>(n + 1, 'X'));\n        \n        // Initialize first row and column\n        for (int i = 0; i <= m; i++) {\n            score_matrix[i][0] = i * -2;\n            traceback_matrix[i][0] = 'U';\n        }\n        for (int j = 0; j <= n; j++) {\n            score_matrix[0][j] = j * -2;\n            traceback_matrix[0][j] = 'L';\n        }\n        \n        // Fill the matrix\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                int match = score_matrix[i-1][j-1] + (seq1[i-1] == seq2[j-1] ? 1 : -1);\n                int delete_gap = score_matrix[i-1][j] - 2;\n                int insert_gap = score_matrix[i][j-1] - 2;\n                \n                score_matrix[i][j] = std::max({match, delete_gap, insert_gap});\n                \n                if (score_matrix[i][j] == match) traceback_matrix[i][j] = 'D';\n                else if (score_matrix[i][j] == delete_gap) traceback_matrix[i][j] = 'U';\n                else traceback_matrix[i][j] = 'L';\n            }\n        }\n        \n        return score_matrix[m][n];\n    }\n    \n    void align_multiple_sequences(std::vector<std::string>& sequences) {\n        int num_seq = sequences.size();\n        std::vector<std::vector<int>> pairwise_scores(num_seq, std::vector<int>(num_seq, 0));",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 26,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        // Initialize first row and column\n        for (int i = 0; i <= m; i++) {\n            score_matrix[i][0] = i * -2;\n            traceback_matrix[i][0] = 'U';\n        }\n        for (int j = 0; j <= n; j++) {\n            score_matrix[0][j] = j * -2;\n            traceback_matrix[0][j] = 'L';\n        }\n        \n        // Fill the matrix\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                int match = score_matrix[i-1][j-1] + (seq1[i-1] == seq2[j-1] ? 1 : -1);\n                int delete_gap = score_matrix[i-1][j] - 2;\n                int insert_gap = score_matrix[i][j-1] - 2;\n                \n                score_matrix[i][j] = std::max({match, delete_gap, insert_gap});\n                \n                if (score_matrix[i][j] == match) traceback_matrix[i][j] = 'D';\n                else if (score_matrix[i][j] == delete_gap) traceback_matrix[i][j] = 'U';\n                else traceback_matrix[i][j] = 'L';\n            }\n        }\n        \n        return score_matrix[m][n];\n    }\n    \n    void align_multiple_sequences(std::vector<std::string>& sequences) {\n        int num_seq = sequences.size();\n        std::vector<std::vector<int>> pairwise_scores(num_seq, std::vector<int>(num_seq, 0));\n        \n        // Compute all pairwise alignments\n        for (int i = 0; i < num_seq; i++) {\n            for (int j = i + 1; j < num_seq; j++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 41,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 0.93,
+      "context": "                int insert_gap = score_matrix[i][j-1] - 2;\n                \n                score_matrix[i][j] = std::max({match, delete_gap, insert_gap});\n                \n                if (score_matrix[i][j] == match) traceback_matrix[i][j] = 'D';\n                else if (score_matrix[i][j] == delete_gap) traceback_matrix[i][j] = 'U';\n                else traceback_matrix[i][j] = 'L';\n            }\n        }\n        \n        return score_matrix[m][n];\n    }\n    \n    void align_multiple_sequences(std::vector<std::string>& sequences) {\n        int num_seq = sequences.size();\n        std::vector<std::vector<int>> pairwise_scores(num_seq, std::vector<int>(num_seq, 0));\n        \n        // Compute all pairwise alignments\n        for (int i = 0; i < num_seq; i++) {\n            for (int j = i + 1; j < num_seq; j++) {\n                pairwise_scores[i][j] = align_sequences(sequences[i], sequences[j]);\n                pairwise_scores[j][i] = pairwise_scores[i][j];\n            }\n        }\n    }\n};\n\nvoid find_motifs(const std::string& sequence, int motif_length) {\n    std::vector<int> motif_counts(1 << (2 * motif_length), 0);\n    \n    for (size_t i = 0; i <= sequence.length() - motif_length; i++) {\n        int hash = 0;\n        for (int j = 0; j < motif_length; j++) {\n            char c = sequence[i + j];\n            int code = (c == 'A') ? 0 : (c == 'C') ? 1 : (c == 'G') ? 2 : 3;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 0.93
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_Z11find_motifsRKNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEi",
+      "line": 66,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8300000000000001,
+      "context": "};\n\nvoid find_motifs(const std::string& sequence, int motif_length) {\n    std::vector<int> motif_counts(1 << (2 * motif_length), 0);\n    \n    for (size_t i = 0; i <= sequence.length() - motif_length; i++) {\n        int hash = 0;\n        for (int j = 0; j < motif_length; j++) {\n            char c = sequence[i + j];\n            int code = (c == 'A') ? 0 : (c == 'C') ? 1 : (c == 'G') ? 2 : 3;\n            hash = (hash << 2) | code;\n        }\n        motif_counts[hash]++;\n    }\n}\n\nint main() {\n    DNASequenceAligner aligner;\n    \n    std::string seq1 = \"ACGTACGTACGTACGT\";\n    std::string seq2 = \"ACGTACGTACGTACGT\";\n    \n    for (int i = 0; i < 1000; i++) {\n        seq1 += \"ACGT\";\n        seq2 += \"ACGT\";\n    }\n    \n    int score = aligner.align_sequences(seq1, seq2);\n    find_motifs(seq1, 8);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8300000000000001
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "main",
+      "line": 66,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.78,
+      "context": "};\n\nvoid find_motifs(const std::string& sequence, int motif_length) {\n    std::vector<int> motif_counts(1 << (2 * motif_length), 0);\n    \n    for (size_t i = 0; i <= sequence.length() - motif_length; i++) {\n        int hash = 0;\n        for (int j = 0; j < motif_length; j++) {\n            char c = sequence[i + j];\n            int code = (c == 'A') ? 0 : (c == 'C') ? 1 : (c == 'G') ? 2 : 3;\n            hash = (hash << 2) | code;\n        }\n        motif_counts[hash]++;\n    }\n}\n\nint main() {\n    DNASequenceAligner aligner;\n    \n    std::string seq1 = \"ACGTACGTACGTACGT\";\n    std::string seq2 = \"ACGTACGTACGTACGT\";\n    \n    for (int i = 0; i < 1000; i++) {\n        seq1 += \"ACGT\";\n        seq2 += \"ACGT\";\n    }\n    \n    int score = aligner.align_sequences(seq1, seq2);\n    find_motifs(seq1, 8);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.78
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        // Initialize first row and column\n        for (int i = 0; i <= m; i++) {\n            score_matrix[i][0] = i * -2;\n            traceback_matrix[i][0] = 'U';\n        }\n        for (int j = 0; j <= n; j++) {\n            score_matrix[0][j] = j * -2;\n            traceback_matrix[0][j] = 'L';\n        }\n        \n        // Fill the matrix\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                int match = score_matrix[i-1][j-1] + (seq1[i-1] == seq2[j-1] ? 1 : -1);\n                int delete_gap = score_matrix[i-1][j] - 2;\n                int insert_gap = score_matrix[i][j-1] - 2;\n                \n                score_matrix[i][j] = std::max({match, delete_gap, insert_gap});\n                \n                if (score_matrix[i][j] == match) traceback_matrix[i][j] = 'D';\n                else if (score_matrix[i][j] == delete_gap) traceback_matrix[i][j] = 'U';\n                else traceback_matrix[i][j] = 'L';\n            }\n        }\n        \n        return score_matrix[m][n];\n    }\n    \n    void align_multiple_sequences(std::vector<std::string>& sequences) {\n        int num_seq = sequences.size();\n        std::vector<std::vector<int>> pairwise_scores(num_seq, std::vector<int>(num_seq, 0));\n        \n        // Compute all pairwise alignments\n        for (int i = 0; i < num_seq; i++) {\n            for (int j = i + 1; j < num_seq; j++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 32,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            score_matrix[0][j] = j * -2;\n            traceback_matrix[0][j] = 'L';\n        }\n        \n        // Fill the matrix\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                int match = score_matrix[i-1][j-1] + (seq1[i-1] == seq2[j-1] ? 1 : -1);\n                int delete_gap = score_matrix[i-1][j] - 2;\n                int insert_gap = score_matrix[i][j-1] - 2;\n                \n                score_matrix[i][j] = std::max({match, delete_gap, insert_gap});\n                \n                if (score_matrix[i][j] == match) traceback_matrix[i][j] = 'D';\n                else if (score_matrix[i][j] == delete_gap) traceback_matrix[i][j] = 'U';\n                else traceback_matrix[i][j] = 'L';\n            }\n        }\n        \n        return score_matrix[m][n];\n    }\n    \n    void align_multiple_sequences(std::vector<std::string>& sequences) {\n        int num_seq = sequences.size();\n        std::vector<std::vector<int>> pairwise_scores(num_seq, std::vector<int>(num_seq, 0));\n        \n        // Compute all pairwise alignments\n        for (int i = 0; i < num_seq; i++) {\n            for (int j = i + 1; j < num_seq; j++) {\n                pairwise_scores[i][j] = align_sequences(sequences[i], sequences[j]);\n                pairwise_scores[j][i] = pairwise_scores[i][j];\n            }\n        }\n    }\n};",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 33,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            traceback_matrix[0][j] = 'L';\n        }\n        \n        // Fill the matrix\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                int match = score_matrix[i-1][j-1] + (seq1[i-1] == seq2[j-1] ? 1 : -1);\n                int delete_gap = score_matrix[i-1][j] - 2;\n                int insert_gap = score_matrix[i][j-1] - 2;\n                \n                score_matrix[i][j] = std::max({match, delete_gap, insert_gap});\n                \n                if (score_matrix[i][j] == match) traceback_matrix[i][j] = 'D';\n                else if (score_matrix[i][j] == delete_gap) traceback_matrix[i][j] = 'U';\n                else traceback_matrix[i][j] = 'L';\n            }\n        }\n        \n        return score_matrix[m][n];\n    }\n    \n    void align_multiple_sequences(std::vector<std::string>& sequences) {\n        int num_seq = sequences.size();\n        std::vector<std::vector<int>> pairwise_scores(num_seq, std::vector<int>(num_seq, 0));\n        \n        // Compute all pairwise alignments\n        for (int i = 0; i < num_seq; i++) {\n            for (int j = i + 1; j < num_seq; j++) {\n                pairwise_scores[i][j] = align_sequences(sequences[i], sequences[j]);\n                pairwise_scores[j][i] = pairwise_scores[i][j];\n            }\n        }\n    }\n};\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 32,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            score_matrix[0][j] = j * -2;\n            traceback_matrix[0][j] = 'L';\n        }\n        \n        // Fill the matrix\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                int match = score_matrix[i-1][j-1] + (seq1[i-1] == seq2[j-1] ? 1 : -1);\n                int delete_gap = score_matrix[i-1][j] - 2;\n                int insert_gap = score_matrix[i][j-1] - 2;\n                \n                score_matrix[i][j] = std::max({match, delete_gap, insert_gap});\n                \n                if (score_matrix[i][j] == match) traceback_matrix[i][j] = 'D';\n                else if (score_matrix[i][j] == delete_gap) traceback_matrix[i][j] = 'U';\n                else traceback_matrix[i][j] = 'L';\n            }\n        }\n        \n        return score_matrix[m][n];\n    }\n    \n    void align_multiple_sequences(std::vector<std::string>& sequences) {\n        int num_seq = sequences.size();\n        std::vector<std::vector<int>> pairwise_scores(num_seq, std::vector<int>(num_seq, 0));\n        \n        // Compute all pairwise alignments\n        for (int i = 0; i < num_seq; i++) {\n            for (int j = i + 1; j < num_seq; j++) {\n                pairwise_scores[i][j] = align_sequences(sequences[i], sequences[j]);\n                pairwise_scores[j][i] = pairwise_scores[i][j];\n            }\n        }\n    }\n};",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/dna_sequence_alignment.cpp",
+      "function": "_ZN18DNASequenceAligner15align_sequencesERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_",
+      "line": 33,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            traceback_matrix[0][j] = 'L';\n        }\n        \n        // Fill the matrix\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                int match = score_matrix[i-1][j-1] + (seq1[i-1] == seq2[j-1] ? 1 : -1);\n                int delete_gap = score_matrix[i-1][j] - 2;\n                int insert_gap = score_matrix[i][j-1] - 2;\n                \n                score_matrix[i][j] = std::max({match, delete_gap, insert_gap});\n                \n                if (score_matrix[i][j] == match) traceback_matrix[i][j] = 'D';\n                else if (score_matrix[i][j] == delete_gap) traceback_matrix[i][j] = 'U';\n                else traceback_matrix[i][j] = 'L';\n            }\n        }\n        \n        return score_matrix[m][n];\n    }\n    \n    void align_multiple_sequences(std::vector<std::string>& sequences) {\n        int num_seq = sequences.size();\n        std::vector<std::vector<int>> pairwise_scores(num_seq, std::vector<int>(num_seq, 0));\n        \n        // Compute all pairwise alignments\n        for (int i = 0; i < num_seq; i++) {\n            for (int j = i + 1; j < num_seq; j++) {\n                pairwise_scores[i][j] = align_sequences(sequences[i], sequences[j]);\n                pairwise_scores[j][i] = pairwise_scores[i][j];\n            }\n        }\n    }\n};\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

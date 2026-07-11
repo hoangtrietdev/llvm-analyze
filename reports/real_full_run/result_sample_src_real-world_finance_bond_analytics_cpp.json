@@ -1,0 +1,267 @@
+{
+  "file": "sample/src/real-world/finance/bond_analytics.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/finance/bond_analytics.cpp",
+    "llvm_initial": 8,
+    "llvm_sys_noise": 0,
+    "llvm_project": 8,
+    "after_filter": 8,
+    "ai_batches": 1,
+    "ai_results": 8,
+    "omp_verified": 0,
+    "total_ms": 982.8,
+    "llvm_ms": 809.8
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/bond_analytics.cpp",
+      "function": "_Z20calculateBondMetricsPdS_idRdS0_S0_S0_",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "    price = 0.0;\n    duration = 0.0;\n    convexity = 0.0;\n    \n    // Calculate price and weighted cash flows\n    for (int i = 0; i < n_flows; i++) {\n        double discount_factor = exp(-ytm * times[i]);\n        double pv = cash_flows[i] * discount_factor;\n        \n        price += pv;\n        duration += times[i] * pv;\n        convexity += times[i] * times[i] * pv;\n    }\n    \n    // Macaulay duration\n    duration /= price;\n    \n    // Convexity\n    convexity /= price;\n    \n    // DV01 (dollar value of 1 basis point)\n    dv01 = price * duration * 0.0001;\n}\n\nvoid calculatePortfolioDuration(double* weights, double* durations, double* portfolio_duration,\n                               int n_bonds) {\n    *portfolio_duration = 0.0;\n    \n    for (int i = 0; i < n_bonds; i++) {\n        *portfolio_duration += weights[i] * durations[i];\n    }\n}\n\nvoid immunizePortfolio(double* target_liability_cf, double* target_times, int n_target,\n                      double* bond_durations, double* bond_convexities, "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/bond_analytics.cpp",
+      "function": "_Z20calculateBondMetricsPdS_idRdS0_S0_S0_",
+      "line": 13,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "    price = 0.0;\n    duration = 0.0;\n    convexity = 0.0;\n    \n    // Calculate price and weighted cash flows\n    for (int i = 0; i < n_flows; i++) {\n        double discount_factor = exp(-ytm * times[i]);\n        double pv = cash_flows[i] * discount_factor;\n        \n        price += pv;\n        duration += times[i] * pv;\n        convexity += times[i] * times[i] * pv;\n    }\n    \n    // Macaulay duration\n    duration /= price;\n    \n    // Convexity\n    convexity /= price;\n    \n    // DV01 (dollar value of 1 basis point)\n    dv01 = price * duration * 0.0001;\n}\n\nvoid calculatePortfolioDuration(double* weights, double* durations, double* portfolio_duration,\n                               int n_bonds) {\n    *portfolio_duration = 0.0;\n    \n    for (int i = 0; i < n_bonds; i++) {\n        *portfolio_duration += weights[i] * durations[i];\n    }\n}\n\nvoid immunizePortfolio(double* target_liability_cf, double* target_times, int n_target,\n                      double* bond_durations, double* bond_convexities, "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/bond_analytics.cpp",
+      "function": "_Z26calculatePortfolioDurationPdS_S_i",
+      "line": 36,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "\nvoid calculatePortfolioDuration(double* weights, double* durations, double* portfolio_duration,\n                               int n_bonds) {\n    *portfolio_duration = 0.0;\n    \n    for (int i = 0; i < n_bonds; i++) {\n        *portfolio_duration += weights[i] * durations[i];\n    }\n}\n\nvoid immunizePortfolio(double* target_liability_cf, double* target_times, int n_target,\n                      double* bond_durations, double* bond_convexities, \n                      double* optimal_weights, int n_bonds) {\n    double target_duration = 0.0, target_convexity = 0.0;\n    double target_pv = 0.0;\n    \n    for (int i = 0; i < n_target; i++) {\n        double pv = target_liability_cf[i] * exp(-0.05 * target_times[i]);\n        target_pv += pv;\n        target_duration += target_times[i] * pv;\n        target_convexity += target_times[i] * target_times[i] * pv;\n    }\n    \n    target_duration /= target_pv;\n    target_convexity /= target_pv;\n    \n    // Solve for optimal weights (simplified)\n    for (int i = 0; i < n_bonds; i++) {\n        optimal_weights[i] = target_duration / (bond_durations[i] * n_bonds);\n    }\n}\n\nint main() {\n    const int n_flows = 20, n_bonds = 10, n_target = 15;\n    "
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/bond_analytics.cpp",
+      "function": "_Z26calculatePortfolioDurationPdS_S_i",
+      "line": 36,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "\nvoid calculatePortfolioDuration(double* weights, double* durations, double* portfolio_duration,\n                               int n_bonds) {\n    *portfolio_duration = 0.0;\n    \n    for (int i = 0; i < n_bonds; i++) {\n        *portfolio_duration += weights[i] * durations[i];\n    }\n}\n\nvoid immunizePortfolio(double* target_liability_cf, double* target_times, int n_target,\n                      double* bond_durations, double* bond_convexities, \n                      double* optimal_weights, int n_bonds) {\n    double target_duration = 0.0, target_convexity = 0.0;\n    double target_pv = 0.0;\n    \n    for (int i = 0; i < n_target; i++) {\n        double pv = target_liability_cf[i] * exp(-0.05 * target_times[i]);\n        target_pv += pv;\n        target_duration += target_times[i] * pv;\n        target_convexity += target_times[i] * target_times[i] * pv;\n    }\n    \n    target_duration /= target_pv;\n    target_convexity /= target_pv;\n    \n    // Solve for optimal weights (simplified)\n    for (int i = 0; i < n_bonds; i++) {\n        optimal_weights[i] = target_duration / (bond_durations[i] * n_bonds);\n    }\n}\n\nint main() {\n    const int n_flows = 20, n_bonds = 10, n_target = 15;\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/bond_analytics.cpp",
+      "function": "_Z17immunizePortfolioPdS_iS_S_S_i",
+      "line": 47,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                      double* bond_durations, double* bond_convexities, \n                      double* optimal_weights, int n_bonds) {\n    double target_duration = 0.0, target_convexity = 0.0;\n    double target_pv = 0.0;\n    \n    for (int i = 0; i < n_target; i++) {\n        double pv = target_liability_cf[i] * exp(-0.05 * target_times[i]);\n        target_pv += pv;\n        target_duration += target_times[i] * pv;\n        target_convexity += target_times[i] * target_times[i] * pv;\n    }\n    \n    target_duration /= target_pv;\n    target_convexity /= target_pv;\n    \n    // Solve for optimal weights (simplified)\n    for (int i = 0; i < n_bonds; i++) {\n        optimal_weights[i] = target_duration / (bond_durations[i] * n_bonds);\n    }\n}\n\nint main() {\n    const int n_flows = 20, n_bonds = 10, n_target = 15;\n    \n    std::vector<double> cash_flows(n_flows, 50.0);\n    std::vector<double> times(n_flows);\n    for (int i = 0; i < n_flows; i++) times[i] = (i + 1) * 0.5;\n    \n    double price, duration, convexity, dv01;\n    calculateBondMetrics(cash_flows.data(), times.data(), n_flows, 0.05,\n                        price, duration, convexity, dv01);\n    \n    std::vector<double> weights(n_bonds, 0.1);\n    std::vector<double> durations(n_bonds, 5.0);\n    double portfolio_duration;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/bond_analytics.cpp",
+      "function": "_Z17immunizePortfolioPdS_iS_S_S_i",
+      "line": 58,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    \n    target_duration /= target_pv;\n    target_convexity /= target_pv;\n    \n    // Solve for optimal weights (simplified)\n    for (int i = 0; i < n_bonds; i++) {\n        optimal_weights[i] = target_duration / (bond_durations[i] * n_bonds);\n    }\n}\n\nint main() {\n    const int n_flows = 20, n_bonds = 10, n_target = 15;\n    \n    std::vector<double> cash_flows(n_flows, 50.0);\n    std::vector<double> times(n_flows);\n    for (int i = 0; i < n_flows; i++) times[i] = (i + 1) * 0.5;\n    \n    double price, duration, convexity, dv01;\n    calculateBondMetrics(cash_flows.data(), times.data(), n_flows, 0.05,\n                        price, duration, convexity, dv01);\n    \n    std::vector<double> weights(n_bonds, 0.1);\n    std::vector<double> durations(n_bonds, 5.0);\n    double portfolio_duration;\n    calculatePortfolioDuration(weights.data(), durations.data(), &portfolio_duration, n_bonds);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/bond_analytics.cpp",
+      "function": "_Z17immunizePortfolioPdS_iS_S_S_i",
+      "line": 47,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                      double* bond_durations, double* bond_convexities, \n                      double* optimal_weights, int n_bonds) {\n    double target_duration = 0.0, target_convexity = 0.0;\n    double target_pv = 0.0;\n    \n    for (int i = 0; i < n_target; i++) {\n        double pv = target_liability_cf[i] * exp(-0.05 * target_times[i]);\n        target_pv += pv;\n        target_duration += target_times[i] * pv;\n        target_convexity += target_times[i] * target_times[i] * pv;\n    }\n    \n    target_duration /= target_pv;\n    target_convexity /= target_pv;\n    \n    // Solve for optimal weights (simplified)\n    for (int i = 0; i < n_bonds; i++) {\n        optimal_weights[i] = target_duration / (bond_durations[i] * n_bonds);\n    }\n}\n\nint main() {\n    const int n_flows = 20, n_bonds = 10, n_target = 15;\n    \n    std::vector<double> cash_flows(n_flows, 50.0);\n    std::vector<double> times(n_flows);\n    for (int i = 0; i < n_flows; i++) times[i] = (i + 1) * 0.5;\n    \n    double price, duration, convexity, dv01;\n    calculateBondMetrics(cash_flows.data(), times.data(), n_flows, 0.05,\n                        price, duration, convexity, dv01);\n    \n    std::vector<double> weights(n_bonds, 0.1);\n    std::vector<double> durations(n_bonds, 5.0);\n    double portfolio_duration;"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/bond_analytics.cpp",
+      "function": "_Z17immunizePortfolioPdS_iS_S_S_i",
+      "line": 58,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    target_duration /= target_pv;\n    target_convexity /= target_pv;\n    \n    // Solve for optimal weights (simplified)\n    for (int i = 0; i < n_bonds; i++) {\n        optimal_weights[i] = target_duration / (bond_durations[i] * n_bonds);\n    }\n}\n\nint main() {\n    const int n_flows = 20, n_bonds = 10, n_target = 15;\n    \n    std::vector<double> cash_flows(n_flows, 50.0);\n    std::vector<double> times(n_flows);\n    for (int i = 0; i < n_flows; i++) times[i] = (i + 1) * 0.5;\n    \n    double price, duration, convexity, dv01;\n    calculateBondMetrics(cash_flows.data(), times.data(), n_flows, 0.05,\n                        price, duration, convexity, dv01);\n    \n    std::vector<double> weights(n_bonds, 0.1);\n    std::vector<double> durations(n_bonds, 5.0);\n    double portfolio_duration;\n    calculatePortfolioDuration(weights.data(), durations.data(), &portfolio_duration, n_bonds);\n    \n    return 0;\n}"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/finance/bond_analytics.cpp",
+      "function": "_Z17immunizePortfolioPdS_iS_S_S_i",
+      "line": 58,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    target_duration /= target_pv;\n    target_convexity /= target_pv;\n    \n    // Solve for optimal weights (simplified)\n    for (int i = 0; i < n_bonds; i++) {\n        optimal_weights[i] = target_duration / (bond_durations[i] * n_bonds);\n    }\n}\n\nint main() {\n    const int n_flows = 20, n_bonds = 10, n_target = 15;\n    \n    std::vector<double> cash_flows(n_flows, 50.0);\n    std::vector<double> times(n_flows);\n    for (int i = 0; i < n_flows; i++) times[i] = (i + 1) * 0.5;\n    \n    double price, duration, convexity, dv01;\n    calculateBondMetrics(cash_flows.data(), times.data(), n_flows, 0.05,\n                        price, duration, convexity, dv01);\n    \n    std::vector<double> weights(n_bonds, 0.1);\n    std::vector<double> durations(n_bonds, 5.0);\n    double portfolio_duration;\n    calculatePortfolioDuration(weights.data(), durations.data(), &portfolio_duration, n_bonds);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/bond_analytics.cpp",
+      "function": "_Z20calculateBondMetricsPdS_idRdS0_S0_S0_",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7800000000000001,
+      "context": "    price = 0.0;\n    duration = 0.0;\n    convexity = 0.0;\n    \n    // Calculate price and weighted cash flows\n    for (int i = 0; i < n_flows; i++) {\n        double discount_factor = exp(-ytm * times[i]);\n        double pv = cash_flows[i] * discount_factor;\n        \n        price += pv;\n        duration += times[i] * pv;\n        convexity += times[i] * times[i] * pv;\n    }\n    \n    // Macaulay duration\n    duration /= price;\n    \n    // Convexity\n    convexity /= price;\n    \n    // DV01 (dollar value of 1 basis point)\n    dv01 = price * duration * 0.0001;\n}\n\nvoid calculatePortfolioDuration(double* weights, double* durations, double* portfolio_duration,\n                               int n_bonds) {\n    *portfolio_duration = 0.0;\n    \n    for (int i = 0; i < n_bonds; i++) {\n        *portfolio_duration += weights[i] * durations[i];\n    }\n}\n\nvoid immunizePortfolio(double* target_liability_cf, double* target_times, int n_target,\n                      double* bond_durations, double* bond_convexities, ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7800000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/bond_analytics.cpp",
+      "function": "_Z17immunizePortfolioPdS_iS_S_S_i",
+      "line": 47,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "                      double* bond_durations, double* bond_convexities, \n                      double* optimal_weights, int n_bonds) {\n    double target_duration = 0.0, target_convexity = 0.0;\n    double target_pv = 0.0;\n    \n    for (int i = 0; i < n_target; i++) {\n        double pv = target_liability_cf[i] * exp(-0.05 * target_times[i]);\n        target_pv += pv;\n        target_duration += target_times[i] * pv;\n        target_convexity += target_times[i] * target_times[i] * pv;\n    }\n    \n    target_duration /= target_pv;\n    target_convexity /= target_pv;\n    \n    // Solve for optimal weights (simplified)\n    for (int i = 0; i < n_bonds; i++) {\n        optimal_weights[i] = target_duration / (bond_durations[i] * n_bonds);\n    }\n}\n\nint main() {\n    const int n_flows = 20, n_bonds = 10, n_target = 15;\n    \n    std::vector<double> cash_flows(n_flows, 50.0);\n    std::vector<double> times(n_flows);\n    for (int i = 0; i < n_flows; i++) times[i] = (i + 1) * 0.5;\n    \n    double price, duration, convexity, dv01;\n    calculateBondMetrics(cash_flows.data(), times.data(), n_flows, 0.05,\n                        price, duration, convexity, dv01);\n    \n    std::vector<double> weights(n_bonds, 0.1);\n    std::vector<double> durations(n_bonds, 5.0);\n    double portfolio_duration;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/bond_analytics.cpp",
+      "function": "_Z17immunizePortfolioPdS_iS_S_S_i",
+      "line": 58,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "    \n    target_duration /= target_pv;\n    target_convexity /= target_pv;\n    \n    // Solve for optimal weights (simplified)\n    for (int i = 0; i < n_bonds; i++) {\n        optimal_weights[i] = target_duration / (bond_durations[i] * n_bonds);\n    }\n}\n\nint main() {\n    const int n_flows = 20, n_bonds = 10, n_target = 15;\n    \n    std::vector<double> cash_flows(n_flows, 50.0);\n    std::vector<double> times(n_flows);\n    for (int i = 0; i < n_flows; i++) times[i] = (i + 1) * 0.5;\n    \n    double price, duration, convexity, dv01;\n    calculateBondMetrics(cash_flows.data(), times.data(), n_flows, 0.05,\n                        price, duration, convexity, dv01);\n    \n    std::vector<double> weights(n_bonds, 0.1);\n    std::vector<double> durations(n_bonds, 5.0);\n    double portfolio_duration;\n    calculatePortfolioDuration(weights.data(), durations.data(), &portfolio_duration, n_bonds);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/bond_analytics.cpp",
+      "function": "_Z20calculateBondMetricsPdS_idRdS0_S0_S0_",
+      "line": 13,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7000000000000001,
+      "context": "    price = 0.0;\n    duration = 0.0;\n    convexity = 0.0;\n    \n    // Calculate price and weighted cash flows\n    for (int i = 0; i < n_flows; i++) {\n        double discount_factor = exp(-ytm * times[i]);\n        double pv = cash_flows[i] * discount_factor;\n        \n        price += pv;\n        duration += times[i] * pv;\n        convexity += times[i] * times[i] * pv;\n    }\n    \n    // Macaulay duration\n    duration /= price;\n    \n    // Convexity\n    convexity /= price;\n    \n    // DV01 (dollar value of 1 basis point)\n    dv01 = price * duration * 0.0001;\n}\n\nvoid calculatePortfolioDuration(double* weights, double* durations, double* portfolio_duration,\n                               int n_bonds) {\n    *portfolio_duration = 0.0;\n    \n    for (int i = 0; i < n_bonds; i++) {\n        *portfolio_duration += weights[i] * durations[i];\n    }\n}\n\nvoid immunizePortfolio(double* target_liability_cf, double* target_times, int n_target,\n                      double* bond_durations, double* bond_convexities, ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.7000000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/finance/bond_analytics.cpp",
+      "function": "_Z26calculatePortfolioDurationPdS_S_i",
+      "line": 36,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "\nvoid calculatePortfolioDuration(double* weights, double* durations, double* portfolio_duration,\n                               int n_bonds) {\n    *portfolio_duration = 0.0;\n    \n    for (int i = 0; i < n_bonds; i++) {\n        *portfolio_duration += weights[i] * durations[i];\n    }\n}\n\nvoid immunizePortfolio(double* target_liability_cf, double* target_times, int n_target,\n                      double* bond_durations, double* bond_convexities, \n                      double* optimal_weights, int n_bonds) {\n    double target_duration = 0.0, target_convexity = 0.0;\n    double target_pv = 0.0;\n    \n    for (int i = 0; i < n_target; i++) {\n        double pv = target_liability_cf[i] * exp(-0.05 * target_times[i]);\n        target_pv += pv;\n        target_duration += target_times[i] * pv;\n        target_convexity += target_times[i] * target_times[i] * pv;\n    }\n    \n    target_duration /= target_pv;\n    target_convexity /= target_pv;\n    \n    // Solve for optimal weights (simplified)\n    for (int i = 0; i < n_bonds; i++) {\n        optimal_weights[i] = target_duration / (bond_durations[i] * n_bonds);\n    }\n}\n\nint main() {\n    const int n_flows = 20, n_bonds = 10, n_target = 15;\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/bond_analytics.cpp",
+      "function": "_Z17immunizePortfolioPdS_iS_S_S_i",
+      "line": 47,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "                      double* bond_durations, double* bond_convexities, \n                      double* optimal_weights, int n_bonds) {\n    double target_duration = 0.0, target_convexity = 0.0;\n    double target_pv = 0.0;\n    \n    for (int i = 0; i < n_target; i++) {\n        double pv = target_liability_cf[i] * exp(-0.05 * target_times[i]);\n        target_pv += pv;\n        target_duration += target_times[i] * pv;\n        target_convexity += target_times[i] * target_times[i] * pv;\n    }\n    \n    target_duration /= target_pv;\n    target_convexity /= target_pv;\n    \n    // Solve for optimal weights (simplified)\n    for (int i = 0; i < n_bonds; i++) {\n        optimal_weights[i] = target_duration / (bond_durations[i] * n_bonds);\n    }\n}\n\nint main() {\n    const int n_flows = 20, n_bonds = 10, n_target = 15;\n    \n    std::vector<double> cash_flows(n_flows, 50.0);\n    std::vector<double> times(n_flows);\n    for (int i = 0; i < n_flows; i++) times[i] = (i + 1) * 0.5;\n    \n    double price, duration, convexity, dv01;\n    calculateBondMetrics(cash_flows.data(), times.data(), n_flows, 0.05,\n                        price, duration, convexity, dv01);\n    \n    std::vector<double> weights(n_bonds, 0.1);\n    std::vector<double> durations(n_bonds, 5.0);\n    double portfolio_duration;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/finance/bond_analytics.cpp",
+      "function": "_Z26calculatePortfolioDurationPdS_S_i",
+      "line": 36,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "\nvoid calculatePortfolioDuration(double* weights, double* durations, double* portfolio_duration,\n                               int n_bonds) {\n    *portfolio_duration = 0.0;\n    \n    for (int i = 0; i < n_bonds; i++) {\n        *portfolio_duration += weights[i] * durations[i];\n    }\n}\n\nvoid immunizePortfolio(double* target_liability_cf, double* target_times, int n_target,\n                      double* bond_durations, double* bond_convexities, \n                      double* optimal_weights, int n_bonds) {\n    double target_duration = 0.0, target_convexity = 0.0;\n    double target_pv = 0.0;\n    \n    for (int i = 0; i < n_target; i++) {\n        double pv = target_liability_cf[i] * exp(-0.05 * target_times[i]);\n        target_pv += pv;\n        target_duration += target_times[i] * pv;\n        target_convexity += target_times[i] * target_times[i] * pv;\n    }\n    \n    target_duration /= target_pv;\n    target_convexity /= target_pv;\n    \n    // Solve for optimal weights (simplified)\n    for (int i = 0; i < n_bonds; i++) {\n        optimal_weights[i] = target_duration / (bond_durations[i] * n_bonds);\n    }\n}\n\nint main() {\n    const int n_flows = 20, n_bonds = 10, n_target = 15;\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    }
+  ]
+}

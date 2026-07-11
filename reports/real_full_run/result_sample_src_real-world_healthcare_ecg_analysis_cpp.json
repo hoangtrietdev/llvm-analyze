@@ -1,0 +1,721 @@
+{
+  "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+    "llvm_initial": 41,
+    "llvm_sys_noise": 19,
+    "llvm_project": 22,
+    "after_filter": 16,
+    "ai_batches": 2,
+    "ai_results": 16,
+    "omp_verified": 0,
+    "total_ms": 3810.4,
+    "llvm_ms": 452.1
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "main",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "        std::vector<double> filter_coeffs(filter_order);\n        \n        // Design bandpass filter coefficients\n        for (int i = 0; i < filter_order; i++) {\n            double t = i - filter_order / 2;\n            if (t == 0) {\n                filter_coeffs[i] = 2.0 * (high_freq - low_freq);\n            } else {\n                filter_coeffs[i] = (sin(2.0 * M_PI * high_freq * t) - \n                                   sin(2.0 * M_PI * low_freq * t)) / (M_PI * t);\n            }\n        }\n        \n        // Apply filter\n        for (int i = filter_order; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < filter_order; j++) {\n                sum += raw_signal[i - j] * filter_coeffs[j];\n            }\n            filtered_signal[i] = sum;\n        }\n    }\n    \n    void detect_r_peaks() {\n        std::vector<double> derivative(SIGNAL_LENGTH);\n        std::vector<double> squared(SIGNAL_LENGTH);\n        std::vector<double> integrated(SIGNAL_LENGTH);\n        \n        // Derivative\n        for (int i = 2; i < SIGNAL_LENGTH - 2; i++) {\n            derivative[i] = (filtered_signal[i+1] - filtered_signal[i-1]) / 2.0;\n        }\n        \n        // Square\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "main",
+      "line": 24,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        // Simple FIR filter implementation\n        int filter_order = 101;\n        std::vector<double> filter_coeffs(filter_order);\n        \n        // Design bandpass filter coefficients\n        for (int i = 0; i < filter_order; i++) {\n            double t = i - filter_order / 2;\n            if (t == 0) {\n                filter_coeffs[i] = 2.0 * (high_freq - low_freq);\n            } else {\n                filter_coeffs[i] = (sin(2.0 * M_PI * high_freq * t) - \n                                   sin(2.0 * M_PI * low_freq * t)) / (M_PI * t);\n            }\n        }\n        \n        // Apply filter\n        for (int i = filter_order; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < filter_order; j++) {\n                sum += raw_signal[i - j] * filter_coeffs[j];\n            }\n            filtered_signal[i] = sum;\n        }\n    }\n    \n    void detect_r_peaks() {\n        std::vector<double> derivative(SIGNAL_LENGTH);\n        std::vector<double> squared(SIGNAL_LENGTH);\n        std::vector<double> integrated(SIGNAL_LENGTH);\n        \n        // Derivative\n        for (int i = 2; i < SIGNAL_LENGTH - 2; i++) {\n            derivative[i] = (filtered_signal[i+1] - filtered_signal[i-1]) / 2.0;\n        }\n        "
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "main",
+      "line": 35,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                                   sin(2.0 * M_PI * low_freq * t)) / (M_PI * t);\n            }\n        }\n        \n        // Apply filter\n        for (int i = filter_order; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < filter_order; j++) {\n                sum += raw_signal[i - j] * filter_coeffs[j];\n            }\n            filtered_signal[i] = sum;\n        }\n    }\n    \n    void detect_r_peaks() {\n        std::vector<double> derivative(SIGNAL_LENGTH);\n        std::vector<double> squared(SIGNAL_LENGTH);\n        std::vector<double> integrated(SIGNAL_LENGTH);\n        \n        // Derivative\n        for (int i = 2; i < SIGNAL_LENGTH - 2; i++) {\n            derivative[i] = (filtered_signal[i+1] - filtered_signal[i-1]) / 2.0;\n        }\n        \n        // Square\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            squared[i] = derivative[i] * derivative[i];\n        }\n        \n        // Moving window integration\n        int window_size = 30;\n        for (int i = window_size; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < window_size; j++) {\n                sum += squared[i - j];"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "main",
+      "line": 37,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "        }\n        \n        // Apply filter\n        for (int i = filter_order; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < filter_order; j++) {\n                sum += raw_signal[i - j] * filter_coeffs[j];\n            }\n            filtered_signal[i] = sum;\n        }\n    }\n    \n    void detect_r_peaks() {\n        std::vector<double> derivative(SIGNAL_LENGTH);\n        std::vector<double> squared(SIGNAL_LENGTH);\n        std::vector<double> integrated(SIGNAL_LENGTH);\n        \n        // Derivative\n        for (int i = 2; i < SIGNAL_LENGTH - 2; i++) {\n            derivative[i] = (filtered_signal[i+1] - filtered_signal[i-1]) / 2.0;\n        }\n        \n        // Square\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            squared[i] = derivative[i] * derivative[i];\n        }\n        \n        // Moving window integration\n        int window_size = 30;\n        for (int i = window_size; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < window_size; j++) {\n                sum += squared[i - j];\n            }\n            integrated[i] = sum / window_size;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 50,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        std::vector<double> derivative(SIGNAL_LENGTH);\n        std::vector<double> squared(SIGNAL_LENGTH);\n        std::vector<double> integrated(SIGNAL_LENGTH);\n        \n        // Derivative\n        for (int i = 2; i < SIGNAL_LENGTH - 2; i++) {\n            derivative[i] = (filtered_signal[i+1] - filtered_signal[i-1]) / 2.0;\n        }\n        \n        // Square\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            squared[i] = derivative[i] * derivative[i];\n        }\n        \n        // Moving window integration\n        int window_size = 30;\n        for (int i = window_size; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < window_size; j++) {\n                sum += squared[i - j];\n            }\n            integrated[i] = sum / window_size;\n        }\n        \n        // Peak detection\n        double threshold = 0.0;\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            threshold += integrated[i];\n        }\n        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 55,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (int i = 2; i < SIGNAL_LENGTH - 2; i++) {\n            derivative[i] = (filtered_signal[i+1] - filtered_signal[i-1]) / 2.0;\n        }\n        \n        // Square\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            squared[i] = derivative[i] * derivative[i];\n        }\n        \n        // Moving window integration\n        int window_size = 30;\n        for (int i = window_size; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < window_size; j++) {\n                sum += squared[i - j];\n            }\n            integrated[i] = sum / window_size;\n        }\n        \n        // Peak detection\n        double threshold = 0.0;\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            threshold += integrated[i];\n        }\n        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&\n                integrated[i] > integrated[i+1]) {\n                r_peak_locations.push_back(i);\n            }\n        }\n    }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 61,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            squared[i] = derivative[i] * derivative[i];\n        }\n        \n        // Moving window integration\n        int window_size = 30;\n        for (int i = window_size; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < window_size; j++) {\n                sum += squared[i - j];\n            }\n            integrated[i] = sum / window_size;\n        }\n        \n        // Peak detection\n        double threshold = 0.0;\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            threshold += integrated[i];\n        }\n        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&\n                integrated[i] > integrated[i+1]) {\n                r_peak_locations.push_back(i);\n            }\n        }\n    }\n    \n    void calculate_hrv_metrics(double& mean_rr, double& sdnn, double& rmssd) {\n        if (r_peak_locations.size() < 2) return;\n        \n        std::vector<double> rr_intervals;\n        for (size_t i = 1; i < r_peak_locations.size(); i++) {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 63,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Moving window integration\n        int window_size = 30;\n        for (int i = window_size; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < window_size; j++) {\n                sum += squared[i - j];\n            }\n            integrated[i] = sum / window_size;\n        }\n        \n        // Peak detection\n        double threshold = 0.0;\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            threshold += integrated[i];\n        }\n        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&\n                integrated[i] > integrated[i+1]) {\n                r_peak_locations.push_back(i);\n            }\n        }\n    }\n    \n    void calculate_hrv_metrics(double& mean_rr, double& sdnn, double& rmssd) {\n        if (r_peak_locations.size() < 2) return;\n        \n        std::vector<double> rr_intervals;\n        for (size_t i = 1; i < r_peak_locations.size(); i++) {\n            double rr = (r_peak_locations[i] - r_peak_locations[i-1]) / \n                        static_cast<double>(SAMPLING_RATE);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 71,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            integrated[i] = sum / window_size;\n        }\n        \n        // Peak detection\n        double threshold = 0.0;\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            threshold += integrated[i];\n        }\n        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&\n                integrated[i] > integrated[i+1]) {\n                r_peak_locations.push_back(i);\n            }\n        }\n    }\n    \n    void calculate_hrv_metrics(double& mean_rr, double& sdnn, double& rmssd) {\n        if (r_peak_locations.size() < 2) return;\n        \n        std::vector<double> rr_intervals;\n        for (size_t i = 1; i < r_peak_locations.size(); i++) {\n            double rr = (r_peak_locations[i] - r_peak_locations[i-1]) / \n                        static_cast<double>(SAMPLING_RATE);\n            rr_intervals.push_back(rr);\n        }\n        \n        // Mean RR interval\n        mean_rr = 0.0;\n        for (double rr : rr_intervals) {\n            mean_rr += rr;\n        }"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 78,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        }\n        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&\n                integrated[i] > integrated[i+1]) {\n                r_peak_locations.push_back(i);\n            }\n        }\n    }\n    \n    void calculate_hrv_metrics(double& mean_rr, double& sdnn, double& rmssd) {\n        if (r_peak_locations.size() < 2) return;\n        \n        std::vector<double> rr_intervals;\n        for (size_t i = 1; i < r_peak_locations.size(); i++) {\n            double rr = (r_peak_locations[i] - r_peak_locations[i-1]) / \n                        static_cast<double>(SAMPLING_RATE);\n            rr_intervals.push_back(rr);\n        }\n        \n        // Mean RR interval\n        mean_rr = 0.0;\n        for (double rr : rr_intervals) {\n            mean_rr += rr;\n        }\n        mean_rr /= rr_intervals.size();\n        \n        // SDNN (Standard deviation of NN intervals)\n        sdnn = 0.0;\n        for (double rr : rr_intervals) {\n            sdnn += (rr - mean_rr) * (rr - mean_rr);\n        }"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 79,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&\n                integrated[i] > integrated[i+1]) {\n                r_peak_locations.push_back(i);\n            }\n        }\n    }\n    \n    void calculate_hrv_metrics(double& mean_rr, double& sdnn, double& rmssd) {\n        if (r_peak_locations.size() < 2) return;\n        \n        std::vector<double> rr_intervals;\n        for (size_t i = 1; i < r_peak_locations.size(); i++) {\n            double rr = (r_peak_locations[i] - r_peak_locations[i-1]) / \n                        static_cast<double>(SAMPLING_RATE);\n            rr_intervals.push_back(rr);\n        }\n        \n        // Mean RR interval\n        mean_rr = 0.0;\n        for (double rr : rr_intervals) {\n            mean_rr += rr;\n        }\n        mean_rr /= rr_intervals.size();\n        \n        // SDNN (Standard deviation of NN intervals)\n        sdnn = 0.0;\n        for (double rr : rr_intervals) {\n            sdnn += (rr - mean_rr) * (rr - mean_rr);\n        }\n        sdnn = sqrt(sdnn / rr_intervals.size());"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 79,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&\n                integrated[i] > integrated[i+1]) {\n                r_peak_locations.push_back(i);\n            }\n        }\n    }\n    \n    void calculate_hrv_metrics(double& mean_rr, double& sdnn, double& rmssd) {\n        if (r_peak_locations.size() < 2) return;\n        \n        std::vector<double> rr_intervals;\n        for (size_t i = 1; i < r_peak_locations.size(); i++) {\n            double rr = (r_peak_locations[i] - r_peak_locations[i-1]) / \n                        static_cast<double>(SAMPLING_RATE);\n            rr_intervals.push_back(rr);\n        }\n        \n        // Mean RR interval\n        mean_rr = 0.0;\n        for (double rr : rr_intervals) {\n            mean_rr += rr;\n        }\n        mean_rr /= rr_intervals.size();\n        \n        // SDNN (Standard deviation of NN intervals)\n        sdnn = 0.0;\n        for (double rr : rr_intervals) {\n            sdnn += (rr - mean_rr) * (rr - mean_rr);\n        }\n        sdnn = sqrt(sdnn / rr_intervals.size());"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 77,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            threshold += integrated[i];\n        }\n        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&\n                integrated[i] > integrated[i+1]) {\n                r_peak_locations.push_back(i);\n            }\n        }\n    }\n    \n    void calculate_hrv_metrics(double& mean_rr, double& sdnn, double& rmssd) {\n        if (r_peak_locations.size() < 2) return;\n        \n        std::vector<double> rr_intervals;\n        for (size_t i = 1; i < r_peak_locations.size(); i++) {\n            double rr = (r_peak_locations[i] - r_peak_locations[i-1]) / \n                        static_cast<double>(SAMPLING_RATE);\n            rr_intervals.push_back(rr);\n        }\n        \n        // Mean RR interval\n        mean_rr = 0.0;\n        for (double rr : rr_intervals) {\n            mean_rr += rr;\n        }\n        mean_rr /= rr_intervals.size();\n        \n        // SDNN (Standard deviation of NN intervals)\n        sdnn = 0.0;\n        for (double rr : rr_intervals) {\n            sdnn += (rr - mean_rr) * (rr - mean_rr);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 87,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8,
+      "context": "            }\n        }\n    }\n    \n    void calculate_hrv_metrics(double& mean_rr, double& sdnn, double& rmssd) {\n        if (r_peak_locations.size() < 2) return;\n        \n        std::vector<double> rr_intervals;\n        for (size_t i = 1; i < r_peak_locations.size(); i++) {\n            double rr = (r_peak_locations[i] - r_peak_locations[i-1]) / \n                        static_cast<double>(SAMPLING_RATE);\n            rr_intervals.push_back(rr);\n        }\n        \n        // Mean RR interval\n        mean_rr = 0.0;\n        for (double rr : rr_intervals) {\n            mean_rr += rr;\n        }\n        mean_rr /= rr_intervals.size();\n        \n        // SDNN (Standard deviation of NN intervals)\n        sdnn = 0.0;\n        for (double rr : rr_intervals) {\n            sdnn += (rr - mean_rr) * (rr - mean_rr);\n        }\n        sdnn = sqrt(sdnn / rr_intervals.size());\n        \n        // RMSSD (Root mean square of successive differences)\n        rmssd = 0.0;\n        for (size_t i = 1; i < rr_intervals.size(); i++) {\n            double diff = rr_intervals[i] - rr_intervals[i-1];\n            rmssd += diff * diff;\n        }\n        rmssd = sqrt(rmssd / (rr_intervals.size() - 1));"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 90,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 98,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "            rr_intervals.push_back(rr);\n        }\n        \n        // Mean RR interval\n        mean_rr = 0.0;\n        for (double rr : rr_intervals) {\n            mean_rr += rr;\n        }\n        mean_rr /= rr_intervals.size();\n        \n        // SDNN (Standard deviation of NN intervals)\n        sdnn = 0.0;\n        for (double rr : rr_intervals) {\n            sdnn += (rr - mean_rr) * (rr - mean_rr);\n        }\n        sdnn = sqrt(sdnn / rr_intervals.size());\n        \n        // RMSSD (Root mean square of successive differences)\n        rmssd = 0.0;\n        for (size_t i = 1; i < rr_intervals.size(); i++) {\n            double diff = rr_intervals[i] - rr_intervals[i-1];\n            rmssd += diff * diff;\n        }\n        rmssd = sqrt(rmssd / (rr_intervals.size() - 1));\n    }\n};\n\nint main() {\n    ECGAnalyzer analyzer;\n    \n    analyzer.apply_bandpass_filter(0.5, 50.0);\n    analyzer.detect_r_peaks();\n    \n    double mean_rr, sdnn, rmssd;\n    analyzer.calculate_hrv_metrics(mean_rr, sdnn, rmssd);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 1146,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 90,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 105,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.30000000000000004
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 98,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            rr_intervals.push_back(rr);\n        }\n        \n        // Mean RR interval\n        mean_rr = 0.0;\n        for (double rr : rr_intervals) {\n            mean_rr += rr;\n        }\n        mean_rr /= rr_intervals.size();\n        \n        // SDNN (Standard deviation of NN intervals)\n        sdnn = 0.0;\n        for (double rr : rr_intervals) {\n            sdnn += (rr - mean_rr) * (rr - mean_rr);\n        }\n        sdnn = sqrt(sdnn / rr_intervals.size());\n        \n        // RMSSD (Root mean square of successive differences)\n        rmssd = 0.0;\n        for (size_t i = 1; i < rr_intervals.size(); i++) {\n            double diff = rr_intervals[i] - rr_intervals[i-1];\n            rmssd += diff * diff;\n        }\n        rmssd = sqrt(rmssd / (rr_intervals.size() - 1));\n    }\n};\n\nint main() {\n    ECGAnalyzer analyzer;\n    \n    analyzer.apply_bandpass_filter(0.5, 50.0);\n    analyzer.detect_r_peaks();\n    \n    double mean_rr, sdnn, rmssd;\n    analyzer.calculate_hrv_metrics(mean_rr, sdnn, rmssd);"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 112,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.4
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 105,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.30000000000000004
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 112,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.4
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11ECGAnalyzerD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11ECGAnalyzerD1Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11ECGAnalyzerD1Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11ECGAnalyzerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11ECGAnalyzerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN11ECGAnalyzerC2Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE9push_backB8ne210101ERKi",
+      "line": 1146,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE9push_backB8ne210101ERKi",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE9push_backB8ne210101ERKi",
+      "line": 100,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorIiNS_9allocatorIiEEE9push_backB8ne210101ERKi",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "main",
+      "line": 24,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        // Simple FIR filter implementation\n        int filter_order = 101;\n        std::vector<double> filter_coeffs(filter_order);\n        \n        // Design bandpass filter coefficients\n        for (int i = 0; i < filter_order; i++) {\n            double t = i - filter_order / 2;\n            if (t == 0) {\n                filter_coeffs[i] = 2.0 * (high_freq - low_freq);\n            } else {\n                filter_coeffs[i] = (sin(2.0 * M_PI * high_freq * t) - \n                                   sin(2.0 * M_PI * low_freq * t)) / (M_PI * t);\n            }\n        }\n        \n        // Apply filter\n        for (int i = filter_order; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < filter_order; j++) {\n                sum += raw_signal[i - j] * filter_coeffs[j];\n            }\n            filtered_signal[i] = sum;\n        }\n    }\n    \n    void detect_r_peaks() {\n        std::vector<double> derivative(SIGNAL_LENGTH);\n        std::vector<double> squared(SIGNAL_LENGTH);\n        std::vector<double> integrated(SIGNAL_LENGTH);\n        \n        // Derivative\n        for (int i = 2; i < SIGNAL_LENGTH - 2; i++) {\n            derivative[i] = (filtered_signal[i+1] - filtered_signal[i-1]) / 2.0;\n        }\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "main",
+      "line": 35,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "                                   sin(2.0 * M_PI * low_freq * t)) / (M_PI * t);\n            }\n        }\n        \n        // Apply filter\n        for (int i = filter_order; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < filter_order; j++) {\n                sum += raw_signal[i - j] * filter_coeffs[j];\n            }\n            filtered_signal[i] = sum;\n        }\n    }\n    \n    void detect_r_peaks() {\n        std::vector<double> derivative(SIGNAL_LENGTH);\n        std::vector<double> squared(SIGNAL_LENGTH);\n        std::vector<double> integrated(SIGNAL_LENGTH);\n        \n        // Derivative\n        for (int i = 2; i < SIGNAL_LENGTH - 2; i++) {\n            derivative[i] = (filtered_signal[i+1] - filtered_signal[i-1]) / 2.0;\n        }\n        \n        // Square\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            squared[i] = derivative[i] * derivative[i];\n        }\n        \n        // Moving window integration\n        int window_size = 30;\n        for (int i = window_size; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < window_size; j++) {\n                sum += squared[i - j];",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 50,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        std::vector<double> derivative(SIGNAL_LENGTH);\n        std::vector<double> squared(SIGNAL_LENGTH);\n        std::vector<double> integrated(SIGNAL_LENGTH);\n        \n        // Derivative\n        for (int i = 2; i < SIGNAL_LENGTH - 2; i++) {\n            derivative[i] = (filtered_signal[i+1] - filtered_signal[i-1]) / 2.0;\n        }\n        \n        // Square\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            squared[i] = derivative[i] * derivative[i];\n        }\n        \n        // Moving window integration\n        int window_size = 30;\n        for (int i = window_size; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < window_size; j++) {\n                sum += squared[i - j];\n            }\n            integrated[i] = sum / window_size;\n        }\n        \n        // Peak detection\n        double threshold = 0.0;\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            threshold += integrated[i];\n        }\n        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 55,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        for (int i = 2; i < SIGNAL_LENGTH - 2; i++) {\n            derivative[i] = (filtered_signal[i+1] - filtered_signal[i-1]) / 2.0;\n        }\n        \n        // Square\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            squared[i] = derivative[i] * derivative[i];\n        }\n        \n        // Moving window integration\n        int window_size = 30;\n        for (int i = window_size; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < window_size; j++) {\n                sum += squared[i - j];\n            }\n            integrated[i] = sum / window_size;\n        }\n        \n        // Peak detection\n        double threshold = 0.0;\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            threshold += integrated[i];\n        }\n        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&\n                integrated[i] > integrated[i+1]) {\n                r_peak_locations.push_back(i);\n            }\n        }\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 61,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            squared[i] = derivative[i] * derivative[i];\n        }\n        \n        // Moving window integration\n        int window_size = 30;\n        for (int i = window_size; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < window_size; j++) {\n                sum += squared[i - j];\n            }\n            integrated[i] = sum / window_size;\n        }\n        \n        // Peak detection\n        double threshold = 0.0;\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            threshold += integrated[i];\n        }\n        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&\n                integrated[i] > integrated[i+1]) {\n                r_peak_locations.push_back(i);\n            }\n        }\n    }\n    \n    void calculate_hrv_metrics(double& mean_rr, double& sdnn, double& rmssd) {\n        if (r_peak_locations.size() < 2) return;\n        \n        std::vector<double> rr_intervals;\n        for (size_t i = 1; i < r_peak_locations.size(); i++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 63,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        \n        // Moving window integration\n        int window_size = 30;\n        for (int i = window_size; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < window_size; j++) {\n                sum += squared[i - j];\n            }\n            integrated[i] = sum / window_size;\n        }\n        \n        // Peak detection\n        double threshold = 0.0;\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            threshold += integrated[i];\n        }\n        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&\n                integrated[i] > integrated[i+1]) {\n                r_peak_locations.push_back(i);\n            }\n        }\n    }\n    \n    void calculate_hrv_metrics(double& mean_rr, double& sdnn, double& rmssd) {\n        if (r_peak_locations.size() < 2) return;\n        \n        std::vector<double> rr_intervals;\n        for (size_t i = 1; i < r_peak_locations.size(); i++) {\n            double rr = (r_peak_locations[i] - r_peak_locations[i-1]) / \n                        static_cast<double>(SAMPLING_RATE);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 71,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            integrated[i] = sum / window_size;\n        }\n        \n        // Peak detection\n        double threshold = 0.0;\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            threshold += integrated[i];\n        }\n        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&\n                integrated[i] > integrated[i+1]) {\n                r_peak_locations.push_back(i);\n            }\n        }\n    }\n    \n    void calculate_hrv_metrics(double& mean_rr, double& sdnn, double& rmssd) {\n        if (r_peak_locations.size() < 2) return;\n        \n        std::vector<double> rr_intervals;\n        for (size_t i = 1; i < r_peak_locations.size(); i++) {\n            double rr = (r_peak_locations[i] - r_peak_locations[i-1]) / \n                        static_cast<double>(SAMPLING_RATE);\n            rr_intervals.push_back(rr);\n        }\n        \n        // Mean RR interval\n        mean_rr = 0.0;\n        for (double rr : rr_intervals) {\n            mean_rr += rr;\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 78,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        }\n        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&\n                integrated[i] > integrated[i+1]) {\n                r_peak_locations.push_back(i);\n            }\n        }\n    }\n    \n    void calculate_hrv_metrics(double& mean_rr, double& sdnn, double& rmssd) {\n        if (r_peak_locations.size() < 2) return;\n        \n        std::vector<double> rr_intervals;\n        for (size_t i = 1; i < r_peak_locations.size(); i++) {\n            double rr = (r_peak_locations[i] - r_peak_locations[i-1]) / \n                        static_cast<double>(SAMPLING_RATE);\n            rr_intervals.push_back(rr);\n        }\n        \n        // Mean RR interval\n        mean_rr = 0.0;\n        for (double rr : rr_intervals) {\n            mean_rr += rr;\n        }\n        mean_rr /= rr_intervals.size();\n        \n        // SDNN (Standard deviation of NN intervals)\n        sdnn = 0.0;\n        for (double rr : rr_intervals) {\n            sdnn += (rr - mean_rr) * (rr - mean_rr);\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 79,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&\n                integrated[i] > integrated[i+1]) {\n                r_peak_locations.push_back(i);\n            }\n        }\n    }\n    \n    void calculate_hrv_metrics(double& mean_rr, double& sdnn, double& rmssd) {\n        if (r_peak_locations.size() < 2) return;\n        \n        std::vector<double> rr_intervals;\n        for (size_t i = 1; i < r_peak_locations.size(); i++) {\n            double rr = (r_peak_locations[i] - r_peak_locations[i-1]) / \n                        static_cast<double>(SAMPLING_RATE);\n            rr_intervals.push_back(rr);\n        }\n        \n        // Mean RR interval\n        mean_rr = 0.0;\n        for (double rr : rr_intervals) {\n            mean_rr += rr;\n        }\n        mean_rr /= rr_intervals.size();\n        \n        // SDNN (Standard deviation of NN intervals)\n        sdnn = 0.0;\n        for (double rr : rr_intervals) {\n            sdnn += (rr - mean_rr) * (rr - mean_rr);\n        }\n        sdnn = sqrt(sdnn / rr_intervals.size());",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 79,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&\n                integrated[i] > integrated[i+1]) {\n                r_peak_locations.push_back(i);\n            }\n        }\n    }\n    \n    void calculate_hrv_metrics(double& mean_rr, double& sdnn, double& rmssd) {\n        if (r_peak_locations.size() < 2) return;\n        \n        std::vector<double> rr_intervals;\n        for (size_t i = 1; i < r_peak_locations.size(); i++) {\n            double rr = (r_peak_locations[i] - r_peak_locations[i-1]) / \n                        static_cast<double>(SAMPLING_RATE);\n            rr_intervals.push_back(rr);\n        }\n        \n        // Mean RR interval\n        mean_rr = 0.0;\n        for (double rr : rr_intervals) {\n            mean_rr += rr;\n        }\n        mean_rr /= rr_intervals.size();\n        \n        // SDNN (Standard deviation of NN intervals)\n        sdnn = 0.0;\n        for (double rr : rr_intervals) {\n            sdnn += (rr - mean_rr) * (rr - mean_rr);\n        }\n        sdnn = sqrt(sdnn / rr_intervals.size());",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 98,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            rr_intervals.push_back(rr);\n        }\n        \n        // Mean RR interval\n        mean_rr = 0.0;\n        for (double rr : rr_intervals) {\n            mean_rr += rr;\n        }\n        mean_rr /= rr_intervals.size();\n        \n        // SDNN (Standard deviation of NN intervals)\n        sdnn = 0.0;\n        for (double rr : rr_intervals) {\n            sdnn += (rr - mean_rr) * (rr - mean_rr);\n        }\n        sdnn = sqrt(sdnn / rr_intervals.size());\n        \n        // RMSSD (Root mean square of successive differences)\n        rmssd = 0.0;\n        for (size_t i = 1; i < rr_intervals.size(); i++) {\n            double diff = rr_intervals[i] - rr_intervals[i-1];\n            rmssd += diff * diff;\n        }\n        rmssd = sqrt(rmssd / (rr_intervals.size() - 1));\n    }\n};\n\nint main() {\n    ECGAnalyzer analyzer;\n    \n    analyzer.apply_bandpass_filter(0.5, 50.0);\n    analyzer.detect_r_peaks();\n    \n    double mean_rr, sdnn, rmssd;\n    analyzer.calculate_hrv_metrics(mean_rr, sdnn, rmssd);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 87,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.8,
+      "context": "            }\n        }\n    }\n    \n    void calculate_hrv_metrics(double& mean_rr, double& sdnn, double& rmssd) {\n        if (r_peak_locations.size() < 2) return;\n        \n        std::vector<double> rr_intervals;\n        for (size_t i = 1; i < r_peak_locations.size(); i++) {\n            double rr = (r_peak_locations[i] - r_peak_locations[i-1]) / \n                        static_cast<double>(SAMPLING_RATE);\n            rr_intervals.push_back(rr);\n        }\n        \n        // Mean RR interval\n        mean_rr = 0.0;\n        for (double rr : rr_intervals) {\n            mean_rr += rr;\n        }\n        mean_rr /= rr_intervals.size();\n        \n        // SDNN (Standard deviation of NN intervals)\n        sdnn = 0.0;\n        for (double rr : rr_intervals) {\n            sdnn += (rr - mean_rr) * (rr - mean_rr);\n        }\n        sdnn = sqrt(sdnn / rr_intervals.size());\n        \n        // RMSSD (Root mean square of successive differences)\n        rmssd = 0.0;\n        for (size_t i = 1; i < rr_intervals.size(); i++) {\n            double diff = rr_intervals[i] - rr_intervals[i-1];\n            rmssd += diff * diff;\n        }\n        rmssd = sqrt(rmssd / (rr_intervals.size() - 1));",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.8
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "main",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "        std::vector<double> filter_coeffs(filter_order);\n        \n        // Design bandpass filter coefficients\n        for (int i = 0; i < filter_order; i++) {\n            double t = i - filter_order / 2;\n            if (t == 0) {\n                filter_coeffs[i] = 2.0 * (high_freq - low_freq);\n            } else {\n                filter_coeffs[i] = (sin(2.0 * M_PI * high_freq * t) - \n                                   sin(2.0 * M_PI * low_freq * t)) / (M_PI * t);\n            }\n        }\n        \n        // Apply filter\n        for (int i = filter_order; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < filter_order; j++) {\n                sum += raw_signal[i - j] * filter_coeffs[j];\n            }\n            filtered_signal[i] = sum;\n        }\n    }\n    \n    void detect_r_peaks() {\n        std::vector<double> derivative(SIGNAL_LENGTH);\n        std::vector<double> squared(SIGNAL_LENGTH);\n        std::vector<double> integrated(SIGNAL_LENGTH);\n        \n        // Derivative\n        for (int i = 2; i < SIGNAL_LENGTH - 2; i++) {\n            derivative[i] = (filtered_signal[i+1] - filtered_signal[i-1]) / 2.0;\n        }\n        \n        // Square\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer14detect_r_peaksEv",
+      "line": 77,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            threshold += integrated[i];\n        }\n        threshold /= SIGNAL_LENGTH;\n        threshold *= 0.6;\n        \n        for (int i = 1; i < SIGNAL_LENGTH - 1; i++) {\n            if (integrated[i] > threshold &&\n                integrated[i] > integrated[i-1] &&\n                integrated[i] > integrated[i+1]) {\n                r_peak_locations.push_back(i);\n            }\n        }\n    }\n    \n    void calculate_hrv_metrics(double& mean_rr, double& sdnn, double& rmssd) {\n        if (r_peak_locations.size() < 2) return;\n        \n        std::vector<double> rr_intervals;\n        for (size_t i = 1; i < r_peak_locations.size(); i++) {\n            double rr = (r_peak_locations[i] - r_peak_locations[i-1]) / \n                        static_cast<double>(SAMPLING_RATE);\n            rr_intervals.push_back(rr);\n        }\n        \n        // Mean RR interval\n        mean_rr = 0.0;\n        for (double rr : rr_intervals) {\n            mean_rr += rr;\n        }\n        mean_rr /= rr_intervals.size();\n        \n        // SDNN (Standard deviation of NN intervals)\n        sdnn = 0.0;\n        for (double rr : rr_intervals) {\n            sdnn += (rr - mean_rr) * (rr - mean_rr);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "main",
+      "line": 37,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6000000000000001,
+      "context": "        }\n        \n        // Apply filter\n        for (int i = filter_order; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < filter_order; j++) {\n                sum += raw_signal[i - j] * filter_coeffs[j];\n            }\n            filtered_signal[i] = sum;\n        }\n    }\n    \n    void detect_r_peaks() {\n        std::vector<double> derivative(SIGNAL_LENGTH);\n        std::vector<double> squared(SIGNAL_LENGTH);\n        std::vector<double> integrated(SIGNAL_LENGTH);\n        \n        // Derivative\n        for (int i = 2; i < SIGNAL_LENGTH - 2; i++) {\n            derivative[i] = (filtered_signal[i+1] - filtered_signal[i-1]) / 2.0;\n        }\n        \n        // Square\n        for (int i = 0; i < SIGNAL_LENGTH; i++) {\n            squared[i] = derivative[i] * derivative[i];\n        }\n        \n        // Moving window integration\n        int window_size = 30;\n        for (int i = window_size; i < SIGNAL_LENGTH; i++) {\n            double sum = 0.0;\n            for (int j = 0; j < window_size; j++) {\n                sum += squared[i - j];\n            }\n            integrated[i] = sum / window_size;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6000000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/healthcare/ecg_analysis.cpp",
+      "function": "_ZN11ECGAnalyzer21calculate_hrv_metricsERdS0_S0_",
+      "line": 98,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "            rr_intervals.push_back(rr);\n        }\n        \n        // Mean RR interval\n        mean_rr = 0.0;\n        for (double rr : rr_intervals) {\n            mean_rr += rr;\n        }\n        mean_rr /= rr_intervals.size();\n        \n        // SDNN (Standard deviation of NN intervals)\n        sdnn = 0.0;\n        for (double rr : rr_intervals) {\n            sdnn += (rr - mean_rr) * (rr - mean_rr);\n        }\n        sdnn = sqrt(sdnn / rr_intervals.size());\n        \n        // RMSSD (Root mean square of successive differences)\n        rmssd = 0.0;\n        for (size_t i = 1; i < rr_intervals.size(); i++) {\n            double diff = rr_intervals[i] - rr_intervals[i-1];\n            rmssd += diff * diff;\n        }\n        rmssd = sqrt(rmssd / (rr_intervals.size() - 1));\n    }\n};\n\nint main() {\n    ECGAnalyzer analyzer;\n    \n    analyzer.apply_bandpass_filter(0.5, 50.0);\n    analyzer.detect_r_peaks();\n    \n    double mean_rr, sdnn, rmssd;\n    analyzer.calculate_hrv_metrics(mean_rr, sdnn, rmssd);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    }
+  ]
+}

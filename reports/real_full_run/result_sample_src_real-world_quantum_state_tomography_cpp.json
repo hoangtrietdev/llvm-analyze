@@ -1,0 +1,796 @@
+{
+  "file": "sample/src/real-world/quantum/state_tomography.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/quantum/state_tomography.cpp",
+    "llvm_initial": 41,
+    "llvm_sys_noise": 10,
+    "llvm_project": 31,
+    "after_filter": 19,
+    "ai_batches": 2,
+    "ai_results": 19,
+    "omp_verified": 0,
+    "total_ms": 4182.7,
+    "llvm_ms": 449.6
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z19measurementOperatorPNSt3__17complexIdEEiii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "using Complex = std::complex<double>;\n\nvoid measurementOperator(Complex* projector, int basis, int outcome, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        for (int j = 0; j < dim; j++) {\n            projector[i * dim + j] = 0.0;\n        }\n    }\n    \n    // Pauli basis measurements\n    if (basis == 0) { // Z-basis\n        for (int i = 0; i < dim; i++) {\n            if ((i & (1 << outcome)) == 0) {\n                projector[i * dim + i] = 1.0;\n            }\n        }\n    } else if (basis == 1) { // X-basis\n        for (int i = 0; i < dim; i++) {\n            for (int j = 0; j < dim; j++) {\n                if (((i ^ j) & (1 << outcome)) == (1 << outcome)) {\n                    projector[i * dim + j] = 1.0 / sqrt(2.0);\n                }\n            }\n        }\n    }\n}\n\nvoid reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z19measurementOperatorPNSt3__17complexIdEEiii",
+      "line": 11,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z19measurementOperatorPNSt3__17complexIdEEiii",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z19measurementOperatorPNSt3__17complexIdEEiii",
+      "line": 19,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n    }\n    \n    // Pauli basis measurements\n    if (basis == 0) { // Z-basis\n        for (int i = 0; i < dim; i++) {\n            if ((i & (1 << outcome)) == 0) {\n                projector[i * dim + i] = 1.0;\n            }\n        }\n    } else if (basis == 1) { // X-basis\n        for (int i = 0; i < dim; i++) {\n            for (int j = 0; j < dim; j++) {\n                if (((i ^ j) & (1 << outcome)) == (1 << outcome)) {\n                    projector[i * dim + j] = 1.0 / sqrt(2.0);\n                }\n            }\n        }\n    }\n}\n\nvoid reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {\n        std::vector<Complex> rho_new(dim * dim, 0.0);\n        \n        for (int m = 0; m < n_measurements; m++) {\n            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z19measurementOperatorPNSt3__17complexIdEEiii",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    // Pauli basis measurements\n    if (basis == 0) { // Z-basis\n        for (int i = 0; i < dim; i++) {\n            if ((i & (1 << outcome)) == 0) {\n                projector[i * dim + i] = 1.0;\n            }\n        }\n    } else if (basis == 1) { // X-basis\n        for (int i = 0; i < dim; i++) {\n            for (int j = 0; j < dim; j++) {\n                if (((i ^ j) & (1 << outcome)) == (1 << outcome)) {\n                    projector[i * dim + j] = 1.0 / sqrt(2.0);\n                }\n            }\n        }\n    }\n}\n\nvoid reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {\n        std::vector<Complex> rho_new(dim * dim, 0.0);\n        \n        for (int m = 0; m < n_measurements; m++) {\n            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;\n            for (int i = 0; i < dim; i++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z19measurementOperatorPNSt3__17complexIdEEiii",
+      "line": 19,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n    }\n    \n    // Pauli basis measurements\n    if (basis == 0) { // Z-basis\n        for (int i = 0; i < dim; i++) {\n            if ((i & (1 << outcome)) == 0) {\n                projector[i * dim + i] = 1.0;\n            }\n        }\n    } else if (basis == 1) { // X-basis\n        for (int i = 0; i < dim; i++) {\n            for (int j = 0; j < dim; j++) {\n                if (((i ^ j) & (1 << outcome)) == (1 << outcome)) {\n                    projector[i * dim + j] = 1.0 / sqrt(2.0);\n                }\n            }\n        }\n    }\n}\n\nvoid reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {\n        std::vector<Complex> rho_new(dim * dim, 0.0);\n        \n        for (int m = 0; m < n_measurements; m++) {\n            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z19measurementOperatorPNSt3__17complexIdEEiii",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z19measurementOperatorPNSt3__17complexIdEEiii",
+      "line": 27,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z19measurementOperatorPNSt3__17complexIdEEiii",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 170,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 43,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 67,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;\n    const int dim = 1 << n_qubits;\n    const int n_measurements = 1000;\n    \n    std::vector<double> measurement_results(n_measurements, 0.5);\n    std::vector<int> bases(n_measurements, 0);\n    std::vector<Complex> rho(dim * dim, Complex(1.0/dim, 0));\n    \n    reconstructDensityMatrix(measurement_results.data(), bases.data(), \n                            n_measurements, rho.data(), n_qubits);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 149,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 11,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "using Complex = std::complex<double>;\n\nvoid measurementOperator(Complex* projector, int basis, int outcome, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        for (int j = 0; j < dim; j++) {\n            projector[i * dim + j] = 0.0;\n        }\n    }\n    \n    // Pauli basis measurements\n    if (basis == 0) { // Z-basis\n        for (int i = 0; i < dim; i++) {\n            if ((i & (1 << outcome)) == 0) {\n                projector[i * dim + i] = 1.0;\n            }\n        }\n    } else if (basis == 1) { // X-basis\n        for (int i = 0; i < dim; i++) {\n            for (int j = 0; j < dim; j++) {\n                if (((i ^ j) & (1 << outcome)) == (1 << outcome)) {\n                    projector[i * dim + j] = 1.0 / sqrt(2.0);\n                }\n            }\n        }\n    }\n}\n\nvoid reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 11,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 19,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n    }\n    \n    // Pauli basis measurements\n    if (basis == 0) { // Z-basis\n        for (int i = 0; i < dim; i++) {\n            if ((i & (1 << outcome)) == 0) {\n                projector[i * dim + i] = 1.0;\n            }\n        }\n    } else if (basis == 1) { // X-basis\n        for (int i = 0; i < dim; i++) {\n            for (int j = 0; j < dim; j++) {\n                if (((i ^ j) & (1 << outcome)) == (1 << outcome)) {\n                    projector[i * dim + j] = 1.0 / sqrt(2.0);\n                }\n            }\n        }\n    }\n}\n\nvoid reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {\n        std::vector<Complex> rho_new(dim * dim, 0.0);\n        \n        for (int m = 0; m < n_measurements; m++) {\n            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    // Pauli basis measurements\n    if (basis == 0) { // Z-basis\n        for (int i = 0; i < dim; i++) {\n            if ((i & (1 << outcome)) == 0) {\n                projector[i * dim + i] = 1.0;\n            }\n        }\n    } else if (basis == 1) { // X-basis\n        for (int i = 0; i < dim; i++) {\n            for (int j = 0; j < dim; j++) {\n                if (((i ^ j) & (1 << outcome)) == (1 << outcome)) {\n                    projector[i * dim + j] = 1.0 / sqrt(2.0);\n                }\n            }\n        }\n    }\n}\n\nvoid reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {\n        std::vector<Complex> rho_new(dim * dim, 0.0);\n        \n        for (int m = 0; m < n_measurements; m++) {\n            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;\n            for (int i = 0; i < dim; i++) {"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 19,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n    }\n    \n    // Pauli basis measurements\n    if (basis == 0) { // Z-basis\n        for (int i = 0; i < dim; i++) {\n            if ((i & (1 << outcome)) == 0) {\n                projector[i * dim + i] = 1.0;\n            }\n        }\n    } else if (basis == 1) { // X-basis\n        for (int i = 0; i < dim; i++) {\n            for (int j = 0; j < dim; j++) {\n                if (((i ^ j) & (1 << outcome)) == (1 << outcome)) {\n                    projector[i * dim + j] = 1.0 / sqrt(2.0);\n                }\n            }\n        }\n    }\n}\n\nvoid reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {\n        std::vector<Complex> rho_new(dim * dim, 0.0);\n        \n        for (int m = 0; m < n_measurements; m++) {\n            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 27,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    expected += projector[i * dim + j] * rho[j * dim + i];\n                }\n            }\n            \n            double correction = measurement_results[m] / std::abs(expected);\n            \n            // Update density matrix\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    rho_new[i * dim + j] += correction * projector[i * dim + j];\n                }\n            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 58,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "            }\n            \n            double correction = measurement_results[m] / std::abs(expected);\n            \n            // Update density matrix\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    rho_new[i * dim + j] += correction * projector[i * dim + j];\n                }\n            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;\n    const int dim = 1 << n_qubits;\n    const int n_measurements = 1000;\n    \n    std::vector<double> measurement_results(n_measurements, 0.5);\n    std::vector<int> bases(n_measurements, 0);\n    std::vector<Complex> rho(dim * dim, Complex(1.0/dim, 0));\n    \n    reconstructDensityMatrix(measurement_results.data(), bases.data(), \n                            n_measurements, rho.data(), n_qubits);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    expected += projector[i * dim + j] * rho[j * dim + i];\n                }\n            }\n            \n            double correction = measurement_results[m] / std::abs(expected);\n            \n            // Update density matrix\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    rho_new[i * dim + j] += correction * projector[i * dim + j];\n                }\n            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 785,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 785,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 50,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    expected += projector[i * dim + j] * rho[j * dim + i];\n                }\n            }\n            \n            double correction = measurement_results[m] / std::abs(expected);\n            \n            // Update density matrix\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    rho_new[i * dim + j] += correction * projector[i * dim + j];\n                }\n            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;\n    const int dim = 1 << n_qubits;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 43,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.33000000000000007
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 58,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "            }\n            \n            double correction = measurement_results[m] / std::abs(expected);\n            \n            // Update density matrix\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    rho_new[i * dim + j] += correction * projector[i * dim + j];\n                }\n            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;\n    const int dim = 1 << n_qubits;\n    const int n_measurements = 1000;\n    \n    std::vector<double> measurement_results(n_measurements, 0.5);\n    std::vector<int> bases(n_measurements, 0);\n    std::vector<Complex> rho(dim * dim, Complex(1.0/dim, 0));\n    \n    reconstructDensityMatrix(measurement_results.data(), bases.data(), \n                            n_measurements, rho.data(), n_qubits);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 59,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            \n            double correction = measurement_results[m] / std::abs(expected);\n            \n            // Update density matrix\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    rho_new[i * dim + j] += correction * projector[i * dim + j];\n                }\n            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;\n    const int dim = 1 << n_qubits;\n    const int n_measurements = 1000;\n    \n    std::vector<double> measurement_results(n_measurements, 0.5);\n    std::vector<int> bases(n_measurements, 0);\n    std::vector<Complex> rho(dim * dim, Complex(1.0/dim, 0));\n    \n    reconstructDensityMatrix(measurement_results.data(), bases.data(), \n                            n_measurements, rho.data(), n_qubits);\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 71,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;\n    const int dim = 1 << n_qubits;\n    const int n_measurements = 1000;\n    \n    std::vector<double> measurement_results(n_measurements, 0.5);\n    std::vector<int> bases(n_measurements, 0);\n    std::vector<Complex> rho(dim * dim, Complex(1.0/dim, 0));\n    \n    reconstructDensityMatrix(measurement_results.data(), bases.data(), \n                            n_measurements, rho.data(), n_qubits);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 67,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;\n    const int dim = 1 << n_qubits;\n    const int n_measurements = 1000;\n    \n    std::vector<double> measurement_results(n_measurements, 0.5);\n    std::vector<int> bases(n_measurements, 0);\n    std::vector<Complex> rho(dim * dim, Complex(1.0/dim, 0));\n    \n    reconstructDensityMatrix(measurement_results.data(), bases.data(), \n                            n_measurements, rho.data(), n_qubits);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 40,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {\n        std::vector<Complex> rho_new(dim * dim, 0.0);\n        \n        for (int m = 0; m < n_measurements; m++) {\n            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    expected += projector[i * dim + j] * rho[j * dim + i];\n                }\n            }\n            \n            double correction = measurement_results[m] / std::abs(expected);\n            \n            // Update density matrix\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    rho_new[i * dim + j] += correction * projector[i * dim + j];\n                }\n            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 71,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;\n    const int dim = 1 << n_qubits;\n    const int n_measurements = 1000;\n    \n    std::vector<double> measurement_results(n_measurements, 0.5);\n    std::vector<int> bases(n_measurements, 0);\n    std::vector<Complex> rho(dim * dim, Complex(1.0/dim, 0));\n    \n    reconstructDensityMatrix(measurement_results.data(), bases.data(), \n                            n_measurements, rho.data(), n_qubits);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 11,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "using Complex = std::complex<double>;\n\nvoid measurementOperator(Complex* projector, int basis, int outcome, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        for (int j = 0; j < dim; j++) {\n            projector[i * dim + j] = 0.0;\n        }\n    }\n    \n    // Pauli basis measurements\n    if (basis == 0) { // Z-basis\n        for (int i = 0; i < dim; i++) {\n            if ((i & (1 << outcome)) == 0) {\n                projector[i * dim + i] = 1.0;\n            }\n        }\n    } else if (basis == 1) { // X-basis\n        for (int i = 0; i < dim; i++) {\n            for (int j = 0; j < dim; j++) {\n                if (((i ^ j) & (1 << outcome)) == (1 << outcome)) {\n                    projector[i * dim + j] = 1.0 / sqrt(2.0);\n                }\n            }\n        }\n    }\n}\n\nvoid reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 59,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            \n            double correction = measurement_results[m] / std::abs(expected);\n            \n            // Update density matrix\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    rho_new[i * dim + j] += correction * projector[i * dim + j];\n                }\n            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;\n    const int dim = 1 << n_qubits;\n    const int n_measurements = 1000;\n    \n    std::vector<double> measurement_results(n_measurements, 0.5);\n    std::vector<int> bases(n_measurements, 0);\n    std::vector<Complex> rho(dim * dim, Complex(1.0/dim, 0));\n    \n    reconstructDensityMatrix(measurement_results.data(), bases.data(), \n                            n_measurements, rho.data(), n_qubits);\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 67,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;\n    const int dim = 1 << n_qubits;\n    const int n_measurements = 1000;\n    \n    std::vector<double> measurement_results(n_measurements, 0.5);\n    std::vector<int> bases(n_measurements, 0);\n    std::vector<Complex> rho(dim * dim, Complex(1.0/dim, 0));\n    \n    reconstructDensityMatrix(measurement_results.data(), bases.data(), \n                            n_measurements, rho.data(), n_qubits);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 58,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "            }\n            \n            double correction = measurement_results[m] / std::abs(expected);\n            \n            // Update density matrix\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    rho_new[i * dim + j] += correction * projector[i * dim + j];\n                }\n            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;\n    const int dim = 1 << n_qubits;\n    const int n_measurements = 1000;\n    \n    std::vector<double> measurement_results(n_measurements, 0.5);\n    std::vector<int> bases(n_measurements, 0);\n    std::vector<Complex> rho(dim * dim, Complex(1.0/dim, 0));\n    \n    reconstructDensityMatrix(measurement_results.data(), bases.data(), \n                            n_measurements, rho.data(), n_qubits);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 71,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;\n    const int dim = 1 << n_qubits;\n    const int n_measurements = 1000;\n    \n    std::vector<double> measurement_results(n_measurements, 0.5);\n    std::vector<int> bases(n_measurements, 0);\n    std::vector<Complex> rho(dim * dim, Complex(1.0/dim, 0));\n    \n    reconstructDensityMatrix(measurement_results.data(), bases.data(), \n                            n_measurements, rho.data(), n_qubits);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 58,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "            }\n            \n            double correction = measurement_results[m] / std::abs(expected);\n            \n            // Update density matrix\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    rho_new[i * dim + j] += correction * projector[i * dim + j];\n                }\n            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;\n    const int dim = 1 << n_qubits;\n    const int n_measurements = 1000;\n    \n    std::vector<double> measurement_results(n_measurements, 0.5);\n    std::vector<int> bases(n_measurements, 0);\n    std::vector<Complex> rho(dim * dim, Complex(1.0/dim, 0));\n    \n    reconstructDensityMatrix(measurement_results.data(), bases.data(), \n                            n_measurements, rho.data(), n_qubits);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 71,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6500000000000001,
+      "context": "        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;\n    const int dim = 1 << n_qubits;\n    const int n_measurements = 1000;\n    \n    std::vector<double> measurement_results(n_measurements, 0.5);\n    std::vector<int> bases(n_measurements, 0);\n    std::vector<Complex> rho(dim * dim, Complex(1.0/dim, 0));\n    \n    reconstructDensityMatrix(measurement_results.data(), bases.data(), \n                            n_measurements, rho.data(), n_qubits);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6500000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z19measurementOperatorPNSt3__17complexIdEEiii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "using Complex = std::complex<double>;\n\nvoid measurementOperator(Complex* projector, int basis, int outcome, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    for (int i = 0; i < dim; i++) {\n        for (int j = 0; j < dim; j++) {\n            projector[i * dim + j] = 0.0;\n        }\n    }\n    \n    // Pauli basis measurements\n    if (basis == 0) { // Z-basis\n        for (int i = 0; i < dim; i++) {\n            if ((i & (1 << outcome)) == 0) {\n                projector[i * dim + i] = 1.0;\n            }\n        }\n    } else if (basis == 1) { // X-basis\n        for (int i = 0; i < dim; i++) {\n            for (int j = 0; j < dim; j++) {\n                if (((i ^ j) & (1 << outcome)) == (1 << outcome)) {\n                    projector[i * dim + j] = 1.0 / sqrt(2.0);\n                }\n            }\n        }\n    }\n}\n\nvoid reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z19measurementOperatorPNSt3__17complexIdEEiii",
+      "line": 19,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n    }\n    \n    // Pauli basis measurements\n    if (basis == 0) { // Z-basis\n        for (int i = 0; i < dim; i++) {\n            if ((i & (1 << outcome)) == 0) {\n                projector[i * dim + i] = 1.0;\n            }\n        }\n    } else if (basis == 1) { // X-basis\n        for (int i = 0; i < dim; i++) {\n            for (int j = 0; j < dim; j++) {\n                if (((i ^ j) & (1 << outcome)) == (1 << outcome)) {\n                    projector[i * dim + j] = 1.0 / sqrt(2.0);\n                }\n            }\n        }\n    }\n}\n\nvoid reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {\n        std::vector<Complex> rho_new(dim * dim, 0.0);\n        \n        for (int m = 0; m < n_measurements; m++) {\n            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z19measurementOperatorPNSt3__17complexIdEEiii",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    // Pauli basis measurements\n    if (basis == 0) { // Z-basis\n        for (int i = 0; i < dim; i++) {\n            if ((i & (1 << outcome)) == 0) {\n                projector[i * dim + i] = 1.0;\n            }\n        }\n    } else if (basis == 1) { // X-basis\n        for (int i = 0; i < dim; i++) {\n            for (int j = 0; j < dim; j++) {\n                if (((i ^ j) & (1 << outcome)) == (1 << outcome)) {\n                    projector[i * dim + j] = 1.0 / sqrt(2.0);\n                }\n            }\n        }\n    }\n}\n\nvoid reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {\n        std::vector<Complex> rho_new(dim * dim, 0.0);\n        \n        for (int m = 0; m < n_measurements; m++) {\n            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;\n            for (int i = 0; i < dim; i++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z19measurementOperatorPNSt3__17complexIdEEiii",
+      "line": 19,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n    }\n    \n    // Pauli basis measurements\n    if (basis == 0) { // Z-basis\n        for (int i = 0; i < dim; i++) {\n            if ((i & (1 << outcome)) == 0) {\n                projector[i * dim + i] = 1.0;\n            }\n        }\n    } else if (basis == 1) { // X-basis\n        for (int i = 0; i < dim; i++) {\n            for (int j = 0; j < dim; j++) {\n                if (((i ^ j) & (1 << outcome)) == (1 << outcome)) {\n                    projector[i * dim + j] = 1.0 / sqrt(2.0);\n                }\n            }\n        }\n    }\n}\n\nvoid reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {\n        std::vector<Complex> rho_new(dim * dim, 0.0);\n        \n        for (int m = 0; m < n_measurements; m++) {\n            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 67,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;\n    const int dim = 1 << n_qubits;\n    const int n_measurements = 1000;\n    \n    std::vector<double> measurement_results(n_measurements, 0.5);\n    std::vector<int> bases(n_measurements, 0);\n    std::vector<Complex> rho(dim * dim, Complex(1.0/dim, 0));\n    \n    reconstructDensityMatrix(measurement_results.data(), bases.data(), \n                            n_measurements, rho.data(), n_qubits);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 19,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n    }\n    \n    // Pauli basis measurements\n    if (basis == 0) { // Z-basis\n        for (int i = 0; i < dim; i++) {\n            if ((i & (1 << outcome)) == 0) {\n                projector[i * dim + i] = 1.0;\n            }\n        }\n    } else if (basis == 1) { // X-basis\n        for (int i = 0; i < dim; i++) {\n            for (int j = 0; j < dim; j++) {\n                if (((i ^ j) & (1 << outcome)) == (1 << outcome)) {\n                    projector[i * dim + j] = 1.0 / sqrt(2.0);\n                }\n            }\n        }\n    }\n}\n\nvoid reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {\n        std::vector<Complex> rho_new(dim * dim, 0.0);\n        \n        for (int m = 0; m < n_measurements; m++) {\n            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    }\n    \n    // Pauli basis measurements\n    if (basis == 0) { // Z-basis\n        for (int i = 0; i < dim; i++) {\n            if ((i & (1 << outcome)) == 0) {\n                projector[i * dim + i] = 1.0;\n            }\n        }\n    } else if (basis == 1) { // X-basis\n        for (int i = 0; i < dim; i++) {\n            for (int j = 0; j < dim; j++) {\n                if (((i ^ j) & (1 << outcome)) == (1 << outcome)) {\n                    projector[i * dim + j] = 1.0 / sqrt(2.0);\n                }\n            }\n        }\n    }\n}\n\nvoid reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {\n        std::vector<Complex> rho_new(dim * dim, 0.0);\n        \n        for (int m = 0; m < n_measurements; m++) {\n            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;\n            for (int i = 0; i < dim; i++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 19,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n    }\n    \n    // Pauli basis measurements\n    if (basis == 0) { // Z-basis\n        for (int i = 0; i < dim; i++) {\n            if ((i & (1 << outcome)) == 0) {\n                projector[i * dim + i] = 1.0;\n            }\n        }\n    } else if (basis == 1) { // X-basis\n        for (int i = 0; i < dim; i++) {\n            for (int j = 0; j < dim; j++) {\n                if (((i ^ j) & (1 << outcome)) == (1 << outcome)) {\n                    projector[i * dim + j] = 1.0 / sqrt(2.0);\n                }\n            }\n        }\n    }\n}\n\nvoid reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {\n        std::vector<Complex> rho_new(dim * dim, 0.0);\n        \n        for (int m = 0; m < n_measurements; m++) {\n            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    expected += projector[i * dim + j] * rho[j * dim + i];\n                }\n            }\n            \n            double correction = measurement_results[m] / std::abs(expected);\n            \n            // Update density matrix\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    rho_new[i * dim + j] += correction * projector[i * dim + j];\n                }\n            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    expected += projector[i * dim + j] * rho[j * dim + i];\n                }\n            }\n            \n            double correction = measurement_results[m] / std::abs(expected);\n            \n            // Update density matrix\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    rho_new[i * dim + j] += correction * projector[i * dim + j];\n                }\n            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 50,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    expected += projector[i * dim + j] * rho[j * dim + i];\n                }\n            }\n            \n            double correction = measurement_results[m] / std::abs(expected);\n            \n            // Update density matrix\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    rho_new[i * dim + j] += correction * projector[i * dim + j];\n                }\n            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }\n        \n        for (int i = 0; i < dim * dim; i++) {\n            rho[i] = rho_new[i] / trace;\n        }\n    }\n}\n\nint main() {\n    const int n_qubits = 3;\n    const int dim = 1 << n_qubits;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/state_tomography.cpp",
+      "function": "_Z24reconstructDensityMatrixPdPiiPNSt3__17complexIdEEi",
+      "line": 40,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void reconstructDensityMatrix(double* measurement_results, int* bases, int n_measurements,\n                              Complex* rho, int n_qubits) {\n    int dim = 1 << n_qubits;\n    \n    // Maximum likelihood estimation\n    for (int iter = 0; iter < 100; iter++) {\n        std::vector<Complex> rho_new(dim * dim, 0.0);\n        \n        for (int m = 0; m < n_measurements; m++) {\n            std::vector<Complex> projector(dim * dim);\n            measurementOperator(projector.data(), bases[m], 0, n_qubits);\n            \n            // Compute expected vs observed\n            Complex expected = 0.0;\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    expected += projector[i * dim + j] * rho[j * dim + i];\n                }\n            }\n            \n            double correction = measurement_results[m] / std::abs(expected);\n            \n            // Update density matrix\n            for (int i = 0; i < dim; i++) {\n                for (int j = 0; j < dim; j++) {\n                    rho_new[i * dim + j] += correction * projector[i * dim + j];\n                }\n            }\n        }\n        \n        // Normalize\n        Complex trace = 0.0;\n        for (int i = 0; i < dim; i++) {\n            trace += rho_new[i * dim + i];\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

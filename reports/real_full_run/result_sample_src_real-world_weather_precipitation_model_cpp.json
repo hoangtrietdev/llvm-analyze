@@ -1,0 +1,645 @@
+{
+  "file": "sample/src/real-world/weather/precipitation_model.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/weather/precipitation_model.cpp",
+    "llvm_initial": 55,
+    "llvm_sys_noise": 45,
+    "llvm_project": 10,
+    "after_filter": 8,
+    "ai_batches": 1,
+    "ai_results": 8,
+    "omp_verified": 0,
+    "total_ms": 606.5,
+    "llvm_ms": 402.4
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "_Z22simulate_precipitationRNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEE",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    double temperature;\n};\n\nvoid simulate_precipitation(std::vector<std::vector<std::vector<CloudCell>>>& grid) {\n    // Condensation process\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = 0; k < GRID_Z; k++) {\n                if (grid[i][j][k].water_vapor > 0.1 && grid[i][j][k].temperature < 273.15) {\n                    double condensed = grid[i][j][k].water_vapor * 0.1;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].ice_crystals += condensed;\n                } else if (grid[i][j][k].water_vapor > 0.05) {\n                    double condensed = grid[i][j][k].water_vapor * 0.05;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].liquid_water += condensed;\n                }\n            }\n        }\n    }\n    \n    // Particle settling\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = GRID_Z - 2; k >= 0; k--) {\n                double fall_rate = 0.1;\n                double fallen = grid[i][j][k].liquid_water * fall_rate;\n                grid[i][j][k].liquid_water -= fallen;\n                grid[i][j][k+1].liquid_water += fallen;\n                \n                double ice_fall = grid[i][j][k].ice_crystals * fall_rate * 0.5;\n                grid[i][j][k].ice_crystals -= ice_fall;\n                grid[i][j][k+1].ice_crystals += ice_fall;\n            }\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "_Z22simulate_precipitationRNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEE",
+      "line": 19,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "};\n\nvoid simulate_precipitation(std::vector<std::vector<std::vector<CloudCell>>>& grid) {\n    // Condensation process\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = 0; k < GRID_Z; k++) {\n                if (grid[i][j][k].water_vapor > 0.1 && grid[i][j][k].temperature < 273.15) {\n                    double condensed = grid[i][j][k].water_vapor * 0.1;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].ice_crystals += condensed;\n                } else if (grid[i][j][k].water_vapor > 0.05) {\n                    double condensed = grid[i][j][k].water_vapor * 0.05;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].liquid_water += condensed;\n                }\n            }\n        }\n    }\n    \n    // Particle settling\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = GRID_Z - 2; k >= 0; k--) {\n                double fall_rate = 0.1;\n                double fallen = grid[i][j][k].liquid_water * fall_rate;\n                grid[i][j][k].liquid_water -= fallen;\n                grid[i][j][k+1].liquid_water += fallen;\n                \n                double ice_fall = grid[i][j][k].ice_crystals * fall_rate * 0.5;\n                grid[i][j][k].ice_crystals -= ice_fall;\n                grid[i][j][k+1].ice_crystals += ice_fall;\n            }\n        }\n    }"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "_Z22simulate_precipitationRNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEE",
+      "line": 21,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void simulate_precipitation(std::vector<std::vector<std::vector<CloudCell>>>& grid) {\n    // Condensation process\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = 0; k < GRID_Z; k++) {\n                if (grid[i][j][k].water_vapor > 0.1 && grid[i][j][k].temperature < 273.15) {\n                    double condensed = grid[i][j][k].water_vapor * 0.1;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].ice_crystals += condensed;\n                } else if (grid[i][j][k].water_vapor > 0.05) {\n                    double condensed = grid[i][j][k].water_vapor * 0.05;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].liquid_water += condensed;\n                }\n            }\n        }\n    }\n    \n    // Particle settling\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = GRID_Z - 2; k >= 0; k--) {\n                double fall_rate = 0.1;\n                double fallen = grid[i][j][k].liquid_water * fall_rate;\n                grid[i][j][k].liquid_water -= fallen;\n                grid[i][j][k+1].liquid_water += fallen;\n                \n                double ice_fall = grid[i][j][k].ice_crystals * fall_rate * 0.5;\n                grid[i][j][k].ice_crystals -= ice_fall;\n                grid[i][j][k+1].ice_crystals += ice_fall;\n            }\n        }\n    }\n}\n"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "_Z22simulate_precipitationRNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEE",
+      "line": 21,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void simulate_precipitation(std::vector<std::vector<std::vector<CloudCell>>>& grid) {\n    // Condensation process\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = 0; k < GRID_Z; k++) {\n                if (grid[i][j][k].water_vapor > 0.1 && grid[i][j][k].temperature < 273.15) {\n                    double condensed = grid[i][j][k].water_vapor * 0.1;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].ice_crystals += condensed;\n                } else if (grid[i][j][k].water_vapor > 0.05) {\n                    double condensed = grid[i][j][k].water_vapor * 0.05;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].liquid_water += condensed;\n                }\n            }\n        }\n    }\n    \n    // Particle settling\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = GRID_Z - 2; k >= 0; k--) {\n                double fall_rate = 0.1;\n                double fallen = grid[i][j][k].liquid_water * fall_rate;\n                grid[i][j][k].liquid_water -= fallen;\n                grid[i][j][k+1].liquid_water += fallen;\n                \n                double ice_fall = grid[i][j][k].ice_crystals * fall_rate * 0.5;\n                grid[i][j][k].ice_crystals -= ice_fall;\n                grid[i][j][k+1].ice_crystals += ice_fall;\n            }\n        }\n    }\n}\n"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "_Z22simulate_precipitationRNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEE",
+      "line": 25,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.43000000000000005
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "_Z22simulate_precipitationRNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEE",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid simulate_precipitation(std::vector<std::vector<std::vector<CloudCell>>>& grid) {\n    // Condensation process\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = 0; k < GRID_Z; k++) {\n                if (grid[i][j][k].water_vapor > 0.1 && grid[i][j][k].temperature < 273.15) {\n                    double condensed = grid[i][j][k].water_vapor * 0.1;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].ice_crystals += condensed;\n                } else if (grid[i][j][k].water_vapor > 0.05) {\n                    double condensed = grid[i][j][k].water_vapor * 0.05;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].liquid_water += condensed;\n                }\n            }\n        }\n    }\n    \n    // Particle settling\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = GRID_Z - 2; k >= 0; k--) {\n                double fall_rate = 0.1;\n                double fallen = grid[i][j][k].liquid_water * fall_rate;\n                grid[i][j][k].liquid_water -= fallen;\n                grid[i][j][k+1].liquid_water += fallen;\n                \n                double ice_fall = grid[i][j][k].ice_crystals * fall_rate * 0.5;\n                grid[i][j][k].ice_crystals -= ice_fall;\n                grid[i][j][k+1].ice_crystals += ice_fall;\n            }\n        }\n    }\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "_Z22simulate_precipitationRNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEE",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n        }\n    }\n    \n    // Particle settling\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = GRID_Z - 2; k >= 0; k--) {\n                double fall_rate = 0.1;\n                double fallen = grid[i][j][k].liquid_water * fall_rate;\n                grid[i][j][k].liquid_water -= fallen;\n                grid[i][j][k+1].liquid_water += fallen;\n                \n                double ice_fall = grid[i][j][k].ice_crystals * fall_rate * 0.5;\n                grid[i][j][k].ice_crystals -= ice_fall;\n                grid[i][j][k+1].ice_crystals += ice_fall;\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<std::vector<CloudCell>>> grid(GRID_X,\n        std::vector<std::vector<CloudCell>>(GRID_Y,\n            std::vector<CloudCell>(GRID_Z, {0.2, 0.0, 0.0, 280.0})));\n    \n    for (int t = 0; t < 100; t++) {\n        simulate_precipitation(grid);\n    }\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "_Z22simulate_precipitationRNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEE",
+      "line": 36,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n    }\n    \n    // Particle settling\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = GRID_Z - 2; k >= 0; k--) {\n                double fall_rate = 0.1;\n                double fallen = grid[i][j][k].liquid_water * fall_rate;\n                grid[i][j][k].liquid_water -= fallen;\n                grid[i][j][k+1].liquid_water += fallen;\n                \n                double ice_fall = grid[i][j][k].ice_crystals * fall_rate * 0.5;\n                grid[i][j][k].ice_crystals -= ice_fall;\n                grid[i][j][k+1].ice_crystals += ice_fall;\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<std::vector<CloudCell>>> grid(GRID_X,\n        std::vector<std::vector<CloudCell>>(GRID_Y,\n            std::vector<CloudCell>(GRID_Z, {0.2, 0.0, 0.0, 280.0})));\n    \n    for (int t = 0; t < 100; t++) {\n        simulate_precipitation(grid);\n    }\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "_Z22simulate_precipitationRNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEE",
+      "line": 37,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    // Particle settling\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = GRID_Z - 2; k >= 0; k--) {\n                double fall_rate = 0.1;\n                double fallen = grid[i][j][k].liquid_water * fall_rate;\n                grid[i][j][k].liquid_water -= fallen;\n                grid[i][j][k+1].liquid_water += fallen;\n                \n                double ice_fall = grid[i][j][k].ice_crystals * fall_rate * 0.5;\n                grid[i][j][k].ice_crystals -= ice_fall;\n                grid[i][j][k+1].ice_crystals += ice_fall;\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<std::vector<CloudCell>>> grid(GRID_X,\n        std::vector<std::vector<CloudCell>>(GRID_Y,\n            std::vector<CloudCell>(GRID_Z, {0.2, 0.0, 0.0, 280.0})));\n    \n    for (int t = 0; t < 100; t++) {\n        simulate_precipitation(grid);\n    }\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 935,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "main",
+      "line": 56,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.42000000000000004
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I9CloudCellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I9CloudCellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I9CloudCellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I9CloudCellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I9CloudCellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEC2B8ne210101EmRKS6_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEC2B8ne210101EmRKS6_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEC2B8ne210101EmRKS6_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEC2B8ne210101EmRKS6_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEC2B8ne210101EmRKS6_",
+      "line": 935,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEC2B8ne210101EmRKS6_",
+      "line": 84,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorI9CloudCellNS1_IS3_EEEEEEPS5_S7_S7_EET2_RT_T0_T1_S8_",
+      "line": 542,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorI9CloudCellNS1_IS3_EEEEEEPS5_S7_S7_EET2_RT_T0_T1_S8_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorI9CloudCellNS1_IS3_EEEEEEPS5_S7_S7_EET2_RT_T0_T1_S8_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorI9CloudCellNS1_IS3_EEEEEEPS5_S7_S7_EET2_RT_T0_T1_S8_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/uninitialized_algorithms.h",
+      "function": "_ZNSt3__135__uninitialized_allocator_copy_implB8ne210101INS_9allocatorINS_6vectorI9CloudCellNS1_IS3_EEEEEEPS5_S7_S7_EET2_RT_T0_T1_S8_",
+      "line": 542,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorI9CloudCellNS2_IS4_EEEEEEPS6_EEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorI9CloudCellNS2_IS4_EEEEEEPS6_EEED1B8ne210101Ev",
+      "line": 49,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorI9CloudCellNS2_IS4_EEEEEEPS6_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/destroy.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_29_AllocatorDestroyRangeReverseINS_9allocatorINS_6vectorI9CloudCellNS2_IS4_EEEEEEPS6_EEED1B8ne210101Ev",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEE16__destroy_vectorclB8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "_Z22simulate_precipitationRNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEE",
+      "line": 21,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void simulate_precipitation(std::vector<std::vector<std::vector<CloudCell>>>& grid) {\n    // Condensation process\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = 0; k < GRID_Z; k++) {\n                if (grid[i][j][k].water_vapor > 0.1 && grid[i][j][k].temperature < 273.15) {\n                    double condensed = grid[i][j][k].water_vapor * 0.1;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].ice_crystals += condensed;\n                } else if (grid[i][j][k].water_vapor > 0.05) {\n                    double condensed = grid[i][j][k].water_vapor * 0.05;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].liquid_water += condensed;\n                }\n            }\n        }\n    }\n    \n    // Particle settling\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = GRID_Z - 2; k >= 0; k--) {\n                double fall_rate = 0.1;\n                double fallen = grid[i][j][k].liquid_water * fall_rate;\n                grid[i][j][k].liquid_water -= fallen;\n                grid[i][j][k+1].liquid_water += fallen;\n                \n                double ice_fall = grid[i][j][k].ice_crystals * fall_rate * 0.5;\n                grid[i][j][k].ice_crystals -= ice_fall;\n                grid[i][j][k+1].ice_crystals += ice_fall;\n            }\n        }\n    }\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "_Z22simulate_precipitationRNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEE",
+      "line": 21,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "void simulate_precipitation(std::vector<std::vector<std::vector<CloudCell>>>& grid) {\n    // Condensation process\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = 0; k < GRID_Z; k++) {\n                if (grid[i][j][k].water_vapor > 0.1 && grid[i][j][k].temperature < 273.15) {\n                    double condensed = grid[i][j][k].water_vapor * 0.1;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].ice_crystals += condensed;\n                } else if (grid[i][j][k].water_vapor > 0.05) {\n                    double condensed = grid[i][j][k].water_vapor * 0.05;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].liquid_water += condensed;\n                }\n            }\n        }\n    }\n    \n    // Particle settling\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = GRID_Z - 2; k >= 0; k--) {\n                double fall_rate = 0.1;\n                double fallen = grid[i][j][k].liquid_water * fall_rate;\n                grid[i][j][k].liquid_water -= fallen;\n                grid[i][j][k+1].liquid_water += fallen;\n                \n                double ice_fall = grid[i][j][k].ice_crystals * fall_rate * 0.5;\n                grid[i][j][k].ice_crystals -= ice_fall;\n                grid[i][j][k+1].ice_crystals += ice_fall;\n            }\n        }\n    }\n}\n",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "_Z22simulate_precipitationRNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEE",
+      "line": 37,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    }\n    \n    // Particle settling\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = GRID_Z - 2; k >= 0; k--) {\n                double fall_rate = 0.1;\n                double fallen = grid[i][j][k].liquid_water * fall_rate;\n                grid[i][j][k].liquid_water -= fallen;\n                grid[i][j][k+1].liquid_water += fallen;\n                \n                double ice_fall = grid[i][j][k].ice_crystals * fall_rate * 0.5;\n                grid[i][j][k].ice_crystals -= ice_fall;\n                grid[i][j][k+1].ice_crystals += ice_fall;\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<std::vector<CloudCell>>> grid(GRID_X,\n        std::vector<std::vector<CloudCell>>(GRID_Y,\n            std::vector<CloudCell>(GRID_Z, {0.2, 0.0, 0.0, 280.0})));\n    \n    for (int t = 0; t < 100; t++) {\n        simulate_precipitation(grid);\n    }\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "_Z22simulate_precipitationRNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEE",
+      "line": 18,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    double temperature;\n};\n\nvoid simulate_precipitation(std::vector<std::vector<std::vector<CloudCell>>>& grid) {\n    // Condensation process\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = 0; k < GRID_Z; k++) {\n                if (grid[i][j][k].water_vapor > 0.1 && grid[i][j][k].temperature < 273.15) {\n                    double condensed = grid[i][j][k].water_vapor * 0.1;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].ice_crystals += condensed;\n                } else if (grid[i][j][k].water_vapor > 0.05) {\n                    double condensed = grid[i][j][k].water_vapor * 0.05;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].liquid_water += condensed;\n                }\n            }\n        }\n    }\n    \n    // Particle settling\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = GRID_Z - 2; k >= 0; k--) {\n                double fall_rate = 0.1;\n                double fallen = grid[i][j][k].liquid_water * fall_rate;\n                grid[i][j][k].liquid_water -= fallen;\n                grid[i][j][k+1].liquid_water += fallen;\n                \n                double ice_fall = grid[i][j][k].ice_crystals * fall_rate * 0.5;\n                grid[i][j][k].ice_crystals -= ice_fall;\n                grid[i][j][k+1].ice_crystals += ice_fall;\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "_Z22simulate_precipitationRNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEE",
+      "line": 19,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "};\n\nvoid simulate_precipitation(std::vector<std::vector<std::vector<CloudCell>>>& grid) {\n    // Condensation process\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = 0; k < GRID_Z; k++) {\n                if (grid[i][j][k].water_vapor > 0.1 && grid[i][j][k].temperature < 273.15) {\n                    double condensed = grid[i][j][k].water_vapor * 0.1;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].ice_crystals += condensed;\n                } else if (grid[i][j][k].water_vapor > 0.05) {\n                    double condensed = grid[i][j][k].water_vapor * 0.05;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].liquid_water += condensed;\n                }\n            }\n        }\n    }\n    \n    // Particle settling\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = GRID_Z - 2; k >= 0; k--) {\n                double fall_rate = 0.1;\n                double fallen = grid[i][j][k].liquid_water * fall_rate;\n                grid[i][j][k].liquid_water -= fallen;\n                grid[i][j][k+1].liquid_water += fallen;\n                \n                double ice_fall = grid[i][j][k].ice_crystals * fall_rate * 0.5;\n                grid[i][j][k].ice_crystals -= ice_fall;\n                grid[i][j][k+1].ice_crystals += ice_fall;\n            }\n        }\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "_Z22simulate_precipitationRNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEE",
+      "line": 20,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid simulate_precipitation(std::vector<std::vector<std::vector<CloudCell>>>& grid) {\n    // Condensation process\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = 0; k < GRID_Z; k++) {\n                if (grid[i][j][k].water_vapor > 0.1 && grid[i][j][k].temperature < 273.15) {\n                    double condensed = grid[i][j][k].water_vapor * 0.1;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].ice_crystals += condensed;\n                } else if (grid[i][j][k].water_vapor > 0.05) {\n                    double condensed = grid[i][j][k].water_vapor * 0.05;\n                    grid[i][j][k].water_vapor -= condensed;\n                    grid[i][j][k].liquid_water += condensed;\n                }\n            }\n        }\n    }\n    \n    // Particle settling\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = GRID_Z - 2; k >= 0; k--) {\n                double fall_rate = 0.1;\n                double fallen = grid[i][j][k].liquid_water * fall_rate;\n                grid[i][j][k].liquid_water -= fallen;\n                grid[i][j][k+1].liquid_water += fallen;\n                \n                double ice_fall = grid[i][j][k].ice_crystals * fall_rate * 0.5;\n                grid[i][j][k].ice_crystals -= ice_fall;\n                grid[i][j][k+1].ice_crystals += ice_fall;\n            }\n        }\n    }\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "_Z22simulate_precipitationRNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEE",
+      "line": 35,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n        }\n    }\n    \n    // Particle settling\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = GRID_Z - 2; k >= 0; k--) {\n                double fall_rate = 0.1;\n                double fallen = grid[i][j][k].liquid_water * fall_rate;\n                grid[i][j][k].liquid_water -= fallen;\n                grid[i][j][k+1].liquid_water += fallen;\n                \n                double ice_fall = grid[i][j][k].ice_crystals * fall_rate * 0.5;\n                grid[i][j][k].ice_crystals -= ice_fall;\n                grid[i][j][k+1].ice_crystals += ice_fall;\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<std::vector<CloudCell>>> grid(GRID_X,\n        std::vector<std::vector<CloudCell>>(GRID_Y,\n            std::vector<CloudCell>(GRID_Z, {0.2, 0.0, 0.0, 280.0})));\n    \n    for (int t = 0; t < 100; t++) {\n        simulate_precipitation(grid);\n    }\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/precipitation_model.cpp",
+      "function": "_Z22simulate_precipitationRNSt3__16vectorINS0_INS0_I9CloudCellNS_9allocatorIS1_EEEENS2_IS4_EEEENS2_IS6_EEEE",
+      "line": 36,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "        }\n    }\n    \n    // Particle settling\n    for (int i = 0; i < GRID_X; i++) {\n        for (int j = 0; j < GRID_Y; j++) {\n            for (int k = GRID_Z - 2; k >= 0; k--) {\n                double fall_rate = 0.1;\n                double fallen = grid[i][j][k].liquid_water * fall_rate;\n                grid[i][j][k].liquid_water -= fallen;\n                grid[i][j][k+1].liquid_water += fallen;\n                \n                double ice_fall = grid[i][j][k].ice_crystals * fall_rate * 0.5;\n                grid[i][j][k].ice_crystals -= ice_fall;\n                grid[i][j][k+1].ice_crystals += ice_fall;\n            }\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<std::vector<CloudCell>>> grid(GRID_X,\n        std::vector<std::vector<CloudCell>>(GRID_Y,\n            std::vector<CloudCell>(GRID_Z, {0.2, 0.0, 0.0, 280.0})));\n    \n    for (int t = 0; t < 100; t++) {\n        simulate_precipitation(grid);\n    }\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

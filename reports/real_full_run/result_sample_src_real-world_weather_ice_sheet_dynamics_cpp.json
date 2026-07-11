@@ -1,0 +1,183 @@
+{
+  "file": "sample/src/real-world/weather/ice_sheet_dynamics.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/weather/ice_sheet_dynamics.cpp",
+    "llvm_initial": 6,
+    "llvm_sys_noise": 0,
+    "llvm_project": 6,
+    "after_filter": 5,
+    "ai_batches": 1,
+    "ai_results": 5,
+    "omp_verified": 0,
+    "total_ms": 511.8,
+    "llvm_ms": 369.8
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ice_sheet_dynamics.cpp",
+      "function": "_Z15simulateIceFlowPdS_S_S_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    double* bedrock, int nx, int ny, int years) {\n    const double ice_density = 917.0;\n    const double gravity = 9.81;\n    const double glen_coefficient = 2.4e-24;\n    \n    for (int year = 0; year < years; year++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                int idx = i * ny + j;\n                \n                // Surface elevation\n                double surface = bedrock[idx] + thickness[idx];\n                \n                // Surface gradient\n                double grad_x = (bedrock[(i+1)*ny+j] + thickness[(i+1)*ny+j] - \n                               bedrock[(i-1)*ny+j] - thickness[(i-1)*ny+j]) / 2000.0;\n                double grad_y = (bedrock[i*ny+(j+1)] + thickness[i*ny+(j+1)] - \n                               bedrock[i*ny+(j-1)] - thickness[i*ny+(j-1)]) / 2000.0;\n                \n                // Driving stress\n                double tau_x = ice_density * gravity * thickness[idx] * grad_x;\n                double tau_y = ice_density * gravity * thickness[idx] * grad_y;\n                \n                // Glen's flow law\n                double tau = sqrt(tau_x*tau_x + tau_y*tau_y);\n                double deformation = glen_coefficient * pow(tau, 3);\n                \n                velocity_x[idx] = -deformation * tau_x;\n                velocity_y[idx] = -deformation * tau_y;\n                \n                // Mass balance\n                double accumulation = 0.3; // m/year\n                double ablation = std::max(0.0, 0.01 * (surface - 2000.0));\n                \n                thickness[idx] += accumulation - ablation;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ice_sheet_dynamics.cpp",
+      "function": "_Z15simulateIceFlowPdS_S_S_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    const double ice_density = 917.0;\n    const double gravity = 9.81;\n    const double glen_coefficient = 2.4e-24;\n    \n    for (int year = 0; year < years; year++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                int idx = i * ny + j;\n                \n                // Surface elevation\n                double surface = bedrock[idx] + thickness[idx];\n                \n                // Surface gradient\n                double grad_x = (bedrock[(i+1)*ny+j] + thickness[(i+1)*ny+j] - \n                               bedrock[(i-1)*ny+j] - thickness[(i-1)*ny+j]) / 2000.0;\n                double grad_y = (bedrock[i*ny+(j+1)] + thickness[i*ny+(j+1)] - \n                               bedrock[i*ny+(j-1)] - thickness[i*ny+(j-1)]) / 2000.0;\n                \n                // Driving stress\n                double tau_x = ice_density * gravity * thickness[idx] * grad_x;\n                double tau_y = ice_density * gravity * thickness[idx] * grad_y;\n                \n                // Glen's flow law\n                double tau = sqrt(tau_x*tau_x + tau_y*tau_y);\n                double deformation = glen_coefficient * pow(tau, 3);\n                \n                velocity_x[idx] = -deformation * tau_x;\n                velocity_y[idx] = -deformation * tau_y;\n                \n                // Mass balance\n                double accumulation = 0.3; // m/year\n                double ablation = std::max(0.0, 0.01 * (surface - 2000.0));\n                \n                thickness[idx] += accumulation - ablation;\n            }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ice_sheet_dynamics.cpp",
+      "function": "_Z15simulateIceFlowPdS_S_S_iii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    const double gravity = 9.81;\n    const double glen_coefficient = 2.4e-24;\n    \n    for (int year = 0; year < years; year++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                int idx = i * ny + j;\n                \n                // Surface elevation\n                double surface = bedrock[idx] + thickness[idx];\n                \n                // Surface gradient\n                double grad_x = (bedrock[(i+1)*ny+j] + thickness[(i+1)*ny+j] - \n                               bedrock[(i-1)*ny+j] - thickness[(i-1)*ny+j]) / 2000.0;\n                double grad_y = (bedrock[i*ny+(j+1)] + thickness[i*ny+(j+1)] - \n                               bedrock[i*ny+(j-1)] - thickness[i*ny+(j-1)]) / 2000.0;\n                \n                // Driving stress\n                double tau_x = ice_density * gravity * thickness[idx] * grad_x;\n                double tau_y = ice_density * gravity * thickness[idx] * grad_y;\n                \n                // Glen's flow law\n                double tau = sqrt(tau_x*tau_x + tau_y*tau_y);\n                double deformation = glen_coefficient * pow(tau, 3);\n                \n                velocity_x[idx] = -deformation * tau_x;\n                velocity_y[idx] = -deformation * tau_y;\n                \n                // Mass balance\n                double accumulation = 0.3; // m/year\n                double ablation = std::max(0.0, 0.01 * (surface - 2000.0));\n                \n                thickness[idx] += accumulation - ablation;\n            }\n        }"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ice_sheet_dynamics.cpp",
+      "function": "_Z15simulateIceFlowPdS_S_S_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    double* bedrock, int nx, int ny, int years) {\n    const double ice_density = 917.0;\n    const double gravity = 9.81;\n    const double glen_coefficient = 2.4e-24;\n    \n    for (int year = 0; year < years; year++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                int idx = i * ny + j;\n                \n                // Surface elevation\n                double surface = bedrock[idx] + thickness[idx];\n                \n                // Surface gradient\n                double grad_x = (bedrock[(i+1)*ny+j] + thickness[(i+1)*ny+j] - \n                               bedrock[(i-1)*ny+j] - thickness[(i-1)*ny+j]) / 2000.0;\n                double grad_y = (bedrock[i*ny+(j+1)] + thickness[i*ny+(j+1)] - \n                               bedrock[i*ny+(j-1)] - thickness[i*ny+(j-1)]) / 2000.0;\n                \n                // Driving stress\n                double tau_x = ice_density * gravity * thickness[idx] * grad_x;\n                double tau_y = ice_density * gravity * thickness[idx] * grad_y;\n                \n                // Glen's flow law\n                double tau = sqrt(tau_x*tau_x + tau_y*tau_y);\n                double deformation = glen_coefficient * pow(tau, 3);\n                \n                velocity_x[idx] = -deformation * tau_x;\n                velocity_y[idx] = -deformation * tau_y;\n                \n                // Mass balance\n                double accumulation = 0.3; // m/year\n                double ablation = std::max(0.0, 0.01 * (surface - 2000.0));\n                \n                thickness[idx] += accumulation - ablation;"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ice_sheet_dynamics.cpp",
+      "function": "_Z15simulateIceFlowPdS_S_S_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    const double ice_density = 917.0;\n    const double gravity = 9.81;\n    const double glen_coefficient = 2.4e-24;\n    \n    for (int year = 0; year < years; year++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                int idx = i * ny + j;\n                \n                // Surface elevation\n                double surface = bedrock[idx] + thickness[idx];\n                \n                // Surface gradient\n                double grad_x = (bedrock[(i+1)*ny+j] + thickness[(i+1)*ny+j] - \n                               bedrock[(i-1)*ny+j] - thickness[(i-1)*ny+j]) / 2000.0;\n                double grad_y = (bedrock[i*ny+(j+1)] + thickness[i*ny+(j+1)] - \n                               bedrock[i*ny+(j-1)] - thickness[i*ny+(j-1)]) / 2000.0;\n                \n                // Driving stress\n                double tau_x = ice_density * gravity * thickness[idx] * grad_x;\n                double tau_y = ice_density * gravity * thickness[idx] * grad_y;\n                \n                // Glen's flow law\n                double tau = sqrt(tau_x*tau_x + tau_y*tau_y);\n                double deformation = glen_coefficient * pow(tau, 3);\n                \n                velocity_x[idx] = -deformation * tau_x;\n                velocity_y[idx] = -deformation * tau_y;\n                \n                // Mass balance\n                double accumulation = 0.3; // m/year\n                double ablation = std::max(0.0, 0.01 * (surface - 2000.0));\n                \n                thickness[idx] += accumulation - ablation;\n            }"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/ice_sheet_dynamics.cpp",
+      "function": "_Z15simulateIceFlowPdS_S_S_iii",
+      "line": 13,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ice_sheet_dynamics.cpp",
+      "function": "_Z15simulateIceFlowPdS_S_S_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    double* bedrock, int nx, int ny, int years) {\n    const double ice_density = 917.0;\n    const double gravity = 9.81;\n    const double glen_coefficient = 2.4e-24;\n    \n    for (int year = 0; year < years; year++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                int idx = i * ny + j;\n                \n                // Surface elevation\n                double surface = bedrock[idx] + thickness[idx];\n                \n                // Surface gradient\n                double grad_x = (bedrock[(i+1)*ny+j] + thickness[(i+1)*ny+j] - \n                               bedrock[(i-1)*ny+j] - thickness[(i-1)*ny+j]) / 2000.0;\n                double grad_y = (bedrock[i*ny+(j+1)] + thickness[i*ny+(j+1)] - \n                               bedrock[i*ny+(j-1)] - thickness[i*ny+(j-1)]) / 2000.0;\n                \n                // Driving stress\n                double tau_x = ice_density * gravity * thickness[idx] * grad_x;\n                double tau_y = ice_density * gravity * thickness[idx] * grad_y;\n                \n                // Glen's flow law\n                double tau = sqrt(tau_x*tau_x + tau_y*tau_y);\n                double deformation = glen_coefficient * pow(tau, 3);\n                \n                velocity_x[idx] = -deformation * tau_x;\n                velocity_y[idx] = -deformation * tau_y;\n                \n                // Mass balance\n                double accumulation = 0.3; // m/year\n                double ablation = std::max(0.0, 0.01 * (surface - 2000.0));\n                \n                thickness[idx] += accumulation - ablation;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ice_sheet_dynamics.cpp",
+      "function": "_Z15simulateIceFlowPdS_S_S_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    const double ice_density = 917.0;\n    const double gravity = 9.81;\n    const double glen_coefficient = 2.4e-24;\n    \n    for (int year = 0; year < years; year++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                int idx = i * ny + j;\n                \n                // Surface elevation\n                double surface = bedrock[idx] + thickness[idx];\n                \n                // Surface gradient\n                double grad_x = (bedrock[(i+1)*ny+j] + thickness[(i+1)*ny+j] - \n                               bedrock[(i-1)*ny+j] - thickness[(i-1)*ny+j]) / 2000.0;\n                double grad_y = (bedrock[i*ny+(j+1)] + thickness[i*ny+(j+1)] - \n                               bedrock[i*ny+(j-1)] - thickness[i*ny+(j-1)]) / 2000.0;\n                \n                // Driving stress\n                double tau_x = ice_density * gravity * thickness[idx] * grad_x;\n                double tau_y = ice_density * gravity * thickness[idx] * grad_y;\n                \n                // Glen's flow law\n                double tau = sqrt(tau_x*tau_x + tau_y*tau_y);\n                double deformation = glen_coefficient * pow(tau, 3);\n                \n                velocity_x[idx] = -deformation * tau_x;\n                velocity_y[idx] = -deformation * tau_y;\n                \n                // Mass balance\n                double accumulation = 0.3; // m/year\n                double ablation = std::max(0.0, 0.01 * (surface - 2000.0));\n                \n                thickness[idx] += accumulation - ablation;\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ice_sheet_dynamics.cpp",
+      "function": "_Z15simulateIceFlowPdS_S_S_iii",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    const double gravity = 9.81;\n    const double glen_coefficient = 2.4e-24;\n    \n    for (int year = 0; year < years; year++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                int idx = i * ny + j;\n                \n                // Surface elevation\n                double surface = bedrock[idx] + thickness[idx];\n                \n                // Surface gradient\n                double grad_x = (bedrock[(i+1)*ny+j] + thickness[(i+1)*ny+j] - \n                               bedrock[(i-1)*ny+j] - thickness[(i-1)*ny+j]) / 2000.0;\n                double grad_y = (bedrock[i*ny+(j+1)] + thickness[i*ny+(j+1)] - \n                               bedrock[i*ny+(j-1)] - thickness[i*ny+(j-1)]) / 2000.0;\n                \n                // Driving stress\n                double tau_x = ice_density * gravity * thickness[idx] * grad_x;\n                double tau_y = ice_density * gravity * thickness[idx] * grad_y;\n                \n                // Glen's flow law\n                double tau = sqrt(tau_x*tau_x + tau_y*tau_y);\n                double deformation = glen_coefficient * pow(tau, 3);\n                \n                velocity_x[idx] = -deformation * tau_x;\n                velocity_y[idx] = -deformation * tau_y;\n                \n                // Mass balance\n                double accumulation = 0.3; // m/year\n                double ablation = std::max(0.0, 0.01 * (surface - 2000.0));\n                \n                thickness[idx] += accumulation - ablation;\n            }\n        }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ice_sheet_dynamics.cpp",
+      "function": "_Z15simulateIceFlowPdS_S_S_iii",
+      "line": 11,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                    double* bedrock, int nx, int ny, int years) {\n    const double ice_density = 917.0;\n    const double gravity = 9.81;\n    const double glen_coefficient = 2.4e-24;\n    \n    for (int year = 0; year < years; year++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                int idx = i * ny + j;\n                \n                // Surface elevation\n                double surface = bedrock[idx] + thickness[idx];\n                \n                // Surface gradient\n                double grad_x = (bedrock[(i+1)*ny+j] + thickness[(i+1)*ny+j] - \n                               bedrock[(i-1)*ny+j] - thickness[(i-1)*ny+j]) / 2000.0;\n                double grad_y = (bedrock[i*ny+(j+1)] + thickness[i*ny+(j+1)] - \n                               bedrock[i*ny+(j-1)] - thickness[i*ny+(j-1)]) / 2000.0;\n                \n                // Driving stress\n                double tau_x = ice_density * gravity * thickness[idx] * grad_x;\n                double tau_y = ice_density * gravity * thickness[idx] * grad_y;\n                \n                // Glen's flow law\n                double tau = sqrt(tau_x*tau_x + tau_y*tau_y);\n                double deformation = glen_coefficient * pow(tau, 3);\n                \n                velocity_x[idx] = -deformation * tau_x;\n                velocity_y[idx] = -deformation * tau_y;\n                \n                // Mass balance\n                double accumulation = 0.3; // m/year\n                double ablation = std::max(0.0, 0.01 * (surface - 2000.0));\n                \n                thickness[idx] += accumulation - ablation;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ice_sheet_dynamics.cpp",
+      "function": "_Z15simulateIceFlowPdS_S_S_iii",
+      "line": 12,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    const double ice_density = 917.0;\n    const double gravity = 9.81;\n    const double glen_coefficient = 2.4e-24;\n    \n    for (int year = 0; year < years; year++) {\n        for (int i = 1; i < nx-1; i++) {\n            for (int j = 1; j < ny-1; j++) {\n                int idx = i * ny + j;\n                \n                // Surface elevation\n                double surface = bedrock[idx] + thickness[idx];\n                \n                // Surface gradient\n                double grad_x = (bedrock[(i+1)*ny+j] + thickness[(i+1)*ny+j] - \n                               bedrock[(i-1)*ny+j] - thickness[(i-1)*ny+j]) / 2000.0;\n                double grad_y = (bedrock[i*ny+(j+1)] + thickness[i*ny+(j+1)] - \n                               bedrock[i*ny+(j-1)] - thickness[i*ny+(j-1)]) / 2000.0;\n                \n                // Driving stress\n                double tau_x = ice_density * gravity * thickness[idx] * grad_x;\n                double tau_y = ice_density * gravity * thickness[idx] * grad_y;\n                \n                // Glen's flow law\n                double tau = sqrt(tau_x*tau_x + tau_y*tau_y);\n                double deformation = glen_coefficient * pow(tau, 3);\n                \n                velocity_x[idx] = -deformation * tau_x;\n                velocity_y[idx] = -deformation * tau_y;\n                \n                // Mass balance\n                double accumulation = 0.3; // m/year\n                double ablation = std::max(0.0, 0.01 * (surface - 2000.0));\n                \n                thickness[idx] += accumulation - ablation;\n            }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

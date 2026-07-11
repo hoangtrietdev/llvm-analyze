@@ -1,0 +1,497 @@
+{
+  "file": "sample/src/real-world/weather/ocean_atmosphere_coupling.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/weather/ocean_atmosphere_coupling.cpp",
+    "llvm_initial": 48,
+    "llvm_sys_noise": 42,
+    "llvm_project": 6,
+    "after_filter": 4,
+    "ai_batches": 1,
+    "ai_results": 4,
+    "omp_verified": 0,
+    "total_ms": 767.1,
+    "llvm_ms": 591.3
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ocean_atmosphere_coupling.cpp",
+      "function": "_Z23couple_ocean_atmosphereRNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEEERNS0_INS0_I9AtmosCellNS2_IS8_EEEENS2_ISA_EEEE",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void couple_ocean_atmosphere(\n    std::vector<std::vector<OceanCell>>& ocean,\n    std::vector<std::vector<AtmosCell>>& atmosphere) {\n    \n    // Heat exchange\n    for (int i = 0; i < OCEAN_GRID; i++) {\n        for (int j = 0; j < ATMOS_GRID; j++) {\n            double temp_diff = ocean[i][j].temperature - atmosphere[i][j].temperature;\n            double heat_flux = temp_diff * 0.01;\n            \n            ocean[i][j].temperature -= heat_flux;\n            atmosphere[i][j].temperature += heat_flux;\n            \n            // Evaporation\n            if (ocean[i][j].temperature > 273.15) {\n                double evap_rate = (ocean[i][j].temperature - 273.15) * 0.001;\n                atmosphere[i][j].humidity += evap_rate;\n                ocean[i][j].salinity += evap_rate * 0.1;\n            }\n        }\n    }\n    \n    // Wind-driven currents\n    for (int i = 1; i < OCEAN_GRID - 1; i++) {\n        for (int j = 1; j < OCEAN_GRID - 1; j++) {\n            double wind_stress_u = (atmosphere[i][j].pressure - atmosphere[i-1][j].pressure) * 0.01;\n            double wind_stress_v = (atmosphere[i][j].pressure - atmosphere[i][j-1].pressure) * 0.01;\n            \n            ocean[i][j].current_u += wind_stress_u * 0.1;\n            ocean[i][j].current_v += wind_stress_v * 0.1;\n        }\n    }\n}\n\nint main() {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/ocean_atmosphere_coupling.cpp",
+      "function": "_Z23couple_ocean_atmosphereRNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEEERNS0_INS0_I9AtmosCellNS2_IS8_EEEENS2_ISA_EEEE",
+      "line": 35,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            \n            ocean[i][j].temperature -= heat_flux;\n            atmosphere[i][j].temperature += heat_flux;\n            \n            // Evaporation\n            if (ocean[i][j].temperature > 273.15) {\n                double evap_rate = (ocean[i][j].temperature - 273.15) * 0.001;\n                atmosphere[i][j].humidity += evap_rate;\n                ocean[i][j].salinity += evap_rate * 0.1;\n            }\n        }\n    }\n    \n    // Wind-driven currents\n    for (int i = 1; i < OCEAN_GRID - 1; i++) {\n        for (int j = 1; j < OCEAN_GRID - 1; j++) {\n            double wind_stress_u = (atmosphere[i][j].pressure - atmosphere[i-1][j].pressure) * 0.01;\n            double wind_stress_v = (atmosphere[i][j].pressure - atmosphere[i][j-1].pressure) * 0.01;\n            \n            ocean[i][j].current_u += wind_stress_u * 0.1;\n            ocean[i][j].current_v += wind_stress_v * 0.1;\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<OceanCell>> ocean(OCEAN_GRID,\n        std::vector<OceanCell>(OCEAN_GRID, {290.0, 35.0, 0.0, 0.0}));\n    std::vector<std::vector<AtmosCell>> atmosphere(ATMOS_GRID,\n        std::vector<AtmosCell>(ATMOS_GRID, {285.0, 1013.25, 0.7}));\n    \n    for (int t = 0; t < 1000; t++) {\n        couple_ocean_atmosphere(ocean, atmosphere);\n    }\n    "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ocean_atmosphere_coupling.cpp",
+      "function": "_Z23couple_ocean_atmosphereRNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEEERNS0_INS0_I9AtmosCellNS2_IS8_EEEENS2_ISA_EEEE",
+      "line": 27,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::vector<std::vector<OceanCell>>& ocean,\n    std::vector<std::vector<AtmosCell>>& atmosphere) {\n    \n    // Heat exchange\n    for (int i = 0; i < OCEAN_GRID; i++) {\n        for (int j = 0; j < ATMOS_GRID; j++) {\n            double temp_diff = ocean[i][j].temperature - atmosphere[i][j].temperature;\n            double heat_flux = temp_diff * 0.01;\n            \n            ocean[i][j].temperature -= heat_flux;\n            atmosphere[i][j].temperature += heat_flux;\n            \n            // Evaporation\n            if (ocean[i][j].temperature > 273.15) {\n                double evap_rate = (ocean[i][j].temperature - 273.15) * 0.001;\n                atmosphere[i][j].humidity += evap_rate;\n                ocean[i][j].salinity += evap_rate * 0.1;\n            }\n        }\n    }\n    \n    // Wind-driven currents\n    for (int i = 1; i < OCEAN_GRID - 1; i++) {\n        for (int j = 1; j < OCEAN_GRID - 1; j++) {\n            double wind_stress_u = (atmosphere[i][j].pressure - atmosphere[i-1][j].pressure) * 0.01;\n            double wind_stress_v = (atmosphere[i][j].pressure - atmosphere[i][j-1].pressure) * 0.01;\n            \n            ocean[i][j].current_u += wind_stress_u * 0.1;\n            ocean[i][j].current_v += wind_stress_v * 0.1;\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<OceanCell>> ocean(OCEAN_GRID,"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ocean_atmosphere_coupling.cpp",
+      "function": "_Z23couple_ocean_atmosphereRNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEEERNS0_INS0_I9AtmosCellNS2_IS8_EEEENS2_ISA_EEEE",
+      "line": 44,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n        }\n    }\n    \n    // Wind-driven currents\n    for (int i = 1; i < OCEAN_GRID - 1; i++) {\n        for (int j = 1; j < OCEAN_GRID - 1; j++) {\n            double wind_stress_u = (atmosphere[i][j].pressure - atmosphere[i-1][j].pressure) * 0.01;\n            double wind_stress_v = (atmosphere[i][j].pressure - atmosphere[i][j-1].pressure) * 0.01;\n            \n            ocean[i][j].current_u += wind_stress_u * 0.1;\n            ocean[i][j].current_v += wind_stress_v * 0.1;\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<OceanCell>> ocean(OCEAN_GRID,\n        std::vector<OceanCell>(OCEAN_GRID, {290.0, 35.0, 0.0, 0.0}));\n    std::vector<std::vector<AtmosCell>> atmosphere(ATMOS_GRID,\n        std::vector<AtmosCell>(ATMOS_GRID, {285.0, 1013.25, 0.7}));\n    \n    for (int t = 0; t < 1000; t++) {\n        couple_ocean_atmosphere(ocean, atmosphere);\n    }\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/ocean_atmosphere_coupling.cpp",
+      "function": "_Z23couple_ocean_atmosphereRNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEEERNS0_INS0_I9AtmosCellNS2_IS8_EEEENS2_ISA_EEEE",
+      "line": 45,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 935,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/weather/ocean_atmosphere_coupling.cpp",
+      "function": "main",
+      "line": 61,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.42000000000000004
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I9OceanCellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I9OceanCellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I9OceanCellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I9OceanCellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I9OceanCellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9AtmosCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 170,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9AtmosCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9AtmosCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 591,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9AtmosCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9AtmosCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS0_I9AtmosCellNS_9allocatorIS1_EEEENS2_IS4_EEEC2B8ne210101EmRKS4_",
+      "line": 935,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__utility/exception_guard.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I9AtmosCellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 84,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I9AtmosCellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I9AtmosCellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I9AtmosCellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 250,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__128__exception_guard_exceptionsINS_6vectorINS1_I9AtmosCellNS_9allocatorIS2_EEEENS3_IS5_EEE16__destroy_vectorEED1B8ne210101Ev",
+      "line": 762,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/weather/ocean_atmosphere_coupling.cpp",
+      "function": "_Z23couple_ocean_atmosphereRNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEEERNS0_INS0_I9AtmosCellNS2_IS8_EEEENS2_ISA_EEEE",
+      "line": 35,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            \n            ocean[i][j].temperature -= heat_flux;\n            atmosphere[i][j].temperature += heat_flux;\n            \n            // Evaporation\n            if (ocean[i][j].temperature > 273.15) {\n                double evap_rate = (ocean[i][j].temperature - 273.15) * 0.001;\n                atmosphere[i][j].humidity += evap_rate;\n                ocean[i][j].salinity += evap_rate * 0.1;\n            }\n        }\n    }\n    \n    // Wind-driven currents\n    for (int i = 1; i < OCEAN_GRID - 1; i++) {\n        for (int j = 1; j < OCEAN_GRID - 1; j++) {\n            double wind_stress_u = (atmosphere[i][j].pressure - atmosphere[i-1][j].pressure) * 0.01;\n            double wind_stress_v = (atmosphere[i][j].pressure - atmosphere[i][j-1].pressure) * 0.01;\n            \n            ocean[i][j].current_u += wind_stress_u * 0.1;\n            ocean[i][j].current_v += wind_stress_v * 0.1;\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<OceanCell>> ocean(OCEAN_GRID,\n        std::vector<OceanCell>(OCEAN_GRID, {290.0, 35.0, 0.0, 0.0}));\n    std::vector<std::vector<AtmosCell>> atmosphere(ATMOS_GRID,\n        std::vector<AtmosCell>(ATMOS_GRID, {285.0, 1013.25, 0.7}));\n    \n    for (int t = 0; t < 1000; t++) {\n        couple_ocean_atmosphere(ocean, atmosphere);\n    }\n    ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ocean_atmosphere_coupling.cpp",
+      "function": "_Z23couple_ocean_atmosphereRNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEEERNS0_INS0_I9AtmosCellNS2_IS8_EEEENS2_ISA_EEEE",
+      "line": 26,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "void couple_ocean_atmosphere(\n    std::vector<std::vector<OceanCell>>& ocean,\n    std::vector<std::vector<AtmosCell>>& atmosphere) {\n    \n    // Heat exchange\n    for (int i = 0; i < OCEAN_GRID; i++) {\n        for (int j = 0; j < ATMOS_GRID; j++) {\n            double temp_diff = ocean[i][j].temperature - atmosphere[i][j].temperature;\n            double heat_flux = temp_diff * 0.01;\n            \n            ocean[i][j].temperature -= heat_flux;\n            atmosphere[i][j].temperature += heat_flux;\n            \n            // Evaporation\n            if (ocean[i][j].temperature > 273.15) {\n                double evap_rate = (ocean[i][j].temperature - 273.15) * 0.001;\n                atmosphere[i][j].humidity += evap_rate;\n                ocean[i][j].salinity += evap_rate * 0.1;\n            }\n        }\n    }\n    \n    // Wind-driven currents\n    for (int i = 1; i < OCEAN_GRID - 1; i++) {\n        for (int j = 1; j < OCEAN_GRID - 1; j++) {\n            double wind_stress_u = (atmosphere[i][j].pressure - atmosphere[i-1][j].pressure) * 0.01;\n            double wind_stress_v = (atmosphere[i][j].pressure - atmosphere[i][j-1].pressure) * 0.01;\n            \n            ocean[i][j].current_u += wind_stress_u * 0.1;\n            ocean[i][j].current_v += wind_stress_v * 0.1;\n        }\n    }\n}\n\nint main() {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ocean_atmosphere_coupling.cpp",
+      "function": "_Z23couple_ocean_atmosphereRNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEEERNS0_INS0_I9AtmosCellNS2_IS8_EEEENS2_ISA_EEEE",
+      "line": 27,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    std::vector<std::vector<OceanCell>>& ocean,\n    std::vector<std::vector<AtmosCell>>& atmosphere) {\n    \n    // Heat exchange\n    for (int i = 0; i < OCEAN_GRID; i++) {\n        for (int j = 0; j < ATMOS_GRID; j++) {\n            double temp_diff = ocean[i][j].temperature - atmosphere[i][j].temperature;\n            double heat_flux = temp_diff * 0.01;\n            \n            ocean[i][j].temperature -= heat_flux;\n            atmosphere[i][j].temperature += heat_flux;\n            \n            // Evaporation\n            if (ocean[i][j].temperature > 273.15) {\n                double evap_rate = (ocean[i][j].temperature - 273.15) * 0.001;\n                atmosphere[i][j].humidity += evap_rate;\n                ocean[i][j].salinity += evap_rate * 0.1;\n            }\n        }\n    }\n    \n    // Wind-driven currents\n    for (int i = 1; i < OCEAN_GRID - 1; i++) {\n        for (int j = 1; j < OCEAN_GRID - 1; j++) {\n            double wind_stress_u = (atmosphere[i][j].pressure - atmosphere[i-1][j].pressure) * 0.01;\n            double wind_stress_v = (atmosphere[i][j].pressure - atmosphere[i][j-1].pressure) * 0.01;\n            \n            ocean[i][j].current_u += wind_stress_u * 0.1;\n            ocean[i][j].current_v += wind_stress_v * 0.1;\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<OceanCell>> ocean(OCEAN_GRID,",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/weather/ocean_atmosphere_coupling.cpp",
+      "function": "_Z23couple_ocean_atmosphereRNSt3__16vectorINS0_I9OceanCellNS_9allocatorIS1_EEEENS2_IS4_EEEERNS0_INS0_I9AtmosCellNS2_IS8_EEEENS2_ISA_EEEE",
+      "line": 44,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "            }\n        }\n    }\n    \n    // Wind-driven currents\n    for (int i = 1; i < OCEAN_GRID - 1; i++) {\n        for (int j = 1; j < OCEAN_GRID - 1; j++) {\n            double wind_stress_u = (atmosphere[i][j].pressure - atmosphere[i-1][j].pressure) * 0.01;\n            double wind_stress_v = (atmosphere[i][j].pressure - atmosphere[i][j-1].pressure) * 0.01;\n            \n            ocean[i][j].current_u += wind_stress_u * 0.1;\n            ocean[i][j].current_v += wind_stress_v * 0.1;\n        }\n    }\n}\n\nint main() {\n    std::vector<std::vector<OceanCell>> ocean(OCEAN_GRID,\n        std::vector<OceanCell>(OCEAN_GRID, {290.0, 35.0, 0.0, 0.0}));\n    std::vector<std::vector<AtmosCell>> atmosphere(ATMOS_GRID,\n        std::vector<AtmosCell>(ATMOS_GRID, {285.0, 1013.25, 0.7}));\n    \n    for (int t = 0; t < 1000; t++) {\n        couple_ocean_atmosphere(ocean, atmosphere);\n    }\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    }
+  ]
+}

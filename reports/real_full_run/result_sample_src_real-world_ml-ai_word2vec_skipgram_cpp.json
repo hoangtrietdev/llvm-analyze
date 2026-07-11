@@ -1,0 +1,517 @@
+{
+  "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+    "llvm_initial": 24,
+    "llvm_sys_noise": 4,
+    "llvm_project": 20,
+    "after_filter": 13,
+    "ai_batches": 1,
+    "ai_results": 13,
+    "omp_verified": 0,
+    "total_ms": 815.7,
+    "llvm_ms": 461.2
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid negativeSampling(int* context, int* targets, int* negatives,\n                     double* embeddings, double* context_embeddings,\n                     int batch_size, int window_size, int embedding_dim,\n                     int n_negatives, double learning_rate) {\n    for (int b = 0; b < batch_size; b++) {\n        int center_word = context[b];\n        \n        for (int w = -window_size; w <= window_size; w++) {\n            if (w == 0) continue;\n            \n            int target_word = targets[b * (2*window_size) + (w + window_size)];\n            \n            // Positive sample\n            double pos_score = 0.0;\n            for (int d = 0; d < embedding_dim; d++) {\n                pos_score += embeddings[center_word * embedding_dim + d] *\n                            context_embeddings[target_word * embedding_dim + d];\n            }\n            double pos_sigmoid = 1.0 / (1.0 + exp(-pos_score));\n            double pos_grad = pos_sigmoid - 1.0;\n            \n            // Update embeddings for positive sample\n            for (int d = 0; d < embedding_dim; d++) {\n                double grad_emb = pos_grad * context_embeddings[target_word * embedding_dim + d];\n                double grad_context = pos_grad * embeddings[center_word * embedding_dim + d];\n                \n                embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                context_embeddings[target_word * embedding_dim + d] -= learning_rate * grad_context;\n            }\n            \n            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                     int batch_size, int window_size, int embedding_dim,\n                     int n_negatives, double learning_rate) {\n    for (int b = 0; b < batch_size; b++) {\n        int center_word = context[b];\n        \n        for (int w = -window_size; w <= window_size; w++) {\n            if (w == 0) continue;\n            \n            int target_word = targets[b * (2*window_size) + (w + window_size)];\n            \n            // Positive sample\n            double pos_score = 0.0;\n            for (int d = 0; d < embedding_dim; d++) {\n                pos_score += embeddings[center_word * embedding_dim + d] *\n                            context_embeddings[target_word * embedding_dim + d];\n            }\n            double pos_sigmoid = 1.0 / (1.0 + exp(-pos_score));\n            double pos_grad = pos_sigmoid - 1.0;\n            \n            // Update embeddings for positive sample\n            for (int d = 0; d < embedding_dim; d++) {\n                double grad_emb = pos_grad * context_embeddings[target_word * embedding_dim + d];\n                double grad_context = pos_grad * embeddings[center_word * embedding_dim + d];\n                \n                embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                context_embeddings[target_word * embedding_dim + d] -= learning_rate * grad_context;\n            }\n            \n            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                \n                double neg_score = 0.0;\n                for (int d = 0; d < embedding_dim; d++) {\n                    neg_score += embeddings[center_word * embedding_dim + d] *"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid negativeSampling(int* context, int* targets, int* negatives,\n                     double* embeddings, double* context_embeddings,\n                     int batch_size, int window_size, int embedding_dim,\n                     int n_negatives, double learning_rate) {\n    for (int b = 0; b < batch_size; b++) {\n        int center_word = context[b];\n        \n        for (int w = -window_size; w <= window_size; w++) {\n            if (w == 0) continue;\n            \n            int target_word = targets[b * (2*window_size) + (w + window_size)];\n            \n            // Positive sample\n            double pos_score = 0.0;\n            for (int d = 0; d < embedding_dim; d++) {\n                pos_score += embeddings[center_word * embedding_dim + d] *\n                            context_embeddings[target_word * embedding_dim + d];\n            }\n            double pos_sigmoid = 1.0 / (1.0 + exp(-pos_score));\n            double pos_grad = pos_sigmoid - 1.0;\n            \n            // Update embeddings for positive sample\n            for (int d = 0; d < embedding_dim; d++) {\n                double grad_emb = pos_grad * context_embeddings[target_word * embedding_dim + d];\n                double grad_context = pos_grad * embeddings[center_word * embedding_dim + d];\n                \n                embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                context_embeddings[target_word * embedding_dim + d] -= learning_rate * grad_context;\n            }\n            \n            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                     int n_negatives, double learning_rate) {\n    for (int b = 0; b < batch_size; b++) {\n        int center_word = context[b];\n        \n        for (int w = -window_size; w <= window_size; w++) {\n            if (w == 0) continue;\n            \n            int target_word = targets[b * (2*window_size) + (w + window_size)];\n            \n            // Positive sample\n            double pos_score = 0.0;\n            for (int d = 0; d < embedding_dim; d++) {\n                pos_score += embeddings[center_word * embedding_dim + d] *\n                            context_embeddings[target_word * embedding_dim + d];\n            }\n            double pos_sigmoid = 1.0 / (1.0 + exp(-pos_score));\n            double pos_grad = pos_sigmoid - 1.0;\n            \n            // Update embeddings for positive sample\n            for (int d = 0; d < embedding_dim; d++) {\n                double grad_emb = pos_grad * context_embeddings[target_word * embedding_dim + d];\n                double grad_context = pos_grad * embeddings[center_word * embedding_dim + d];\n                \n                embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                context_embeddings[target_word * embedding_dim + d] -= learning_rate * grad_context;\n            }\n            \n            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                \n                double neg_score = 0.0;\n                for (int d = 0; d < embedding_dim; d++) {\n                    neg_score += embeddings[center_word * embedding_dim + d] *\n                                context_embeddings[neg_word * embedding_dim + d];"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 20,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            \n            int target_word = targets[b * (2*window_size) + (w + window_size)];\n            \n            // Positive sample\n            double pos_score = 0.0;\n            for (int d = 0; d < embedding_dim; d++) {\n                pos_score += embeddings[center_word * embedding_dim + d] *\n                            context_embeddings[target_word * embedding_dim + d];\n            }\n            double pos_sigmoid = 1.0 / (1.0 + exp(-pos_score));\n            double pos_grad = pos_sigmoid - 1.0;\n            \n            // Update embeddings for positive sample\n            for (int d = 0; d < embedding_dim; d++) {\n                double grad_emb = pos_grad * context_embeddings[target_word * embedding_dim + d];\n                double grad_context = pos_grad * embeddings[center_word * embedding_dim + d];\n                \n                embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                context_embeddings[target_word * embedding_dim + d] -= learning_rate * grad_context;\n            }\n            \n            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                \n                double neg_score = 0.0;\n                for (int d = 0; d < embedding_dim; d++) {\n                    neg_score += embeddings[center_word * embedding_dim + d] *\n                                context_embeddings[neg_word * embedding_dim + d];\n                }\n                double neg_sigmoid = 1.0 / (1.0 + exp(-neg_score));\n                double neg_grad = neg_sigmoid;\n                \n                // Update embeddings for negative sample\n                for (int d = 0; d < embedding_dim; d++) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 28,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 20,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 37,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                context_embeddings[target_word * embedding_dim + d] -= learning_rate * grad_context;\n            }\n            \n            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                \n                double neg_score = 0.0;\n                for (int d = 0; d < embedding_dim; d++) {\n                    neg_score += embeddings[center_word * embedding_dim + d] *\n                                context_embeddings[neg_word * embedding_dim + d];\n                }\n                double neg_sigmoid = 1.0 / (1.0 + exp(-neg_score));\n                double neg_grad = neg_sigmoid;\n                \n                // Update embeddings for negative sample\n                for (int d = 0; d < embedding_dim; d++) {\n                    double grad_emb = neg_grad * context_embeddings[neg_word * embedding_dim + d];\n                    double grad_context = neg_grad * embeddings[center_word * embedding_dim + d];\n                    \n                    embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                    context_embeddings[neg_word * embedding_dim + d] -= learning_rate * grad_context;\n                }\n            }\n        }\n    }\n}\n\nvoid computeWordSimilarity(double* embeddings, int vocab_size, int embedding_dim,\n                          int word1, int word2, double& similarity) {\n    double dot_product = 0.0;\n    double norm1 = 0.0, norm2 = 0.0;\n    \n    for (int d = 0; d < embedding_dim; d++) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 28,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 41,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                \n                double neg_score = 0.0;\n                for (int d = 0; d < embedding_dim; d++) {\n                    neg_score += embeddings[center_word * embedding_dim + d] *\n                                context_embeddings[neg_word * embedding_dim + d];\n                }\n                double neg_sigmoid = 1.0 / (1.0 + exp(-neg_score));\n                double neg_grad = neg_sigmoid;\n                \n                // Update embeddings for negative sample\n                for (int d = 0; d < embedding_dim; d++) {\n                    double grad_emb = neg_grad * context_embeddings[neg_word * embedding_dim + d];\n                    double grad_context = neg_grad * embeddings[center_word * embedding_dim + d];\n                    \n                    embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                    context_embeddings[neg_word * embedding_dim + d] -= learning_rate * grad_context;\n                }\n            }\n        }\n    }\n}\n\nvoid computeWordSimilarity(double* embeddings, int vocab_size, int embedding_dim,\n                          int word1, int word2, double& similarity) {\n    double dot_product = 0.0;\n    double norm1 = 0.0, norm2 = 0.0;\n    \n    for (int d = 0; d < embedding_dim; d++) {\n        double e1 = embeddings[word1 * embedding_dim + d];\n        double e2 = embeddings[word2 * embedding_dim + d];\n        \n        dot_product += e1 * e2;"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 49,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 41,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 37,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                context_embeddings[target_word * embedding_dim + d] -= learning_rate * grad_context;\n            }\n            \n            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                \n                double neg_score = 0.0;\n                for (int d = 0; d < embedding_dim; d++) {\n                    neg_score += embeddings[center_word * embedding_dim + d] *\n                                context_embeddings[neg_word * embedding_dim + d];\n                }\n                double neg_sigmoid = 1.0 / (1.0 + exp(-neg_score));\n                double neg_grad = neg_sigmoid;\n                \n                // Update embeddings for negative sample\n                for (int d = 0; d < embedding_dim; d++) {\n                    double grad_emb = neg_grad * context_embeddings[neg_word * embedding_dim + d];\n                    double grad_context = neg_grad * embeddings[center_word * embedding_dim + d];\n                    \n                    embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                    context_embeddings[neg_word * embedding_dim + d] -= learning_rate * grad_context;\n                }\n            }\n        }\n    }\n}\n\nvoid computeWordSimilarity(double* embeddings, int vocab_size, int embedding_dim,\n                          int word1, int word2, double& similarity) {\n    double dot_product = 0.0;\n    double norm1 = 0.0, norm2 = 0.0;\n    \n    for (int d = 0; d < embedding_dim; d++) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 49,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.5499999999999999
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                     int batch_size, int window_size, int embedding_dim,\n                     int n_negatives, double learning_rate) {\n    for (int b = 0; b < batch_size; b++) {\n        int center_word = context[b];\n        \n        for (int w = -window_size; w <= window_size; w++) {\n            if (w == 0) continue;\n            \n            int target_word = targets[b * (2*window_size) + (w + window_size)];\n            \n            // Positive sample\n            double pos_score = 0.0;\n            for (int d = 0; d < embedding_dim; d++) {\n                pos_score += embeddings[center_word * embedding_dim + d] *\n                            context_embeddings[target_word * embedding_dim + d];\n            }\n            double pos_sigmoid = 1.0 / (1.0 + exp(-pos_score));\n            double pos_grad = pos_sigmoid - 1.0;\n            \n            // Update embeddings for positive sample\n            for (int d = 0; d < embedding_dim; d++) {\n                double grad_emb = pos_grad * context_embeddings[target_word * embedding_dim + d];\n                double grad_context = pos_grad * embeddings[center_word * embedding_dim + d];\n                \n                embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                context_embeddings[target_word * embedding_dim + d] -= learning_rate * grad_context;\n            }\n            \n            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                \n                double neg_score = 0.0;\n                for (int d = 0; d < embedding_dim; d++) {\n                    neg_score += embeddings[center_word * embedding_dim + d] *"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z21computeWordSimilarityPdiiiiRd",
+      "line": 66,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "void computeWordSimilarity(double* embeddings, int vocab_size, int embedding_dim,\n                          int word1, int word2, double& similarity) {\n    double dot_product = 0.0;\n    double norm1 = 0.0, norm2 = 0.0;\n    \n    for (int d = 0; d < embedding_dim; d++) {\n        double e1 = embeddings[word1 * embedding_dim + d];\n        double e2 = embeddings[word2 * embedding_dim + d];\n        \n        dot_product += e1 * e2;\n        norm1 += e1 * e1;\n        norm2 += e2 * e2;\n    }\n    \n    similarity = dot_product / (sqrt(norm1) * sqrt(norm2));\n}\n\nint main() {\n    const int vocab_size = 50000, embedding_dim = 300, batch_size = 512;\n    const int window_size = 5, n_negatives = 5;\n    \n    std::vector<double> embeddings(vocab_size * embedding_dim, 0.01);\n    std::vector<double> context_embeddings(vocab_size * embedding_dim, 0.01);\n    std::vector<int> context(batch_size);\n    std::vector<int> targets(batch_size * 2 * window_size);\n    std::vector<int> negatives(batch_size * n_negatives);\n    \n    std::mt19937 rng(42);\n    std::uniform_int_distribution<> dist(0, vocab_size-1);\n    for (int i = 0; i < batch_size; i++) {\n        context[i] = dist(rng);\n        for (int j = 0; j < 2*window_size; j++) {\n            targets[i * 2*window_size + j] = dist(rng);\n        }\n        for (int j = 0; j < n_negatives; j++) {"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z21computeWordSimilarityPdiiiiRd",
+      "line": 66,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "void computeWordSimilarity(double* embeddings, int vocab_size, int embedding_dim,\n                          int word1, int word2, double& similarity) {\n    double dot_product = 0.0;\n    double norm1 = 0.0, norm2 = 0.0;\n    \n    for (int d = 0; d < embedding_dim; d++) {\n        double e1 = embeddings[word1 * embedding_dim + d];\n        double e2 = embeddings[word2 * embedding_dim + d];\n        \n        dot_product += e1 * e2;\n        norm1 += e1 * e1;\n        norm2 += e2 * e2;\n    }\n    \n    similarity = dot_product / (sqrt(norm1) * sqrt(norm2));\n}\n\nint main() {\n    const int vocab_size = 50000, embedding_dim = 300, batch_size = 512;\n    const int window_size = 5, n_negatives = 5;\n    \n    std::vector<double> embeddings(vocab_size * embedding_dim, 0.01);\n    std::vector<double> context_embeddings(vocab_size * embedding_dim, 0.01);\n    std::vector<int> context(batch_size);\n    std::vector<int> targets(batch_size * 2 * window_size);\n    std::vector<int> negatives(batch_size * n_negatives);\n    \n    std::mt19937 rng(42);\n    std::uniform_int_distribution<> dist(0, vocab_size-1);\n    for (int i = 0; i < batch_size; i++) {\n        context[i] = dist(rng);\n        for (int j = 0; j < 2*window_size; j++) {\n            targets[i * 2*window_size + j] = dist(rng);\n        }\n        for (int j = 0; j < n_negatives; j++) {"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/mersenne_twister_engine.h",
+      "function": "main",
+      "line": 330,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "main",
+      "line": 92,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    std::mt19937 rng(42);\n    std::uniform_int_distribution<> dist(0, vocab_size-1);\n    for (int i = 0; i < batch_size; i++) {\n        context[i] = dist(rng);\n        for (int j = 0; j < 2*window_size; j++) {\n            targets[i * 2*window_size + j] = dist(rng);\n        }\n        for (int j = 0; j < n_negatives; j++) {\n            negatives[i * n_negatives + j] = dist(rng);\n        }\n    }\n    \n    negativeSampling(context.data(), targets.data(), negatives.data(),\n                    embeddings.data(), context_embeddings.data(),\n                    batch_size, window_size, embedding_dim, n_negatives, 0.025);\n    \n    double similarity;\n    computeWordSimilarity(embeddings.data(), vocab_size, embedding_dim, 100, 200, similarity);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "main",
+      "line": 90,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "main",
+      "line": 95,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.98,
+      "context": "    for (int i = 0; i < batch_size; i++) {\n        context[i] = dist(rng);\n        for (int j = 0; j < 2*window_size; j++) {\n            targets[i * 2*window_size + j] = dist(rng);\n        }\n        for (int j = 0; j < n_negatives; j++) {\n            negatives[i * n_negatives + j] = dist(rng);\n        }\n    }\n    \n    negativeSampling(context.data(), targets.data(), negatives.data(),\n                    embeddings.data(), context_embeddings.data(),\n                    batch_size, window_size, embedding_dim, n_negatives, 0.025);\n    \n    double similarity;\n    computeWordSimilarity(embeddings.data(), vocab_size, embedding_dim, 100, 200, similarity);\n    \n    return 0;\n}"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/uniform_int_distribution.h",
+      "function": "_ZNSt3__124uniform_int_distributionIiEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEiRT_RKNS1_10param_typeE",
+      "line": 215,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/uniform_int_distribution.h",
+      "function": "_ZNSt3__124uniform_int_distributionIiEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEiRT_RKNS1_10param_typeE",
+      "line": 219,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__random/uniform_int_distribution.h",
+      "function": "_ZNSt3__124uniform_int_distributionIiEclINS_23mersenne_twister_engineIjLm32ELm624ELm397ELm31ELj2567483615ELm11ELj4294967295ELm7ELj2636928640ELm15ELj4022730752ELm18ELj1812433253EEEEEiRT_RKNS1_10param_typeE",
+      "line": 228,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 20,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            \n            int target_word = targets[b * (2*window_size) + (w + window_size)];\n            \n            // Positive sample\n            double pos_score = 0.0;\n            for (int d = 0; d < embedding_dim; d++) {\n                pos_score += embeddings[center_word * embedding_dim + d] *\n                            context_embeddings[target_word * embedding_dim + d];\n            }\n            double pos_sigmoid = 1.0 / (1.0 + exp(-pos_score));\n            double pos_grad = pos_sigmoid - 1.0;\n            \n            // Update embeddings for positive sample\n            for (int d = 0; d < embedding_dim; d++) {\n                double grad_emb = pos_grad * context_embeddings[target_word * embedding_dim + d];\n                double grad_context = pos_grad * embeddings[center_word * embedding_dim + d];\n                \n                embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                context_embeddings[target_word * embedding_dim + d] -= learning_rate * grad_context;\n            }\n            \n            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                \n                double neg_score = 0.0;\n                for (int d = 0; d < embedding_dim; d++) {\n                    neg_score += embeddings[center_word * embedding_dim + d] *\n                                context_embeddings[neg_word * embedding_dim + d];\n                }\n                double neg_sigmoid = 1.0 / (1.0 + exp(-neg_score));\n                double neg_grad = neg_sigmoid;\n                \n                // Update embeddings for negative sample\n                for (int d = 0; d < embedding_dim; d++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 41,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                \n                double neg_score = 0.0;\n                for (int d = 0; d < embedding_dim; d++) {\n                    neg_score += embeddings[center_word * embedding_dim + d] *\n                                context_embeddings[neg_word * embedding_dim + d];\n                }\n                double neg_sigmoid = 1.0 / (1.0 + exp(-neg_score));\n                double neg_grad = neg_sigmoid;\n                \n                // Update embeddings for negative sample\n                for (int d = 0; d < embedding_dim; d++) {\n                    double grad_emb = neg_grad * context_embeddings[neg_word * embedding_dim + d];\n                    double grad_context = neg_grad * embeddings[center_word * embedding_dim + d];\n                    \n                    embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                    context_embeddings[neg_word * embedding_dim + d] -= learning_rate * grad_context;\n                }\n            }\n        }\n    }\n}\n\nvoid computeWordSimilarity(double* embeddings, int vocab_size, int embedding_dim,\n                          int word1, int word2, double& similarity) {\n    double dot_product = 0.0;\n    double norm1 = 0.0, norm2 = 0.0;\n    \n    for (int d = 0; d < embedding_dim; d++) {\n        double e1 = embeddings[word1 * embedding_dim + d];\n        double e2 = embeddings[word2 * embedding_dim + d];\n        \n        dot_product += e1 * e2;",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "embarrassingly_parallel",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "main",
+      "line": 92,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "    \n    std::mt19937 rng(42);\n    std::uniform_int_distribution<> dist(0, vocab_size-1);\n    for (int i = 0; i < batch_size; i++) {\n        context[i] = dist(rng);\n        for (int j = 0; j < 2*window_size; j++) {\n            targets[i * 2*window_size + j] = dist(rng);\n        }\n        for (int j = 0; j < n_negatives; j++) {\n            negatives[i * n_negatives + j] = dist(rng);\n        }\n    }\n    \n    negativeSampling(context.data(), targets.data(), negatives.data(),\n                    embeddings.data(), context_embeddings.data(),\n                    batch_size, window_size, embedding_dim, n_negatives, 0.025);\n    \n    double similarity;\n    computeWordSimilarity(embeddings.data(), vocab_size, embedding_dim, 100, 200, similarity);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "main",
+      "line": 95,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 0.98,
+      "context": "    for (int i = 0; i < batch_size; i++) {\n        context[i] = dist(rng);\n        for (int j = 0; j < 2*window_size; j++) {\n            targets[i * 2*window_size + j] = dist(rng);\n        }\n        for (int j = 0; j < n_negatives; j++) {\n            negatives[i * n_negatives + j] = dist(rng);\n        }\n    }\n    \n    negativeSampling(context.data(), targets.data(), negatives.data(),\n                    embeddings.data(), context_embeddings.data(),\n                    batch_size, window_size, embedding_dim, n_negatives, 0.025);\n    \n    double similarity;\n    computeWordSimilarity(embeddings.data(), vocab_size, embedding_dim, 100, 200, similarity);\n    \n    return 0;\n}",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 0.98
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z21computeWordSimilarityPdiiiiRd",
+      "line": 66,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "void computeWordSimilarity(double* embeddings, int vocab_size, int embedding_dim,\n                          int word1, int word2, double& similarity) {\n    double dot_product = 0.0;\n    double norm1 = 0.0, norm2 = 0.0;\n    \n    for (int d = 0; d < embedding_dim; d++) {\n        double e1 = embeddings[word1 * embedding_dim + d];\n        double e2 = embeddings[word2 * embedding_dim + d];\n        \n        dot_product += e1 * e2;\n        norm1 += e1 * e1;\n        norm2 += e2 * e2;\n    }\n    \n    similarity = dot_product / (sqrt(norm1) * sqrt(norm2));\n}\n\nint main() {\n    const int vocab_size = 50000, embedding_dim = 300, batch_size = 512;\n    const int window_size = 5, n_negatives = 5;\n    \n    std::vector<double> embeddings(vocab_size * embedding_dim, 0.01);\n    std::vector<double> context_embeddings(vocab_size * embedding_dim, 0.01);\n    std::vector<int> context(batch_size);\n    std::vector<int> targets(batch_size * 2 * window_size);\n    std::vector<int> negatives(batch_size * n_negatives);\n    \n    std::mt19937 rng(42);\n    std::uniform_int_distribution<> dist(0, vocab_size-1);\n    for (int i = 0; i < batch_size; i++) {\n        context[i] = dist(rng);\n        for (int j = 0; j < 2*window_size; j++) {\n            targets[i * 2*window_size + j] = dist(rng);\n        }\n        for (int j = 0; j < n_negatives; j++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid negativeSampling(int* context, int* targets, int* negatives,\n                     double* embeddings, double* context_embeddings,\n                     int batch_size, int window_size, int embedding_dim,\n                     int n_negatives, double learning_rate) {\n    for (int b = 0; b < batch_size; b++) {\n        int center_word = context[b];\n        \n        for (int w = -window_size; w <= window_size; w++) {\n            if (w == 0) continue;\n            \n            int target_word = targets[b * (2*window_size) + (w + window_size)];\n            \n            // Positive sample\n            double pos_score = 0.0;\n            for (int d = 0; d < embedding_dim; d++) {\n                pos_score += embeddings[center_word * embedding_dim + d] *\n                            context_embeddings[target_word * embedding_dim + d];\n            }\n            double pos_sigmoid = 1.0 / (1.0 + exp(-pos_score));\n            double pos_grad = pos_sigmoid - 1.0;\n            \n            // Update embeddings for positive sample\n            for (int d = 0; d < embedding_dim; d++) {\n                double grad_emb = pos_grad * context_embeddings[target_word * embedding_dim + d];\n                double grad_context = pos_grad * embeddings[center_word * embedding_dim + d];\n                \n                embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                context_embeddings[target_word * embedding_dim + d] -= learning_rate * grad_context;\n            }\n            \n            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                     int batch_size, int window_size, int embedding_dim,\n                     int n_negatives, double learning_rate) {\n    for (int b = 0; b < batch_size; b++) {\n        int center_word = context[b];\n        \n        for (int w = -window_size; w <= window_size; w++) {\n            if (w == 0) continue;\n            \n            int target_word = targets[b * (2*window_size) + (w + window_size)];\n            \n            // Positive sample\n            double pos_score = 0.0;\n            for (int d = 0; d < embedding_dim; d++) {\n                pos_score += embeddings[center_word * embedding_dim + d] *\n                            context_embeddings[target_word * embedding_dim + d];\n            }\n            double pos_sigmoid = 1.0 / (1.0 + exp(-pos_score));\n            double pos_grad = pos_sigmoid - 1.0;\n            \n            // Update embeddings for positive sample\n            for (int d = 0; d < embedding_dim; d++) {\n                double grad_emb = pos_grad * context_embeddings[target_word * embedding_dim + d];\n                double grad_context = pos_grad * embeddings[center_word * embedding_dim + d];\n                \n                embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                context_embeddings[target_word * embedding_dim + d] -= learning_rate * grad_context;\n            }\n            \n            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                \n                double neg_score = 0.0;\n                for (int d = 0; d < embedding_dim; d++) {\n                    neg_score += embeddings[center_word * embedding_dim + d] *",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 10,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "\nvoid negativeSampling(int* context, int* targets, int* negatives,\n                     double* embeddings, double* context_embeddings,\n                     int batch_size, int window_size, int embedding_dim,\n                     int n_negatives, double learning_rate) {\n    for (int b = 0; b < batch_size; b++) {\n        int center_word = context[b];\n        \n        for (int w = -window_size; w <= window_size; w++) {\n            if (w == 0) continue;\n            \n            int target_word = targets[b * (2*window_size) + (w + window_size)];\n            \n            // Positive sample\n            double pos_score = 0.0;\n            for (int d = 0; d < embedding_dim; d++) {\n                pos_score += embeddings[center_word * embedding_dim + d] *\n                            context_embeddings[target_word * embedding_dim + d];\n            }\n            double pos_sigmoid = 1.0 / (1.0 + exp(-pos_score));\n            double pos_grad = pos_sigmoid - 1.0;\n            \n            // Update embeddings for positive sample\n            for (int d = 0; d < embedding_dim; d++) {\n                double grad_emb = pos_grad * context_embeddings[target_word * embedding_dim + d];\n                double grad_context = pos_grad * embeddings[center_word * embedding_dim + d];\n                \n                embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                context_embeddings[target_word * embedding_dim + d] -= learning_rate * grad_context;\n            }\n            \n            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 14,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                     int n_negatives, double learning_rate) {\n    for (int b = 0; b < batch_size; b++) {\n        int center_word = context[b];\n        \n        for (int w = -window_size; w <= window_size; w++) {\n            if (w == 0) continue;\n            \n            int target_word = targets[b * (2*window_size) + (w + window_size)];\n            \n            // Positive sample\n            double pos_score = 0.0;\n            for (int d = 0; d < embedding_dim; d++) {\n                pos_score += embeddings[center_word * embedding_dim + d] *\n                            context_embeddings[target_word * embedding_dim + d];\n            }\n            double pos_sigmoid = 1.0 / (1.0 + exp(-pos_score));\n            double pos_grad = pos_sigmoid - 1.0;\n            \n            // Update embeddings for positive sample\n            for (int d = 0; d < embedding_dim; d++) {\n                double grad_emb = pos_grad * context_embeddings[target_word * embedding_dim + d];\n                double grad_context = pos_grad * embeddings[center_word * embedding_dim + d];\n                \n                embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                context_embeddings[target_word * embedding_dim + d] -= learning_rate * grad_context;\n            }\n            \n            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                \n                double neg_score = 0.0;\n                for (int d = 0; d < embedding_dim; d++) {\n                    neg_score += embeddings[center_word * embedding_dim + d] *\n                                context_embeddings[neg_word * embedding_dim + d];",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 37,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                context_embeddings[target_word * embedding_dim + d] -= learning_rate * grad_context;\n            }\n            \n            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                \n                double neg_score = 0.0;\n                for (int d = 0; d < embedding_dim; d++) {\n                    neg_score += embeddings[center_word * embedding_dim + d] *\n                                context_embeddings[neg_word * embedding_dim + d];\n                }\n                double neg_sigmoid = 1.0 / (1.0 + exp(-neg_score));\n                double neg_grad = neg_sigmoid;\n                \n                // Update embeddings for negative sample\n                for (int d = 0; d < embedding_dim; d++) {\n                    double grad_emb = neg_grad * context_embeddings[neg_word * embedding_dim + d];\n                    double grad_context = neg_grad * embeddings[center_word * embedding_dim + d];\n                    \n                    embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                    context_embeddings[neg_word * embedding_dim + d] -= learning_rate * grad_context;\n                }\n            }\n        }\n    }\n}\n\nvoid computeWordSimilarity(double* embeddings, int vocab_size, int embedding_dim,\n                          int word1, int word2, double& similarity) {\n    double dot_product = 0.0;\n    double norm1 = 0.0, norm2 = 0.0;\n    \n    for (int d = 0; d < embedding_dim; d++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 37,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                context_embeddings[target_word * embedding_dim + d] -= learning_rate * grad_context;\n            }\n            \n            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                \n                double neg_score = 0.0;\n                for (int d = 0; d < embedding_dim; d++) {\n                    neg_score += embeddings[center_word * embedding_dim + d] *\n                                context_embeddings[neg_word * embedding_dim + d];\n                }\n                double neg_sigmoid = 1.0 / (1.0 + exp(-neg_score));\n                double neg_grad = neg_sigmoid;\n                \n                // Update embeddings for negative sample\n                for (int d = 0; d < embedding_dim; d++) {\n                    double grad_emb = neg_grad * context_embeddings[neg_word * embedding_dim + d];\n                    double grad_context = neg_grad * embeddings[center_word * embedding_dim + d];\n                    \n                    embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                    context_embeddings[neg_word * embedding_dim + d] -= learning_rate * grad_context;\n                }\n            }\n        }\n    }\n}\n\nvoid computeWordSimilarity(double* embeddings, int vocab_size, int embedding_dim,\n                          int word1, int word2, double& similarity) {\n    double dot_product = 0.0;\n    double norm1 = 0.0, norm2 = 0.0;\n    \n    for (int d = 0; d < embedding_dim; d++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z16negativeSamplingPiS_S_PdS0_iiiid",
+      "line": 13,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "                     int batch_size, int window_size, int embedding_dim,\n                     int n_negatives, double learning_rate) {\n    for (int b = 0; b < batch_size; b++) {\n        int center_word = context[b];\n        \n        for (int w = -window_size; w <= window_size; w++) {\n            if (w == 0) continue;\n            \n            int target_word = targets[b * (2*window_size) + (w + window_size)];\n            \n            // Positive sample\n            double pos_score = 0.0;\n            for (int d = 0; d < embedding_dim; d++) {\n                pos_score += embeddings[center_word * embedding_dim + d] *\n                            context_embeddings[target_word * embedding_dim + d];\n            }\n            double pos_sigmoid = 1.0 / (1.0 + exp(-pos_score));\n            double pos_grad = pos_sigmoid - 1.0;\n            \n            // Update embeddings for positive sample\n            for (int d = 0; d < embedding_dim; d++) {\n                double grad_emb = pos_grad * context_embeddings[target_word * embedding_dim + d];\n                double grad_context = pos_grad * embeddings[center_word * embedding_dim + d];\n                \n                embeddings[center_word * embedding_dim + d] -= learning_rate * grad_emb;\n                context_embeddings[target_word * embedding_dim + d] -= learning_rate * grad_context;\n            }\n            \n            // Negative samples\n            for (int n = 0; n < n_negatives; n++) {\n                int neg_word = negatives[b * n_negatives + n];\n                \n                double neg_score = 0.0;\n                for (int d = 0; d < embedding_dim; d++) {\n                    neg_score += embeddings[center_word * embedding_dim + d] *",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/ml-ai/word2vec_skipgram.cpp",
+      "function": "_Z21computeWordSimilarityPdiiiiRd",
+      "line": 66,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "void computeWordSimilarity(double* embeddings, int vocab_size, int embedding_dim,\n                          int word1, int word2, double& similarity) {\n    double dot_product = 0.0;\n    double norm1 = 0.0, norm2 = 0.0;\n    \n    for (int d = 0; d < embedding_dim; d++) {\n        double e1 = embeddings[word1 * embedding_dim + d];\n        double e2 = embeddings[word2 * embedding_dim + d];\n        \n        dot_product += e1 * e2;\n        norm1 += e1 * e1;\n        norm2 += e2 * e2;\n    }\n    \n    similarity = dot_product / (sqrt(norm1) * sqrt(norm2));\n}\n\nint main() {\n    const int vocab_size = 50000, embedding_dim = 300, batch_size = 512;\n    const int window_size = 5, n_negatives = 5;\n    \n    std::vector<double> embeddings(vocab_size * embedding_dim, 0.01);\n    std::vector<double> context_embeddings(vocab_size * embedding_dim, 0.01);\n    std::vector<int> context(batch_size);\n    std::vector<int> targets(batch_size * 2 * window_size);\n    std::vector<int> negatives(batch_size * n_negatives);\n    \n    std::mt19937 rng(42);\n    std::uniform_int_distribution<> dist(0, vocab_size-1);\n    for (int i = 0; i < batch_size; i++) {\n        context[i] = dist(rng);\n        for (int j = 0; j < 2*window_size; j++) {\n            targets[i * 2*window_size + j] = dist(rng);\n        }\n        for (int j = 0; j < n_negatives; j++) {",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    }
+  ]
+}

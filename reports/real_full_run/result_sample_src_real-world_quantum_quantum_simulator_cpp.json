@@ -1,0 +1,596 @@
+{
+  "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+  "phase_stats": {
+    "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+    "llvm_initial": 43,
+    "llvm_sys_noise": 30,
+    "llvm_project": 13,
+    "after_filter": 10,
+    "ai_batches": 1,
+    "ai_results": 10,
+    "omp_verified": 0,
+    "total_ms": 884.7,
+    "llvm_ms": 508.5
+  },
+  "llvm_raw": [
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1369,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 1371,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "main",
+      "line": 126,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "main",
+      "line": 131,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.58
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "main",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN16QuantumSimulator14apply_hadamardEi",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator14apply_hadamardEi",
+      "line": 27,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        int dim = 1 << num_qubits;\n        std::vector<Complex> new_state(dim);\n        \n        double inv_sqrt2 = 1.0 / sqrt(2.0);\n        \n        for (int i = 0; i < dim; i++) {\n            int bit = (i >> qubit) & 1;\n            int i0 = i & ~(1 << qubit);  // Set qubit to 0\n            int i1 = i | (1 << qubit);   // Set qubit to 1\n            \n            if (bit == 0) {\n                new_state[i] = inv_sqrt2 * (state_vector[i0] + state_vector[i1]);\n            } else {\n                new_state[i] = inv_sqrt2 * (state_vector[i0] - state_vector[i1]);\n            }\n        }\n        \n        state_vector = new_state;\n    }\n    \n    void apply_cnot(int control, int target) {\n        int dim = 1 << num_qubits;\n        std::vector<Complex> new_state = state_vector;\n        \n        for (int i = 0; i < dim; i++) {\n            int control_bit = (i >> control) & 1;\n            \n            if (control_bit == 1) {\n                int i_flipped = i ^ (1 << target);\n                new_state[i] = state_vector[i_flipped];\n            }\n        }\n        \n        state_vector = new_state;\n    }"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN16QuantumSimulator10apply_cnotEii",
+      "line": 591,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN16QuantumSimulator10apply_cnotEii",
+      "line": 572,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator10apply_cnotEii",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    void apply_cnot(int control, int target) {\n        int dim = 1 << num_qubits;\n        std::vector<Complex> new_state = state_vector;\n        \n        for (int i = 0; i < dim; i++) {\n            int control_bit = (i >> control) & 1;\n            \n            if (control_bit == 1) {\n                int i_flipped = i ^ (1 << target);\n                new_state[i] = state_vector[i_flipped];\n            }\n        }\n        \n        state_vector = new_state;\n    }\n    \n    void apply_phase_gate(int qubit, double theta) {\n        int dim = 1 << num_qubits;\n        Complex phase = std::exp(Complex(0.0, theta));\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= phase;\n            }\n        }\n    }\n    \n    void apply_rotation_y(int qubit, double theta) {\n        int dim = 1 << num_qubits;\n        std::vector<Complex> new_state(dim);\n        \n        double cos_half = cos(theta / 2.0);\n        double sin_half = sin(theta / 2.0);\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator10apply_cnotEii",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        std::vector<Complex> new_state = state_vector;\n        \n        for (int i = 0; i < dim; i++) {\n            int control_bit = (i >> control) & 1;\n            \n            if (control_bit == 1) {\n                int i_flipped = i ^ (1 << target);\n                new_state[i] = state_vector[i_flipped];\n            }\n        }\n        \n        state_vector = new_state;\n    }\n    \n    void apply_phase_gate(int qubit, double theta) {\n        int dim = 1 << num_qubits;\n        Complex phase = std::exp(Complex(0.0, theta));\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= phase;\n            }\n        }\n    }\n    \n    void apply_rotation_y(int qubit, double theta) {\n        int dim = 1 << num_qubits;\n        std::vector<Complex> new_state(dim);\n        \n        double cos_half = cos(theta / 2.0);\n        double sin_half = sin(theta / 2.0);\n        \n        for (int i = 0; i < dim; i++) {\n            int i0 = i & ~(1 << qubit);\n            int i1 = i | (1 << qubit);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator10apply_cnotEii",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    void apply_cnot(int control, int target) {\n        int dim = 1 << num_qubits;\n        std::vector<Complex> new_state = state_vector;\n        \n        for (int i = 0; i < dim; i++) {\n            int control_bit = (i >> control) & 1;\n            \n            if (control_bit == 1) {\n                int i_flipped = i ^ (1 << target);\n                new_state[i] = state_vector[i_flipped];\n            }\n        }\n        \n        state_vector = new_state;\n    }\n    \n    void apply_phase_gate(int qubit, double theta) {\n        int dim = 1 << num_qubits;\n        Complex phase = std::exp(Complex(0.0, theta));\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= phase;\n            }\n        }\n    }\n    \n    void apply_rotation_y(int qubit, double theta) {\n        int dim = 1 << num_qubits;\n        std::vector<Complex> new_state(dim);\n        \n        double cos_half = cos(theta / 2.0);\n        double sin_half = sin(theta / 2.0);\n        "
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN16QuantumSimulator10apply_cnotEii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZN16QuantumSimulator10apply_cnotEii",
+      "line": 250,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator25quantum_fourier_transformEv",
+      "line": 91,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "        \n        state_vector = new_state;\n    }\n    \n    void quantum_fourier_transform() {\n        for (int j = 0; j < num_qubits; j++) {\n            apply_hadamard(j);\n            \n            for (int k = j + 1; k < num_qubits; k++) {\n                double theta = M_PI / (1 << (k - j));\n                // Controlled phase gate\n                int dim = 1 << num_qubits;\n                for (int i = 0; i < dim; i++) {\n                    int control_bit = (i >> k) & 1;\n                    int target_bit = (i >> j) & 1;\n                    \n                    if (control_bit == 1 && target_bit == 1) {\n                        state_vector[i] *= std::exp(Complex(0.0, theta));\n                    }\n                }\n            }\n        }\n    }\n    \n    std::vector<double> measure_all() {\n        int dim = 1 << num_qubits;\n        std::vector<double> probabilities(dim);\n        \n        for (int i = 0; i < dim; i++) {\n            probabilities[i] = std::norm(state_vector[i]);\n        }\n        \n        return probabilities;\n    }\n};"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator25quantum_fourier_transformEv",
+      "line": 91,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "        \n        state_vector = new_state;\n    }\n    \n    void quantum_fourier_transform() {\n        for (int j = 0; j < num_qubits; j++) {\n            apply_hadamard(j);\n            \n            for (int k = j + 1; k < num_qubits; k++) {\n                double theta = M_PI / (1 << (k - j));\n                // Controlled phase gate\n                int dim = 1 << num_qubits;\n                for (int i = 0; i < dim; i++) {\n                    int control_bit = (i >> k) & 1;\n                    int target_bit = (i >> j) & 1;\n                    \n                    if (control_bit == 1 && target_bit == 1) {\n                        state_vector[i] *= std::exp(Complex(0.0, theta));\n                    }\n                }\n            }\n        }\n    }\n    \n    std::vector<double> measure_all() {\n        int dim = 1 << num_qubits;\n        std::vector<double> probabilities(dim);\n        \n        for (int i = 0; i < dim; i++) {\n            probabilities[i] = std::norm(state_vector[i]);\n        }\n        \n        return probabilities;\n    }\n};"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator25quantum_fourier_transformEv",
+      "line": 94,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    \n    void quantum_fourier_transform() {\n        for (int j = 0; j < num_qubits; j++) {\n            apply_hadamard(j);\n            \n            for (int k = j + 1; k < num_qubits; k++) {\n                double theta = M_PI / (1 << (k - j));\n                // Controlled phase gate\n                int dim = 1 << num_qubits;\n                for (int i = 0; i < dim; i++) {\n                    int control_bit = (i >> k) & 1;\n                    int target_bit = (i >> j) & 1;\n                    \n                    if (control_bit == 1 && target_bit == 1) {\n                        state_vector[i] *= std::exp(Complex(0.0, theta));\n                    }\n                }\n            }\n        }\n    }\n    \n    std::vector<double> measure_all() {\n        int dim = 1 << num_qubits;\n        std::vector<double> probabilities(dim);\n        \n        for (int i = 0; i < dim; i++) {\n            probabilities[i] = std::norm(state_vector[i]);\n        }\n        \n        return probabilities;\n    }\n};\n\nint main() {\n    QuantumSimulator sim(15);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator25quantum_fourier_transformEv",
+      "line": 98,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "            \n            for (int k = j + 1; k < num_qubits; k++) {\n                double theta = M_PI / (1 << (k - j));\n                // Controlled phase gate\n                int dim = 1 << num_qubits;\n                for (int i = 0; i < dim; i++) {\n                    int control_bit = (i >> k) & 1;\n                    int target_bit = (i >> j) & 1;\n                    \n                    if (control_bit == 1 && target_bit == 1) {\n                        state_vector[i] *= std::exp(Complex(0.0, theta));\n                    }\n                }\n            }\n        }\n    }\n    \n    std::vector<double> measure_all() {\n        int dim = 1 << num_qubits;\n        std::vector<double> probabilities(dim);\n        \n        for (int i = 0; i < dim; i++) {\n            probabilities[i] = std::norm(state_vector[i]);\n        }\n        \n        return probabilities;\n    }\n};\n\nint main() {\n    QuantumSimulator sim(15);\n    \n    // Create superposition\n    for (int i = 0; i < 15; i++) {\n        sim.apply_hadamard(i);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator25quantum_fourier_transformEv",
+      "line": 94,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "    \n    void quantum_fourier_transform() {\n        for (int j = 0; j < num_qubits; j++) {\n            apply_hadamard(j);\n            \n            for (int k = j + 1; k < num_qubits; k++) {\n                double theta = M_PI / (1 << (k - j));\n                // Controlled phase gate\n                int dim = 1 << num_qubits;\n                for (int i = 0; i < dim; i++) {\n                    int control_bit = (i >> k) & 1;\n                    int target_bit = (i >> j) & 1;\n                    \n                    if (control_bit == 1 && target_bit == 1) {\n                        state_vector[i] *= std::exp(Complex(0.0, theta));\n                    }\n                }\n            }\n        }\n    }\n    \n    std::vector<double> measure_all() {\n        int dim = 1 << num_qubits;\n        std::vector<double> probabilities(dim);\n        \n        for (int i = 0; i < dim; i++) {\n            probabilities[i] = std::norm(state_vector[i]);\n        }\n        \n        return probabilities;\n    }\n};\n\nint main() {\n    QuantumSimulator sim(15);"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator25quantum_fourier_transformEv",
+      "line": 102,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.48
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN16QuantumSimulator25quantum_fourier_transformEv",
+      "line": 785,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/complex",
+      "function": "_ZN16QuantumSimulator25quantum_fourier_transformEv",
+      "line": 785,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator25quantum_fourier_transformEv",
+      "line": 98,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "            \n            for (int k = j + 1; k < num_qubits; k++) {\n                double theta = M_PI / (1 << (k - j));\n                // Controlled phase gate\n                int dim = 1 << num_qubits;\n                for (int i = 0; i < dim; i++) {\n                    int control_bit = (i >> k) & 1;\n                    int target_bit = (i >> j) & 1;\n                    \n                    if (control_bit == 1 && target_bit == 1) {\n                        state_vector[i] *= std::exp(Complex(0.0, theta));\n                    }\n                }\n            }\n        }\n    }\n    \n    std::vector<double> measure_all() {\n        int dim = 1 << num_qubits;\n        std::vector<double> probabilities(dim);\n        \n        for (int i = 0; i < dim; i++) {\n            probabilities[i] = std::norm(state_vector[i]);\n        }\n        \n        return probabilities;\n    }\n};\n\nint main() {\n    QuantumSimulator sim(15);\n    \n    // Create superposition\n    for (int i = 0; i < 15; i++) {\n        sim.apply_hadamard(i);"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 969,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 935,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 935,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 327,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__memory/allocator.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 100,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 257,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__split_buffer",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE8__appendEmRKS2_",
+      "line": 341,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE18__assign_with_sizeB8ne210101IPS2_S7_EEvT_T0_l",
+      "line": 1058,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "vectorizable",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE18__assign_with_sizeB8ne210101IPS2_S7_EEvT_T0_l",
+      "line": 1059,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "embarrassingly_parallel",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE18__assign_with_sizeB8ne210101IPS2_S7_EEvT_T0_l",
+      "line": 228,
+      "reason": "Array access with simple indexing detected",
+      "suggested_patch": "#pragma omp parallel for"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE18__assign_with_sizeB8ne210101IPS2_S7_EEvT_T0_l",
+      "line": 228,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE18__assign_with_sizeB8ne210101IPS2_S7_EEvT_T0_l",
+      "line": 228,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE18__assign_with_sizeB8ne210101IPS2_S7_EEvT_T0_l",
+      "line": 889,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE18__assign_with_sizeB8ne210101IPS2_S7_EEvT_T0_l",
+      "line": 902,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__vector/vector.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE18__assign_with_sizeB8ne210101IPS2_S7_EEvT_T0_l",
+      "line": 572,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    },
+    {
+      "candidate_type": "risky",
+      "file": "/opt/homebrew/Cellar/llvm/21.1.1/bin/../include/c++/v1/__string/constexpr_c_functions.h",
+      "function": "_ZNSt3__16vectorINS_7complexIdEENS_9allocatorIS2_EEE18__assign_with_sizeB8ne210101IPS2_S7_EEvT_T0_l",
+      "line": 228,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)"
+    }
+  ],
+  "final_results": [
+    {
+      "candidate_type": "vectorizable",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator14apply_hadamardEi",
+      "line": 27,
+      "reason": "Array access with arithmetic operations - good for SIMD",
+      "suggested_patch": "#pragma omp simd\n#pragma omp parallel for",
+      "confidence_score": 1.0,
+      "context": "        int dim = 1 << num_qubits;\n        std::vector<Complex> new_state(dim);\n        \n        double inv_sqrt2 = 1.0 / sqrt(2.0);\n        \n        for (int i = 0; i < dim; i++) {\n            int bit = (i >> qubit) & 1;\n            int i0 = i & ~(1 << qubit);  // Set qubit to 0\n            int i1 = i | (1 << qubit);   // Set qubit to 1\n            \n            if (bit == 0) {\n                new_state[i] = inv_sqrt2 * (state_vector[i0] + state_vector[i1]);\n            } else {\n                new_state[i] = inv_sqrt2 * (state_vector[i0] - state_vector[i1]);\n            }\n        }\n        \n        state_vector = new_state;\n    }\n    \n    void apply_cnot(int control, int target) {\n        int dim = 1 << num_qubits;\n        std::vector<Complex> new_state = state_vector;\n        \n        for (int i = 0; i < dim; i++) {\n            int control_bit = (i >> control) & 1;\n            \n            if (control_bit == 1) {\n                int i_flipped = i ^ (1 << target);\n                new_state[i] = state_vector[i_flipped];\n            }\n        }\n        \n        state_vector = new_state;\n    }",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "vectorizable",
+      "llvm_confidence": 1.0
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator10apply_cnotEii",
+      "line": 49,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.7300000000000001,
+      "context": "        std::vector<Complex> new_state = state_vector;\n        \n        for (int i = 0; i < dim; i++) {\n            int control_bit = (i >> control) & 1;\n            \n            if (control_bit == 1) {\n                int i_flipped = i ^ (1 << target);\n                new_state[i] = state_vector[i_flipped];\n            }\n        }\n        \n        state_vector = new_state;\n    }\n    \n    void apply_phase_gate(int qubit, double theta) {\n        int dim = 1 << num_qubits;\n        Complex phase = std::exp(Complex(0.0, theta));\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= phase;\n            }\n        }\n    }\n    \n    void apply_rotation_y(int qubit, double theta) {\n        int dim = 1 << num_qubits;\n        std::vector<Complex> new_state(dim);\n        \n        double cos_half = cos(theta / 2.0);\n        double sin_half = sin(theta / 2.0);\n        \n        for (int i = 0; i < dim; i++) {\n            int i0 = i & ~(1 << qubit);\n            int i1 = i | (1 << qubit);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.7300000000000001
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator25quantum_fourier_transformEv",
+      "line": 91,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "        \n        state_vector = new_state;\n    }\n    \n    void quantum_fourier_transform() {\n        for (int j = 0; j < num_qubits; j++) {\n            apply_hadamard(j);\n            \n            for (int k = j + 1; k < num_qubits; k++) {\n                double theta = M_PI / (1 << (k - j));\n                // Controlled phase gate\n                int dim = 1 << num_qubits;\n                for (int i = 0; i < dim; i++) {\n                    int control_bit = (i >> k) & 1;\n                    int target_bit = (i >> j) & 1;\n                    \n                    if (control_bit == 1 && target_bit == 1) {\n                        state_vector[i] *= std::exp(Complex(0.0, theta));\n                    }\n                }\n            }\n        }\n    }\n    \n    std::vector<double> measure_all() {\n        int dim = 1 << num_qubits;\n        std::vector<double> probabilities(dim);\n        \n        for (int i = 0; i < dim; i++) {\n            probabilities[i] = std::norm(state_vector[i]);\n        }\n        \n        return probabilities;\n    }\n};",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator25quantum_fourier_transformEv",
+      "line": 91,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "        \n        state_vector = new_state;\n    }\n    \n    void quantum_fourier_transform() {\n        for (int j = 0; j < num_qubits; j++) {\n            apply_hadamard(j);\n            \n            for (int k = j + 1; k < num_qubits; k++) {\n                double theta = M_PI / (1 << (k - j));\n                // Controlled phase gate\n                int dim = 1 << num_qubits;\n                for (int i = 0; i < dim; i++) {\n                    int control_bit = (i >> k) & 1;\n                    int target_bit = (i >> j) & 1;\n                    \n                    if (control_bit == 1 && target_bit == 1) {\n                        state_vector[i] *= std::exp(Complex(0.0, theta));\n                    }\n                }\n            }\n        }\n    }\n    \n    std::vector<double> measure_all() {\n        int dim = 1 << num_qubits;\n        std::vector<double> probabilities(dim);\n        \n        for (int i = 0; i < dim; i++) {\n            probabilities[i] = std::norm(state_vector[i]);\n        }\n        \n        return probabilities;\n    }\n};",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator25quantum_fourier_transformEv",
+      "line": 98,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "            \n            for (int k = j + 1; k < num_qubits; k++) {\n                double theta = M_PI / (1 << (k - j));\n                // Controlled phase gate\n                int dim = 1 << num_qubits;\n                for (int i = 0; i < dim; i++) {\n                    int control_bit = (i >> k) & 1;\n                    int target_bit = (i >> j) & 1;\n                    \n                    if (control_bit == 1 && target_bit == 1) {\n                        state_vector[i] *= std::exp(Complex(0.0, theta));\n                    }\n                }\n            }\n        }\n    }\n    \n    std::vector<double> measure_all() {\n        int dim = 1 << num_qubits;\n        std::vector<double> probabilities(dim);\n        \n        for (int i = 0; i < dim; i++) {\n            probabilities[i] = std::norm(state_vector[i]);\n        }\n        \n        return probabilities;\n    }\n};\n\nint main() {\n    QuantumSimulator sim(15);\n    \n    // Create superposition\n    for (int i = 0; i < 15; i++) {\n        sim.apply_hadamard(i);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator25quantum_fourier_transformEv",
+      "line": 94,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "    \n    void quantum_fourier_transform() {\n        for (int j = 0; j < num_qubits; j++) {\n            apply_hadamard(j);\n            \n            for (int k = j + 1; k < num_qubits; k++) {\n                double theta = M_PI / (1 << (k - j));\n                // Controlled phase gate\n                int dim = 1 << num_qubits;\n                for (int i = 0; i < dim; i++) {\n                    int control_bit = (i >> k) & 1;\n                    int target_bit = (i >> j) & 1;\n                    \n                    if (control_bit == 1 && target_bit == 1) {\n                        state_vector[i] *= std::exp(Complex(0.0, theta));\n                    }\n                }\n            }\n        }\n    }\n    \n    std::vector<double> measure_all() {\n        int dim = 1 << num_qubits;\n        std::vector<double> probabilities(dim);\n        \n        for (int i = 0; i < dim; i++) {\n            probabilities[i] = std::norm(state_vector[i]);\n        }\n        \n        return probabilities;\n    }\n};\n\nint main() {\n    QuantumSimulator sim(15);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator25quantum_fourier_transformEv",
+      "line": 98,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.68,
+      "context": "            \n            for (int k = j + 1; k < num_qubits; k++) {\n                double theta = M_PI / (1 << (k - j));\n                // Controlled phase gate\n                int dim = 1 << num_qubits;\n                for (int i = 0; i < dim; i++) {\n                    int control_bit = (i >> k) & 1;\n                    int target_bit = (i >> j) & 1;\n                    \n                    if (control_bit == 1 && target_bit == 1) {\n                        state_vector[i] *= std::exp(Complex(0.0, theta));\n                    }\n                }\n            }\n        }\n    }\n    \n    std::vector<double> measure_all() {\n        int dim = 1 << num_qubits;\n        std::vector<double> probabilities(dim);\n        \n        for (int i = 0; i < dim; i++) {\n            probabilities[i] = std::norm(state_vector[i]);\n        }\n        \n        return probabilities;\n    }\n};\n\nint main() {\n    QuantumSimulator sim(15);\n    \n    // Create superposition\n    for (int i = 0; i < 15; i++) {\n        sim.apply_hadamard(i);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.68
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator10apply_cnotEii",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    void apply_cnot(int control, int target) {\n        int dim = 1 << num_qubits;\n        std::vector<Complex> new_state = state_vector;\n        \n        for (int i = 0; i < dim; i++) {\n            int control_bit = (i >> control) & 1;\n            \n            if (control_bit == 1) {\n                int i_flipped = i ^ (1 << target);\n                new_state[i] = state_vector[i_flipped];\n            }\n        }\n        \n        state_vector = new_state;\n    }\n    \n    void apply_phase_gate(int qubit, double theta) {\n        int dim = 1 << num_qubits;\n        Complex phase = std::exp(Complex(0.0, theta));\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= phase;\n            }\n        }\n    }\n    \n    void apply_rotation_y(int qubit, double theta) {\n        int dim = 1 << num_qubits;\n        std::vector<Complex> new_state(dim);\n        \n        double cos_half = cos(theta / 2.0);\n        double sin_half = sin(theta / 2.0);\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "simple_loop",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator10apply_cnotEii",
+      "line": 46,
+      "reason": "Found conditional branch that may be a loop",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.63,
+      "context": "    \n    void apply_cnot(int control, int target) {\n        int dim = 1 << num_qubits;\n        std::vector<Complex> new_state = state_vector;\n        \n        for (int i = 0; i < dim; i++) {\n            int control_bit = (i >> control) & 1;\n            \n            if (control_bit == 1) {\n                int i_flipped = i ^ (1 << target);\n                new_state[i] = state_vector[i_flipped];\n            }\n        }\n        \n        state_vector = new_state;\n    }\n    \n    void apply_phase_gate(int qubit, double theta) {\n        int dim = 1 << num_qubits;\n        Complex phase = std::exp(Complex(0.0, theta));\n        \n        for (int i = 0; i < dim; i++) {\n            if ((i >> qubit) & 1) {\n                state_vector[i] *= phase;\n            }\n        }\n    }\n    \n    void apply_rotation_y(int qubit, double theta) {\n        int dim = 1 << num_qubits;\n        std::vector<Complex> new_state(dim);\n        \n        double cos_half = cos(theta / 2.0);\n        double sin_half = sin(theta / 2.0);\n        ",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "simple_loop",
+      "llvm_confidence": 0.63
+    },
+    {
+      "candidate_type": "risky",
+      "file": "sample/src/real-world/quantum/quantum_simulator.cpp",
+      "function": "_ZN16QuantumSimulator25quantum_fourier_transformEv",
+      "line": 94,
+      "reason": "Function calls or complex operations detected",
+      "suggested_patch": "#pragma omp parallel for\nfor(/* existing loop header */)",
+      "confidence_score": 0.6,
+      "context": "    \n    void quantum_fourier_transform() {\n        for (int j = 0; j < num_qubits; j++) {\n            apply_hadamard(j);\n            \n            for (int k = j + 1; k < num_qubits; k++) {\n                double theta = M_PI / (1 << (k - j));\n                // Controlled phase gate\n                int dim = 1 << num_qubits;\n                for (int i = 0; i < dim; i++) {\n                    int control_bit = (i >> k) & 1;\n                    int target_bit = (i >> j) & 1;\n                    \n                    if (control_bit == 1 && target_bit == 1) {\n                        state_vector[i] *= std::exp(Complex(0.0, theta));\n                    }\n                }\n            }\n        }\n    }\n    \n    std::vector<double> measure_all() {\n        int dim = 1 << num_qubits;\n        std::vector<double> probabilities(dim);\n        \n        for (int i = 0; i < dim; i++) {\n            probabilities[i] = std::norm(state_vector[i]);\n        }\n        \n        return probabilities;\n    }\n};\n\nint main() {\n    QuantumSimulator sim(15);",
+      "classification": "requires_runtime_check",
+      "reasoning": "AI analysis not available",
+      "confidence": 0.5,
+      "transformations": [],
+      "tests_recommended": [
+        "Manual verification required"
+      ],
+      "logic_issue_type": "none",
+      "analysis_source": "fallback",
+      "llvm_candidate_type": "risky",
+      "llvm_confidence": 0.6
+    }
+  ]
+}
