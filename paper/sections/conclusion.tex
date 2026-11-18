@@ -1,0 +1,13 @@
+% =======================================================
+% 9. CONCLUSION
+% =======================================================
+\section{Conclusion}
+\label{sec:conclusion}
+This study re-evaluated LLM-assisted loop parallelization with execution-validated ground truth. A sound LLVM~21 analysis decided serial loops reliably but proved only \fsStaticRec{} of the parallel loops of HF-LoopBench. Open-weight LLMs used alone found most of the remaining parallelism yet issued unsafe directives for up to \evAITwentyFP{} of \nEvalLoops{} loops, mainly by ignoring how a function is called. Gating the model behind the compiler's three-valued verdict, a static veto and a call-site alias guard, and querying it only for the loops the compiler cannot decide, yielded F1 \evHCTwentyFone{} with no unsafe directive on the evaluation set, \fhTwentyFone{} with \fhTwentyFP{} unsafe directives on all \nBenchLoops{} loops, and F1 \xHTwentyFone{} on loop shapes written after the study was frozen, at a token cost \projSaveTwenty{} below that of LLM-only classification. The central design decisions---a veto the model cannot override, a threshold calibrated on held-out data, exact rather than similarity-based caching, and execution-based validation of every proposed directive---are what make the approach usable in a modernization pipeline.
+
+\section*{Data and code availability}
+\label{sec:artifact}
+The implementation (LLVM plugin, Python driver), HF-LoopBench and HF-LoopBench-X with their generator and oracle, all raw results (oracle runs, static records, compiler-baseline output, the complete LLM request/response logs, timings) and the scripts that regenerate every table, figure and number of this article are available at \url{https://github.com/hoangtrietdev/llvm-analyze} (directory \Code{hybridflow/}). \Code{python3 run\_all.py analyze} recomputes all results from the logged data without contacting any API.
+
+\section*{Acknowledgment}
+\textit{Declaration of generative AI use:} The evaluated method uses the GPT-OSS-120B, GPT-OSS-20B and Qwen3.8-27B models via the Groq API. During the preparation of this work the authors used AI assistants (GitHub Copilot, Claude, Gemini) for code completion, debugging and editing of the manuscript. The authors reviewed and verified all code, data and text and take full responsibility for the content of the publication.

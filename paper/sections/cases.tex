@@ -1,0 +1,63 @@
+% =======================================================
+% 7. CASE STUDIES
+% =======================================================
+\section{Case Studies}
+\label{sec:cases}
+The following cases are taken verbatim from the benchmarks; verdicts, confidences and explanations are quoted from the pass output and the request log.
+
+\subsection{Case 1: 3-D stencil (affine but flattened access)}
+\begin{lstlisting}[style=customc, caption={7-point Jacobi relaxation (\Code{st\_jacobi3d}, HF-LoopBench).}, label={lst:jacobi}]
+for (int i = 1; i < n - 1; i++)
+  for (int j = 1; j < n - 1; j++)
+    for (int k = 1; k < n - 1; k++) {
+      int c = (i * n + j) * n + k;
+      un[c] = (u[c - n*n] + u[c + n*n] + u[c - n] + u[c + n]
+               + u[c - 1] + u[c + 1]) / 6;
+    }
+\end{lstlisting}
+\begin{itemize}
+    \item \textit{LLVM analysis:} \textsc{Unknown} at all three levels, even for file-scope arrays: ``possible loop-carried output dependence (direction not resolved)''. The subscript \Code{c} is a linearized 3-D index, and DependenceAnalysis does not delinearize it, so it cannot show that different \Code{i} write different elements of \Code{un}. GCC rejects the nest as well; Polly, which reasons on the whole nest, accepts it.
+    \item \textit{AI analysis:} GPT-OSS-20B and GPT-OSS-120B both answer ``parallel'' with \Code{collapse(3)} (confidence 0.98 and 0.96 with prompt P2), explaining that the stencil ``reads from a separate input array and writes to a distinct output array''.
+    \item \textit{Hybrid verdict:} With GPT-OSS-20B ($\tau^*=\tauStarTwenty$) the directive is emitted; the oracle confirms it under all 12 configurations. With GPT-OSS-120B the compiler facts lower the model's confidence below its calibrated $\tau^*=\tauStarOneTwenty$ for the file-scope variant, and the loop is conservatively kept serial---a missed opportunity, not an error.
+\end{itemize}
+
+\subsection{Case 2: histogram (indirect access, legal only as an array reduction)}
+\label{sec:case-hist}
+\begin{lstlisting}[style=customc, caption={Grey-level histogram (\Code{im\_histogram}).}]
+for (int i = 0; i < n; i++)
+    hist[px[i]]++;
+\end{lstlisting}
+\begin{itemize}
+    \item \textit{LLVM analysis:} \textsc{Unknown} (possible anti and output dependences through the indirect subscript); no tool proves anything here.
+    \item \textit{AI analysis:} Both models answer ``serial'' with confidence 0.97--0.99 (``histogram bin increments create write-after-write races'').
+    \item \textit{Hybrid verdict:} Serial, and therefore a missed opportunity: \Code{reduction(+:hist[:256])} makes the loop legal without touching its body, which the oracle verified. Our preliminary version described this pattern as rescued by the model through an \Code{atomic} directive; under the directive-only definition an atomic is a body modification, and in our data no model proposed the array-section reduction. Array reductions are the one parallel class that no method accepts (Table~\ref{tab:classes}).
+\end{itemize}
+
+\subsection{Case 3: failure mode of the LLM---the loop is fine, the call is not}
+\begin{lstlisting}[style=customc, caption={An axpy kernel and the call that makes it serial (\Code{la\_axpy}, variant Q).}]
+void la_axpy_dQ(double *y, const double *x, double alpha, int n) {
+    for (int i = 0; i < n; i++)
+        y[i] = alpha * x[i] + y[i];
+}
+...
+la_axpy_dQ(lb + 1, lb, 1.5, 16384);   /* y overlaps x shifted by one */
+\end{lstlisting}
+\begin{itemize}
+    \item \textit{LLVM analysis:} \textsc{Unknown} inside the callee (``dependence test inconclusive (may-alias)''); the call-site pass reports that \Code{y} and \Code{x} are derived from the same object.
+    \item \textit{AI analysis:} Although the call is printed in the prompt, GPT-OSS-120B answers ``parallel'' with confidence 0.99 (``independent elementwise updates, no dependencies''), and so does GPT-OSS-20B, also with the compiler facts. This is the dominant hallucination in our data: \nAIFPQ{} of the \evAITwentyFP{} unsafe answers of GPT-OSS-20B are of this kind, and no threshold removes them because they are among the most confident answers.
+    \item \textit{Hybrid verdict:} Vetoed by the call-site guard before the model is consulted. Without the guard, the hybrid would have emitted a race.
+\end{itemize}
+
+\subsection{Case 4: failure mode of the compiler---a soundness bug found by new loop shapes}
+\begin{lstlisting}[style=customc, caption={Gather along a linked list stored as a successor array (\Code{x\_list\_walk}, HF-LoopBench-X).}]
+int p = 0;
+for (int k = 0; k < n; k++) {
+    out[k] = val[p];
+    p = nxt[p];
+}
+\end{lstlisting}
+\begin{itemize}
+    \item \textit{LLVM analysis (before the fix):} \textsc{Parallel} for the file-scope and \Code{restrict} variants. The latch value of the $\phi$-node of \Code{p} is a load from \Code{nxt}, which the loop never writes, and the pass treated such forwarded loads as benign.
+    \item \textit{Execution oracle:} naive parallelization produces wrong output, so the label is confirmed serial.
+    \item \textit{Resolution:} The load address depends on \Code{p} itself; the corrected rule (Algorithm~\ref{alg:static}, line~7) classifies the loop as a scalar recurrence, i.e.\ \textsc{Serial}. The case shows that a ``sound'' static stage is only as sound as its implementation, and that an execution-validated benchmark with deliberately unusual loop shapes is an effective way to test it.
+\end{itemize}

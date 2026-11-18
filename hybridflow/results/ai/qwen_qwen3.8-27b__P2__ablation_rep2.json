@@ -1,0 +1,1109 @@
+{
+ "meta": {
+  "model": "qwen/qwen3.8-27b",
+  "variant": "P2",
+  "set": "ablation@2",
+  "batch": 8,
+  "params": {
+   "temperature": 0,
+   "reasoning_effort": "none",
+   "max_completion_tokens": 4000,
+   "seed": 7
+  }
+ },
+ "usage": {
+  "requests": 15,
+  "prompt_tokens": 29485,
+  "completion_tokens": 5604,
+  "reasoning_tokens": 0,
+  "cached_tokens": 0,
+  "latency_s": 35.242,
+  "replayed": 11,
+  "parse_failures": 0,
+  "loops_requested": 120,
+  "budget_exhausted": false,
+  "wall_s": 62.97564077377319
+ },
+ "predictions": {
+  "cl_smooth_inplace_dG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried dependence: reads i-1 and i+1 which are written in previous/next iterations.",
+   "parse_ok": true,
+   "batch": 0,
+   "latency_share_s": 0.527
+  },
+  "la_gemm_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent accumulation per (i,j); no cross-iteration memory dependence.",
+   "parse_ok": true,
+   "batch": 0,
+   "latency_share_s": 0.527
+  },
+  "sp_autocorr_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Each lag computes an independent sum; no loop-carried dependence.",
+   "parse_ok": true,
+   "batch": 0,
+   "latency_share_s": 0.527
+  },
+  "cl_global_mean_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "reduction(+:s,w)",
+   "reason": "Independent accumulation of s and w; requires reduction clause.",
+   "parse_ok": true,
+   "batch": 0,
+   "latency_share_s": 0.527
+  },
+  "so_place_stable_iG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Order-dependent writes to out array via pos array; stable sort requires sequential order.",
+   "parse_ok": true,
+   "batch": 0,
+   "latency_share_s": 0.527
+  },
+  "la_trsv_lower_dP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried dependence: x[i] depends on x[j] for j < i.",
+   "parse_ok": true,
+   "batch": 0,
+   "latency_share_s": 0.527
+  },
+  "qs_x_gate_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Each k swaps distinct pairs (lo, hi); no overlap between iterations.",
+   "parse_ok": true,
+   "batch": 0,
+   "latency_share_s": 0.527
+  },
+  "la_transpose_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent element-wise copy; no loop-carried dependence.",
+   "parse_ok": true,
+   "batch": 0,
+   "latency_share_s": 0.527
+  },
+  "im_integral_rows_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Each iteration computes an independent row prefix sum; no cross-iteration dependencies.",
+   "parse_ok": true,
+   "batch": 1,
+   "latency_share_s": 0.223875
+  },
+  "nw_ip_checksum_iG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried dependence on scalar 'sum' prevents parallelization.",
+   "parse_ok": true,
+   "batch": 1,
+   "latency_share_s": 0.223875
+  },
+  "gr_rowlen_iG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Each iteration writes to a distinct array element based on independent reads.",
+   "parse_ok": true,
+   "batch": 1,
+   "latency_share_s": 0.223875
+  },
+  "im_integral_cols_dP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried dependence: ii[i*m+j] depends on ii[(i-1)*m+j] from previous iteration.",
+   "parse_ok": true,
+   "batch": 1,
+   "latency_share_s": 0.223875
+  },
+  "sp_preemph_inplace_dG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried dependence: x[i] depends on x[i-1] from previous iteration.",
+   "parse_ok": true,
+   "batch": 1,
+   "latency_share_s": 0.223875
+  },
+  "ml_dropout_hash_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Each iteration computes an independent hash and writes to distinct y[i].",
+   "parse_ok": true,
+   "batch": 1,
+   "latency_share_s": 0.223875
+  },
+  "sp_running_mean_dG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried dependence on scalar 's' prevents parallelization.",
+   "parse_ok": true,
+   "batch": 1,
+   "latency_share_s": 0.223875
+  },
+  "la_symv_upper_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Each iteration computes an independent dot product and writes to distinct y[i].",
+   "parse_ok": true,
+   "batch": 1,
+   "latency_share_s": 0.223875
+  },
+  "md_verlet_pos_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent array updates per index, no loop-carried dependencies.",
+   "parse_ok": true,
+   "batch": 2,
+   "latency_share_s": 0.184625
+  },
+  "bi_profile_counts_iG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Race condition on shared counter array due to concurrent increments.",
+   "parse_ok": true,
+   "batch": 2,
+   "latency_share_s": 0.184625
+  },
+  "cl_saturation_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent element-wise computation, no dependencies between iterations.",
+   "parse_ok": true,
+   "batch": 2,
+   "latency_share_s": 0.184625
+  },
+  "db_bitmap_and_iP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent bitwise operations per index, no dependencies.",
+   "parse_ok": true,
+   "batch": 2,
+   "latency_share_s": 0.184625
+  },
+  "ml_dropout_rand_dG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Order-dependent calls to rand() change results with parallelism.",
+   "parse_ok": true,
+   "batch": 2,
+   "latency_share_s": 0.184625
+  },
+  "db_compact_dG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried dependence on scalar k for output indexing.",
+   "parse_ok": true,
+   "batch": 2,
+   "latency_share_s": 0.184625
+  },
+  "st_heat2d_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "collapse(2)",
+   "reason": "Reads from input array u, writes to distinct locations in un.",
+   "parse_ok": true,
+   "batch": 2,
+   "latency_share_s": 0.184625
+  },
+  "so_linear_search_iP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "While-style loop with early exit condition, not a standard for loop.",
+   "parse_ok": true,
+   "batch": 2,
+   "latency_share_s": 0.184625
+  },
+  "ml_softmax_max_dP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Scalar recurrence on mx prevents parallelization.",
+   "parse_ok": true,
+   "batch": 3,
+   "latency_share_s": 0.143875
+  },
+  "so_count_keys_iG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Race condition on shared histogram array so_count_keys_iG_cnt.",
+   "parse_ok": true,
+   "batch": 3,
+   "latency_share_s": 0.143875
+  },
+  "db_groupby_sum_iP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Race condition on shared aggregation array agg.",
+   "parse_ok": true,
+   "batch": 3,
+   "latency_share_s": 0.143875
+  },
+  "cr_lfsr_iP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Scalar recurrence on state variable s.",
+   "parse_ok": true,
+   "batch": 3,
+   "latency_share_s": 0.143875
+  },
+  "ml_kmeans_accum_dG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Race condition on shared count and sum arrays.",
+   "parse_ok": true,
+   "batch": 3,
+   "latency_share_s": 0.143875
+  },
+  "gr_label_prop_iP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried dependence through label array updates.",
+   "parse_ok": true,
+   "batch": 3,
+   "latency_share_s": 0.143875
+  },
+  "qs_cnot_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent swaps for distinct k and j pairs.",
+   "parse_ok": true,
+   "batch": 3,
+   "latency_share_s": 0.143875
+  },
+  "mi_region_grow_dG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "While loop with dynamic termination and shared queue state.",
+   "parse_ok": true,
+   "batch": 3,
+   "latency_share_s": 0.143875
+  },
+  "pv_half_swap_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent array updates; no loop-carried dependencies.",
+   "parse_ok": true,
+   "batch": 4,
+   "latency_share_s": 0.1355
+  },
+  "md_cell_list_iP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Linked list construction has loop-carried dependencies through head array.",
+   "parse_ok": true,
+   "batch": 4,
+   "latency_share_s": 0.1355
+  },
+  "la_lu_rows_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Row updates are independent; reads from row k are constant.",
+   "parse_ok": true,
+   "batch": 4,
+   "latency_share_s": 0.1355
+  },
+  "bi_hamming_batch_iG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent Hamming distance calculations for each read.",
+   "parse_ok": true,
+   "batch": 4,
+   "latency_share_s": 0.1355
+  },
+  "db_first_match_iG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Early exit with break prevents parallelization.",
+   "parse_ok": true,
+   "batch": 4,
+   "latency_share_s": 0.1355
+  },
+  "cr_cbc_chain_iG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "CBC encryption has loop-carried dependency through prev variable.",
+   "parse_ok": true,
+   "batch": 4,
+   "latency_share_s": 0.1355
+  },
+  "gr_csr_offsets_iG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Prefix sum has loop-carried dependency through rowptr array.",
+   "parse_ok": true,
+   "batch": 4,
+   "latency_share_s": 0.1355
+  },
+  "ml_sgd_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent weight updates for each parameter.",
+   "parse_ok": true,
+   "batch": 4,
+   "latency_share_s": 0.1355
+  },
+  "nw_seq_reorder_iP": {
+   "verdict": "serial",
+   "confidence": 0.95,
+   "clauses": "",
+   "reason": "Loop-carried output dependence: multiple iterations may write to the same slot index.",
+   "parse_ok": true,
+   "batch": 5,
+   "latency_share_s": 0.179
+  },
+  "md_thermostat_chain_dP": {
+   "verdict": "serial",
+   "confidence": 0.99,
+   "clauses": "",
+   "reason": "Scalar recurrence on xi creates a loop-carried flow dependence.",
+   "parse_ok": true,
+   "batch": 5,
+   "latency_share_s": 0.179
+  },
+  "gr_pagerank_pull_dG": {
+   "verdict": "parallel",
+   "confidence": 0.98,
+   "clauses": "",
+   "reason": "Each iteration reads from global arrays and writes to a unique index in rnew.",
+   "parse_ok": true,
+   "batch": 5,
+   "latency_share_s": 0.179
+  },
+  "mi_window_dG": {
+   "verdict": "parallel",
+   "confidence": 0.99,
+   "clauses": "",
+   "reason": "Element-wise operation with no loop-carried dependences.",
+   "parse_ok": true,
+   "batch": 5,
+   "latency_share_s": 0.179
+  },
+  "bi_translate_codons_iP": {
+   "verdict": "parallel",
+   "confidence": 0.99,
+   "clauses": "",
+   "reason": "Each iteration writes to a unique index in aa and reads from distinct code indices.",
+   "parse_ok": true,
+   "batch": 5,
+   "latency_share_s": 0.179
+  },
+  "pv_swap_scratch_dP": {
+   "verdict": "parallel",
+   "confidence": 0.99,
+   "clauses": "",
+   "reason": "Element-wise swap with no loop-carried dependences.",
+   "parse_ok": true,
+   "batch": 5,
+   "latency_share_s": 0.179
+  },
+  "so_bubble_pass_dP": {
+   "verdict": "serial",
+   "confidence": 0.99,
+   "clauses": "",
+   "reason": "Loop-carried flow dependence: a[i+1] is read and written in consecutive iterations.",
+   "parse_ok": true,
+   "batch": 5,
+   "latency_share_s": 0.179
+  },
+  "bi_quality_trim_iG": {
+   "verdict": "serial",
+   "confidence": 0.99,
+   "clauses": "",
+   "reason": "Early exit via break and scalar recurrence on cut.",
+   "parse_ok": true,
+   "batch": 5,
+   "latency_share_s": 0.179
+  },
+  "sp_mix_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent element-wise operations on distinct array indices.",
+   "parse_ok": true,
+   "batch": 6,
+   "latency_share_s": 0.1825
+  },
+  "la_dot_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "reduction(+:s)",
+   "reason": "Associative dot product accumulation suitable for reduction.",
+   "parse_ok": true,
+   "batch": 6,
+   "latency_share_s": 0.1825
+  },
+  "mi_backproject_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Each iteration computes a unique output pixel from read-only input data.",
+   "parse_ok": true,
+   "batch": 6,
+   "latency_share_s": 0.1825
+  },
+  "ge_tri_normals_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent computation of normals for each triangle using distinct indices.",
+   "parse_ok": true,
+   "batch": 6,
+   "latency_share_s": 0.1825
+  },
+  "gr_triangles_iG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "reduction(+:tri)",
+   "reason": "Counting triangles via associative addition over read-only graph structure.",
+   "parse_ok": true,
+   "batch": 6,
+   "latency_share_s": 0.1825
+  },
+  "so_bitonic_step_dP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Bitonic sort step involves data-dependent swaps between array elements.",
+   "parse_ok": true,
+   "batch": 6,
+   "latency_share_s": 0.1825
+  },
+  "sp_moving_avg_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Each output sample is computed independently from a window of input.",
+   "parse_ok": true,
+   "batch": 6,
+   "latency_share_s": 0.1825
+  },
+  "md_forces_allpairs_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Each particle's force is computed independently from read-only positions.",
+   "parse_ok": true,
+   "batch": 6,
+   "latency_share_s": 0.1825
+  },
+  "im_gamma_lut_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent array lookups and writes, no loop-carried dependencies.",
+   "parse_ok": true,
+   "batch": 7,
+   "latency_share_s": 1.664625
+  },
+  "im_sobel_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Each output element depends only on input array, no inter-iteration dependencies.",
+   "parse_ok": true,
+   "batch": 7,
+   "latency_share_s": 1.664625
+  },
+  "db_running_total_dP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried flow dependence: tot[i] depends on tot[i-1].",
+   "parse_ok": true,
+   "batch": 7,
+   "latency_share_s": 1.664625
+  },
+  "so_odd_even_pass_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Even-phase swaps are on disjoint pairs, no overlapping memory access.",
+   "parse_ok": true,
+   "batch": 7,
+   "latency_share_s": 1.664625
+  },
+  "im_dilate_inplace_dP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried flow dependence: img[i] depends on img[i-1].",
+   "parse_ok": true,
+   "batch": 7,
+   "latency_share_s": 1.664625
+  },
+  "cr_ecb_rounds_iP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Each block transform is independent, no shared mutable state.",
+   "parse_ok": true,
+   "batch": 7,
+   "latency_share_s": 1.664625
+  },
+  "ml_conv1d_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Each output element is computed independently from input arrays.",
+   "parse_ok": true,
+   "batch": 7,
+   "latency_share_s": 1.664625
+  },
+  "md_kinetic_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "reduction(+:ke)",
+   "reason": "Accumulator 'ke' is a reduction, no other dependencies.",
+   "parse_ok": true,
+   "batch": 7,
+   "latency_share_s": 1.664625
+  },
+  "ge_transform_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent reads from input array and writes to distinct output array elements.",
+   "parse_ok": true,
+   "batch": 8,
+   "latency_share_s": 0.2085
+  },
+  "gr_degree_count_iP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Non-atomic increment on shared memory locations creates race conditions.",
+   "parse_ok": true,
+   "batch": 8,
+   "latency_share_s": 0.2085
+  },
+  "sp_downsample_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent reads from input array and writes to distinct output array elements.",
+   "parse_ok": true,
+   "batch": 8,
+   "latency_share_s": 0.2085
+  },
+  "pv_wrap_neighbor_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent reads from input array and writes to distinct output array elements.",
+   "parse_ok": true,
+   "batch": 8,
+   "latency_share_s": 0.2085
+  },
+  "md_pbc_wrap_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent in-place updates on distinct array elements.",
+   "parse_ok": true,
+   "batch": 8,
+   "latency_share_s": 0.2085
+  },
+  "st_upwind_inplace_dP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried dependence: u[i] depends on u[i-1] which is updated in previous iteration.",
+   "parse_ok": true,
+   "batch": 8,
+   "latency_share_s": 0.2085
+  },
+  "sp_dft_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Each iteration computes independent sums and writes to distinct output elements.",
+   "parse_ok": true,
+   "batch": 8,
+   "latency_share_s": 0.2085
+  },
+  "sp_zero_cross_dG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Scalar recurrence: cnt is accumulated across iterations, requiring reduction or serial execution.",
+   "parse_ok": true,
+   "batch": 8,
+   "latency_share_s": 0.2085
+  },
+  "fi_mc_shared_rng_dG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried dependence on scalar 'seed' via LCG recurrence.",
+   "parse_ok": true,
+   "batch": 9,
+   "latency_share_s": 0.2
+  },
+  "mi_median3_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Each iteration reads distinct input indices and writes distinct output index.",
+   "parse_ok": true,
+   "batch": 9,
+   "latency_share_s": 0.2
+  },
+  "bi_kmer_rolling_iG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried dependence on scalar 'h' via rolling hash recurrence.",
+   "parse_ok": true,
+   "batch": 9,
+   "latency_share_s": 0.2
+  },
+  "sp_preemph_rev_dG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried anti-dependence: reads x[i-1] which is written in previous iteration.",
+   "parse_ok": true,
+   "batch": 9,
+   "latency_share_s": 0.2
+  },
+  "bi_gc_content_iP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Scalar 'gc' is accumulated across iterations; requires reduction clause not allowed.",
+   "parse_ok": true,
+   "batch": 9,
+   "latency_share_s": 0.2
+  },
+  "ml_kmeans_assign_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Each iteration writes distinct assign[i]; inner loops are independent.",
+   "parse_ok": true,
+   "batch": 9,
+   "latency_share_s": 0.2
+  },
+  "nw_crc32_iG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried dependence on scalar 'crc' via CRC recurrence.",
+   "parse_ok": true,
+   "batch": 9,
+   "latency_share_s": 0.2
+  },
+  "ml_bn_stats_dP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Scalars 's' and 'ss' are accumulated; requires reduction clause not allowed.",
+   "parse_ok": true,
+   "batch": 9,
+   "latency_share_s": 0.2
+  },
+  "gr_bfs_expand_iG": {
+   "verdict": "serial",
+   "confidence": 0.95,
+   "clauses": "",
+   "reason": "Loop-carried dependence on scalar cnt and array next via cnt++.",
+   "parse_ok": true,
+   "batch": 10,
+   "latency_share_s": 0.173625
+  },
+  "cl_vertical_integral_dG": {
+   "verdict": "parallel",
+   "confidence": 0.98,
+   "clauses": "",
+   "reason": "Independent columns; inner loop is a local reduction/scan per column.",
+   "parse_ok": true,
+   "batch": 10,
+   "latency_share_s": 0.173625
+  },
+  "im_flip_inplace_dP": {
+   "verdict": "parallel",
+   "confidence": 0.95,
+   "clauses": "",
+   "reason": "In-place swap of disjoint pairs; no overlap between iterations.",
+   "parse_ok": true,
+   "batch": 10,
+   "latency_share_s": 0.173625
+  },
+  "st_redblack_red_dP": {
+   "verdict": "serial",
+   "confidence": 0.98,
+   "clauses": "",
+   "reason": "Gauss-Seidel updates depend on neighbors updated in same sweep.",
+   "parse_ok": true,
+   "batch": 10,
+   "latency_share_s": 0.173625
+  },
+  "fi_var_hist_dP": {
+   "verdict": "serial",
+   "confidence": 0.95,
+   "clauses": "",
+   "reason": "Race condition on bins[b] due to concurrent increments.",
+   "parse_ok": true,
+   "batch": 10,
+   "latency_share_s": 0.173625
+  },
+  "cr_xor_fold_iP": {
+   "verdict": "serial",
+   "confidence": 0.98,
+   "clauses": "",
+   "reason": "XOR is not associative/commutative in a way that allows simple reduction without order.",
+   "parse_ok": true,
+   "batch": 10,
+   "latency_share_s": 0.173625
+  },
+  "pv_temp_private_dP": {
+   "verdict": "parallel",
+   "confidence": 0.99,
+   "clauses": "",
+   "reason": "Each iteration writes to distinct b[i] using local t.",
+   "parse_ok": true,
+   "batch": 10,
+   "latency_share_s": 0.173625
+  },
+  "qs_norm_dG": {
+   "verdict": "parallel",
+   "confidence": 0.98,
+   "clauses": "reduction(+:p)",
+   "reason": "Summation is associative; can be parallelized with reduction clause.",
+   "parse_ok": true,
+   "batch": 10,
+   "latency_share_s": 0.173625
+  },
+  "la_scale_rows_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent row scaling operations with no loop-carried dependencies.",
+   "parse_ok": true,
+   "batch": 11,
+   "latency_share_s": 0.137
+  },
+  "so_binsearch_batch_iP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent binary searches for each query with no shared state.",
+   "parse_ok": true,
+   "batch": 11,
+   "latency_share_s": 0.137
+  },
+  "cl_time_loop_dG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Time-stepping loop has loop-carried dependencies between iterations.",
+   "parse_ok": true,
+   "batch": 11,
+   "latency_share_s": 0.137
+  },
+  "mi_dose_accum_dG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Non-deterministic accumulation order due to potential overlapping voxel indices.",
+   "parse_ok": true,
+   "batch": 11,
+   "latency_share_s": 0.137
+  },
+  "fi_binomial_inplace_dG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "In-place backward induction creates loop-carried flow dependence.",
+   "parse_ok": true,
+   "batch": 11,
+   "latency_share_s": 0.137
+  },
+  "cr_sbox_iP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent byte substitutions with no loop-carried dependencies.",
+   "parse_ok": true,
+   "batch": 11,
+   "latency_share_s": 0.137
+  },
+  "db_hash_probe_iG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent hash table probes with no loop-carried dependencies.",
+   "parse_ok": true,
+   "batch": 11,
+   "latency_share_s": 0.137
+  },
+  "db_min_max_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "reduction(min:lo, max:hi)",
+   "reason": "Min/max reduction can be parallelized with appropriate reduction clauses.",
+   "parse_ok": true,
+   "batch": 11,
+   "latency_share_s": 0.137
+  },
+  "cl_semi_lagrangian_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent reads from u and q, independent writes to qn.",
+   "parse_ok": true,
+   "batch": 12,
+   "latency_share_s": 0.1375
+  },
+  "cr_adler32_iG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried dependence on scalars a and b.",
+   "parse_ok": true,
+   "batch": 12,
+   "latency_share_s": 0.1375
+  },
+  "qs_phase_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent updates to re and im arrays for each k.",
+   "parse_ok": true,
+   "batch": 12,
+   "latency_share_s": 0.1375
+  },
+  "ge_ray_sphere_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent reads from dx, dy and independent writes to hit.",
+   "parse_ok": true,
+   "batch": 12,
+   "latency_share_s": 0.1375
+  },
+  "ml_welford_mean_dP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried dependence on scalar mean.",
+   "parse_ok": true,
+   "batch": 12,
+   "latency_share_s": 0.1375
+  },
+  "fi_black_scholes_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent reads from s, k, t and independent writes to call.",
+   "parse_ok": true,
+   "batch": 12,
+   "latency_share_s": 0.1375
+  },
+  "mi_recursive_gauss_dP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Loop-carried dependence on y[i-1] and y[i-2].",
+   "parse_ok": true,
+   "batch": 12,
+   "latency_share_s": 0.1375
+  },
+  "gr_relabel_perm_iP": {
+   "verdict": "parallel",
+   "confidence": 0.95,
+   "clauses": "",
+   "reason": "Assuming perm is a permutation, writes to distinct indices.",
+   "parse_ok": true,
+   "batch": 12,
+   "latency_share_s": 0.1375
+  },
+  "la_maxabs_dP": {
+   "verdict": "parallel",
+   "confidence": 0.95,
+   "clauses": "reduction(max:mx)",
+   "reason": "Independent iterations updating a local max, suitable for reduction.",
+   "parse_ok": true,
+   "batch": 13,
+   "latency_share_s": 0.162375
+  },
+  "la_lu_outer_dP": {
+   "verdict": "serial",
+   "confidence": 0.99,
+   "clauses": "",
+   "reason": "Loop-carried dependencies in LU factorization prevent parallelization.",
+   "parse_ok": true,
+   "batch": 13,
+   "latency_share_s": 0.162375
+  },
+  "nw_classify_iG": {
+   "verdict": "parallel",
+   "confidence": 0.98,
+   "clauses": "",
+   "reason": "Each iteration writes to a unique output index with no cross-iteration dependencies.",
+   "parse_ok": true,
+   "batch": 13,
+   "latency_share_s": 0.162375
+  },
+  "fi_cum_returns_dP": {
+   "verdict": "serial",
+   "confidence": 0.99,
+   "clauses": "",
+   "reason": "Scalar recurrence v[i] depends on v[i-1], creating a loop-carried dependency.",
+   "parse_ok": true,
+   "batch": 13,
+   "latency_share_s": 0.162375
+  },
+  "cr_popcount_iP": {
+   "verdict": "parallel",
+   "confidence": 0.95,
+   "clauses": "reduction(+:ones)",
+   "reason": "Independent iterations summing bits, suitable for reduction.",
+   "parse_ok": true,
+   "batch": 13,
+   "latency_share_s": 0.162375
+  },
+  "cr_md_chain_iG": {
+   "verdict": "serial",
+   "confidence": 0.99,
+   "clauses": "",
+   "reason": "Chained compression where state st depends on previous iteration.",
+   "parse_ok": true,
+   "batch": 13,
+   "latency_share_s": 0.162375
+  },
+  "la_gs_1d_dG": {
+   "verdict": "serial",
+   "confidence": 0.99,
+   "clauses": "",
+   "reason": "Gauss-Seidel sweep has loop-carried dependency on x[i-1].",
+   "parse_ok": true,
+   "batch": 13,
+   "latency_share_s": 0.162375
+  },
+  "nw_flow_hash_iG": {
+   "verdict": "parallel",
+   "confidence": 0.98,
+   "clauses": "",
+   "reason": "Each iteration computes a hash for a unique index with no dependencies.",
+   "parse_ok": true,
+   "batch": 13,
+   "latency_share_s": 0.162375
+  },
+  "im_alpha_blend_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent element-wise operations on distinct array indices.",
+   "parse_ok": true,
+   "batch": 14,
+   "latency_share_s": 0.14525
+  },
+  "sp_preemph_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Reads from input array x, writes to distinct indices in y.",
+   "parse_ok": true,
+   "batch": 14,
+   "latency_share_s": 0.14525
+  },
+  "ge_vertex_normals_dP": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Non-atomic accumulation to shared memory locations via indirect indexing.",
+   "parse_ok": true,
+   "batch": 14,
+   "latency_share_s": 0.14525
+  },
+  "sp_energy_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "reduction(+:e)",
+   "reason": "Scalar accumulation requires reduction clause to avoid race conditions.",
+   "parse_ok": true,
+   "batch": 14,
+   "latency_share_s": 0.14525
+  },
+  "st_heat1d_dP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Reads from input array u, writes to distinct indices in un.",
+   "parse_ok": true,
+   "batch": 14,
+   "latency_share_s": 0.14525
+  },
+  "cl_advect_dG": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Reads from input arrays, writes to distinct indices in output array.",
+   "parse_ok": true,
+   "batch": 14,
+   "latency_share_s": 0.14525
+  },
+  "cr_ctr_xor_iP": {
+   "verdict": "parallel",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Independent element-wise operations on distinct array indices.",
+   "parse_ok": true,
+   "batch": 14,
+   "latency_share_s": 0.14525
+  },
+  "pv_counter_index_dG": {
+   "verdict": "serial",
+   "confidence": 1.0,
+   "clauses": "",
+   "reason": "Scalar k is updated sequentially, creating a loop-carried dependence.",
+   "parse_ok": true,
+   "batch": 14,
+   "latency_share_s": 0.14525
+  }
+ }
+}

@@ -1,0 +1,29 @@
+% =======================================================
+% 5. EXPERIMENTAL SETUP
+% =======================================================
+\section{Experimental Setup}
+\label{sec:setup}
+
+\paragraph{Platform} All compilation, analysis, validation and timing were performed on one Apple MacBook Pro with an Apple M1 Pro (\nCpuCores{} cores: \nPerfCores{} performance + \nEffCores{} efficiency), 16\,GB of memory and macOS \macosVersion{}, using Homebrew LLVM/Clang \llvmVersion{} with its bundled OpenMP runtime and Polly. Homebrew GCC~12.2 cannot compile against the macOS~26 SDK headers, so the GCC baseline was run with \gccVersion{} in an Ubuntu 22.04 virtual machine on the same computer; it is a compile-time analysis whose result does not depend on the host. Language models were accessed through the Groq API on 15 and 17 November 2026. The Llama~3.3~70B model used in our preliminary version is no longer served by that provider (the model list returned on 17 November 2026 contains only the three models below among general-purpose chat models), so it could not be re-evaluated.
+
+\paragraph{Research questions}
+\begin{description}
+  \item[RQ1] How precise and complete is a sound compiler analysis (HF-Static, GCC, Polly) under an execution-validated ground truth?
+  \item[RQ2] How reliable are LLMs as stand-alone parallelism oracles, and which loops do they get wrong?
+  \item[RQ3] Does the hybrid procedure recover the opportunities the compiler misses without introducing unsafe directives, how does $\tau$ govern this trade-off, and do the results hold on all loops and on loop shapes written after the study was frozen?
+  \item[RQ4] What do the pipeline, its cache and the prompt design cost, and how sensitive are the results to the prompt, the model and repeated runs?
+  \item[RQ5] What run-time benefit do the parallelized loops deliver, and how does the pipeline behave on application-scale code?
+\end{description}
+
+\paragraph{Tools}
+\textit{LLVM-only (HF-Static)} is the pass of Section~\ref{sec:static}; used alone it treats \textsc{Unknown} as serial.
+\textit{GCC autopar}: \Code{gcc -O2 -ftree-parallelize-loops=8 --param parloops-min-per-thread=2 -fopt-info-loop-optimized}; a target loop counts as parallel if GCC reports ``parallelizing (outer|inner) loop'' at its header line. The low \Code{min-per-thread} value removes GCC's profitability filter so that legality, not profitability, is measured.
+\textit{Polly}: \Code{clang -O3 -mllvm -polly -mllvm -polly-parallel -mllvm -polly-process-unprofitable}; a target loop counts as parallel if Polly outlines a parallel sub-function that covers it and is not launched from inside an enclosing loop.
+\textit{AI-only}: \Code{openai/gpt-oss-120b} and \Code{openai/gpt-oss-20b} with reasoning effort ``low'' and JSON mode, and \Code{qwen/qwen3.8-27b} without reasoning, all at temperature~0 with a fixed seed, prompt P2, verdict \textsc{par} counted as parallel.
+\textit{Hybrid}: Algorithm~\ref{alg:hybrid} with prompt H. Every request and raw response is appended to a log; re-running an experiment replays the log instead of calling the API.
+
+\paragraph{Evaluation sets and API limits} On the free API tier the rate-limit headers reported 8{,}000 tokens per minute for each of the three models; Qwen3.8-27B was in addition limited to 1{,}000 output tokens per minute and, according to the provider's error message, 200{,}000 tokens per day. These limits shaped the design of the LLM experiments: the Qwen repetition run was stopped by the daily limit on 15 November after 88 of 120 loops and completed on 17 November from the replay log, without re-issuing the answered requests. The compiler tools are evaluated on all \nBenchLoops{} loops. The AI-only baseline and the threshold calibration use an \emph{evaluation set} of \nEvalLoops{} loops (one element type per base kernel and the access forms G, P and Q); HF-Static is \textsc{Unknown} for \nEvalUnknown{} of them. The remaining \textsc{Unknown} loops of HF-LoopBench (second element type and \Code{restrict} variants) were later answered with prompt H at the frozen threshold, so that the complete pipeline can be scored on all loops (Section~\ref{sec:rq-full}). On HF-LoopBench-X every loop is evaluated. The prompt ablation uses a fixed subset of \nAblLoops{} loops (one instance per base kernel, G or P form).
+
+\paragraph{Prompts} \textbf{P1} asks in one sentence whether each loop can be parallelized with \Code{parallel for} and imposes no output format. \textbf{P2} states the legality definition and a JSON schema. \textbf{P3} adds two worked examples and asks for an explicit dependence analysis before the verdict. \textbf{P4} adds a digest of the OpenMP~5.2 rules that decide legality (canonical loop form, data-sharing defaults, reduction and \Code{linear} semantics, order independence, pointer overlap). \textbf{H} is P2 plus the HF-Static facts. All prompts are released with the artifact.
+
+\paragraph{Metrics and statistics} The positive class is \textsc{Parallel}. We report TP, FP, TN, FN, precision, recall, F1 and the Matthews correlation coefficient (MCC). 95\% confidence intervals use a cluster bootstrap over base kernels (2{,}000 resamples). Paired comparisons use the exact McNemar test on per-loop correctness, which---unlike a $t$-test over a single run---needs no distributional assumption and respects the pairing of methods on the same loops. Run-to-run consistency is measured with Cohen's $\kappa$ between two independent runs of the same prompt. $\tau$ is selected per model on a development split containing 30\% of the base kernels (chosen by a hash of the kernel name) and results are also reported on the disjoint 70\% test split. Per-class, cache and cost analyses use one \emph{primary} model, the one whose complete hybrid configuration has the highest F1-score on the development split (GPT-OSS-20B).

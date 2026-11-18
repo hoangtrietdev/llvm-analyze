@@ -1,0 +1,599 @@
+{
+ "meta": {
+  "model": "openai/gpt-oss-120b",
+  "variant": "H",
+  "set": "unknown",
+  "batch": 8,
+  "params": {
+   "temperature": 0,
+   "reasoning_effort": "low",
+   "max_completion_tokens": 6000,
+   "seed": 7,
+   "response_format": {
+    "type": "json_object"
+   }
+  }
+ },
+ "usage": {
+  "requests": 8,
+  "prompt_tokens": 18695,
+  "completion_tokens": 5063,
+  "reasoning_tokens": 2729,
+  "cached_tokens": 512,
+  "latency_s": 17.916999999999998,
+  "replayed": 0,
+  "parse_failures": 0,
+  "loops_requested": 63,
+  "budget_exhausted": false,
+  "wall_s": 246.08584713935852
+ },
+ "predictions": {
+  "x_continue_skip_dQ": {
+   "verdict": "serial",
+   "confidence": 0.9,
+   "clauses": "",
+   "reason": "Potential overlap between a and b creates loop\u2011carried dependence",
+   "parse_ok": true,
+   "batch": 0,
+   "latency_share_s": 0.523
+  },
+  "x_heat_inner_dP": {
+   "verdict": "serial",
+   "confidence": 0.85,
+   "clauses": "",
+   "reason": "Possible aliasing between u and v prevents safe parallelism",
+   "parse_ok": true,
+   "batch": 0,
+   "latency_share_s": 0.523
+  },
+  "x_ring_buffer_dG": {
+   "verdict": "serial",
+   "confidence": 0.95,
+   "clauses": "",
+   "reason": "Ring buffer introduces true loop\u2011carried dependence",
+   "parse_ok": true,
+   "batch": 0,
+   "latency_share_s": 0.523
+  },
+  "x_offset_anti_dR": {
+   "verdict": "parallel",
+   "confidence": 0.92,
+   "clauses": "private(i)",
+   "reason": "Restrict guarantees no overlap; each iteration independent",
+   "parse_ok": true,
+   "batch": 0,
+   "latency_share_s": 0.523
+  },
+  "x_colsum_inner_dP": {
+   "verdict": "parallel",
+   "confidence": 0.88,
+   "clauses": "private(i)",
+   "reason": "Inner i\u2011loop independent for each k; outer k carries dependence",
+   "parse_ok": true,
+   "batch": 0,
+   "latency_share_s": 0.523
+  },
+  "x_colsum_outer_dP": {
+   "verdict": "parallel",
+   "confidence": 0.88,
+   "clauses": "private(i)",
+   "reason": "Same as L5; inner loop can be parallelized",
+   "parse_ok": true,
+   "batch": 0,
+   "latency_share_s": 0.523
+  },
+  "x_ring_buffer_dR": {
+   "verdict": "serial",
+   "confidence": 0.95,
+   "clauses": "",
+   "reason": "Ring buffer writes are read in later iterations (true dependence)",
+   "parse_ok": true,
+   "batch": 0,
+   "latency_share_s": 0.523
+  },
+  "x_cond_threshold_dH": {
+   "verdict": "parallel",
+   "confidence": 0.8,
+   "clauses": "private(i)",
+   "reason": "Elementwise conditional without known aliasing; safe to parallelize",
+   "parse_ok": true,
+   "batch": 0,
+   "latency_share_s": 0.523
+  },
+  "x_modulo_perm_iG": {
+   "verdict": "parallel",
+   "confidence": 0.9,
+   "clauses": "parallel for schedule(static)",
+   "reason": "Permutation write is bijective, no cross-iteration dependence",
+   "parse_ok": true,
+   "batch": 1,
+   "latency_share_s": 0.251
+  },
+  "x_colsum_inner_dG": {
+   "verdict": "parallel",
+   "confidence": 0.85,
+   "clauses": "parallel for schedule(static)",
+   "reason": "Inner i\u2011loop accesses distinct elements; dependence only across outer k",
+   "parse_ok": true,
+   "batch": 1,
+   "latency_share_s": 0.251
+  },
+  "x_continue_skip_dP": {
+   "verdict": "parallel",
+   "confidence": 0.9,
+   "clauses": "parallel for schedule(static)",
+   "reason": "Elementwise compute with continue, no cross\u2011iteration dependence",
+   "parse_ok": true,
+   "batch": 1,
+   "latency_share_s": 0.251
+  },
+  "x_colsum_inner_dR": {
+   "verdict": "parallel",
+   "confidence": 0.85,
+   "clauses": "parallel for schedule(static)",
+   "reason": "Same pattern as L2; restrict qualifiers guarantee no aliasing",
+   "parse_ok": true,
+   "batch": 1,
+   "latency_share_s": 0.251
+  },
+  "x_same_iter_raw_dP": {
+   "verdict": "parallel",
+   "confidence": 0.9,
+   "clauses": "parallel for schedule(static)",
+   "reason": "RAW occurs within same iteration, no loop\u2011carried dependence",
+   "parse_ok": true,
+   "batch": 1,
+   "latency_share_s": 0.251
+  },
+  "x_modulo_perm_iQ": {
+   "verdict": "parallel",
+   "confidence": 0.9,
+   "clauses": "parallel for schedule(static)",
+   "reason": "Bijective permutation, distinct destinations per iteration",
+   "parse_ok": true,
+   "batch": 1,
+   "latency_share_s": 0.251
+  },
+  "x_pointer_walk_dQ": {
+   "verdict": "parallel",
+   "confidence": 0.9,
+   "clauses": "parallel for schedule(static)",
+   "reason": "Pointer walk accesses separate elements each iteration",
+   "parse_ok": true,
+   "batch": 1,
+   "latency_share_s": 0.251
+  },
+  "x_argmin_dP": {
+   "verdict": "serial",
+   "confidence": 0.8,
+   "clauses": "",
+   "reason": "Loop performs a min reduction on a scalar, requiring ordered updates",
+   "parse_ok": true,
+   "batch": 1,
+   "latency_share_s": 0.251
+  },
+  "x_offset_anti_dP": {
+   "verdict": "parallel",
+   "confidence": 0.9,
+   "clauses": "",
+   "reason": "Shift reads ahead, writes behind; no overlap for given k",
+   "parse_ok": true,
+   "batch": 2,
+   "latency_share_s": 0.2285
+  },
+  "x_step4_dQ": {
+   "verdict": "parallel",
+   "confidence": 0.9,
+   "clauses": "",
+   "reason": "Elementwise copy, independent iterations",
+   "parse_ok": true,
+   "batch": 2,
+   "latency_share_s": 0.2285
+  },
+  "x_tri_scale_dP": {
+   "verdict": "parallel",
+   "confidence": 0.8,
+   "clauses": "",
+   "reason": "Reads only diagonal elements that are never written in loop",
+   "parse_ok": true,
+   "batch": 2,
+   "latency_share_s": 0.2285
+  },
+  "x_tri_scale_dG": {
+   "verdict": "parallel",
+   "confidence": 0.8,
+   "clauses": "",
+   "reason": "Same reasoning as L3, global array static, no write\u2011read conflict",
+   "parse_ok": true,
+   "batch": 2,
+   "latency_share_s": 0.2285
+  },
+  "x_argmin_dG": {
+   "verdict": "serial",
+   "confidence": 0.95,
+   "clauses": "",
+   "reason": "Min reduction with index needs ordered update, not a pure OpenMP reduction",
+   "parse_ok": true,
+   "batch": 2,
+   "latency_share_s": 0.2285
+  },
+  "x_cond_rec_dP": {
+   "verdict": "serial",
+   "confidence": 0.97,
+   "clauses": "",
+   "reason": "Scalar s updated conditionally each iteration creates loop\u2011carried dependence",
+   "parse_ok": true,
+   "batch": 2,
+   "latency_share_s": 0.2285
+  },
+  "x_ring_buffer_dP": {
+   "verdict": "serial",
+   "confidence": 0.96,
+   "clauses": "",
+   "reason": "Ring buffer read/write of neighboring slots introduces true dependence",
+   "parse_ok": true,
+   "batch": 2,
+   "latency_share_s": 0.2285
+  },
+  "x_step4_dH": {
+   "verdict": "parallel",
+   "confidence": 0.9,
+   "clauses": "",
+   "reason": "Straightforward unrolled copy, independent iterations",
+   "parse_ok": true,
+   "batch": 2,
+   "latency_share_s": 0.2285
+  },
+  "x_colsum_outer_dG": {
+   "verdict": "serial",
+   "confidence": 0.9,
+   "clauses": "",
+   "reason": "Loop-carried dependence across k (vertical accumulation) prevents parallelism",
+   "parse_ok": true,
+   "batch": 3,
+   "latency_share_s": 0.1845
+  },
+  "x_reverse_scale_dH": {
+   "verdict": "parallel",
+   "confidence": 0.95,
+   "clauses": "",
+   "reason": "Independent elementwise writes; reverse order does not affect correctness",
+   "parse_ok": true,
+   "batch": 3,
+   "latency_share_s": 0.1845
+  },
+  "x_perm_update_dR": {
+   "verdict": "serial",
+   "confidence": 0.55,
+   "clauses": "",
+   "reason": "Potential write conflicts via permutation p; cannot guarantee independence",
+   "parse_ok": true,
+   "batch": 3,
+   "latency_share_s": 0.1845
+  },
+  "x_private_tmp_dH": {
+   "verdict": "parallel",
+   "confidence": 0.95,
+   "clauses": "",
+   "reason": "All temporaries are private; no cross\u2011iteration dependencies",
+   "parse_ok": true,
+   "batch": 3,
+   "latency_share_s": 0.1845
+  },
+  "x_continue_skip_dH": {
+   "verdict": "parallel",
+   "confidence": 0.95,
+   "clauses": "",
+   "reason": "Elementwise compute with no side effects; continue does not affect independence",
+   "parse_ok": true,
+   "batch": 3,
+   "latency_share_s": 0.1845
+  },
+  "x_modulo_perm_iP": {
+   "verdict": "parallel",
+   "confidence": 0.9,
+   "clauses": "",
+   "reason": "Bijective modulo mapping ensures one\u2011to\u2011one writes, no races",
+   "parse_ok": true,
+   "batch": 3,
+   "latency_share_s": 0.1845
+  },
+  "x_argmin_dR": {
+   "verdict": "parallel",
+   "confidence": 0.9,
+   "clauses": "reduction(min:best) reduction(min:idx)",
+   "reason": "Min reduction can be expressed with OpenMP reduction clause",
+   "parse_ok": true,
+   "batch": 3,
+   "latency_share_s": 0.1845
+  },
+  "x_pointer_walk_dH": {
+   "verdict": "parallel",
+   "confidence": 0.95,
+   "clauses": "",
+   "reason": "Pointer walk accesses distinct elements; no aliasing assumed",
+   "parse_ok": true,
+   "batch": 3,
+   "latency_share_s": 0.1845
+  },
+  "x_cond_threshold_dP": {
+   "verdict": "parallel",
+   "confidence": 0.97,
+   "clauses": "",
+   "reason": "Independent elementwise writes, no cross-iteration dependence.",
+   "parse_ok": true,
+   "batch": 4,
+   "latency_share_s": 0.195875
+  },
+  "x_list_walk_dP": {
+   "verdict": "serial",
+   "confidence": 0.99,
+   "clauses": "",
+   "reason": "Loop-carried dependence via mutable index p prevents parallelism.",
+   "parse_ok": true,
+   "batch": 4,
+   "latency_share_s": 0.195875
+  },
+  "x_private_tmp_dP": {
+   "verdict": "parallel",
+   "confidence": 0.96,
+   "clauses": "",
+   "reason": "Temporary w is per\u2011iteration; reads/writes are independent.",
+   "parse_ok": true,
+   "batch": 4,
+   "latency_share_s": 0.195875
+  },
+  "x_rowdep_inner_dG": {
+   "verdict": "parallel",
+   "confidence": 0.94,
+   "clauses": "",
+   "reason": "Inner column loop reads only previous row, no intra\u2011iteration dependence.",
+   "parse_ok": true,
+   "batch": 4,
+   "latency_share_s": 0.195875
+  },
+  "x_unsigned_iv_iH": {
+   "verdict": "parallel",
+   "confidence": 0.98,
+   "clauses": "",
+   "reason": "Straightforward elementwise hash, no cross\u2011iteration aliasing.",
+   "parse_ok": true,
+   "batch": 4,
+   "latency_share_s": 0.195875
+  },
+  "x_wavefront_inner_dG": {
+   "verdict": "parallel",
+   "confidence": 0.94,
+   "clauses": "",
+   "reason": "Column loop depends only on previous row, safe to parallelize inner loop.",
+   "parse_ok": true,
+   "batch": 4,
+   "latency_share_s": 0.195875
+  },
+  "x_perm_update_dP": {
+   "verdict": "serial",
+   "confidence": 0.99,
+   "clauses": "",
+   "reason": "Permutation may cause write\u2011after\u2011write/anti dependencies; cannot guarantee safety.",
+   "parse_ok": true,
+   "batch": 4,
+   "latency_share_s": 0.195875
+  },
+  "x_modulo_perm_iH": {
+   "verdict": "parallel",
+   "confidence": 0.97,
+   "clauses": "",
+   "reason": "Bijective modulo mapping ensures unique destinations, no overlap.",
+   "parse_ok": true,
+   "batch": 4,
+   "latency_share_s": 0.195875
+  },
+  "x_rowdep_inner_dP": {
+   "verdict": "parallel",
+   "confidence": 0.96,
+   "clauses": "",
+   "reason": "j\u2011loop accesses only current row, reads from previous i; no cross\u2011j dependence.",
+   "parse_ok": true,
+   "batch": 5,
+   "latency_share_s": 0.34425
+  },
+  "x_offset_anti_dG": {
+   "verdict": "parallel",
+   "confidence": 0.97,
+   "clauses": "",
+   "reason": "writes a[i] from a[i+k]; source index > destination, no overlap for k>0.",
+   "parse_ok": true,
+   "batch": 5,
+   "latency_share_s": 0.34425
+  },
+  "x_cond_threshold_dQ": {
+   "verdict": "parallel",
+   "confidence": 0.95,
+   "clauses": "",
+   "reason": "elementwise read/write, no inter\u2011iteration dependence.",
+   "parse_ok": true,
+   "batch": 5,
+   "latency_share_s": 0.34425
+  },
+  "x_pointer_walk_dP": {
+   "verdict": "parallel",
+   "confidence": 0.96,
+   "clauses": "",
+   "reason": "pointer walk over distinct arrays, no aliasing, independent iterations.",
+   "parse_ok": true,
+   "batch": 5,
+   "latency_share_s": 0.34425
+  },
+  "x_rowdep_inner_dR": {
+   "verdict": "parallel",
+   "confidence": 0.97,
+   "clauses": "",
+   "reason": "restrict guarantees no alias; column loop independent like L1.",
+   "parse_ok": true,
+   "batch": 5,
+   "latency_share_s": 0.34425
+  },
+  "x_heat_outer_dP": {
+   "verdict": "serial",
+   "confidence": 0.99,
+   "clauses": "",
+   "reason": "outer time step loop has flow dependence via u/v updates.",
+   "parse_ok": true,
+   "batch": 5,
+   "latency_share_s": 0.34425
+  },
+  "x_unsigned_iv_iP": {
+   "verdict": "parallel",
+   "confidence": 0.96,
+   "clauses": "",
+   "reason": "simple elementwise hash, independent accesses.",
+   "parse_ok": true,
+   "batch": 5,
+   "latency_share_s": 0.34425
+  },
+  "x_cond_rec_dR": {
+   "verdict": "serial",
+   "confidence": 0.98,
+   "clauses": "",
+   "reason": "scalar s updated conditionally creates loop\u2011carried dependence.",
+   "parse_ok": true,
+   "batch": 5,
+   "latency_share_s": 0.34425
+  },
+  "x_stride2_pack_dP": {
+   "verdict": "parallel",
+   "confidence": 0.9,
+   "clauses": "",
+   "reason": "Distinct out[i] stores, reads from non\u2011overlapping in indices.",
+   "parse_ok": true,
+   "batch": 6,
+   "latency_share_s": 0.180375
+  },
+  "x_cond_rec_dG": {
+   "verdict": "serial",
+   "confidence": 0.95,
+   "clauses": "",
+   "reason": "Loop\u2011carried scalar s updated conditionally, not a reduction.",
+   "parse_ok": true,
+   "batch": 6,
+   "latency_share_s": 0.180375
+  },
+  "x_colsum_outer_dR": {
+   "verdict": "serial",
+   "confidence": 0.97,
+   "clauses": "",
+   "reason": "q[k] depends on q[k\u20111]; true loop\u2011carried dependence.",
+   "parse_ok": true,
+   "batch": 6,
+   "latency_share_s": 0.180375
+  },
+  "x_unsigned_iv_iQ": {
+   "verdict": "parallel",
+   "confidence": 0.9,
+   "clauses": "",
+   "reason": "Elementwise writes/reads with separate indices, no alias assumed.",
+   "parse_ok": true,
+   "batch": 6,
+   "latency_share_s": 0.180375
+  },
+  "x_tri_rowsum_dP": {
+   "verdict": "parallel",
+   "confidence": 0.92,
+   "clauses": "",
+   "reason": "Each i writes r[i] independently; inner sum uses only read\u2011only l.",
+   "parse_ok": true,
+   "batch": 6,
+   "latency_share_s": 0.180375
+  },
+  "x_private_tmp_dQ": {
+   "verdict": "parallel",
+   "confidence": 0.88,
+   "clauses": "private(w)",
+   "reason": "w is a temporary array; make it private to avoid cross\u2011iteration interference.",
+   "parse_ok": true,
+   "batch": 6,
+   "latency_share_s": 0.180375
+  },
+  "x_reverse_scale_dP": {
+   "verdict": "parallel",
+   "confidence": 0.9,
+   "clauses": "",
+   "reason": "Independent elementwise operation; direction of loop does not affect independence.",
+   "parse_ok": true,
+   "batch": 6,
+   "latency_share_s": 0.180375
+  },
+  "x_perm_update_dG": {
+   "verdict": "serial",
+   "confidence": 0.94,
+   "clauses": "",
+   "reason": "Permutation may cause anti/output dependences via repeated indices.",
+   "parse_ok": true,
+   "batch": 6,
+   "latency_share_s": 0.180375
+  },
+  "x_masked_update_dP": {
+   "verdict": "serial",
+   "confidence": 0.78,
+   "clauses": "",
+   "reason": "Possible alias between y and x prevents safe parallelism",
+   "parse_ok": true,
+   "batch": 7,
+   "latency_share_s": 0.37957142857142856
+  },
+  "x_step4_dP": {
+   "verdict": "serial",
+   "confidence": 0.75,
+   "clauses": "",
+   "reason": "May\u2011alias between y and x makes independence uncertain",
+   "parse_ok": true,
+   "batch": 7,
+   "latency_share_s": 0.37957142857142856
+  },
+  "x_heat_outer_dG": {
+   "verdict": "serial",
+   "confidence": 0.92,
+   "clauses": "",
+   "reason": "Outer time\u2011step loop has loop\u2011carried flow/anti dependencies",
+   "parse_ok": true,
+   "batch": 7,
+   "latency_share_s": 0.37957142857142856
+  },
+  "x_reverse_scale_dQ": {
+   "verdict": "serial",
+   "confidence": 0.77,
+   "clauses": "",
+   "reason": "Potential alias between b and a; dependence analysis inconclusive",
+   "parse_ok": true,
+   "batch": 7,
+   "latency_share_s": 0.37957142857142856
+  },
+  "x_modulo_perm_iR": {
+   "verdict": "serial",
+   "confidence": 0.73,
+   "clauses": "",
+   "reason": "Possible output dependence; alias between out and in not ruled out",
+   "parse_ok": true,
+   "batch": 7,
+   "latency_share_s": 0.37957142857142856
+  },
+  "x_tri_scale_dR": {
+   "verdict": "serial",
+   "confidence": 0.81,
+   "clauses": "",
+   "reason": "Unresolved anti/output dependencies in triangular update",
+   "parse_ok": true,
+   "batch": 7,
+   "latency_share_s": 0.37957142857142856
+  },
+  "x_heat_outer_dR": {
+   "verdict": "serial",
+   "confidence": 0.92,
+   "clauses": "",
+   "reason": "Time\u2011step loop carries flow/anti dependencies between u and v",
+   "parse_ok": true,
+   "batch": 7,
+   "latency_share_s": 0.37957142857142856
+  }
+ }
+}

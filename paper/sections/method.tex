@@ -1,0 +1,139 @@
+% =======================================================
+% 3. METHODOLOGY
+% =======================================================
+\section{Methodology}
+\label{sec:method}
+
+\subsection{Problem formulation and oracle functions}
+\label{sec:problem}
+
+\paragraph{Legality} Let $S$ be a program containing loops $\mathcal{L}=\{L_1,\dots,L_n\}$. We call $L_i$ \emph{parallelizable} if there is a single OpenMP~5.2 directive \Code{\#pragma omp parallel for} with optional data-sharing, \Code{reduction} (including array sections), \Code{linear} and \Code{collapse} clauses that, placed immediately before $L_i$ and without modifying the loop body, yields a program that produces the same results as $S$ for every thread count and schedule, up to floating-point re-association inside reduction operations \cite{openmp52}. Otherwise $L_i$ is \emph{serial}. The definition excludes rewrites (scans, loop distribution, interchange, atomics inserted into the body) on purpose: it describes the decision a tool must make before inserting a directive, and it is the property our execution oracle checks (Section~\ref{sec:oracle}).
+
+\paragraph{Oracles} We model the two information sources as
+\begin{align}
+\mathit{Safe}(L) &\in \{1, 0, \bot\}, &
+\mathit{AI}(L) &= (v, c),\; v \in \{\textsc{par},\textsc{ser}\},\; c\in[0,1],
+\end{align}
+where $\mathit{Safe}(L)=1$ means the compiler proved independence, $0$ means it proved a loop-carried dependence or a structural obstacle (non-canonical loop, order-dependent call) or found that the enclosing function is called with overlapping pointer arguments, and $\bot$ means it could decide neither. $\mathit{AI}(L)$ is the verdict and self-reported confidence of a language model.
+
+\paragraph{Hybrid decision} For a confidence threshold $\tau$,
+\begin{equation}
+\label{eq:hybrid}
+H_\tau(L) =
+\begin{cases}
+\textsc{Serial}   & \text{if } \mathit{Safe}(L) = 0 \quad\text{(static veto)},\\
+\textsc{Parallel} & \text{if } \mathit{Safe}(L) = 1,\\
+\textsc{Parallel} & \text{if } \mathit{Safe}(L) = \bot \;\wedge\; v = \textsc{par} \;\wedge\; c \ge \tau,\\
+\textsc{Serial}   & \text{otherwise.}
+\end{cases}
+\end{equation}
+If HF-Static is sound ($\mathit{Safe}(L)=1 \Rightarrow L$ parallelizable), every unsafe decision of $H_\tau$ originates from an \textsc{Unknown} loop, and $\tau$ trades recall on those loops against the risk of an unsafe directive. A false positive (FP) is therefore an \emph{unsafe} transformation and a false negative a missed opportunity; we report both explicitly instead of a single score.
+
+\subsection{System architecture: the check-then-ask pipeline}
+\SystemName{} is organized as a six-phase ``check-then-ask'' pipeline (Figure~\ref{fig:pipeline}). Deterministic, inexpensive phases run first; the language model is consulted only for loops that remain undecided.
+
+\begin{figure}[htbp]
+    \centering
+    \resizebox{\linewidth}{!}{%
+    \begin{tikzpicture}[
+        node distance=0.5cm and 1.2cm, font=\sffamily\small, >={Latex[length=2mm, width=2mm]},
+        process/.style={rectangle, draw=#1, thick, fill=white, minimum width=3.3cm, minimum height=1.25cm,
+                        align=center, rounded corners=2pt, drop shadow={opacity=0.15}},
+        marker/.style={circle, draw=#1, line width=1.5pt, fill=white, minimum size=0.8cm, inner sep=0pt},
+        connector/.style={draw=#1, thick, ->}]
+    \draw[gray!30, line width=4pt, line cap=round] (-0.5,0) -- (15.5,0);
+    \node[marker=pipelineBlue] (m1) at (0,0) {\textbf{1}};
+    \node[process=pipelineBlue, above=0.8cm of m1] (p1) {\textbf{Input analysis}\\Clang $\rightarrow$ IR, loop map};
+    \draw[connector=pipelineBlue] (m1) -- (p1);
+    \node[marker=pipelineBlue] (m2) at (3,0) {\textbf{2}};
+    \node[process=pipelineBlue, below=0.8cm of m2] (p2) {\textbf{Static foundation}\\HF-Static + veto};
+    \draw[connector=pipelineBlue] (m2) -- (p2);
+    \node[marker=pipelineMagenta] (m3) at (6,0) {\textbf{3}};
+    \node[process=pipelineMagenta, above=0.8cm of m3] (p3) {\textbf{Answer cache}\\exact structure};
+    \draw[connector=pipelineMagenta] (m3) -- (p3);
+    \node[marker=pipelineMagenta] (m4) at (9,0) {\textbf{4}};
+    \node[process=pipelineMagenta, below=0.8cm of m4] (p4) {\textbf{AI enhancement}\\code + call sites + facts};
+    \draw[connector=pipelineMagenta] (m4) -- (p4);
+    \node[marker=pipelineBlue] (m5) at (12,0) {\textbf{5}};
+    \node[process=pipelineBlue, above=0.8cm of m5] (p5) {\textbf{Decision}\\$H_\tau$, OpenMP clauses};
+    \draw[connector=pipelineBlue] (m5) -- (p5);
+    \node[marker=pipelineBlue] (m6) at (15,0) {\textbf{6}};
+    \node[process=pipelineBlue, below=0.8cm of m6] (p6) {\textbf{Output}\\pragma + report};
+    \draw[connector=pipelineBlue] (m6) -- (p6);
+    \end{tikzpicture}}
+    \caption{\SystemName{} six-phase pipeline. Blue phases are deterministic; magenta phases involve the language model and are reached only by loops that HF-Static leaves \textsc{Unknown} and that pass the call-site guard.}
+    \label{fig:pipeline}
+\end{figure}
+
+\subsubsection{Phase 1: Input analysis and loop discovery}
+Each translation unit is compiled with Clang to LLVM IR at \Code{-O1} with debug information and with loop unrolling, vectorization and loop-idiom recognition disabled (\Code{-fno-unroll-loops -fno-vectorize -fno-slp-vectorize -mllvm -disable-loop-idiom-all}). This promotes scalars to SSA form, so that inductions and reductions appear as header $\phi$-nodes, while keeping every source loop recognizable and mapped to its source line through the loop's debug location. \Code{loop-simplify} and \Code{lcssa} are run before the analysis. Loops whose debug location lies in a system or library header (e.g.\ STL containers) are discarded, so that only project loops are reported.
+
+\subsubsection{Phase 2: Static foundation and the LLVM veto}
+\label{sec:static}
+HF-Static is an LLVM~21 new-pass-manager plugin. For every natural loop $L$ (all nesting levels, skipping inlined copies) it evaluates four groups of evidence (Algorithm~\ref{alg:static}) and writes one JSON record with the verdict, every reason, the recognized reductions and the tested dependence pairs.
+
+\begin{algorithm}[htbp]
+\caption{HF-Static classification of a loop $L$ at nesting depth $d$}
+\label{alg:static}
+\footnotesize
+\begin{algorithmic}[1]
+\STATE $\mathit{Ser} \leftarrow \emptyset$, $\mathit{Unk} \leftarrow \emptyset$
+\IF{$L$ has more than one exiting block} \STATE add ``early exit'' to $\mathit{Ser}$ \ENDIF
+\IF{SCEV cannot compute the back-edge count} \STATE add ``trip count'' to $\mathit{Unk}$ \ENDIF
+\FOR{each header $\phi$-node $p$ of $L$}
+  \IF{$p$ is an induction or a recognized reduction} \STATE \textbf{continue} \ENDIF
+  \IF{$p$ is only used after $L$} \STATE \textbf{continue} \COMMENT{last value} \ENDIF
+  \IF{$p$ forwards a load of memory not written in $L$ whose address does not depend on $p$} \STATE \textbf{continue} \ENDIF
+  \IF{the latch value of $p$ is a select/merge that may keep $p$} \STATE add ``conditional scalar update'' to $\mathit{Unk}$
+  \ELSE \STATE add ``scalar recurrence'' to $\mathit{Ser}$ \ENDIF
+\ENDFOR
+\FOR{each call $c$ in $L$}
+  \IF{$c$ is order dependent (I/O, \Code{rand})} \STATE add to $\mathit{Ser}$
+  \ELSIF{$c$ is not \Code{readnone}, a thread-safe allocation or an errno-only \Code{libm} call} \STATE add to $\mathit{Unk}$ \ENDIF
+\ENDFOR
+\FOR{each pair $(a,b)$ of memory accesses in $L$, at least one a write}
+  \STATE $D \leftarrow \mathrm{DA.depends}(a,b)$
+  \IF{$D$ is confused} \STATE add ``inconclusive'' to $\mathit{Unk}$
+  \ELSIF{all outer levels admit `$=$' and level $d$ admits `$<$' or `$>$'}
+     \IF{the distance at level $d$ is a non-zero constant, or $D$ is consistent with a resolved direction} \STATE add ``proven dependence'' to $\mathit{Ser}$
+     \ELSE \STATE add ``possible dependence'' to $\mathit{Unk}$ \ENDIF
+  \ENDIF
+\ENDFOR
+\STATE \textbf{return} \textsc{Serial} if $\mathit{Ser}\neq\emptyset$; else \textsc{Unknown} if $\mathit{Unk}\neq\emptyset$; else \textsc{Parallel} (with the recognized reduction operators)
+\end{algorithmic}
+\end{algorithm}
+
+Two design choices make the veto safe. First, a dependence is only \emph{proven} when DependenceAnalysis returns a consistent dependence with a resolved non-`$=$' direction or a constant non-zero distance at the loop's own level; everything weaker becomes \textsc{Unknown}, so the veto is never triggered by an imprecise test. Second, \textsc{Parallel} requires the absence of any unresolved evidence. The condition on line~7 (``whose address does not depend on $p$'') was added after the loop-structure extension revealed that a pointer-chasing recurrence (\Code{p = next[p]}) had been accepted as a forwarded load (Section~\ref{sec:rq-ext}); all results in this article use the corrected pass.
+
+\paragraph{Call-site alias guard} HF-Static analyses a function in isolation. A second pass of the plugin inspects every direct call in the same translation unit and reports pairs of pointer arguments that are derived from the same underlying object or that alias analysis cannot separate. An \textsc{Unknown} loop in a function with such a call site receives $\mathit{Safe}(L)=0$ before any model is consulted. The guard is conservative: two disjoint halves of one buffer are also vetoed, a cost we measure in Section~\ref{sec:rq-ext}.
+
+\subsubsection{Phase 3: Structural answer cache}
+\label{sec:cachedesign}
+To avoid repeated queries for structurally identical code, the source of each queried kernel is tokenized, identifiers are $\alpha$-renamed in order of first occurrence, numeric literals and scalar type names are abstracted, and the token sequence is used as key. A lookup returns the stored answer of the most similar earlier loop if the \Code{difflib} ratio of the token sequences is at least a similarity threshold $s$; $s=1$ means exact structural duplicates only. Section~\ref{sec:rq-cache} quantifies both the savings and the errors this introduces; the deployed configuration uses $s=1$.
+
+\subsubsection{Phase 4: AI enhancement and prompt engineering}
+\label{sec:hybrid}
+\textsc{Unknown} loops that pass the guard are sent in batches of eight. Each item contains the kernel function with line numbers (the target loop marked), up to three call sites from the same translation unit, and the HF-Static facts: the verdict, the unresolved reasons, recognized reductions, trip-count computability and memory-operation counts. The system prompt states the legality definition of Section~\ref{sec:problem} verbatim and requests a JSON object per loop with a verdict, a confidence in $[0,1]$, the OpenMP clauses and a short reason. We refer to this prompt as \textbf{H}; the LLM-only baseline uses the same instructions without compiler facts (prompt \textbf{P2}). Prompt variants are compared in Section~\ref{sec:rq-prompt}.
+
+\subsubsection{Phases 5--6: Decision and output}
+The decision follows Equation~\eqref{eq:hybrid} and is summarized in Algorithm~\ref{alg:hybrid}. $\tau$ is not tuned on the test data: it is chosen on a development split of 30\% of the base kernels as the value with the highest F1-score among those that produce no false positive on that split, and it is then frozen. The output phase emits the directive with the reduction operators found by HF-Static or the clauses returned by the model, together with the reasons for each decision, so that every accepted directive can be audited.
+
+\begin{algorithm}[htbp]
+\caption{\SystemName{} decision for a translation unit}
+\label{alg:hybrid}
+\footnotesize
+\begin{algorithmic}[1]
+\STATE $R \leftarrow$ HF-Static($\mathcal{L}$); \ $G \leftarrow$ CallSiteGuard(TU)
+\STATE $Q \leftarrow \{L \in \mathcal{L} : R[L].\mathit{verdict} = \textsc{Unknown} \wedge \mathit{func}(L) \notin G\}$
+\FOR{each batch $B \subseteq Q$ of size 8 not answered by the cache}
+  \STATE $A \leftarrow$ ParseJSON(LLM(Prompt$_H$($B$, $R$, call sites))); \ Cache.store($B$, $A$)
+\ENDFOR
+\FOR{each $L \in \mathcal{L}$}
+  \IF{$R[L].\mathit{verdict} = \textsc{Serial}$ \textbf{or} ($R[L].\mathit{verdict}=\textsc{Unknown}$ \textbf{and} $\mathit{func}(L)\in G$)} \STATE $y_L \leftarrow \textsc{Serial}$ \COMMENT{static veto}
+  \ELSIF{$R[L].\mathit{verdict} = \textsc{Parallel}$} \STATE $y_L \leftarrow \textsc{Parallel}$ with HF-Static reductions
+  \ELSIF{$A[L].v = \textsc{par}$ \textbf{and} $A[L].c \ge \tau$} \STATE $y_L \leftarrow \textsc{Parallel}$ with model clauses
+  \ELSE \STATE $y_L \leftarrow \textsc{Serial}$ \COMMENT{unanswered or unparsable $\Rightarrow$ conservative}
+  \ENDIF
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
